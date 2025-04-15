@@ -174,5 +174,5 @@ cython_debug/
 .pypirc
 
 
-#Remove o ambiente virtual/
+#Remove o ambiente virtual
 /virtual_pievdcs/
