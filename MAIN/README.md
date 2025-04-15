@@ -5,4 +5,4 @@
 
 <h2>Para cada instituição deverá ser criado uma aplicação.</h2>
 <li>instituições que irá conter:</li>
--[] Poder Judiciário. <br>
+- [ ] Poder Judiciário. <br>
