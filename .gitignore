@@ -176,3 +176,6 @@ cython_debug/
 
 #Remove o ambiente virtual
 /virtual_pievdcs/
+
+#Remove os arquivos estaticos
+/staticfiles/

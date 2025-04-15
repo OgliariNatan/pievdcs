@@ -81,8 +81,8 @@ WSGI_APPLICATION = "MAIN.wsgi.application"
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'resenha_livro',
-        'USER': 'policiapenal',
+        'NAME': 'pievdcs',
+        'USER': 'postgres',
         'PASSWORD': 'pa1debatata',
         'HOST': 'localhost', #IP da aaplicação
         #'HOST': '10.40.22.165', #IP da aaplicação
