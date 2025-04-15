@@ -4,7 +4,7 @@
 <li> Toda a aplicação deverá conter um <b>README.md</b>.</li>
 
 
-<h2> Todo o projeto deverá se instanciado a aba Projetos do <b>GitHUB</b></h2>
+<h2> Todo o projeto deverá se instanciado na aba Projetos do <b>GitHUB</b> pievdcs</h2>
 <span>
     Aonde deverá se aberto as 'Issues' e posterior as 'Branche',
     O projeto não poderá ser desenvolvido em sua 'MAIN', mas em suas <i>branche</i>, facilitando a manutenção do código e permitindo a confecção do mesmo em equipes.
