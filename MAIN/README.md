@@ -6,4 +6,9 @@
 <h2>Para cada instituição deverá ser criado uma aplicação.</h2>
 <li>instituições que irá conter:</li>
 <p>&#x2610; Poder Judiciário.</p>
-<p>&#x2610; Policia Militar.</p>
+<p>&#x2610; Ministério Público.</p>
+<p>&#x2610; Polícia Militar.</p>
+<p>&#x2610; Polícia Civil.</p>
+<p>&#x2610; Polícia Penal.</p>
+<p>&#x2610; Defensoria Pública.</p>
+<p>&#x2610; Órgãos municipais.</p>
