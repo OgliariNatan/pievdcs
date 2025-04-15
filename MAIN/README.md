@@ -5,5 +5,5 @@
 
 <h2>Para cada instituição deverá ser criado uma aplicação.</h2>
 <li>instituições que irá conter:</li>
-- [ ] Poder Judiciário. <br>
-<p>☐ Opção 1</p>
+<p>☐ Poder Judiciário.</p>
+<p>☐ Policia Militar.</p>
