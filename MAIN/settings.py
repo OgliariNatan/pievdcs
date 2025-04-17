@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'corsheaders', # Para acesso cruzado
     'dbbackup', #Para realizar backup
     'rest_framework', #Para criação de API
+    'seguranca_publica', #Segurança pública
+    'usuarios', #Usuarios autorizados
     
 ]
 
@@ -60,7 +62,9 @@ ROOT_URLCONF = "MAIN.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            os.path.join(BASE_DIR, "MAIN/templates"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -127,6 +131,12 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "MAIN/static"),
+    os.path.join(BASE_DIR, "usuarios/static"),
+    os.path.join(BASE_DIR, "seguranca_publica/static"),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
