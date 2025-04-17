@@ -141,3 +141,13 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGIN_URL = '/login/'  # URL para redirecionar usuários não autenticados
+LOGIN_REDIRECT_URL = '/home/'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True #Fecha a seção quando fecha o navegador
+
+#SESSION_COOKIE_SAMESITE = 'Lax' # não aceita cookie deterceiros
+#SESSION_COOKIE_SECURE = True #Só transmite informação se for seguro 'https'
+#SESSION_COOKIE_AGE = 0  # expira a seção após o fechamento da aba
+
+#configurar logging

@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div>
+    <h1>inserir um logo na lateral com 'flexbox'</h1>
+</div>
+<div class="login-container">
+    <h2>Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="login-button">Entrar</button>
+    </form>
+</div>
+{% endblock %}

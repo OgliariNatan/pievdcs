@@ -1,0 +1,50 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+
+{% block content %}
+<nav class="top-nav">
+    <ul class="menu">
+        <li>
+            <button>Fórum</button>
+            <ul class="submenu">
+                <li><button>Poder Judiciário</button></li>
+                <li><button>Ministério Público</button></li>
+                <li><button>Defensoria Pública</button></li>
+            </ul>
+        </li>
+        <li>
+            <button>Segurança Pública</button>
+            <ul class="submenu">
+                <li><button>Polícia Militar</button></li>
+                <li><button>Polícia Civil</button></li>
+                <li><button>Polícia Científica</button></li>
+                <li><button>Polícia Penal</button></li>
+            </ul>
+        </li>
+        <li>
+            <button>Município</button>
+            <ul class="submenu">
+                <li><button>Assistência Social</button></li>
+                <li><button>Conselho Tutelar</button></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+
+<!-- Barra lateral -->
+<aside class="sidebar">
+    <button>Atendimentos Realizados</button>
+    <button>Encaminhamentos</button>
+    <button>Notificações</button>
+</aside>
+
+<!-- Conteúdo principal -->
+<div id="root-content">
+    <h1>Aqui será inserido as informações pertinentes a cada instituição.</h1>
+    <p>conforme selecionada cada instituição, as informações serão exibidas aqui.</p>
+
+</div>
+
+{% endblock %}
