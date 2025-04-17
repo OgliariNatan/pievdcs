@@ -128,6 +128,41 @@ body {
     /* Adiciona rolagem vertical, se necessário */
 }
 
+/* Para a tela de login */
+.login-container {
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+}
+
+.login-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.login-container .login-button {
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-container .login-button:hover {
+    background-color: #555;
+}
+
+
 /* Responsividade para dispositivos móveis */
 @media (max-width: 768px) {
     .top-nav {
