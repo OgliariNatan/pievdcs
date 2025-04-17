@@ -1,14 +1,26 @@
+/* Estilo para o layout principal */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    /* Para organizar a barra superior e o restante do conteúdo */
+    height: 100vh;
+}
+
 /* Estilo para a barra superior */
 .top-nav {
     background-color: #333;
     color: white;
     padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .menu {
     list-style: none;
     display: flex;
-    justify-content: space-around;
     margin: 0;
     padding: 0;
 }
@@ -44,7 +56,9 @@
 }
 
 .menu>li:hover .submenu {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    /* Submenu organizado em coluna */
 }
 
 .submenu li {
@@ -65,26 +79,31 @@
     background-color: #555;
 }
 
+/* Estilo para o conteúdo principal */
+.main-content {
+    display: flex;
+    flex: 1;
+    /* Faz o conteúdo principal ocupar o restante do espaço */
+    overflow: hidden;
+}
+
 /* Estilo para a barra lateral */
 .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
     background-color: #f4f4f4;
     width: 200px;
-    height: 100%;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Espaçamento entre os botões */
 }
 
 .sidebar button {
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 10px;
     background-color: #333;
     color: white;
     border: none;
+    padding: 10px;
     cursor: pointer;
     text-align: left;
 }
@@ -93,28 +112,32 @@
     background-color: #555;
 }
 
-/* Ajuste do conteúdo principal */
+/* Estilo para o conteúdo principal */
 #root-content {
-    margin-left: 220px;
-    /* Espaço para a barra lateral */
+    flex: 1;
+    /* Faz o conteúdo principal ocupar o restante do espaço */
     padding: 20px;
+    overflow-y: auto;
+    /* Adiciona rolagem vertical, se necessário */
 }
 
 /* Responsividade para dispositivos móveis */
 @media (max-width: 768px) {
     .top-nav {
         flex-direction: column;
-        align-items: center;
     }
 
     .menu {
         flex-direction: column;
+        align-items: center;
+    }
+
+    .main-content {
+        flex-direction: column;
     }
 
     .sidebar {
-        position: relative;
         width: 100%;
-        height: auto;
         box-shadow: none;
     }
 
