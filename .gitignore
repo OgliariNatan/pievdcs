@@ -179,3 +179,7 @@ cython_debug/
 
 #Remove os arquivos estaticos
 /staticfiles/
+
+
+#Remove arquivos de configurções
+.env
