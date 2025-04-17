@@ -1,0 +1,60 @@
+/* Estilo para o layout principal */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilo para o cabeçalho */
+header {
+    background-color: #444;
+    /* Cor de fundo do cabeçalho */
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header .container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+header h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+header .login-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #555;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+header .login-button:hover {
+    background-color: #777;
+}
+
+
+
+/* Estilo para o conteúdo principal */
+main {
+    flex: 1;
+    /* Faz o conteúdo principal ocupar o espaço restante */
+}
+
+/* Estilo para o rodapé */
+.footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    width: 100%;
+}
