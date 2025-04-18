@@ -1,18 +1,25 @@
 {% extends 'base/base.html' %}
-
+{% load static %}
 {% block title %}Login{% endblock %}
 
 {% block content %}
+<div class="login-page">
+    <div class="logo-container">
+        <img src="{% static 'img/logo-enfrentamento-a-violencia-de-genero.png' %}" alt="Logo" class="logo"
+            height="250px">
+    </div>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="login-button">Entrar</button>
+        </form>
+    </div>
 
-<div>
-    <h1>inserir um logo na lateral com 'flexbox'</h1>
 </div>
-<div class="login-container">
-    <h2>Login</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="login-button">Entrar</button>
-    </form>
+<div style="text-align: center; color: brown;">
+    <!-- remover -->
+    <p>*Devemos criar/recriar um logo ou solicitar direitos de uso.</p>
 </div>
 {% endblock %}

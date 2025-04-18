@@ -1,0 +1,132 @@
+/* Estilo para a página de login */
+/* Definição de variáveis para as cores */
+:root {
+    --cor-base-lilas: #c8a2c8;
+    /* Cor base lilás */
+    --cor-lilas-claro: #f3e6f3;
+    /* Tom claro de lilás */
+    --cor-lilas-medio: #e6cce6;
+    /* Tom médio de lilás */
+    --cor-lilas-escuro: #5a3d5a;
+    /* Tom escuro de lilás */
+    --cor-hover-lilas: #b58fb5;
+    /* Tom mais escuro de lilás para hover */
+    --cor-branco: #ffffff;
+    /* Branco */
+    --cor-preto: #333333;
+    /* Preto */
+    --cor-preto-hover: #555555;
+    /* Preto para hover */
+}
+
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* Faz a página ocupar toda a altura da janela */
+    background-color: var(--cor-lilas-claro);
+    /* Tom claro de lilás */
+    gap: 20px;
+    /* Espaçamento entre o logo e o formulário */
+    padding: 20px;
+}
+
+/* Estilo para o contêiner do logo */
+.logo-container {
+    flex: 1;
+    /* Faz o logo ocupar espaço proporcional */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--cor-lilas-medio);
+    /* Tom médio de lilás */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para o texto ou imagem do logo */
+.logo-container img {
+    max-width: 100%;
+    height: auto;
+    /* Garante que a imagem seja responsiva */
+}
+
+/* Estilo para o formulário de login */
+.login-container {
+    flex: 1;
+    /* Faz o formulário ocupar espaço proporcional */
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+    background-color: var(--cor-lilas-medio);
+    /* Tom médio de lilás */
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+    color: var(--cor-lilas-escuro);
+    /* Tom escuro de lilás */
+}
+
+.login-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.login-container .login-button {
+    padding: 10px;
+    background-color: var(--cor-base-lilas);
+    /* Cor base lilás */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-container .login-button:hover {
+    background-color: var(--cor-hover-lilas);
+    /* Tom mais escuro de lilás */
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+    .login-page {
+        flex-direction: column;
+        /* Alinha os elementos verticalmente */
+    }
+
+    .logo-container {
+        order: -1;
+        /* Move o logo para cima */
+        margin-bottom: 20px;
+    }
+
+    .login-container {
+        max-width: 100%;
+        /* Faz o formulário ocupar toda a largura */
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 15px;
+        /* Reduz o espaçamento interno em telas muito pequenas */
+    }
+
+    .login-container h2 {
+        font-size: 18px;
+        /* Reduz o tamanho do título */
+    }
+
+    .login-container .login-button {
+        padding: 8px;
+        font-size: 14px;
+        /* Ajusta o botão para telas menores */
+    }
+}
