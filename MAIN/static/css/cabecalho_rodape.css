@@ -1,4 +1,25 @@
 /* Estilo para o layout principal */
+
+/* Definição de variáveis para as cores */
+:root {
+    --cor-base-lilas: #c8a2c8;
+    /* Cor base lilás */
+    --cor-lilas-claro: #f3e6f3;
+    /* Tom claro de lilás */
+    --cor-lilas-medio: #e6cce6;
+    /* Tom médio de lilás */
+    --cor-lilas-escuro: #5a3d5a;
+    /* Tom escuro de lilás */
+    --cor-hover-lilas: #b58fb5;
+    /* Tom mais escuro de lilás para hover */
+    --cor-branco: #ffffff;
+    /* Branco */
+    --cor-preto: #333333;
+    /* Preto */
+    --cor-preto-hover: #555555;
+    /* Preto para hover */
+}
+
 html,
 body {
     margin: 0;
@@ -10,9 +31,10 @@ body {
 
 /* Estilo para o cabeçalho */
 header {
-    background-color: #444;
-    /* Cor de fundo do cabeçalho */
-    color: white;
+    background-color: var(--cor-base-lilas);
+    /* Cor base lilás */
+    color: var(--cor-branco);
+    /* Texto branco */
     padding: 20px;
     text-align: center;
 }
@@ -20,41 +42,93 @@ header {
 header .container {
     max-width: 1200px;
     margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    /* Permite que os elementos se ajustem em telas menores */
 }
 
 header h1 {
     font-size: 24px;
     margin: 0;
+    flex: 1;
+    /* Permite que o título ocupe espaço proporcional */
+    text-align: left;
 }
 
-header .login-button {
+header .login-button,
+header .logout-button {
     display: inline-block;
     margin-top: 10px;
     padding: 10px 20px;
-    background-color: #555;
-    color: white;
+    background-color: var(--cor-hover-lilas);
+    /* Tom mais escuro de lilás */
+    color: var(--cor-branco);
+    /* Texto branco */
     text-decoration: none;
     border-radius: 5px;
+    border: none;
 }
 
-header .login-button:hover {
-    background-color: #777;
-}
-
-
-
-/* Estilo para o conteúdo principal */
-main {
-    flex: 1;
-    /* Faz o conteúdo principal ocupar o espaço restante */
+header .login-button:hover,
+header .logout-button:hover {
+    background-color: var(--cor-lilas-escuro);
+    /* Tom escuro de lilás */
 }
 
 /* Estilo para o rodapé */
 .footer {
-    background-color: #333;
-    color: white;
+    background-color: var(--cor-lilas-escuro);
+    /* Tom escuro de lilás */
+    color: var(--cor-branco);
+    /* Texto branco */
     text-align: center;
     padding: 10px;
     font-size: 14px;
     width: 100%;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    header .container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    header h1 {
+        font-size: 20px;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    header .login-button,
+    header .logout-button {
+        margin-top: 5px;
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    .footer {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 18px;
+    }
+
+    header .login-button,
+    header .logout-button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .footer {
+        font-size: 10px;
+        padding: 6px;
+    }
 }

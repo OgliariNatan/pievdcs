@@ -40,6 +40,7 @@ body {
     display: flex;
     justify-content: space-around;
     align-items: center;
+    /* border: 2px solid var(--cor-lilas-escuro); */
 }
 
 .menu {
@@ -47,29 +48,37 @@ body {
     display: flex;
     margin: 0;
     padding: 0;
+
 }
 
 .menu>li {
     position: relative;
+
+
 }
 
 .menu>li>button {
-    background-color: var(--cor-preto);
+    background-color: var(--cor-hover-lilas);
     color: var(--cor-branco);
     border: none;
     padding: 10px 20px;
     cursor: pointer;
     font-size: 16px;
+    border-radius: 15px;
+    border: 2px solid var(--cor-lilas-escuro);
+    margin-right: 10px;
+
 }
 
 .menu>li>button:hover {
-    background-color: var(--cor-preto-hover);
+    background-color: var(--cor-lilas-medio);
 }
 
 .submenu {
     display: none;
     position: absolute;
-    background-color: var(--cor-preto-hover);
+    background-color: none;
+    /* Tom médio de lilás */
     list-style: none;
     margin: 0;
     padding: 0;
@@ -77,19 +86,27 @@ body {
     left: 0;
     z-index: 1000;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    gap: 5px;
+    /* espaço entre botoes */
+
+
 }
 
 .menu>li:hover .submenu {
     display: flex;
     flex-direction: column;
+    /* background-color: none; */
+
 }
 
 .submenu li {
-    padding: 0;
+    padding: 10;
+
 }
 
 .submenu li button {
-    background-color: var(--cor-preto-hover);
+    background-color: var(--cor-base-lilas);
+    /* Cor base lilás */
     color: var(--cor-branco);
     border: none;
     padding: 10px 20px;
@@ -100,7 +117,7 @@ body {
 }
 
 .submenu li button:hover {
-    background-color: var(--cor-hover-lilas);
+    background-color: var(--cor-preto-hover);
 }
 
 /* Estilo para o conteúdo principal */
