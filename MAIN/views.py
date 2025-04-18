@@ -6,7 +6,9 @@ from django.contrib.auth.decorators import login_required
 def home(request):
     context = {
         "title": "Página Inicial",
-        "welcome_message": "Bem-vindo à Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais!"
+        "welcome_message": "Bem-vindo à Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais!",
+        'encaminhamentos': 3, #Criar variaveis para encaminhamentos
+        'alert': 4, #criar variavel para notificações
     }
     return render(request, "home.html", context)
 
