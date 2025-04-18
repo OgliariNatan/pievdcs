@@ -1,4 +1,4 @@
-/* Estilo para o layout principal   do home.html */
+/* Estilo para o layout principal do home.html */
 
 /* Definição de variáveis para as cores */
 :root {
@@ -20,7 +20,7 @@
     /* Preto para hover */
 }
 
-/* Estilo para o layout principal do home.html */
+/* Estilo para o layout principal */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -28,19 +28,19 @@ body {
     flex-direction: column;
     height: 100vh;
     background-color: var(--cor-lilas-claro);
-    /* Usando a variável */
+    /* Fundo lilás claro */
 }
 
 /* Estilo para a barra superior */
 .top-nav {
     background-color: var(--cor-base-lilas);
-    /* Usando a variável */
+    /* Fundo lilás base */
     color: var(--cor-branco);
+    /* Texto branco */
     padding: 10px;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    /* border: 2px solid var(--cor-lilas-escuro); */
 }
 
 .menu {
@@ -48,13 +48,10 @@ body {
     display: flex;
     margin: 0;
     padding: 0;
-
 }
 
 .menu>li {
     position: relative;
-
-
 }
 
 .menu>li>button {
@@ -67,7 +64,6 @@ body {
     border-radius: 15px;
     border: 2px solid var(--cor-lilas-escuro);
     margin-right: 10px;
-
 }
 
 .menu>li>button:hover {
@@ -77,8 +73,8 @@ body {
 .submenu {
     display: none;
     position: absolute;
-    background-color: none;
-    /* Tom médio de lilás */
+    background-color: var(--cor-lilas-medio);
+    /* Fundo lilás médio */
     list-style: none;
     margin: 0;
     padding: 0;
@@ -87,26 +83,21 @@ body {
     z-index: 1000;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     gap: 5px;
-    /* espaço entre botoes */
-
-
+    /* Espaço entre botões */
 }
 
 .menu>li:hover .submenu {
     display: flex;
     flex-direction: column;
-    /* background-color: none; */
-
 }
 
 .submenu li {
     padding: 10;
-
 }
 
 .submenu li button {
     background-color: var(--cor-base-lilas);
-    /* Cor base lilás */
+    /* Fundo lilás base */
     color: var(--cor-branco);
     border: none;
     padding: 10px 20px;
@@ -130,20 +121,23 @@ body {
 /* Estilo para a barra lateral */
 .sidebar {
     background-color: var(--cor-lilas-claro);
+    /* Fundo lilás claro */
     width: 200px;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     gap: 10px;
+    height: 100%;
+    /* Faz a barra lateral ocupar toda a altura */
 }
 
+/* Estilo para os botões da barra lateral */
 .sidebar button {
     background-color: var(--cor-base-lilas);
-    /* Cor base lilás */
+    /* Fundo lilás base */
     color: var(--cor-branco);
     border: none;
-    /* padding: 10px; */
     cursor: pointer;
     text-align: left;
     border-radius: 20px;
@@ -155,9 +149,16 @@ body {
     background-color: var(--cor-preto-hover);
 }
 
+/* Estilo para remover formatação de link */
+.button_link button a {
+    text-decoration: none;
+    color: var(--cor-branco);
+}
+
 /* Estilo para o conteúdo principal */
 #root-content {
     flex: 1;
+    /* Faz o conteúdo principal ocupar o espaço restante */
     padding: 20px;
     overflow-y: auto;
 }
@@ -179,6 +180,9 @@ body {
 
     .sidebar {
         width: 100%;
+        /* Faz a barra lateral ocupar toda a largura */
+        height: auto;
+        /* Remove a altura fixa */
         box-shadow: none;
     }
 
@@ -198,10 +202,9 @@ body {
 
     .sidebar button {
         background-color: var(--cor-base-lilas);
-        /* Cor base lilás */
+        /* Fundo lilás base */
         color: var(--cor-branco);
         border: none;
-        /* padding: 10px; */
         cursor: pointer;
         text-align: left;
         border-radius: 20px;

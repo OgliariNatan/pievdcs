@@ -18,3 +18,11 @@ def index(request):
         "description": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais"
     }
     return render(request, "index.html", context)
+
+
+def relatorios(request):
+    context = {
+        "title": "Relatórios",
+        "description": "Visualize os relatórios gerados na plataforma."
+    }
+    return render(request, "relatorios.html", context)

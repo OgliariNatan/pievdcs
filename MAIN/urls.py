@@ -18,13 +18,14 @@ from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.contrib import admin
 from django.urls import path, include
-from MAIN.views import home, index
+from MAIN.views import home, index, relatorios
 
 urlpatterns = [
     path("home/", home, name="home"),  # Rota para a página inicial após login
     path("", index, name="index"), #Página inicial one_page sem login
     path('login/', auth_views.LoginView.as_view(template_name='login.html', next_page='/home/'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+    path("relatorios/", relatorios, name="relatorios"),
     path("admin/", admin.site.urls),
     path('seguranca/', include('seguranca_publica.urls')),
 

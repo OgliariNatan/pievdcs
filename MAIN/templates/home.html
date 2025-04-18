@@ -1,5 +1,5 @@
 {% extends 'base/base.html' %}
-
+{% load static %}
 {% block title %}{{ title }}{% endblock %}
 
 
@@ -26,25 +26,38 @@
         <li>
             <button>Município</button>
             <ul class="submenu">
-                <li><button>Assistência Social</button></li>
-                <li><button>Conselho Tutelar</button></li>
+                <li><button onclick="location.href='#'">Assistência Social</button></li>
+                <li>
+                    <button onclick="location.href='#'">Conselho Tutelar</button>
+                </li>
+
             </ul>
         </li>
     </ul>
 </nav>
+<div class="main-layout">
+    <!-- Barra lateral -->
+    <aside class="sidebar button_link">
+        <button>
+            <a href="#">Atendimentos Realizados</a>
+        </button>
+        <button>
+            <a href="https://www.google.com.br">Encaminhamentos <span id="span_encaminhamentos">
+                    [{{ encaminhamentos }}]</span></a>
+        </button>
+        <button>
+            <a href="https://www.google.com.br">Notificações <span id="span_alert">[{{ alert }}]</span></a>
+        </button>
+        <button>
+            <a href="{% static 'templates/relatorios.html' %}">Relatórios</a>
+        </button>
+    </aside>
 
-<!-- Barra lateral -->
-<aside class="sidebar">
-    <button>Atendimentos Realizados</button>
-    <button>Encaminhamentos <span id="span_encaminhamentos">[{{ encaminhamentos }}]</span></button>
-    <button>Notificações <span id="span_alert">[{{ alert }}]</span></button>
-</aside>
-
-<!-- Conteúdo principal -->
-<div id="root-content">
-    <h1>Aqui será inserido as informações pertinentes a cada instituição.</h1>
-    <p>conforme selecionada cada instituição, as informações serão exibidas aqui.</p>
-
+    <!-- Conteúdo principal -->
+    <div id="root-content">
+        <h1>Aqui será inserido as informações pertinentes a cada instituição.</h1>
+        <p>conforme selecionada cada instituição, as informações serão exibidas aqui.</p>
+    </div>
 </div>
 
 {% endblock %}
