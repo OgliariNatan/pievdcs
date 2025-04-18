@@ -1,0 +1,75 @@
+/* Estilo para a página de login */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* Faz a página ocupar toda a altura da janela */
+    background-color: #f3e6f3;
+    /* Tom claro de lilás */
+    gap: 20px;
+    /* Espaçamento entre o logo e o formulário */
+    padding: 20px;
+}
+
+/* Estilo para o contêiner do logo */
+.logo-container {
+    flex: 1;
+    /* Faz o logo ocupar espaço proporcional */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e6cce6;
+    /* Tom médio de lilás */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para o texto ou imagem do logo */
+.logo-container h1 {
+    font-size: 24px;
+    color: #5a3d5a;
+    /* Tom escuro de lilás */
+}
+
+/* Estilo para o formulário de login */
+.login-container {
+    flex: 1;
+    /* Faz o formulário ocupar espaço proporcional */
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+    background-color: #e6cce6;
+    /* Tom médio de lilás */
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+    color: #5a3d5a;
+    /* Tom escuro de lilás */
+}
+
+.login-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.login-container .login-button {
+    padding: 10px;
+    background-color: #c8a2c8;
+    /* Cor base lilás */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-container .login-button:hover {
+    background-color: #b58fb5;
+    /* Tom mais escuro de lilás */
+}

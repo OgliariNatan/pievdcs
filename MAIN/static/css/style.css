@@ -1,17 +1,41 @@
 /* Estilo para o layout principal   do home.html */
+
+/* Definição de variáveis para as cores */
+:root {
+    --cor-base-lilas: #c8a2c8;
+    /* Cor base lilás */
+    --cor-lilas-claro: #f3e6f3;
+    /* Tom claro de lilás */
+    --cor-lilas-medio: #e6cce6;
+    /* Tom médio de lilás */
+    --cor-lilas-escuro: #5a3d5a;
+    /* Tom escuro de lilás */
+    --cor-hover-lilas: #b58fb5;
+    /* Tom mais escuro de lilás para hover */
+    --cor-branco: #ffffff;
+    /* Branco */
+    --cor-preto: #333333;
+    /* Preto */
+    --cor-preto-hover: #555555;
+    /* Preto para hover */
+}
+
+/* Estilo para o layout principal do home.html */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
-    /* Para organizar a barra superior e o restante do conteúdo */
     height: 100vh;
+    background-color: var(--cor-lilas-claro);
+    /* Usando a variável */
 }
 
 /* Estilo para a barra superior */
 .top-nav {
-    background-color: #333;
-    color: white;
+    background-color: var(--cor-base-lilas);
+    /* Usando a variável */
+    color: var(--cor-branco);
     padding: 10px;
     display: flex;
     justify-content: space-around;
@@ -30,8 +54,8 @@ body {
 }
 
 .menu>li>button {
-    background-color: #333;
-    color: white;
+    background-color: var(--cor-preto);
+    color: var(--cor-branco);
     border: none;
     padding: 10px 20px;
     cursor: pointer;
@@ -39,13 +63,13 @@ body {
 }
 
 .menu>li>button:hover {
-    background-color: #555;
+    background-color: var(--cor-preto-hover);
 }
 
 .submenu {
     display: none;
     position: absolute;
-    background-color: #444;
+    background-color: var(--cor-preto-hover);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -55,23 +79,18 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* remover login */
-
-
 .menu>li:hover .submenu {
     display: flex;
     flex-direction: column;
-    /* Submenu organizado em coluna */
 }
 
 .submenu li {
     padding: 0;
 }
 
-/* Botões do submenu */
 .submenu li button {
-    background-color: #444;
-    color: white;
+    background-color: var(--cor-preto-hover);
+    color: var(--cor-branco);
     border: none;
     padding: 10px 20px;
     width: 100%;
@@ -81,87 +100,50 @@ body {
 }
 
 .submenu li button:hover {
-    background-color: #555;
+    background-color: var(--cor-hover-lilas);
 }
-
 
 /* Estilo para o conteúdo principal */
 .main-content {
     display: flex;
     flex: 1;
-    /* Faz o conteúdo principal ocupar o restante do espaço */
     overflow: hidden;
 }
 
 /* Estilo para a barra lateral */
 .sidebar {
-    background-color: none;
+    background-color: var(--cor-lilas-claro);
     width: 200px;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     gap: 10px;
-    /* Espaçamento entre os botões */
 }
 
 .sidebar button {
-    background-color: #333;
-    color: white;
+    background-color: var(--cor-base-lilas);
+    /* Cor base lilás */
+    color: var(--cor-branco);
     border: none;
-    padding: 10px;
+    /* padding: 10px; */
     cursor: pointer;
     text-align: left;
     border-radius: 20px;
+    font-size: 14px;
+    padding: 10px;
 }
 
 .sidebar button:hover {
-    background-color: #555;
+    background-color: var(--cor-preto-hover);
 }
 
 /* Estilo para o conteúdo principal */
 #root-content {
     flex: 1;
-    /* Faz o conteúdo principal ocupar o restante do espaço */
     padding: 20px;
     overflow-y: auto;
-    /* Adiciona rolagem vertical, se necessário */
 }
-
-/* Para a tela de login */
-.login-container {
-    max-width: 400px;
-    width: 100%;
-    padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.login-container h2 {
-    margin-bottom: 20px;
-}
-
-.login-container form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.login-container .login-button {
-    padding: 10px;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.login-container .login-button:hover {
-    background-color: #555;
-}
-
 
 /* Responsividade para dispositivos móveis */
 @media (max-width: 768px) {
@@ -191,23 +173,26 @@ body {
 @media (max-width: 480px) {
     .menu {
         font-size: 14px;
-        /* Reduz o tamanho da fonte */
     }
 
     .menu>li>button {
         padding: 8px 16px;
-        /* Ajusta o espaçamento */
     }
 
     .sidebar button {
+        background-color: var(--cor-base-lilas);
+        /* Cor base lilás */
+        color: var(--cor-branco);
+        border: none;
+        /* padding: 10px; */
+        cursor: pointer;
+        text-align: left;
+        border-radius: 20px;
         font-size: 14px;
-        /* Reduz o tamanho da fonte dos botões */
         padding: 8px;
-        /* Ajusta o espaçamento */
     }
 
     #root-content {
         padding: 10px;
-        /* Reduz o espaçamento interno */
     }
 }
