@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{% static 'css/relatorios_style.css' %}">
 
 <div class="dashboard">
-    <h1>Dashboard de Relatórios</h1>
+    <h1>Painel informativo estatístico</h1>
 
     <!-- Gráfico de Pizza: Cidades -->
     <div class="chart-container">
@@ -46,10 +46,21 @@
     const etnias = {{ etnias| safe }};
     const bairros = {{ bairros| safe }};
 
-    // Gráfico de Pizza: Cidades
+    // TIPOS DE GRAFICO
+    // bar -> 'Grafico de Barras'
+    // doughnut -> 'Gráfico de Rosca'
+    // line -> 'Gráfico de Linha'
+    // pie -> 'Gráfico de Pizza'
+    // radar -> 'Gráfico Radar'
+    // polarArea -> 'Gráfico Polar'
+    // bubble -> 'Gráfico de Bolhas'
+    // scatter -> 'Gráfico de Dispersão'
+
+
+    // Gráfico de rosca: Cidades
     const cidadeCtx = document.getElementById('cidadeChart').getContext('2d');
     new Chart(cidadeCtx, {
-        type: 'pie',
+        type: 'doughnut',
         data: {
             labels: cidades.labels,
             datasets: [{
