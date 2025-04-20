@@ -1,0 +1,134 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/relatorios_style.css' %}">
+
+<div class="dashboard">
+    <h1>Dashboard de Relatórios</h1>
+
+    <!-- Gráfico de Pizza: Cidades -->
+    <div class="chart-container">
+        <h2>Distribuição por Cidades</h2>
+        <canvas id="cidadeChart"></canvas>
+    </div>
+
+    <!-- Gráfico de Barras: Idade -->
+    <div class="chart-container">
+        <h2>Distribuição por Idade</h2>
+        <canvas id="idadeChart"></canvas>
+    </div>
+
+    <!-- Gráfico de Barras: Etnia -->
+    <div class="chart-container">
+        <h2>Distribuição por Etnia</h2>
+        <canvas id="etniaChart"></canvas>
+    </div>
+
+    <!-- Mapa Interativo -->
+    <div class="chart-container">
+        <h2>Bairros de {{ cidade_maps }}</h2>
+        <div id="map" style="height: 400px;"></div>
+    </div>
+
+
+</div>
+
+<!-- Script do Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // Dados passados pelo Django
+    const cidades = {{ cidades| safe }};
+    const idades = {{ idades| safe }};
+    const etnias = {{ etnias| safe }};
+    const bairros = {{ bairros| safe }};
+
+    // Gráfico de Pizza: Cidades
+    const cidadeCtx = document.getElementById('cidadeChart').getContext('2d');
+    new Chart(cidadeCtx, {
+        type: 'pie',
+        data: {
+            labels: cidades.labels,
+            datasets: [{
+                label: 'Distribuição por Cidades',
+                data: cidades.data,
+                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+            }]
+        }
+    });
+
+    // Gráfico de Barras: Idade
+    const idadeCtx = document.getElementById('idadeChart').getContext('2d');
+    new Chart(idadeCtx, {
+        type: 'bar',
+        data: {
+            labels: idades.labels,
+            datasets: [{
+                label: 'Distribuição por Idade',
+                data: idades.data,
+                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Gráfico de Barras: Etnia
+    const etniaCtx = document.getElementById('etniaChart').getContext('2d');
+    new Chart(etniaCtx, {
+        type: 'bar',
+        data: {
+            labels: etnias.labels,
+            datasets: [{
+                label: 'Distribuição por Etnia',
+                data: etnias.data,
+                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Configurar ícones do Leaflet
+    const defaultIcon = L.icon({
+        iconUrl: '{% static "images/marker-icon.png" %}',
+        shadowUrl: '{% static "images/marker-shadow.png" %}',
+        iconSize: [25, 41], // Tamanho do ícone
+        iconAnchor: [12, 41], // Ponto de ancoragem do ícone
+        popupAnchor: [1, -34], // Ponto de ancoragem do popup
+        shadowSize: [41, 41] // Tamanho da sombra
+    });
+
+    // Substituir o ícone padrão
+    L.Marker.prototype.options.icon = defaultIcon;
+
+    // Inicializar o mapa
+    const map = L.map('map').setView([-26.7667, -53.1833], 13); // Coordenadas de Maravilha/SC
+
+    // Adicionar camada de mapa
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Adicionar marcadores para os bairros
+    bairros.forEach(bairro => {
+        console.log(`Adicionando marcador para: ${bairro.nome}`);
+        L.marker([bairro.lat, bairro.lng])
+            .addTo(map)
+            .bindPopup(`<b>${bairro.nome}</b><br>Casos: ${bairro.casos}`);
+    });
+</script>
+{% endblock %}
