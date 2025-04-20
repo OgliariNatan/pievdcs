@@ -1,26 +1,136 @@
-"(...) O Professor bradou altissonante:
--Filhos do sistema Cartesiano ! (...) Ególatras! Poderão ser futuros juristas, mas com essa insensibilidade estarão
-aptos pra conviver com leis, e não com seres humanos, estarão habilitados para defender ou acusar máquinas, mas não
-mentes complexas. Discernem sons, mas não ideias e muito menos sentimentos. (...)
-(...) O clima ficou pesado, mas o professor Júlio Verne, mostrando uma ousadia que perdera havia muito, explicou para a
-classe o que era ser filho de um sistema Cartesiano .
--René Descartes, o filósofo Francês, exaltou solenemente a matemática e a posicionou como fonte das ciências. O sistema
-cartesiano expandiu horizontes da física, química, engenharia, computação. Eis a consequência! - E apontou para seu
-computador. os celulares dos alunos, a iluminação do ambiente, o sistema de som e a estrutura do edifício.
+{% extends "base.html" %}
 
-E depois de uma pausa o professor acrescentou, entristecido:
--A tecnologia está pulsando ao nosso redor. Mas o mesmo sistema lógico-matemático que nos faz exímios construtores de
-produtos sequestrou nossa emoção, prostituiu nossa sensibilidade, asfixiou a maneira como encaramos e interpretamos o
-sofrimento humano. (...)
-Déborah, inquieta, disparou seu insight.
--Incrível. Tudo se tornou números frios.
--Sim, Déborah. A dor humana virou estatística.
-Peter embasbacado, comentou:
-- Cem morreram em ataques terroristas no mês passado. Mil morreram de câncer esta semana. Dois mil se suicidaram nesta
-cidade no ultimo ano. Milhões estão desempregados no país. Secos números que não nos impactam mais! Quais foram suas
-histórias, que crises atravessaram e que perdas sofreram? Quais os nomes dos mutilados na Segunda Grande Guerra? Pela
-fome, por traumas, rajadas de bala? Que história eles possuíam? Que lágrimas choraram? Que medos abarcaram o psiquismo
-deles enquanto se aproximavam do ultimo fôlego da existência?
+{% block title %}{{ title }}{% endblock %}
 
-(Trecho do livro O colecionador de lágrimas)
-Augusto Cury
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/relatorios_style.css' %}">
+
+<div class="dashboard">
+    <h1>Dashboard de Relatórios</h1>
+
+    <!-- Gráfico de Pizza: Cidades -->
+    <div class="chart-container">
+        <h2>Distribuição por Cidades</h2>
+        <canvas id="cidadeChart"></canvas>
+    </div>
+
+    <!-- Gráfico de Barras: Idade -->
+    <div class="chart-container">
+        <h2>Distribuição por Idade</h2>
+        <canvas id="idadeChart"></canvas>
+    </div>
+
+    <!-- Gráfico de Barras: Etnia -->
+    <div class="chart-container">
+        <h2>Distribuição por Etnia</h2>
+        <canvas id="etniaChart"></canvas>
+    </div>
+</div>
+
+<!-- Script do Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Dados passados pelo Django
+    const cidades = {{ cidades| safe }};
+    const idades = {{ idades| safe }};
+    const etnias = {{ etnias| safe }};
+
+    // Gráfico de Pizza: Cidades
+    const cidadeCtx = document.getElementById('cidadeChart').getContext('2d');
+    new Chart(cidadeCtx, {
+        type: 'pie',
+        data: {
+            labels: cidades.labels,
+            datasets: [{
+                label: 'Distribuição por Cidades',
+                data: cidades.data,
+                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+            }]
+        }
+    });
+
+    // Gráfico de Barras: Idade
+    const idadeCtx = document.getElementById('idadeChart').getContext('2d');
+    new Chart(idadeCtx, {
+        type: 'bar',
+        data: {
+            labels: idades.labels,
+            datasets: [{
+                label: 'Distribuição por Idade',
+                data: idades.data,
+                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Gráfico de Barras: Etnia
+    const etniaCtx = document.getElementById('etniaChart').getContext('2d');
+    new Chart(etniaCtx, {
+        type: 'bar',
+        data: {
+            labels: etnias.labels,
+            datasets: [{
+                label: 'Distribuição por Etnia',
+                data: etnias.data,
+                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+
+
+<!-- {% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<p>(...) O Professor bradou altissonante:</p>
+<p>-Filhos do sistema Cartesiano ! (...) Ególatras! Poderão ser futuros juristas, mas com essa insensibilidade estarão
+    aptos pra conviver com leis, e não com seres humanos, estarão habilitados para defender ou acusar máquinas, mas não
+    mentes complexas. Discernem sons, mas não ideias e muito menos sentimentos. (...)</p>
+
+<p>(...) O clima ficou pesado, mas o professor Júlio Verne, mostrando uma ousadia que perdera havia muito, explicou para
+    a
+    classe o que era ser filho de um sistema Cartesiano .</p>
+<p>-René Descartes, o filósofo Francês, exaltou solenemente a matemática e a posicionou como fonte das ciências. O
+    sistema
+    cartesiano expandiu horizontes da física, química, engenharia, computação. Eis a consequência! - E apontou para seu
+    computador. os celulares dos alunos, a iluminação do ambiente, o sistema de som e a estrutura do edifício.</p>
+
+<p>E depois de uma pausa o professor acrescentou, entristecido:</p>
+<p>-A tecnologia está pulsando ao nosso redor. Mas o mesmo sistema lógico-matemático que nos faz exímios construtores de
+    produtos sequestrou nossa emoção, prostituiu nossa sensibilidade, asfixiou a maneira como encaramos e interpretamos
+    o
+    sofrimento humano. (...)</p>
+
+<p>Déborah, inquieta, disparou seu insight.</p>
+<p>-Incrível. Tudo se tornou números frios.</p>
+<p>-Sim, Déborah. A dor humana virou estatística.</p>
+<p>Peter embasbacado, comentou:</p>
+<p>- Cem morreram em ataques terroristas no mês passado. Mil morreram de câncer esta semana. Dois mil se suicidaram
+    nesta
+    cidade no ultimo ano. Milhões estão desempregados no país. Secos números que não nos impactam mais! Quais foram suas
+    histórias, que crises atravessaram e que perdas sofreram? Quais os nomes dos mutilados na Segunda Grande Guerra?
+    Pela
+    fome, por traumas, rajadas de bala? Que história eles possuíam? Que lágrimas choraram? Que medos abarcaram o
+    psiquismo
+    deles enquanto se aproximavam do ultimo fôlego da existência?</p>
+
+<p>(Trecho do livro O colecionador de lágrimas)</p>
+<p>Augusto Cury</p>
+{% endblock %} -->
