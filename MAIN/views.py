@@ -27,7 +27,7 @@ def relatorios(request):
         "cidade_maps": "Maravilha/SC",
         "cidades": {
             "labels": ["Cidade A", "Cidade B", "Cidade C", "Cidade D"],
-            "data": [500, 200, 300, 250]
+            "data": [600, 200, 300, 250]
         },
         "idades": {
             "labels": ["0-18", "19-30", "31-50", "51+"],
