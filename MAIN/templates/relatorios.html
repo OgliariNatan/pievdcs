@@ -1,4 +1,5 @@
-{% extends "base.html" %}
+{% extends "base/base.html" %}
+{% load static %}
 
 {% block title %}{{ title }}{% endblock %}
 
@@ -25,15 +26,25 @@
         <h2>Distribuição por Etnia</h2>
         <canvas id="etniaChart"></canvas>
     </div>
+
+    <!-- Mapa Interativo -->
+    <div class="chart-container">
+        <h2>Bairros de {{ cidade_maps }}</h2>
+        <div id="map" style="height: 400px;"></div>
+    </div>
+
+
 </div>
 
 <!-- Script do Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     // Dados passados pelo Django
     const cidades = {{ cidades| safe }};
     const idades = {{ idades| safe }};
     const etnias = {{ etnias| safe }};
+    const bairros = {{ bairros| safe }};
 
     // Gráfico de Pizza: Cidades
     const cidadeCtx = document.getElementById('cidadeChart').getContext('2d');
@@ -90,47 +101,34 @@
             }
         }
     });
+
+    // Configurar ícones do Leaflet
+    const defaultIcon = L.icon({
+        iconUrl: '{% static "images/marker-icon.png" %}',
+        shadowUrl: '{% static "images/marker-shadow.png" %}',
+        iconSize: [25, 41], // Tamanho do ícone
+        iconAnchor: [12, 41], // Ponto de ancoragem do ícone
+        popupAnchor: [1, -34], // Ponto de ancoragem do popup
+        shadowSize: [41, 41] // Tamanho da sombra
+    });
+
+    // Substituir o ícone padrão
+    L.Marker.prototype.options.icon = defaultIcon;
+
+    // Inicializar o mapa
+    const map = L.map('map').setView([-26.7667, -53.1833], 13); // Coordenadas de Maravilha/SC
+
+    // Adicionar camada de mapa
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Adicionar marcadores para os bairros
+    bairros.forEach(bairro => {
+        console.log(`Adicionando marcador para: ${bairro.nome}`);
+        L.marker([bairro.lat, bairro.lng])
+            .addTo(map)
+            .bindPopup(`<b>${bairro.nome}</b><br>Casos: ${bairro.casos}`);
+    });
 </script>
 {% endblock %}
-
-
-<!-- {% extends "base.html" %}
-
-{% block title %}{{ title }}{% endblock %}
-
-{% block content %}
-<p>(...) O Professor bradou altissonante:</p>
-<p>-Filhos do sistema Cartesiano ! (...) Ególatras! Poderão ser futuros juristas, mas com essa insensibilidade estarão
-    aptos pra conviver com leis, e não com seres humanos, estarão habilitados para defender ou acusar máquinas, mas não
-    mentes complexas. Discernem sons, mas não ideias e muito menos sentimentos. (...)</p>
-
-<p>(...) O clima ficou pesado, mas o professor Júlio Verne, mostrando uma ousadia que perdera havia muito, explicou para
-    a
-    classe o que era ser filho de um sistema Cartesiano .</p>
-<p>-René Descartes, o filósofo Francês, exaltou solenemente a matemática e a posicionou como fonte das ciências. O
-    sistema
-    cartesiano expandiu horizontes da física, química, engenharia, computação. Eis a consequência! - E apontou para seu
-    computador. os celulares dos alunos, a iluminação do ambiente, o sistema de som e a estrutura do edifício.</p>
-
-<p>E depois de uma pausa o professor acrescentou, entristecido:</p>
-<p>-A tecnologia está pulsando ao nosso redor. Mas o mesmo sistema lógico-matemático que nos faz exímios construtores de
-    produtos sequestrou nossa emoção, prostituiu nossa sensibilidade, asfixiou a maneira como encaramos e interpretamos
-    o
-    sofrimento humano. (...)</p>
-
-<p>Déborah, inquieta, disparou seu insight.</p>
-<p>-Incrível. Tudo se tornou números frios.</p>
-<p>-Sim, Déborah. A dor humana virou estatística.</p>
-<p>Peter embasbacado, comentou:</p>
-<p>- Cem morreram em ataques terroristas no mês passado. Mil morreram de câncer esta semana. Dois mil se suicidaram
-    nesta
-    cidade no ultimo ano. Milhões estão desempregados no país. Secos números que não nos impactam mais! Quais foram suas
-    histórias, que crises atravessaram e que perdas sofreram? Quais os nomes dos mutilados na Segunda Grande Guerra?
-    Pela
-    fome, por traumas, rajadas de bala? Que história eles possuíam? Que lágrimas choraram? Que medos abarcaram o
-    psiquismo
-    deles enquanto se aproximavam do ultimo fôlego da existência?</p>
-
-<p>(Trecho do livro O colecionador de lágrimas)</p>
-<p>Augusto Cury</p>
-{% endblock %} -->

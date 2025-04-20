@@ -24,9 +24,10 @@ def relatorios(request):
     context = {
         "title": "Relatórios",
         "description": "Visualize os relatórios gerados na plataforma.",
+        "cidade_maps": "Maravilha/SC",
         "cidades": {
             "labels": ["Cidade A", "Cidade B", "Cidade C", "Cidade D"],
-            "data": [30, 20, 25, 25]
+            "data": [30, 200, 25, 250]
         },
         "idades": {
             "labels": ["0-18", "19-30", "31-50", "51+"],
@@ -35,6 +36,12 @@ def relatorios(request):
         "etnias": {
             "labels": ["Etnia A", "Etnia B", "Etnia C", "Etnia D"],
             "data": [10, 25, 35, 30]
-        }
+        },
+        "bairros": [
+            {"nome": "Bairro 1", "lat": -26.7650, "lng": -53.1830, "casos": 10},
+            {"nome": "Bairro 2", "lat": -26.7670, "lng": -53.1850, "casos": 20},
+            {"nome": "Bairro 3", "lat": -26.7690, "lng": -53.1810, "casos": 15},
+            {"nome": "Bairro 4", "lat": -26.7630, "lng": -53.1870, "casos": 25},
+        ]
     }
     return render(request, "relatorios.html", context)
