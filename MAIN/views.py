@@ -22,12 +22,12 @@ def index(request):
 
 def relatorios(request):
     context = {
-        "title": "Relatórios",
-        "description": "Visualize os relatórios gerados na plataforma.",
+        "title": "Painel Informativo",
+        "description": "Visualize o painel informativo estatístico gerados na plataforma.",
         "cidade_maps": "Maravilha/SC",
         "cidades": {
             "labels": ["Cidade A", "Cidade B", "Cidade C", "Cidade D"],
-            "data": [30, 200, 25, 250]
+            "data": [500, 200, 300, 250]
         },
         "idades": {
             "labels": ["0-18", "19-30", "31-50", "51+"],
