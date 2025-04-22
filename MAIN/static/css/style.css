@@ -152,7 +152,21 @@ body {
 /* Estilo para remover formatação de link */
 .button_link button a {
     text-decoration: none;
+    /* Remove o sublinhado do link */
     color: var(--cor-branco);
+    /* Define a cor do texto */
+    display: block;
+    /* Faz o link se comportar como um bloco */
+    width: 100%;
+    /* Faz o link ocupar toda a largura do botão */
+    height: 100%;
+    /* Faz o link ocupar toda a altura do botão */
+    text-align: left;
+    /* Alinha o texto à esquerda */
+    padding: 10px;
+    /* Adiciona espaçamento interno */
+    box-sizing: border-box;
+    /* Inclui o padding no tamanho total */
 }
 
 /* Estilo para o conteúdo principal */
