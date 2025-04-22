@@ -1,3 +1,11 @@
+/* estilo para a geração de graficos estatisticos */
+:root {
+    --cor-lilas-claro: #f3e6f3;
+    --cor-branco: #ffffff;
+    --cor-lilas-escuro: #5a3d5a;
+    --cor-preto: #333333;
+}
+
 .dashboard {
     padding: 20px;
     background-color: var(--cor-lilas-claro);
@@ -22,6 +30,15 @@
 canvas {
     max-width: 100%;
     height: auto;
+}
+
+.chart-container canvas {
+    max-width: 80%;
+    /* Reduz a largura máxima dos gráficos */
+    height: 400px;
+    /* Define uma altura fixa */
+    margin: 0 auto;
+    /* Centraliza os gráficos */
 }
 
 /* Para mapas */

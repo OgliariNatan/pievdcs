@@ -26,12 +26,12 @@ def relatorios(request):
         "description": "Visualize o painel informativo estatístico gerados na plataforma.",
         "cidade_maps": "Maravilha/SC",
         "cidades": {
-            "labels": ["Cidade A", "Cidade B", "Cidade C", "Cidade D"],
-            "data": [600, 200, 300, 250]
+            "labels": ["Maravilha", "Tigrinhos", "Irceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
+            "data": [60, 20, 30, 25, 15, 40]
         },
         "idades": {
-            "labels": ["0-18", "19-30", "31-50", "51+"],
-            "data": [15, 40, 30, 15]
+            "labels": ["0-18", "19-30", "31-50", "51+", "51+"],
+            "data": [15, 40, 30, 15, 10]
         },
         "etnias": {
             "labels": ["Etnia A", "Etnia B", "Etnia C", "Etnia D"],
