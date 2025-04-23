@@ -30,7 +30,7 @@
     <!-- Mapa Interativo -->
     <div class="chart-container">
         <h2>Bairros de {{ cidade_maps }}</h2>
-        <div id="map" style="height: 400px;"></div>
+        <div id="map"></div>
     </div>
 
 
@@ -45,6 +45,9 @@
     const idades = {{ idades| safe }};
     const etnias = {{ etnias| safe }};
     const bairros = {{ bairros| safe }};
+
+    // Inicializar o mapa
+    const map = L.map('map').setView([-26.7667, -53.1833], 13); // Coordenadas de Maravilha/SC
 
     // TIPOS DE GRAFICO
     // bar -> 'Grafico de Barras'
@@ -129,12 +132,18 @@
     L.Marker.prototype.options.icon = defaultIcon;
 
     // Inicializar o mapa
-    const map = L.map('map').setView([-26.7667, -53.1833], 13); // Coordenadas de Maravilha/SC
+    //const map = L.map('map').setView([-26.7667, -53.1833], 13); // Coordenadas de Maravilha/SC
 
     // Adicionar camada de mapa
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
+
+    // Garantir que o mapa respeite os limites do contêiner
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 100);
 
     // Adicionar marcadores para os bairros
     bairros.forEach(bairro => {

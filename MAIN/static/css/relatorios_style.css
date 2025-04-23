@@ -7,6 +7,11 @@
 }
 
 .dashboard {
+    display: flex;
+    flex-direction: column;
+    /* Alinha os elementos verticalmente */
+    gap: 20px;
+    /* Adiciona espaçamento entre os elementos */
     padding: 20px;
     background-color: var(--cor-lilas-claro);
     color: var(--cor-preto);
@@ -19,6 +24,8 @@
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
+    /* max-width: 800px; */
+    /* Define uma largura máxima */
 }
 
 .chart-container h2 {

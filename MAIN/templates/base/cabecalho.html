@@ -4,7 +4,13 @@
         {% if user.is_authenticated %}
         <form action="{% url 'logout' %}" method="post" style="display: inline;">
             {% csrf_token %}
+
+            <!-- <button type="button" class="home-button" id="home"
+                onclick="window.location.href='{% url 'index' %}'">Página
+                inicial</button> -->
+
             <button type="submit" class="logout-button" id="logout">Deslogar</button>
+
         </form>
         {% else %}
         <a href="{% url 'login' %}" class="login-button" id="login">Login</a>

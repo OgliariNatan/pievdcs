@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.shortcuts import render
 
 def penal(request):
-    return HttpResponse("Página Penal")
+    return render(request, "penal.html")

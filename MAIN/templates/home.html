@@ -7,6 +7,9 @@
 <nav class="top-nav">
     <ul class="menu">
         <li>
+            <button onclick="location.href='{% url 'index' %}'">Início</button>
+        </li>
+        <li>
             <button>Fórum</button>
             <ul class="submenu">
                 <li><button>Poder Judiciário</button></li>
@@ -17,10 +20,11 @@
         <li>
             <button>Segurança Pública</button>
             <ul class="submenu">
-                <li><button>Polícia Militar</button></li>
-                <li><button>Polícia Civil</button></li>
-                <li><button>Polícia Científica</button></li>
-                <li><button>Polícia Penal</button></li>
+                <li><button onclick="location.href='{% url 'seguranca_publica:militar' %}'">Polícia Militar</button>
+                </li>
+                <li><button onclick="location.href='#'">Polícia Civil</button></li>
+                <li><button onclick="location.href='#'">Polícia Científica</button></li>
+                <li><button onclick="location.href='{% url 'seguranca_publica:penal' %}'">Polícia Penal</button></li>
             </ul>
         </li>
         <li>
@@ -42,7 +46,7 @@
             <a href="#">Atendimentos Realizados</a>
         </button>
         <button>
-            <a href="https://www.google.com.br">Encaminhamentos <span id="span_encaminhamentos">
+            <a href="https://www.google.com.br" target="_blank">Encaminhamentos <span id="span_encaminhamentos">
                     [{{ encaminhamentos }}]</span></a>
         </button>
         <button>
