@@ -7,8 +7,44 @@
 <button onclick="location.href='{% url 'index' %}'">Início</button>
 <button onclick="history.back()">Voltar</button>
 
-<h1>Polícia Militar</h1>
-<p>Bem-vindo à página da Polícia Militar.</p>
-<p>Esta página contém informações relevantes sobre a Polícia Militar e seus serviços.</p>
+
+<div class="main-layout">
+    <!-- Barra lateral -->
+    <aside class="sidebar button_link">
+        <button>
+            <a href="#">Atendimentos Realizados</a>
+        </button>
+        <button>
+            <a href="https://www.google.com.br" target="_blank">Encaminhamentos <span id="span_encaminhamentos">
+                    [5]</span></a>
+        </button>
+        <button>
+            <a href="https://www.google.com.br">Notificações <span id="span_alert">[2]</span></a>
+        </button>
+        <button>
+            <a href="{% url 'relatorios' %}">Relatórios</a>
+        </button>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <div id="root-content">
+
+        <h1>Polícia Militar</h1>
+        <p>Bem-vindo à página da Polícia Militar.</p>
+        <p>Esta página contém informações relevantes sobre a Polícia Militar e seus serviços.</p>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 {% endblock %}
