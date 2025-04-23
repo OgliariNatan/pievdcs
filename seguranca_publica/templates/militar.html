@@ -3,7 +3,10 @@
 {% block title %}Polícia Militar{% endblock %}
 
 {% block content %}
-<a href="javascript:history.back()" class="btn btn-primary">Voltar</a>
+
+<button onclick="location.href='{% url 'index' %}'">Início</button>
+<button onclick="history.back()">Voltar</button>
+
 <h1>Polícia Militar</h1>
 <p>Bem-vindo à página da Polícia Militar.</p>
 <p>Esta página contém informações relevantes sobre a Polícia Militar e seus serviços.</p>
