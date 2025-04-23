@@ -17,10 +17,11 @@
         <li>
             <button>Segurança Pública</button>
             <ul class="submenu">
-                <li><button>Polícia Militar</button></li>
-                <li><button>Polícia Civil</button></li>
-                <li><button>Polícia Científica</button></li>
-                <li><button>Polícia Penal</button></li>
+                <li><button onclick="location.href='{% url 'seguranca_publica:militar' %}'">Polícia Militar</button>
+                </li>
+                <li><button onclick="location.href='#'">Polícia Civil</button></li>
+                <li><button onclick="location.href='#'">Polícia Científica</button></li>
+                <li><button onclick="location.href='{% url 'seguranca_publica:penal' %}'">Polícia Penal</button></li>
             </ul>
         </li>
         <li>

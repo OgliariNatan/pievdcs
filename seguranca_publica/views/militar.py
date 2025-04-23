@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.shortcuts import render
 
 def militar(request):
-    return HttpResponse("Página Militar")
+    return render(request, "militar.html")
