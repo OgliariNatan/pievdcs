@@ -34,13 +34,42 @@ ____________________
 
 
 <h3>Pertinentes as informações do BANCO DE DADOS.</h3>
+(FK) = Chave Estrangeira
+(PK) = Chave Primaria
+(MPU) = Medida Protetiva de Urgência
+
 <li>Vítima:</li>
+<p>&#x2610; ID vítima : INT --- AUTO_INCREMENT.</p>
 <p>&#x2610; Nome da vítima : str[250].</p>
+<p>&#x2610; CPF : int[11] --- PK.</p>
+<p>&#x2610; data de nascimento : Date.</p>
+<p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; Contato telefonico : int[15].</p>
+<p>&#x2610; n° AUTOS : int[150]. --- FK da 'violência domestica'</p>
+<p>&#x2610; Nome do Agressor : int[150]. --- FK do 'Agressor'</p>
+<p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; Início dos AUTOS : Date.</p>
+<p>&#x2610; Status : Bool --- Dropbox .</p>
+<p>&#x2610; Date última visita : Date --- FK da 'PM atendimento'.</p>
+<p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; Municipio : str[15] --- Dropbox.</p>
+<p>&#x2610; Bairro : str[15] --- Dropbox.</p>
+<p>&#x2610; Rua : str[100].</p>
+<p>&#x2610; Numero da residencia : int[5].</p>
+
+
+
+
+
+<li>Agressor:</li>
+<p>&#x2610; ID Agressor : INT --- AUTO_INCREMENT.</p>
+<p>&#x2610; Nome do Agressor : int[150].</p>
+<p>&#x2610; CPF : int[11] --- PK.</p>
 <p>&#x2610; data de nascimento : Date.</p>
 <p>&#x2610; Idade : int[3].</p>
 <p>&#x2610; Contato telefonico : int[15].</p>
 <p>&#x2610; n° AUTOS : int[150]. --- chave extrangeira da 'violência domestica'</p>
-<p>&#x2610; Nome do Agressor : int[150]. --- chave extrangeira do 'Agressor'</p>
+<p>&#x2610; Nome da vítima : int[150]. --- chave extrangeira da 'vítima'</p>
 <p>&#x2610; Idade : int[3].</p>
 <p>&#x2610; Início dos AUTOS : Date.</p>
 <p>&#x2610; Status : Bool --- Dropbox .</p>
@@ -53,15 +82,12 @@ ____________________
 
 
 
-<li>Agressor:</li>
-<p>&#x2610; Nome do Agressor : int[150].</p>
-
-
-
 <li>Violência domestica:</li>
 <p>&#x2610; n° AUTOS : int[150].</p>
-<p>&#x2610; xxxxxxxxxx.</p>
-<p>&#x2610; xxxxxxxxxxxxxx.</p>
+<p>&#x2610; Tipo da agressão : str[50] --- Dropbox.</p>
+<p>&#x2610; Grau de Parentesco : str[50] --- Dropbox.</p>
+<p>&#x2610; MPU : str[50] --- Dropbox.</p>
+
 
 
 <li>Ususario:</li>
