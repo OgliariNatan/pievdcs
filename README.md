@@ -88,9 +88,16 @@ ____________________
 <p>&#x2610; Grau de Parentesco : str[50] --- Dropbox.</p>
 <p>&#x2610; MPU : str[50] --- Dropbox.</p>
 <p>&#x2610; Status : Bool --- Ativo/Inativo.</p>
+<p>&#x2610; Encaminhamentos : str[20] --- Instituições/grupo_Usuarios.</p>
 
 
 
 <li>Ususario:</li>
-<p>&#x2610; xxxxxxx.</p>
-<p>&#x2610; XXXXXXXXX.</p>
+<p>&#x2610; Nome : str[50].</p>
+<p>&#x2610; cpf : int[11] --- PK.</p>
+<p>&#x2610; Instituição : str[50] --- Dropbox.</p>
+    | --------------------------Policia Penal
+    | --------------------------Policia Militar
+    | --------------------------Policia Civil
+    | --------------------------Ministerio Publico
+<p>&#x2610; Grupo_usuario : str[50] --- Dropbox.</p>
