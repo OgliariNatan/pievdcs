@@ -96,8 +96,8 @@ ____________________
 <p>&#x2610; Nome : str[50].</p>
 <p>&#x2610; cpf : int[11] --- PK.</p>
 <p>&#x2610; Instituição : str[50] --- Dropbox.</p>
-    | --------------------------Policia Penal
-    | --------------------------Policia Militar
-    | --------------------------Policia Civil
-    | --------------------------Ministerio Publico
+    | --------------------------Policia Penal <br>
+    | --------------------------Policia Militar<br>
+    | --------------------------Policia Civil<br>
+    | --------------------------Ministerio Publico<br>
 <p>&#x2610; Grupo_usuario : str[50] --- Dropbox.</p>
