@@ -30,3 +30,25 @@ ____________________
 * 09: Módulo para capacitação de operadores e representantes.
 * 10: Suporte a múltiplos dispositivos, incluindo tablets e smartphones.
 
+
+
+
+<h3>Pertinentes as informações do BANCO DE DADOS.</h3>
+<li>Vítima:</li>
+<p>&#x2610; Nome da vítima : str[250].</p>
+<p>&#x2610; data de nascimento : Date.</p>
+<p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; n° AUTOS : int[150]. --- chave extrangeira para o agressor</p>
+<p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; Início dos AUTOS : Date.</p>
+<p>&#x2610; Status : Bool --- Dropbox .</p>
+<p>&#x2610; Date última visita : Date --- chave extrangeira da PM.</p>
+<p>&#x2610; Idade : int[3].</p>
+
+<li>Agressor:</li>
+<p>&#x2610; xxxxxxxxxx.</p>
+<p>&#x2610; xxxxxxxxxxxxxx.</p>
+
+<li>Ususario:</li>
+<p>&#x2610; xxxxxxx.</p>
+<p>&#x2610; XXXXXXXXX.</p>
