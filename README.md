@@ -68,11 +68,11 @@ ____________________
 <p>&#x2610; data de nascimento : Date.</p>
 <p>&#x2610; Idade : int[3].</p>
 <p>&#x2610; Contato telefonico : int[15].</p>
-<p>&#x2610; n° AUTOS : int[150]. --- chave extrangeira da 'violência domestica'</p>
-<p>&#x2610; Nome da vítima : int[150]. --- chave extrangeira da 'vítima'</p>
+<p>&#x2610; n° AUTOS : int[150]. --- 'FK violencia_dometica.n°Autos'</p>
+<p>&#x2610; Nome da vítima : int[150]. --- 'FK vitima.nome'</p>
 <p>&#x2610; Idade : int[3].</p>
 <p>&#x2610; Início dos AUTOS : Date.</p>
-<p>&#x2610; Status : Bool --- Dropbox .</p>
+<p>&#x2610; Status : Bool 'FK violencia_dometica.status' .</p>
 <p>&#x2610; Date última visita : Date --- chave extrangeira da 'PM atendimento'.</p>
 <p>&#x2610; Idade : int[3].</p>
 <p>&#x2610; Municipio : str[15] --- Dropbox.</p>
@@ -87,6 +87,7 @@ ____________________
 <p>&#x2610; Tipo da agressão : str[50] --- Dropbox.</p>
 <p>&#x2610; Grau de Parentesco : str[50] --- Dropbox.</p>
 <p>&#x2610; MPU : str[50] --- Dropbox.</p>
+<p>&#x2610; Status : Bool --- Ativo/Inativo.</p>
 
 
 
