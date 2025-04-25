@@ -67,6 +67,7 @@ ____________________
 <p>&#x2610; CPF : int[11] --- PK.</p>
 <p>&#x2610; data de nascimento : Date.</p>
 <p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; Escolaridade : str[15] --- Dropbox['Analfabeto', 'Fundamental Incompleto', '....'].</p>
 <p>&#x2610; Contato telefonico : int[15].</p>
 <p>&#x2610; n° AUTOS : int[150]. --- 'FK violencia_dometica.n°Autos'</p>
 <p>&#x2610; Nome da vítima : int[150]. --- 'FK vitima.nome'</p>
@@ -84,17 +85,28 @@ ____________________
 
 <li>Violência domestica:</li>
 <p>&#x2610; n° AUTOS : int[150].</p>
-<p>&#x2610; Tipo da agressão : str[50] --- Dropbox.</p>
-<p>&#x2610; Grau de Parentesco : str[50] --- Dropbox.</p>
-<p>&#x2610; MPU : str[50] --- Dropbox.</p>
-<p>&#x2610; Status : Bool --- Ativo/Inativo.</p>
+<p>&#x2610; Tipo da agressão : str[50] --- Dropbox['Física', 'Sexual', '...'].</p>
+<p>&#x2610; Grau de Parentesco : str[50] --- Dropbox['Companheiro(a)', 'Ex-Companheiro(a)', '....'].</p>
+<p>&#x2610; Reincidência : Bool --- Dropbox['reincidente', 'Não reincidente'].</p>
+<p>&#x2610; MPU : str[50] --- Dropbox['Soliciatado', 'Não solicitado'].</p>
+<p>&#x2610; Status : Bool --- Dropbox['Ativo', 'Inativo'].</p>
 <p>&#x2610; Encaminhamentos : str[20] --- Instituições/grupo_Usuarios.</p>
 
 
 
-<li>Ususario:</li>
+<li>Usuário:</li>
 <p>&#x2610; Nome : str[50].</p>
 <p>&#x2610; cpf : int[11] --- PK.</p>
-<p>&#x2610; Instituição : str[50] --- Dropbox['Policia Penal', 'Policia Militar', 'Policia Civil', 'Ministerio Publico'].</p>
+<p>&#x2610; Instituição : str[50] 'FK Instituição.nome_instituição'.</p>
 
-<p>&#x2610; Grupo_usuario : str[50] --- Dropbox.</p>
+<li>Instituição:</li>
+<p>&#x2610; Nome_instituição :  str[50] --- Dropbox['Policia Penal', 'Policia Militar', 'Policia Civil', 'Ministerio Público'].</p>
+<p>&#x2610; Grupo_usuario : str[50] --- Dropbox.instituição.</p>
+
+
+
+
+
+
+
+<!-- https://api.whatsapp.com/send/?phone=556196100180&text=Ol%C3%A1&type=phone_number&app_absent=0 -->
