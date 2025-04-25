@@ -38,16 +38,31 @@ ____________________
 <p>&#x2610; Nome da vítima : str[250].</p>
 <p>&#x2610; data de nascimento : Date.</p>
 <p>&#x2610; Idade : int[3].</p>
-<p>&#x2610; n° AUTOS : int[150]. --- chave extrangeira para o agressor</p>
+<p>&#x2610; Contato telefonico : int[15].</p>
+<p>&#x2610; n° AUTOS : int[150]. --- chave extrangeira da 'violência domestica'</p>
+<p>&#x2610; Nome do Agressor : int[150]. --- chave extrangeira do 'Agressor'</p>
 <p>&#x2610; Idade : int[3].</p>
 <p>&#x2610; Início dos AUTOS : Date.</p>
 <p>&#x2610; Status : Bool --- Dropbox .</p>
-<p>&#x2610; Date última visita : Date --- chave extrangeira da PM.</p>
+<p>&#x2610; Date última visita : Date --- chave extrangeira da 'PM atendimento'.</p>
 <p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; Municipio : str[15] --- Dropbox.</p>
+<p>&#x2610; Bairro : str[15] --- Dropbox.</p>
+<p>&#x2610; Rua : str[100].</p>
+<p>&#x2610; Numero da residencia : int[5].</p>
+
+
 
 <li>Agressor:</li>
+<p>&#x2610; Nome do Agressor : int[150].</p>
+
+
+
+<li>Violência domestica:</li>
+<p>&#x2610; n° AUTOS : int[150].</p>
 <p>&#x2610; xxxxxxxxxx.</p>
 <p>&#x2610; xxxxxxxxxxxxxx.</p>
+
 
 <li>Ususario:</li>
 <p>&#x2610; xxxxxxx.</p>
