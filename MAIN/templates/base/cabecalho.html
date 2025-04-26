@@ -2,6 +2,7 @@
     <div class="container">
         <h1>Bem-vindo à Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais!</h1>
         {% if user.is_authenticated %}
+
         <form action="{% url 'logout' %}" method="post" style="display: inline;">
             {% csrf_token %}
 
@@ -12,6 +13,7 @@
             <button type="submit" class="logout-button" id="logout">Deslogar</button>
 
         </form>
+
         {% else %}
         <a href="{% url 'login' %}" class="login-button" id="login">Login</a>
         {% endif %}

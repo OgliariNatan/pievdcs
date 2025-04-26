@@ -1,15 +1,16 @@
 {% extends 'base/base.html' %}
 {% load static %}
-{% block title %}Login{% endblock %}
+{% block titulo %}Login{% endblock %}
 
 {% block content %}
 <div class="login-page">
-    <div class="logo-container">
+    <!-- <div class="logo-container">
+
+    </div> -->
+    <div class="login-container">
+        <!-- <h2>Login</h2> -->
         <img src="{% static 'img/logo-enfrentamento-a-violencia-de-genero.png' %}" alt="Logo" class="logo"
             height="250px" width="250px">
-    </div>
-    <div class="login-container">
-        <h2>Login</h2>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}

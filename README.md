@@ -30,3 +30,80 @@ ____________________
 * 09: Módulo para capacitação de operadores e representantes.
 * 10: Suporte a múltiplos dispositivos, incluindo tablets e smartphones.
 
+
+
+
+<h3>Pertinentes as informações do BANCO DE DADOS.</h3>
+(FK) = Chave Estrangeira
+(PK) = Chave Primaria
+(MPU) = Medida Protetiva de Urgência
+
+<li>Vítima:</li>
+<p>&#x2610; ID vítima : INT --- AUTO_INCREMENT.</p>
+<p>&#x2610; Nome da vítima : str[250].</p>
+<p>&#x2610; CPF : int[11] --- PK.</p>
+<p>&#x2610; data de nascimento : Date.</p>
+<p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; Contato telefonico : int[15].</p>
+<p>&#x2610; n° AUTOS : int[150]. --- FK da 'violência domestica'</p>
+<p>&#x2610; Nome do Agressor : int[150]. --- FK do 'Agressor'</p>
+<p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; Início dos AUTOS : Date.</p>
+<p>&#x2610; Status : Bool --- Dropbox .</p>
+<p>&#x2610; Date última visita : Date --- FK da 'PM atendimento'.</p>
+<p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; Municipio : str[15] --- Dropbox.</p>
+<p>&#x2610; Bairro : str[15] --- Dropbox.</p>
+<p>&#x2610; Rua : str[100].</p>
+<p>&#x2610; Numero da residencia : int[5].</p>
+
+
+<li>Agressor:</li>
+<p>&#x2610; ID Agressor : INT --- AUTO_INCREMENT.</p>
+<p>&#x2610; Nome do Agressor : int[150].</p>
+<p>&#x2610; CPF : int[11] --- PK.</p>
+<p>&#x2610; data de nascimento : Date.</p>
+<p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; Escolaridade : str[15] --- Dropbox['Analfabeto', 'Fundamental Incompleto', '....'].</p>
+<p>&#x2610; Contato telefonico : int[15].</p>
+<p>&#x2610; n° AUTOS : int[150]. --- 'FK violencia_dometica.n°Autos'</p>
+<p>&#x2610; Nome da vítima : int[150]. --- 'FK vitima.nome'</p>
+<p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; Início dos AUTOS : Date.</p>
+<p>&#x2610; Status : Bool 'FK violencia_dometica.status' .</p>
+<p>&#x2610; Date última visita : Date --- chave extrangeira da 'PM atendimento'.</p>
+<p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; Municipio : str[15] --- Dropbox.</p>
+<p>&#x2610; Bairro : str[15] --- Dropbox.</p>
+<p>&#x2610; Rua : str[100].</p>
+<p>&#x2610; Numero da residencia : int[5].</p>
+
+
+
+<li>Violência domestica:</li>
+<p>&#x2610; n° AUTOS : int[26].</p>
+<p>&#x2610; Tipo da agressão : str[25] --- Dropbox['Física', 'Sexual', '...'].</p>
+<p>&#x2610; Grau de Parentesco : str[25] --- Dropbox['Companheiro(a)', 'Ex-Companheiro(a)', '....'].</p>
+<p>&#x2610; Reincidência : Bool --- Dropbox['reincidente', 'Não reincidente'].</p>
+<p>&#x2610; MPU : str[15] --- Dropbox['Soliciatado', 'Não solicitado'].</p>
+<p>&#x2610; Status : Bool --- Dropbox['Ativo', 'Inativo'].</p>
+<p>&#x2610; Encaminhamentos : str[20] --- Instituições/grupo_Usuarios.</p>
+
+
+
+<li>Usuário:</li>
+<p>&#x2610; Nome : str[50].</p>
+<p>&#x2610; cpf : int[11] --- PK.</p>
+<p>&#x2610; Instituição : str[50] 'FK Instituição.nome_instituição'.</p>
+
+<li>Instituição:</li>
+<p>&#x2610; Nome_instituição :  str[50] --- Dropbox['Policia Penal', 'Policia Militar', 'Policia Civil', 'Ministerio Público'].</p>
+<p>&#x2610; Grupo_usuario : str[50] --- Dropbox.instituição.</p>
+
+
+
+
+
+
+
+<!-- https://api.whatsapp.com/send/?phone=556196100180&text=Ol%C3%A1&type=phone_number&app_absent=0 -->
