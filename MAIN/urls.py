@@ -28,6 +28,6 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
     path("relatorios/", relatorios, name="relatorios"),
     path("admin/", admin.site.urls),
-    path('seguranca/', include('seguranca_publica.urls')),
-
+    path('seguranca/', include('seguranca_publica.urls')), #destinados a segurança publica
+    path('justica/', include('sistema_justica.urls')),  #Destinado aos sistemas de justiças
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
