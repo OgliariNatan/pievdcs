@@ -11,9 +11,12 @@
     <li>
         <button>Sistema de Justiça</button>
         <ul class="submenu">
-            <li><button>Poder Judiciário</button></li>
-            <li><button>Ministério Público</button></li>
-            <li><button>Defensoria Pública</button></li>
+            <li><button onclick="location.href='{% url 'sistema_justica:poder_judiciario' %}'">Poder Judiciário</button>
+            </li>
+            <li><button onclick="location.href='{% url 'sistema_justica:ministerio_publico' %}'">Ministério
+                    Público</button></li>
+            <li><button onclick="location.href='{% url 'sistema_justica:defensoria_publica' %}'">Defensoria
+                    Pública</button></li>
         </ul>
     </li>
     <li>
@@ -63,8 +66,8 @@
 
     <!-- Conteúdo principal -->
     <div id="root-content">
-        <h1>Aqui será inserido as informações pertinentes a cada instituição.</h1>
-        <p>conforme selecionada cada instituição, as informações serão exibidas aqui.</p>
+        <h1>Selecione a sua instituição.</h1>
+        <p>conforme o usuário estiver habilitado serão exibidas as informações aqui.</p>
     </div>
 </div>
 
