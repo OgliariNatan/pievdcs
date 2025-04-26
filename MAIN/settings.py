@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework', #Para criação de API
     'seguranca_publica', #Segurança pública
     'usuarios', #Usuarios autorizados
+    'sistema_justica', #Sistemas de justias
     
 ]
 
@@ -64,6 +65,8 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             os.path.join(BASE_DIR, "MAIN/templates"),
+            os.path.join(BASE_DIR, "Seguranca_publica/templates"),
+            os.path.join(BASE_DIR, "sistema_justica/templates"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -135,6 +138,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "MAIN/static"),
     os.path.join(BASE_DIR, "usuarios/static"),
     os.path.join(BASE_DIR, "seguranca_publica/static"),
+    os.path.join(BASE_DIR, "sistema_justica/static"),
 ]
 
 # Default primary key field type

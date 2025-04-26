@@ -1,4 +1,8 @@
-from django.http import HttpResponse
+from django.shortcuts import render
 
 def cientifica(request):
-    return HttpResponse("Página Científica")
+    contexto = {
+        'title': 'Polícia Cientifica',
+        'description': 'This page provides information about the civil system.'
+    }
+    return render(request, "cientifica.html", contexto)

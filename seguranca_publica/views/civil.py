@@ -1,4 +1,8 @@
-from django.http import HttpResponse
+from django.shortcuts import render
 
 def civil(request):
-    return HttpResponse("Página Civil")
+    contexto = {
+        'title': 'Polícia civil',
+        'description': 'This page provides information about the civil system.'
+    }
+    return render(request, "civil.html", contexto)

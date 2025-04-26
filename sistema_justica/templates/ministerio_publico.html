@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load static %}
 
 {% block titulo %}{{ title }}{% endblock %}
 
@@ -21,10 +22,10 @@
         </button>
         <button>
             <a href="https://www.google.com.br" target="_blank">Encaminhamentos <span id="span_encaminhamentos">
-                    [5]</span></a>
+                    [{{ encaminhamentos }}]</span></a>
         </button>
         <button>
-            <a href="https://www.google.com.br">Notificações <span id="span_alert">[2]</span></a>
+            <a href="https://www.google.com.br">Notificações <span id="span_alert">[{{ notificacoes }}]</span></a>
         </button>
         <button>
             <a href="{% url 'relatorios' %}">Relatórios</a>
@@ -33,9 +34,12 @@
 
     <!-- Conteúdo principal -->
     <div id="root-content">
-        <h1>Polícia Penal</h1>
-        <p>Bem-vindo à página da Polícia Penal.</p>
-        <p>Esta página contém informações relevantes sobre a Polícia Penal e seus serviços.</p>
+
+        <h1>{{ title }}</h1>
+        <p>Bem-vindo à página da {{ title }}.</p>
+        <p>Esta página contém informações relevantes sobre a {{ title }} e seus serviços.</p>
     </div>
 </div>
+
+
 {% endblock %}
