@@ -2,44 +2,48 @@
 {% load static %}
 {% block titulo %}{{ title }}{% endblock %}
 
+{% block nav %}
 
-{% block content %}
-<nav class="top-nav">
-    <ul class="menu">
-        <li>
-            <button onclick="location.href='{% url 'index' %}'">Início</button>
-        </li>
-        <li>
-            <button>Fórum</button>
-            <ul class="submenu">
-                <li><button>Poder Judiciário</button></li>
-                <li><button>Ministério Público</button></li>
-                <li><button>Defensoria Pública</button></li>
-            </ul>
-        </li>
-        <li>
-            <button>Segurança Pública</button>
-            <ul class="submenu">
-                <li><button onclick="location.href='{% url 'seguranca_publica:militar' %}'">Polícia Militar</button>
-                </li>
-                <li><button onclick="location.href='#'">Polícia Civil</button></li>
-                <li><button onclick="location.href='#'">Polícia Científica</button></li>
-                <li><button onclick="location.href='{% url 'seguranca_publica:penal' %}'">Polícia Penal</button></li>
-            </ul>
-        </li>
-        <li>
-            <button>Município</button>
-            <ul class="submenu">
-                <li><button onclick="location.href='#'">CREAS</button></li>
-                <li>
-                    <button onclick="location.href='#'">Conselho Tutelar</button>
-                </li>
+<ul class="menu">
+    <li>
+        <button onclick="location.href='{% url 'index' %}'">Início</button>
+    </li>
+    <li>
+        <button>Fórum</button>
+        <ul class="submenu">
+            <li><button>Poder Judiciário</button></li>
+            <li><button>Ministério Público</button></li>
+            <li><button>Defensoria Pública</button></li>
+        </ul>
+    </li>
+    <li>
+        <button>Segurança Pública</button>
+        <ul class="submenu">
+            <li><button onclick="location.href='{% url 'seguranca_publica:militar' %}'">Polícia Militar</button>
+            </li>
+            <li><button onclick="location.href='{% url 'seguranca_publica:civil' %}'">Polícia Civil</button></li>
+            <li><button onclick="location.href='#'">Polícia Científica</button></li>
+            <li><button onclick="location.href='{% url 'seguranca_publica:penal' %}'">Polícia Penal</button></li>
+        </ul>
+    </li>
+    <li>
+        <button>Município</button>
+        <ul class="submenu">
+            <li><button onclick="location.href='#'">CREAS</button></li>
+            <li>
+                <button onclick="location.href='#'">Conselho Tutelar</button>
+            </li>
 
-            </ul>
-        </li>
-    </ul>
-</nav>
-<div class="main-layout">
+        </ul>
+    </li>
+</ul>
+
+{% endblock %}
+
+
+{% block main_content %}
+
+<div class="main-layout nav">
     <!-- Barra lateral -->
     <aside class="sidebar button_link">
         <button>

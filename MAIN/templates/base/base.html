@@ -15,16 +15,24 @@
 </head>
 
 <body>
-    <!-- Cabeçalho -->
+    <!-- Cabeçalho, implementado no header -->
     {% include 'base/cabecalho.html' %}
 
     <!-- Conteúdo principal -->
+    <nav class="top-nav">
+        {% block nav %}{% endblock %}
+    </nav>
+
     <main>
-        {% block content %}
+        {% block main_content %}
         {% endblock %}
     </main>
 
-    <!-- Rodapé -->
+    <article>
+        {% block article_content %}{% endblock %}
+    </article>
+
+    <!-- Rodapé, implementado no footer -->
     {% include 'base/rodape.html' %}
 
 

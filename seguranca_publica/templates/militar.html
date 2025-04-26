@@ -1,16 +1,22 @@
 {% extends "base/base.html" %}
+{% load static %}
 
-{% block title %}Polícia Militar{% endblock %}
-
-{% block content %}
-
-<button onclick="location.href='{% url 'index' %}'">Início</button>
-<button onclick="history.back()">Voltar</button>
+{% block titulo %}{{ title }}{% endblock %}
 
 
-<div class="main-layout">
+{% block nav %}
+<button class="btn button-sm" onclick="location.href='{% url 'index' %}'">Início</button>
+<button class="btn btn-sm" onclick="history.back()">Voltar</button>
+{% endblock %}
+
+
+
+
+{% block main_content %}
+
+<div class="main-layout nav">
     <!-- Barra lateral -->
-    <aside class="sidebar button_link">
+    <div class="sidebar button_link nav">
         <button>
             <a href="#">Atendimentos Realizados</a>
         </button>
@@ -24,7 +30,7 @@
         <button>
             <a href="{% url 'relatorios' %}">Relatórios</a>
         </button>
-    </aside>
+    </div>
 
     <!-- Conteúdo principal -->
     <div id="root-content">
@@ -34,17 +40,6 @@
         <p>Esta página contém informações relevantes sobre a Polícia Militar e seus serviços.</p>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
 {% endblock %}
