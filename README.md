@@ -58,9 +58,6 @@ ____________________
 <p>&#x2610; Numero da residencia : int[5].</p>
 
 
-
-
-
 <li>Agressor:</li>
 <p>&#x2610; ID Agressor : INT --- AUTO_INCREMENT.</p>
 <p>&#x2610; Nome do Agressor : int[150].</p>
@@ -84,11 +81,11 @@ ____________________
 
 
 <li>Violência domestica:</li>
-<p>&#x2610; n° AUTOS : int[150].</p>
-<p>&#x2610; Tipo da agressão : str[50] --- Dropbox['Física', 'Sexual', '...'].</p>
-<p>&#x2610; Grau de Parentesco : str[50] --- Dropbox['Companheiro(a)', 'Ex-Companheiro(a)', '....'].</p>
+<p>&#x2610; n° AUTOS : int[26].</p>
+<p>&#x2610; Tipo da agressão : str[25] --- Dropbox['Física', 'Sexual', '...'].</p>
+<p>&#x2610; Grau de Parentesco : str[25] --- Dropbox['Companheiro(a)', 'Ex-Companheiro(a)', '....'].</p>
 <p>&#x2610; Reincidência : Bool --- Dropbox['reincidente', 'Não reincidente'].</p>
-<p>&#x2610; MPU : str[50] --- Dropbox['Soliciatado', 'Não solicitado'].</p>
+<p>&#x2610; MPU : str[15] --- Dropbox['Soliciatado', 'Não solicitado'].</p>
 <p>&#x2610; Status : Bool --- Dropbox['Ativo', 'Inativo'].</p>
 <p>&#x2610; Encaminhamentos : str[20] --- Instituições/grupo_Usuarios.</p>
 
