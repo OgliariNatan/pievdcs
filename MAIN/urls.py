@@ -21,6 +21,8 @@ from django.contrib import admin
 from django.urls import path, include
 from MAIN.views import home, index, relatorios
 
+app_name = 'MAIN'
+
 urlpatterns = [
     path("home/", home, name="home"),  # Rota para a página inicial após login
     path("", index, name="index"), #Página inicial one_page sem login
