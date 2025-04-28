@@ -1,12 +1,16 @@
 {% extends "base/base.html" %}
+
 {% load static %}
 
 {% block titulo %}{{ title }}{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/conselho_tutelar.css' %}">
+{% endblock %}
 
 {% block nav %}
 <button class="btn button-sm" onclick="location.href='{% url 'index' %}'">Início</button>
-<button class="btn btn-sm" onclick="history.back()">Voltar</button>
+<!-- <button class="btn btn-sm" onclick="history.back()">Voltar</button> -->
 {% endblock %}
 
 
@@ -22,10 +26,10 @@
         </button>
         <button>
             <a href="https://www.google.com.br" target="_blank">Encaminhamentos <span id="span_encaminhamentos">
-                    [{{ encaminhamentos }}]</span></a>
+                    [5]</span></a>
         </button>
         <button>
-            <a href="https://www.google.com.br">Notificações <span id="span_alert">[{{ notificacoes }}]</span></a>
+            <a href="https://www.google.com.br">Notificações <span id="span_alert">[2]</span></a>
         </button>
         <button>
             <a href="{% url 'relatorios' %}">Relatórios</a>
@@ -40,6 +44,4 @@
         <p>Esta página contém informações relevantes sobre o {{ title }} e seus serviços.</p>
     </div>
 </div>
-
-
 {% endblock %}

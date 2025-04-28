@@ -25,16 +25,17 @@
             <li><button onclick="location.href='{% url 'seguranca_publica:militar' %}'">Polícia Militar</button>
             </li>
             <li><button onclick="location.href='{% url 'seguranca_publica:civil' %}'">Polícia Civil</button></li>
-            <li><button onclick="location.href='#'">Polícia Científica</button></li>
+            <li><button onclick="location.href='{% url 'seguranca_publica:cientifica' %}'">Polícia
+                    Científica</button></li>
             <li><button onclick="location.href='{% url 'seguranca_publica:penal' %}'">Polícia Penal</button></li>
         </ul>
     </li>
     <li>
         <button>Município</button>
         <ul class="submenu">
-            <li><button onclick="location.href='#'">CREAS</button></li>
+            <li><button onclick="location.href='{% url 'municipio:creas' %}'">CREAS</button></li>
             <li>
-                <button onclick="location.href='#'">Conselho Tutelar</button>
+                <button onclick="location.href='{% url 'municipio:conselho_tutelar' %}'">Conselho Tutelar</button>
             </li>
 
         </ul>
