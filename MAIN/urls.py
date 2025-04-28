@@ -30,4 +30,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('seguranca/', include('seguranca_publica.urls')), #destinados a segurança publica
     path('justica/', include('sistema_justica.urls')),  #Destinado aos sistemas de justiças
+    path('municipio/', include('municipio.urls')), #Destinado ao municipio
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

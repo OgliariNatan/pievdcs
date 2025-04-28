@@ -12,5 +12,3 @@ urlpatterns = [
     path('civil/', civil, name='civil'),
     path('cientifica/', cientifica, name='cientifica'),
 ]
-
-# Rotas do app
