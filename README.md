@@ -107,3 +107,6 @@ ____________________
 
 
 <!-- https://api.whatsapp.com/send/?phone=556196100180&text=Ol%C3%A1&type=phone_number&app_absent=0 -->
+
+
+<!-- Deus quer encarregar-te-ás de uma missão. Serás contrariado, mas não temas; terás a graça de fazer o que for necessário. -->
