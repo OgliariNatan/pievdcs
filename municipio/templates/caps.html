@@ -1,0 +1,46 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block titulo %}{{ title }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/caps.css' %}">
+{% endblock %}
+
+
+{% block nav %}
+<button class="btn button-sm" onclick="location.href='{% url 'index' %}'">Início</button>
+<!-- <button class="btn btn-sm" onclick="history.back()">Voltar</button> -->
+{% endblock %}
+
+
+
+
+{% block main_content %}
+
+<div class="main-layout nav">
+    <!-- Barra lateral -->
+    <div class="sidebar button_link nav">
+        <button>
+            <a href="#">Atendimentos Realizados</a>
+        </button>
+        <button>
+            <a href="https://www.google.com.br" target="_blank">Encaminhamentos <span id="span_encaminhamentos">
+                    [5]</span></a>
+        </button>
+        <button>
+            <a href="https://www.google.com.br">Notificações <span id="span_alert">[2]</span></a>
+        </button>
+        <button>
+            <a href="{% url 'relatorios' %}">Relatórios</a>
+        </button>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div id="root-content">
+
+        <h1>{{ title }}</h1>
+        <p>Bem-vindo à página da {{ title }}.</p>
+        <p>Esta página contém informações relevantes sobre {{ title }} e seus serviços.</p>
+    </div>
+</div>
+{% endblock %}

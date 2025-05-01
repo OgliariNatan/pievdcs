@@ -34,9 +34,9 @@ ____________________
 
 
 <h3>Pertinentes as informações do BANCO DE DADOS.</h3>
-(FK) = Chave Estrangeira
-(PK) = Chave Primaria
-(MPU) = Medida Protetiva de Urgência
+(FK) = Chave Estrangeira <br>
+(PK) = Chave Primaria <br>
+(MPU) = Medida Protetiva de Urgência <br>
 
 <li>Vítima:</li>
 <p>&#x2610; ID vítima : INT --- AUTO_INCREMENT.</p>
@@ -107,3 +107,6 @@ ____________________
 
 
 <!-- https://api.whatsapp.com/send/?phone=556196100180&text=Ol%C3%A1&type=phone_number&app_absent=0 -->
+
+
+<!-- Deus quer encarregar-te-ás de uma missão. Serás contrariado, mas não temas; terás a graça de fazer o que for necessário. -->
