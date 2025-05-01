@@ -34,9 +34,9 @@ ____________________
 
 
 <h3>Pertinentes as informações do BANCO DE DADOS.</h3>
-(FK) = Chave Estrangeira
-(PK) = Chave Primaria
-(MPU) = Medida Protetiva de Urgência
+(FK) = Chave Estrangeira <br>
+(PK) = Chave Primaria <br>
+(MPU) = Medida Protetiva de Urgência <br>
 
 <li>Vítima:</li>
 <p>&#x2610; ID vítima : INT --- AUTO_INCREMENT.</p>
