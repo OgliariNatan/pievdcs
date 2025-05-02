@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
 
 @login_required
 def home(request):
@@ -45,3 +46,13 @@ def relatorios(request):
         ]
     }
     return render(request, "relatorios.html", context)
+
+
+#Destinado a recuperação de senha
+class CustonPasswordResetView:
+
+    template_nome = 'registration/password_reset_form.html'
+    email_template_nome = 'registration/password_reset_email.html'
+    subject_template_name = 'registration/password_reset_subject.txt'
+    success_url = reverse_lazy('password_reset_done')
+    
