@@ -54,5 +54,5 @@ class CustonPasswordResetView:
     template_nome = 'registration/password_reset_form.html'
     email_template_nome = 'registration/password_reset_email.html'
     subject_template_name = 'registration/password_reset_subject.txt'
-    success_url = reverse_lazy('password_reset_done')
+    success_url = reverse_lazy('password_reset_done.html')
     
