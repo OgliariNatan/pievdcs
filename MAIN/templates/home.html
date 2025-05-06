@@ -58,12 +58,13 @@
         <button>
             <a href="#">Atendimentos Realizados</a>
         </button>
-        <button>
+        <button class="btn">
             <a href="https://www.google.com.br" target="_blank">Encaminhamentos <span id="span_encaminhamentos">
                     [{{ encaminhamentos }}]</span></a>
         </button>
         <button>
-            <a href="https://www.google.com.br">Notificações <span id="span_alert">[{{ alert }}]</span></a>
+            <a href="https://www.google.com.br">Notificações
+                <span class="badge badge-warning" id="span_alert">{{ alert }}</span></a>
         </button>
         <button>
             <a href="{% url 'relatorios' %}">Relatórios</a>

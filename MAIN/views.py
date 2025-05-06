@@ -1,6 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
+
+import random
 
 @login_required
 def home(request):
@@ -27,15 +30,15 @@ def relatorios(request):
         "cidade_maps": "Maravilha/SC",
         "cidades": {
             "labels": ["Maravilha", "Tigrinhos", "Irceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
-            "data": [60, 20, 30, 25, 15, 40]
+            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
         },
         "idades": {
             "labels": ["0-18", "19-30", "31-50", "51+", "51+"],
-            "data": [15, 40, 30, 15, 10]
+            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
         },
         "etnias": {
             "labels": ["Etnia A", "Etnia B", "Etnia C", "Etnia D"],
-            "data": [10, 25, 35, 30]
+            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
         },
         "bairros": [
             {"nome": "Bairro 1", "lat": -26.7650, "lng": -53.1830, "casos": 10},
@@ -45,3 +48,13 @@ def relatorios(request):
         ]
     }
     return render(request, "relatorios.html", context)
+
+
+#Destinado a recuperação de senha
+class CustonPasswordResetView:
+
+    template_nome = 'registration/password_reset_form.html'
+    email_template_nome = 'registration/password_reset_email.html'
+    subject_template_name = 'registration/password_reset_subject.txt'
+    success_url = reverse_lazy('password_reset_done.html')
+    
