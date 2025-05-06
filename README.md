@@ -35,7 +35,7 @@ ____________________
 
 
 
-<h3>Pertinentes as informações do BANCO DE DADOS.</h3>
+### Pertinentes as informações do BANCO DE DADOS.
 (FK) = Chave Estrangeira <br>
 (PK) = Chave Primaria <br>
 (MPU) = Medida Protetiva de Urgência <br>
@@ -45,19 +45,18 @@ ____________________
 <p>&#x2610; Nome da vítima : str[250].</p>
 <p>&#x2610; CPF : int[11] --- PK.</p>
 <p>&#x2610; data de nascimento : Date.</p>
-<p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; Idade : int[3] (Define automatico, com base na data de nascimento)</p>
 <p>&#x2610; Contato telefonico : int[15].</p>
-<p>&#x2610; n° AUTOS : int[150]. --- FK da 'violência domestica'</p>
+<p>&#x2610; n° AUTOS : int[30]. --- FK da 'violência domestica'</p>
 <p>&#x2610; Nome do Agressor : int[150]. --- FK do 'Agressor'</p>
-<p>&#x2610; Idade : int[3].</p>
 <p>&#x2610; Início dos AUTOS : Date.</p>
-<p>&#x2610; Status : Bool --- Dropbox .</p>
-<p>&#x2610; Date última visita : Date --- FK da 'PM atendimento'.</p>
-<p>&#x2610; Idade : int[3].</p>
-<p>&#x2610; Municipio : str[15] --- Dropbox.</p>
+<p>&#x2610; Status : Bool --- Dropbox ['ativo', 'desativo'].</p>
+<p>&#x2610; Data última visita : Date --- FK da 'PM atendimento'.</p>
+<p>&#x2610; Estado : str[2] --- Dropbox ['SC':'Santa Catarina', 'RS':'Rio Grande dos Sul', '...':'...', 'XY':'Estrangeiro']. ***carrega de GeoJSON***</p>
+<p>&#x2610; Municipio : str[15] --- Dropbox [dependerá do estado selecionado].</p>
 <p>&#x2610; Bairro : str[15] --- Dropbox.</p>
 <p>&#x2610; Rua : str[100].</p>
-<p>&#x2610; Numero da residencia : int[5].</p>
+<p>&#x2610; Número da residencia : int[5].</p>
 
 
 <li>Agressor:</li>
