@@ -45,12 +45,13 @@ ____________________
 <p>&#x2610; Nome da vítima : str[250].</p>
 <p>&#x2610; CPF : int[11] --- PK.</p>
 <p>&#x2610; data de nascimento : Date.</p>
-<p>&#x2610; Idade : int[3] (Define automatico, com base na data de nascimento)</p>
+<p>&#x2610; Idade : int[3] (Define automatico, com base na data de nascimento).</p>
 <p>&#x2610; Contato telefonico : int[15].</p>
-<p>&#x2610; n° AUTOS : int[30]. --- FK da 'violência domestica'</p>
-<p>&#x2610; Nome do Agressor : int[150]. --- FK do 'Agressor'</p>
-<p>&#x2610; Início dos AUTOS : Date.</p>
-<p>&#x2610; Status : Bool --- Dropbox ['ativo', 'desativo'].</p>
+<p>&#x2610; Escolaridade : str[15] --- Dropbox['Analfabeto', 'Fundamental Incompleto', '....'].</p>
+<p>&#x2610; n° AUTOS : int[30]. --- FK da 'violência domestica.n°Autos'</p>
+<p>&#x2610; Nome do Agressor : int[150]. --- FK do 'Agressor.ID'</p>
+<p>&#x2610; Início dos AUTOS : FK violencia_dometica.DATE.</p>
+<p>&#x2610; Status : Bool --- FK violencia_dometica.status.</p>
 <p>&#x2610; Data última visita : Date --- FK da 'PM atendimento'.</p>
 <p>&#x2610; Estado : str[2] --- Dropbox ['SC':'Santa Catarina', 'RS':'Rio Grande dos Sul', '...':'...', 'XY':'Estrangeiro']. ***carrega de GeoJSON***</p>
 <p>&#x2610; Municipio : str[15] --- Dropbox [dependerá do estado selecionado].</p>
@@ -64,33 +65,37 @@ ____________________
 <p>&#x2610; Nome do Agressor : int[150].</p>
 <p>&#x2610; CPF : int[11] --- PK.</p>
 <p>&#x2610; data de nascimento : Date.</p>
-<p>&#x2610; Idade : int[3].</p>
+<p>&#x2610; Idade : int[3] (Define automatico, com base na data de nascimento).</p>
 <p>&#x2610; Escolaridade : str[15] --- Dropbox['Analfabeto', 'Fundamental Incompleto', '....'].</p>
 <p>&#x2610; Contato telefonico : int[15].</p>
-<p>&#x2610; n° AUTOS : int[150]. --- 'FK violencia_dometica.n°Autos'</p>
-<p>&#x2610; Nome da vítima : int[150]. --- 'FK vitima.nome'</p>
-<p>&#x2610; Idade : int[3].</p>
-<p>&#x2610; Início dos AUTOS : Date.</p>
+<p>&#x2610; n° AUTOS : int[30]. --- 'FK violencia_dometica.n°Autos'</p>
+<p>&#x2610; Nome da vítima : int[8]. --- 'FK vitima.ID'</p>
+<p>&#x2610; Início dos AUTOS : FK violencia_dometica.DATE.</p>
 <p>&#x2610; Status : Bool 'FK violencia_dometica.status' .</p>
 <p>&#x2610; Date última visita : Date --- chave extrangeira da 'PM atendimento'.</p>
-<p>&#x2610; Idade : int[3].</p>
-<p>&#x2610; Municipio : str[15] --- Dropbox.</p>
+<p>&#x2610; Estado : str[2] --- Dropbox ['SC':'Santa Catarina', 'RS':'Rio Grande dos Sul', '...':'...', 'XY':'Estrangeiro']. ***carrega de GeoJSON***</p>
+<p>&#x2610; Municipio : str[15] --- Dropbox [dependerá do estado selecionado].</p>
 <p>&#x2610; Bairro : str[15] --- Dropbox.</p>
 <p>&#x2610; Rua : str[100].</p>
-<p>&#x2610; Numero da residencia : int[5].</p>
+<p>&#x2610; Número da residencia : int[5].</p>
 
 
 
 <li>Violência domestica:</li>
 <p>&#x2610; n° AUTOS : int[26].</p>
 <p>&#x2610; Tipo da agressão : str[25] --- Dropbox['Física', 'Sexual', '...'].</p>
+<p>&#x2610; Data da Agressão : date.</p>
 <p>&#x2610; Grau de Parentesco : str[25] --- Dropbox['Companheiro(a)', 'Ex-Companheiro(a)', '....'].</p>
 <p>&#x2610; Reincidência : Bool --- Dropbox['reincidente', 'Não reincidente'].</p>
-<p>&#x2610; MPU : str[15] --- Dropbox['Soliciatado', 'Não solicitado'].</p>
+<p>&#x2610; MPU : Bool --- Dropbox['Soliciatado', 'Não solicitado'].</p>
 <p>&#x2610; Status : Bool --- Dropbox['Ativo', 'Inativo'].</p>
 <p>&#x2610; Encaminhamentos : str[20] --- Instituições/grupo_Usuarios.</p>
 
-
+<li>PM atendimento:</li>
+<p>&#x2610; Nome da equipe : str[50].</p>
+<p>&#x2610; VTR : str[50].</p>
+<p>&#x2610; Data do Atendimento : date.</p>
+(...Nos atendimentos da REDE CATARINA, o que se verifica?...)
 
 <li>Usuário:</li>
 <p>&#x2610; Nome : str[50].</p>
