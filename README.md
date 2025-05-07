@@ -98,11 +98,20 @@ ____________________
 (...Nos atendimentos da REDE CATARINA, o que se verifica?...)
 
 <li>Atendimentos Agressores</li>
-<p>&#x2610; </p>
+<p>&#x2610; Data do atendimento : Date</p>
+<p>&#x2610; Setor que assistiu : str[20] --- Dropdown['Assistencia Social', 'Psicológico', 'saúde', 'picossocial', 'Grupo especializado']</p>
+<p>&#x2610; Avaliação : str[150].</p>
+
+<li>Consultas</li>
+* relacionado ao agressor e a vitima
+<p>&#x2610; Possui DST? : Bool --- ['Sim', 'Não].</p>
+<p>&#x2610; Qual DST? : str[50].</p>
+
 
 <li>Tipos de Grupos de Atendimentos</li>
-<p>&#x2610; Instituição Responsavel: str[50] PK 'Instituições'</p>
-<p>&#x2610; Tematica</p>
+<p>&#x2610; Instituição Responsavel: str[50] FK 'Instituições.nome'</p>
+<p>&#x2610; Tematica : str[50] --- DropDown['']</p>
+<p>&#x2610; Avaliação Coletiva : str[500].</p>
 
 <li>Usuário:</li>
 <p>&#x2610; Nome : str[50].</p>
