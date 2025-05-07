@@ -90,7 +90,7 @@ ____________________
 <p>&#x2610; MPU : Bool --- Dropbox['Soliciatado', 'Não solicitado'].</p>
 <p>&#x2610; Status : Bool --- Dropbox['Ativo', 'Inativo'].</p>
 <p>&#x2610; Encaminhamentos : str[20] --- Instituições/grupo_Usuarios.</p>
-
+> Para a coleta de informaçãos da REDE CATARINA
 <li>PM atendimento:</li>
 <p>&#x2610; Nome da equipe : str[50].</p>
 <p>&#x2610; VTR : str[50].</p>
@@ -100,6 +100,7 @@ ____________________
 <li>Atendimentos Agressores</li>
 <p>&#x2610; Data do atendimento : Date</p>
 <p>&#x2610; Setor que assistiu : str[20] --- Dropdown['Assistencia Social', 'Psicológico', 'saúde', 'picossocial', 'Grupo especializado']</p>
+<p>&#x2610; Qual atendimento : str[10] --- Dropdown['Individual', 'Coletivo']</p>
 <p>&#x2610; Avaliação : str[150].</p>
 
 <li>Consultas</li>
@@ -110,7 +111,7 @@ ____________________
 
 <li>Tipos de Grupos de Atendimentos</li>
 <p>&#x2610; Instituição Responsavel: str[50] FK 'Instituições.nome'</p>
-<p>&#x2610; Tematica : str[50] --- DropDown['']</p>
+<p>&#x2610; Tematica : str[50] --- Dropdown['']</p>
 <p>&#x2610; Avaliação Coletiva : str[500].</p>
 
 <li>Usuário:</li>
@@ -120,8 +121,8 @@ ____________________
 
 <li>Instituição:</li>
 <p>&#x2610; ID_Instituição : int[8] AUTO_INCREMENTO PK</p>
-<p>&#x2610; Nome_instituição :  str[50] --- Dropbox['Policia Penal', 'Policia Militar', 'Policia Civil', 'Ministerio Público'].</p>
-<p>&#x2610; Grupo_usuario : str[50] --- Dropbox.instituição.</p>
+<p>&#x2610; Nome_instituição :  str[50] --- Dropdown['Policia Penal', 'Policia Militar', 'Policia Civil', 'Ministerio Público', '...'].</p>
+<p>&#x2610; Grupo_usuario : str[50] --- Dropdown['policiaPenal', '....'].</p>
 
 
 
