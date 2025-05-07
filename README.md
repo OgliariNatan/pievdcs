@@ -76,7 +76,7 @@ ____________________
 <p>&#x2610; Suporte médico : str[50] --- FK da 'consulta'</p>
 <p>&#x2610; segregação cautelar : bool</p>
 <p>&#x2610; Estado : str[2] --- Dropbox ['SC':'Santa Catarina', 'RS':'Rio Grande dos Sul', '...':'...', 'XY':'Estrangeiro']. ***carrega de GeoJSON***</p>
-<p>&#x2610; Municipio : str[15] --- Dropbox [dependerá do estado selecionado].</p>
+<p>&#x2610; Município : str[15] --- Dropbox [dependerá do estado selecionado].</p>
 <p>&#x2610; Bairro : str[15] --- Dropbox.</p>
 <p>&#x2610; Rua : str[100].</p>
 <p>&#x2610; Número da residencia : int[5].</p>
@@ -123,12 +123,13 @@ ____________________
 
 <li>Tipos de Grupos de Atendimentos</li>
 <p>&#x2610; Instituição Responsavel: str[50] FK 'Instituições.nome'</p>
-<p>&#x2610; Tematica : str[50] --- Dropdown['']</p>
+<p>&#x2610; Tematica : str[50] --- Dropdown['Domestica', 'sexual', 'psicológica', '...']</p>
 <p>&#x2610; Avaliação Coletiva : str[500].</p>
 <br>
 
 <li>Polícia civil</li>
 <p>&#x2610; ....</p>
+
 > O que a Polícia civil precisa????
 <br>
 <li>Usuário:</li>
