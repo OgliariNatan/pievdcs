@@ -97,12 +97,20 @@ ____________________
 <p>&#x2610; Data do Atendimento : date.</p>
 (...Nos atendimentos da REDE CATARINA, o que se verifica?...)
 
+<li>Atendimentos Agressores</li>
+<p>&#x2610; </p>
+
+<li>Tipos de Grupos de Atendimentos</li>
+<p>&#x2610; Instituição Responsavel: str[50] PK 'Instituições'</p>
+<p>&#x2610; Tematica</p>
+
 <li>Usuário:</li>
 <p>&#x2610; Nome : str[50].</p>
 <p>&#x2610; cpf : int[11] --- PK.</p>
 <p>&#x2610; Instituição : str[50] 'FK Instituição.nome_instituição'.</p>
 
 <li>Instituição:</li>
+<p>&#x2610; ID_Instituição : int[8] AUTO_INCREMENTO PK</p>
 <p>&#x2610; Nome_instituição :  str[50] --- Dropbox['Policia Penal', 'Policia Militar', 'Policia Civil', 'Ministerio Público'].</p>
 <p>&#x2610; Grupo_usuario : str[50] --- Dropbox.instituição.</p>
 
