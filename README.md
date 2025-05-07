@@ -53,6 +53,7 @@ ____________________
 <p>&#x2610; Início dos AUTOS : FK violencia_dometica.DATE.</p>
 <p>&#x2610; Status : Bool --- FK violencia_dometica.status.</p>
 <p>&#x2610; Data última visita : Date --- FK da 'PM atendimento'.</p>
+<p>&#x2610; Suporte médico : str[50] --- FK da 'consulta'</p>
 <p>&#x2610; Estado : str[2] --- Dropbox ['SC':'Santa Catarina', 'RS':'Rio Grande dos Sul', '...':'...', 'XY':'Estrangeiro']. ***carrega de GeoJSON***</p>
 <p>&#x2610; Municipio : str[15] --- Dropbox [dependerá do estado selecionado].</p>
 <p>&#x2610; Bairro : str[15] --- Dropbox.</p>
@@ -72,7 +73,8 @@ ____________________
 <p>&#x2610; Nome da vítima : int[8]. --- 'FK vitima.ID'</p>
 <p>&#x2610; Início dos AUTOS : FK violencia_dometica.DATE.</p>
 <p>&#x2610; Status : Bool 'FK violencia_dometica.status' .</p>
-<p>&#x2610; Date última visita : Date --- chave extrangeira da 'PM atendimento'.</p>
+<p>&#x2610; Suporte médico : str[50] --- FK da 'consulta'</p>
+<p>&#x2610; segregação cautelar : bool</p>
 <p>&#x2610; Estado : str[2] --- Dropbox ['SC':'Santa Catarina', 'RS':'Rio Grande dos Sul', '...':'...', 'XY':'Estrangeiro']. ***carrega de GeoJSON***</p>
 <p>&#x2610; Municipio : str[15] --- Dropbox [dependerá do estado selecionado].</p>
 <p>&#x2610; Bairro : str[15] --- Dropbox.</p>
@@ -91,15 +93,22 @@ ____________________
 <p>&#x2610; Status : Bool --- Dropbox['Ativo', 'Inativo'].</p>
 <p>&#x2610; Encaminhamentos : str[20] --- Instituições/grupo_Usuarios.</p>
 
+> Informações sobre ato da violência.
 <br>
 
-> Para a coleta de informaçãos da REDE CATARINA
+<li>Questionário da MPU(Medida Protetiva de Urgência)</li>
+<p>&#x2610; Deverá ser investigado as legislações e os moldes. </p>
+
+> Listagem pertinente a MPU.
+<br>
 <li>PM atendimento:</li>
 <p>&#x2610; Nome da equipe : str[50].</p>
 <p>&#x2610; VTR : str[50].</p>
 <p>&#x2610; Data do Atendimento : date.</p>
 (...Nos atendimentos da REDE CATARINA, o que se verifica?...)
 
+> Para a coleta de informaçãos da REDE CATARINA
+<br>
 <li>Atendimentos Agressores</li>
 <p>&#x2610; Data do atendimento : Date</p>
 <p>&#x2610; Setor que assistiu : str[20] --- Dropdown['Assistencia Social', 'Psicológico', 'saúde', 'picossocial', 'Grupo especializado']</p>
@@ -116,7 +125,12 @@ ____________________
 <p>&#x2610; Instituição Responsavel: str[50] FK 'Instituições.nome'</p>
 <p>&#x2610; Tematica : str[50] --- Dropdown['']</p>
 <p>&#x2610; Avaliação Coletiva : str[500].</p>
+<br>
 
+<li>Polícia civil</li>
+<p>&#x2610; ....</p>
+> O que a Polícia civil precisa????
+<br>
 <li>Usuário:</li>
 <p>&#x2610; Nome : str[50].</p>
 <p>&#x2610; cpf : int[11] --- PK.</p>
