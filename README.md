@@ -90,6 +90,9 @@ ____________________
 <p>&#x2610; MPU : Bool --- Dropbox['Soliciatado', 'Não solicitado'].</p>
 <p>&#x2610; Status : Bool --- Dropbox['Ativo', 'Inativo'].</p>
 <p>&#x2610; Encaminhamentos : str[20] --- Instituições/grupo_Usuarios.</p>
+
+<br>
+
 > Para a coleta de informaçãos da REDE CATARINA
 <li>PM atendimento:</li>
 <p>&#x2610; Nome da equipe : str[50].</p>
