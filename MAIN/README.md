@@ -20,11 +20,13 @@
     Defensoria Pública.<br>
 
 <p>&#x2610; Segurança Pública.</p>
+
     Polícia Militar.<br>
     Polícia Civil.<br>
     Polícia Penal.<br>
 
 <p>&#x2610; Órgãos municipais.</p>
+
     CREA.<br>
     CREAS.<br>
     Conselho Tutelar.<br>
