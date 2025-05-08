@@ -15,9 +15,9 @@
 <li>instituições que irá conter:</li>
 <p>&#x2610; Sistema de Justiça.</p>
 
-    * [] Poder Judiciário. <br>
-    * [] Ministério Público.<br>
-    * [] Defensoria Pública.<br>
+    Poder Judiciário. <br>
+    Ministério Público.<br>
+    Defensoria Pública.<br>
 <p>&#x2610; Polícia Militar.</p>
 <p>&#x2610; Polícia Civil.</p>
 <p>&#x2610; Polícia Penal.</p>
