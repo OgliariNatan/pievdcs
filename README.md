@@ -99,8 +99,11 @@ ____________________
 <li>Questionário da MPU(Medida Protetiva de Urgência)</li>
 <p>&#x2610; Deverá ser investigado as legislações e os moldes. </p>
 
+> Existe um documento que estabelece regras e contém dois formulários: um destinado à vítima e outro preenchido por um profissional habilitado. 
+
 > Listagem pertinente a MPU.
 <br>
+
 <li>PM atendimento:</li>
 <p>&#x2610; Nome da equipe : str[50].</p>
 <p>&#x2610; VTR : str[50].</p>
@@ -109,6 +112,7 @@ ____________________
 
 > Para a coleta de informaçãos da REDE CATARINA
 <br>
+
 <li>Atendimentos Agressores</li>
 <p>&#x2610; Data do atendimento : Date</p>
 <p>&#x2610; Setor que assistiu : str[20] --- Dropdown['Assistencia Social', 'Psicológico', 'saúde', 'picossocial', 'Grupo especializado']</p>
@@ -120,6 +124,8 @@ ____________________
 <p>&#x2610; Possui DST? : Bool --- ['Sim', 'Não].</p>
 <p>&#x2610; Qual DST? : str[50].</p>
 
+> Destinado a informações de consultas médicas relecionado aos envolvidos
+<br>
 
 <li>Tipos de Grupos de Atendimentos</li>
 <p>&#x2610; Instituição Responsavel: str[50] FK 'Instituições.nome'</p>
