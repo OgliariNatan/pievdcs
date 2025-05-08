@@ -18,8 +18,17 @@
     Poder Judiciário. <br>
     Ministério Público.<br>
     Defensoria Pública.<br>
-<p>&#x2610; Polícia Militar.</p>
-<p>&#x2610; Polícia Civil.</p>
-<p>&#x2610; Polícia Penal.</p>
+
+<p>&#x2610; Segurança Pública.</p>
+    Polícia Militar.<br>
+    Polícia Civil.<br>
+    Polícia Penal.<br>
 
 <p>&#x2610; Órgãos municipais.</p>
+    CREA.<br>
+    CREAS.<br>
+    Conselho Tutelar.<br>
+    CRAS.<br>
+    CAPS.<br>
+    SECRETARIA DE SAÚDE.<br>
+    HOSPITAIS???<br>
