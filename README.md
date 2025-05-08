@@ -52,6 +52,7 @@ ____________________
 <p>&#x2610; Nome do Agressor : int[150]. --- FK do 'Agressor.ID'</p>
 <p>&#x2610; Início dos AUTOS : FK violencia_dometica.DATE.</p>
 <p>&#x2610; Status : Bool --- FK violencia_dometica.status.</p>
+<p>&#x2610; Possui Filhos : int[150]. --- com opção de adicionar mais, e com informações do nome do PAI. FK'filhos.ID'</p>
 <p>&#x2610; Data última visita : Date --- FK da 'PM atendimento'.</p>
 <p>&#x2610; Suporte médico : str[50] --- FK da 'consulta'</p>
 <p>&#x2610; Estado : str[2] --- Dropbox ['SC':'Santa Catarina', 'RS':'Rio Grande dos Sul', '...':'...', 'XY':'Estrangeiro']. ***carrega de GeoJSON***</p>
@@ -60,6 +61,8 @@ ____________________
 <p>&#x2610; Rua : str[100].</p>
 <p>&#x2610; Número da residencia : int[5].</p>
 
+> Dados da Vitima.
+<br>
 
 <li>Agressor:</li>
 <p>&#x2610; ID Agressor : INT --- AUTO_INCREMENT.</p>
@@ -71,6 +74,7 @@ ____________________
 <p>&#x2610; Contato telefonico : int[15].</p>
 <p>&#x2610; n° AUTOS : int[30]. --- 'FK violencia_dometica.n°Autos'</p>
 <p>&#x2610; Nome da vítima : int[8]. --- 'FK vitima.ID'</p>
+<p>&#x2610; Possui Filhos : int[150]. --- com opção de adicionar mais, e com informações do nome da MÃE. FK'filhos.ID'</p>
 <p>&#x2610; Início dos AUTOS : FK violencia_dometica.DATE.</p>
 <p>&#x2610; Status : Bool 'FK violencia_dometica.status' .</p>
 <p>&#x2610; Suporte médico : str[50] --- FK da 'consulta'</p>
@@ -81,7 +85,18 @@ ____________________
 <p>&#x2610; Rua : str[100].</p>
 <p>&#x2610; Número da residencia : int[5].</p>
 
+> Dados do agressor.
+<br>
 
+<li>Filhos</li>
+<p>&#x2610; ID Filhos : int --- AUTO_INCREMENT </p>
+<p>&#x2610; Nome : str[150]</p>
+<p>&#x2610; Nome da Mãe : str[150]</p>
+<p>&#x2610; Nome do Pai : str[150]</p>
+<p>&#x2610; data de Nascimento : Date</p>
+
+> Informações dos Filhos, Poderia Buscar no SISP(A FUTURO)
+<br>
 
 <li>Violência domestica:</li>
 <p>&#x2610; n° AUTOS : int[26].</p>
@@ -110,7 +125,7 @@ ____________________
 <p>&#x2610; Data do Atendimento : date.</p>
 (...Nos atendimentos da REDE CATARINA, o que se verifica?...)
 
-> Para a coleta de informaçãos da REDE CATARINA
+> Para a coleta de informaçãos da REDE CATARINA(PM)
 <br>
 
 <li>Atendimentos Agressores</li>
@@ -118,6 +133,9 @@ ____________________
 <p>&#x2610; Setor que assistiu : str[20] --- Dropdown['Assistencia Social', 'Psicológico', 'saúde', 'picossocial', 'Grupo especializado']</p>
 <p>&#x2610; Qual atendimento : str[10] --- Dropdown['Individual', 'Coletivo']</p>
 <p>&#x2610; Avaliação : str[150].</p>
+
+> Documenta o acomapnhamento do agressor(Verificar com grupos de pesquisas as melhores abordagem).
+<br>
 
 <li>Consultas</li>
 * relacionado ao agressor e a vitima
@@ -131,6 +149,8 @@ ____________________
 <p>&#x2610; Instituição Responsavel: str[50] FK 'Instituições.nome'</p>
 <p>&#x2610; Tematica : str[50] --- Dropdown['Domestica', 'sexual', 'psicológica', '...']</p>
 <p>&#x2610; Avaliação Coletiva : str[500].</p>
+
+> Destinado as grupos de atendimentos individuias/coletivos.
 <br>
 
 <li>Polícia civil</li>
@@ -138,15 +158,21 @@ ____________________
 
 > O que a Polícia civil precisa????
 <br>
+
 <li>Usuário:</li>
 <p>&#x2610; Nome : str[50].</p>
 <p>&#x2610; cpf : int[11] --- PK.</p>
 <p>&#x2610; Instituição : str[50] 'FK Instituição.nome_instituição'.</p>
 
+> Para cadastro de Usuários do sistema, com grupos de acesso e permissões.
+<br>
+
 <li>Instituição:</li>
 <p>&#x2610; ID_Instituição : int[8] AUTO_INCREMENTO PK</p>
 <p>&#x2610; Nome_instituição :  str[50] --- Dropdown['Policia Penal', 'Policia Militar', 'Policia Civil', 'Ministerio Público', '...'].</p>
 <p>&#x2610; Grupo_usuario : str[50] --- Dropdown['policiaPenal', '....'].</p>
+
+> Para cadastro de Usuários do sistema, com grupos de acesso e permissões.
 
 
 
