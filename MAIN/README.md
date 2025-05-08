@@ -15,22 +15,21 @@
 <li>instituições que irá conter:</li>
 <p>&#x2610; Sistema de Justiça.</p>
 
-    Poder Judiciário. <br>
-    Ministério Público.<br>
-    Defensoria Pública.<br>
+    Poder Judiciário. 
+    Ministério Público.
+    Defensoria Pública.
 
 <p>&#x2610; Segurança Pública.</p>
 
-    Polícia Militar.<br>
-    Polícia Civil.<br>
-    Polícia Penal.<br>
+    Polícia Militar.
+    Polícia Civil.
+    Polícia Penal.
 
 <p>&#x2610; Órgãos municipais.</p>
 
-    CREA.<br>
-    CREAS.<br>
-    Conselho Tutelar.<br>
-    CRAS.<br>
-    CAPS.<br>
-    SECRETARIA DE SAÚDE.<br>
-    HOSPITAIS???<br>
+    CREA.
+    Conselho Tutelar.
+    CRAS.
+    CAPS.
+    SECRETARIA DE SAÚDE.
+    HOSPITAIS???
