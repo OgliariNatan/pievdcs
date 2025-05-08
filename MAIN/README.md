@@ -13,10 +13,27 @@
 
 <h3>Para cada instituição deverá ser criado uma aplicação.</h3>
 <li>instituições que irá conter:</li>
-<p>&#x2610; Poder Judiciário.</p>
-<p>&#x2610; Ministério Público.</p>
-<p>&#x2610; Polícia Militar.</p>
-<p>&#x2610; Polícia Civil.</p>
-<p>&#x2610; Polícia Penal.</p>
-<p>&#x2610; Defensoria Pública.</p>
+<p>&#x2610; Sistema de Justiça.</p>
+
+    Poder Judiciário. 
+    Ministério Público.
+    Defensoria Pública.
+
+<p>&#x2610; Segurança Pública.</p>
+
+    Polícia Militar.
+    Polícia Civil.
+    Polícia Penal.
+
 <p>&#x2610; Órgãos municipais.</p>
+
+    CREA.
+    Conselho Tutelar.
+    CRAS.
+    CAPS.
+    SECRETARIA DE SAÚDE.
+    HOSPITAIS???
+
+<p>&#x2610; Usuários.</p>
+
+    Usuários.
