@@ -1,5 +1,5 @@
 {% extends 'base/base.html' %}
-
+{% load static %}
 {% block titulo %}{{ title }}{% endblock %}
 
 {% block main_content %}
@@ -9,6 +9,8 @@
     </section>
     <div class="cards-container">
         <div class="card">
+            <p style="text-align: center;"><img src="{% static 'img/logo1.png' %}" alt="logo" height="250" width="250">
+            </p>
             <p>Poderemos incluir os impactos da plataforma, depoimentos anônimos, sugestões de livros/documentários</p>
             <p>{% lorem 3 p %}</p>
         </div>
