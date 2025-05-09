@@ -51,10 +51,15 @@ def relatorios(request):
             {"nome": "Bairro 4", "lat": -26.7630, "lng": -53.1870, "casos": 25},
         ],
         
-        "Tipos de Violência": {
+        "Tipos_de_Violência": {
             "labels": ["Física", "Psicológica", "Sexual", "Econômica"],
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
-        }
+        },
+
+        "parentesco_do_agressor": { #parentescoChart
+            "labels": ["Pai", "Tio", "Cônjuge", "Filho", "Cunhado", "Padrastro"],
+            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
+        },
     }
     return render(request, "relatorios.html", context)
 

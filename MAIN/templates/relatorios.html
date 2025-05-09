@@ -57,8 +57,8 @@
 
     <!-- Gráfico de Barras: Idade -->
     <div class="chart-container">
-        <h2>Distribuição por Idade</h2>
         <div class="dropdown">
+            <h2>Distribuição por Idade</h2>
             <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu2"
                 data-bs-toggle="dropdown" aria-expanded="false">
                 Filtro
@@ -75,10 +75,22 @@
         <canvas id="idadeChart"></canvas>
     </div>
 
+    <!-- Gráfico de Barras: Tipo de violência -->
+    <div class="chart-container">
+        <h2>Tipo de violência</h2>
+        <canvas id="violenciaChart"></canvas>
+    </div>
+
     <!-- Gráfico de Barras: Etnia -->
     <div class="chart-container">
         <h2>Distribuição por Etnia</h2>
         <canvas id="etniaChart"></canvas>
+    </div>
+
+    <!-- Gráfico de Barras: Parentesco -->
+    <div class="chart-container">
+        <h2>Grau de parentesco do Agressor</h2>
+        <canvas id="parentescoChart"></canvas>
     </div>
 
     <!-- Mapa Interativo -->
@@ -98,6 +110,8 @@
     const cidades = {{ cidades| safe }};
     const idades = {{ idades| safe }};
     const etnias = {{ etnias| safe }};
+    const violencia = {{ Tipos_de_Violência| safe }};
+    const parentesco = {{ parentesco_do_agressor| safe }};
     const bairros = {{ bairros| safe }};
 
     // Inicializar o mapa
@@ -121,20 +135,41 @@
         data: {
             labels: cidades.labels,
             datasets: [{
-                label: 'Distribuição por Cidades',
+                label: 'Total',
                 data: cidades.data,
                 backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
             }]
         },
-        options: { // Corrected 'option' to 'options'
-            responsive: true,
-            //maintainAspectRatio: false,
-            title: {
-                display: true,
-                text: 'Distribuição por Cidades' // Added title text:
-            }
-        }
     });
+
+    // Gráfico de rosca: Tipo de violência
+    const violenciaChart = document.getElementById('violenciaChart').getContext('2d');
+    new Chart(violenciaChart, {
+        type: 'pie',
+        data: {
+            labels: violencia.labels,
+            datasets: [{
+                label: 'Total',
+                data: violencia.data,
+                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+            }]
+        },
+    });
+
+    // Gráfico de rosca: Parentesco do Agressor
+    const parentescoChart = document.getElementById('parentescoChart').getContext('2d');
+    new Chart(parentescoChart, {
+        type: 'pie',
+        data: {
+            labels: parentesco.labels,
+            datasets: [{
+                label: 'Total',
+                data: parentesco.data,
+                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+            }]
+        },
+    });
+
 
     // Gráfico de Barras: Idade
     const idadeCtx = document.getElementById('idadeChart').getContext('2d');
@@ -143,7 +178,7 @@
         data: {
             labels: idades.labels,
             datasets: [{
-                label: 'Distribuição por Idade',
+                label: 'Total',
                 data: idades.data,
                 backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
             }]
