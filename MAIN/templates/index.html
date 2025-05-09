@@ -1,5 +1,5 @@
 {% extends 'base/base.html' %}
-
+{% load static %}
 {% block titulo %}{{ title }}{% endblock %}
 
 {% block main_content %}
@@ -9,13 +9,18 @@
     </section>
     <div class="cards-container">
         <div class="card">
+            <p style="text-align: center;"><img src="{% static 'img/logo1.png' %}" alt="logo" height="250" width="250">
+            </p>
             <p>Poderemos incluir os impactos da plataforma, depoimentos anônimos, sugestões de livros/documentários</p>
+            <p>{% lorem 3 p %}</p>
         </div>
         <div class="card">
             <p>Portal de denúncias</p>
+            <p>{% lorem 3 p %}</p>
         </div>
         <div class="card">
             <p>Rede de apoio</p>
+            <p>{% lorem 3 p %}</p>
         </div>
         <div class="card">
             <p><button class="btn btn-sm "
@@ -31,12 +36,15 @@
             <p><button class="btn btn-sm " onclick="window.open('https://ovm.alesc.sc.gov.br/', '_blank')">Observatirio
                     da vilência contra a
                     muher catarinense</button></p>
+            <p>{% lorem 3 p %}</p>
         </div>
         <div class="card">
             <p>Perguntas frequentes</p>
+            <p>{% lorem 3 p %}</p>
         </div>
         <div class="card">
             <p>Informações para contato</p>
+            <p>{% lorem 3 p %}</p>
         </div>
         <div class="card">
             <p>Editais do <a href="https://www.gov.br/mulheres/pt-br" target="_blank">Ministério das Mulheres</a></p>
