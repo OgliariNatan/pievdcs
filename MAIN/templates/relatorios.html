@@ -111,7 +111,22 @@
 <!-- Script do Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{% static 'js/relatorios.js' %}"></script>
 <script>
+    // Função para gerar paleta de cores dinâmica utilizando HSL.
+    function gerarCoresHSL(qtd) {
+        const cores = [];
+        const saturacao = 70; // Saturação em %
+        const luminosidade = 50; // Luminosidade em %
+        for (let i = 0; i < qtd; i++) {
+            const matiz = Math.round((360 * i) / qtd);
+            cores.push(`hsl(${matiz}, ${saturacao}%, ${luminosidade}%)`);
+        }
+        return cores;
+    }
+
+
+
     // Dados passados pelo Django
     const cidades = {{ cidades| safe }};
     const idades = {{ idades| safe }};
@@ -144,7 +159,7 @@
             datasets: [{
                 label: 'Total',
                 data: cidades.data,
-                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+                backgroundColor: gerarCoresHSL(cidades.data.length)
             }]
         },
     });
@@ -153,15 +168,33 @@
     // Gráfico de rosca: idade
     const idadeChart = document.getElementById('idadeChart').getContext('2d');
     new Chart(idadeChart, {
-        type: 'pie',
+        type: 'bar',
         data: {
             labels: idades.labels,
             datasets: [{
                 label: 'Total',
                 data: idades.data,
-                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+                backgroundColor: gerarCoresHSL(idades.data.length)
             }]
         },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Idade em Anos'
+                    }
+                },
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Grupos de idades'
+                    }
+                }
+            }
+        }
     });
 
     // Gráfico de rosca: Tipo de violência
@@ -173,7 +206,7 @@
             datasets: [{
                 label: 'Total',
                 data: violencia.data,
-                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+                backgroundColor: gerarCoresHSL(violencia.data.length)
             }]
         },
     });
@@ -187,7 +220,7 @@
             datasets: [{
                 label: 'Total',
                 data: parentesco.data,
-                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+                backgroundColor: gerarCoresHSL(parentesco.data.length)
             }]
         },
     });
@@ -195,13 +228,13 @@
     // Gráfico de Barras: Classe econômica
     const classeCtx = document.getElementById('classeEconomicaChart').getContext('2d');
     new Chart(classeCtx, {
-        type: 'line',
+        type: 'bar', // Mudando para gráfico de barras para categorias discretas
         data: {
             labels: classeEconomica.labels,
             datasets: [{
                 label: 'Classe Econômica',
                 data: classeEconomica.data,
-                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+                backgroundColor: gerarCoresHSL(classeEconomica.data.length)
             }]
         },
         options: {
@@ -214,19 +247,15 @@
                     }
                 },
                 x: {
-                    beginAtZero: true,
                     title: {
                         display: true,
                         text: 'Classes Econômicas'
                     }
                 }
             },
-            responsive: true,
             plugins: {
                 legend: {
-                    display: false,
-                    text: 'Classes Econômicas',
-                    position: 'top',
+                    display: false
                 },
                 tooltip: {
                     callbacks: {
@@ -235,10 +264,10 @@
                         }
                     }
                 }
-            }
+            },
+            responsive: true
         }
     });
-
     // Gráfico de Barras: Etnia
     const etniaCtx = document.getElementById('etniaChart').getContext('2d');
     new Chart(etniaCtx, {
@@ -248,7 +277,7 @@
             datasets: [{
                 label: 'Distribuição por Etnia',
                 data: etnias.data,
-                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+                backgroundColor: gerarCoresHSL(etnias.data.length)
             }]
         },
         // options: {

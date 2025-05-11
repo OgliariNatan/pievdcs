@@ -35,7 +35,7 @@ def relatorios(request):
         },
 
         "idades": {
-            "labels": ["0-18", "19-30", "31-50", "51+", "51+"],
+            "labels": ["0-13", "14-18", "19-30", "31-50", "51+"],
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
         },
         
