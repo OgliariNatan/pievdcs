@@ -58,9 +58,13 @@ canvas {
 }
 
 /* Para mapas */
-#map {
+.chart-container #map {
     width: 100%;
     height: 400px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    /* Centraliza o mapa */
+    overflow: hidden;
+    /* Garante que o conteúdo do mapa não extrapole */
 }

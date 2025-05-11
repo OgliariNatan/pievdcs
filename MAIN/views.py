@@ -35,13 +35,18 @@ def relatorios(request):
         },
 
         "idades": {
-            "labels": ["0-18", "19-30", "31-50", "51+", "51+"],
+            "labels": ["0-13", "14-18", "19-30", "31-50", "51+"],
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
         },
         
         "etnias": {
-            "labels": ["Etnia A", "Etnia B", "Etnia C", "Etnia D"],
-            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
+            "labels": ["Branca", "Parda", "Preta", "Amarela", "Indígena"],
+            "data": [random.randint(1,10), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,50)]
+        },
+
+        "classeEconomica": { #classeEconomicaChart
+            "labels": ["Classe A", "Classe B", "Classe C", "Classe D", "Classe E"],
+            "data": [random.randint(1,1000), random.randint(1,1000), random.randint(1,1000), random.randint(1,1000), random.randint(1,1000)]
         },
 
         "bairros": [
