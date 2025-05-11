@@ -40,8 +40,8 @@ def relatorios(request):
         },
         
         "etnias": {
-            "labels": ["Etnia A", "Etnia B", "Etnia C", "Etnia D"],
-            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
+            "labels": ["Branca", "Parda", "Preta", "Amarela", "Indígena"],
+            "data": [random.randint(1,10), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,50)]
         },
 
         "bairros": [
