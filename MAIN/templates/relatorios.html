@@ -87,6 +87,12 @@
         <canvas id="etniaChart"></canvas>
     </div>
 
+    <!-- Gráfico de Barras: Classe Econômica -->
+    <div class="chart-container">
+        <h2>Classe Econômica</h2>
+        <canvas id="classeEconomicaChart"></canvas>
+    </div>
+
     <!-- Gráfico de Barras: Parentesco -->
     <div class="chart-container">
         <h2>Grau de parentesco do Agressor</h2>
@@ -112,6 +118,7 @@
     const etnias = {{ etnias| safe }};
     const violencia = {{ Tipos_de_Violência| safe }};
     const parentesco = {{ parentesco_do_agressor| safe }};
+    const classeEconomica = {{ classeEconomica| safe }};
     const bairros = {{ bairros| safe }};
 
     // Inicializar o mapa
@@ -137,6 +144,21 @@
             datasets: [{
                 label: 'Total',
                 data: cidades.data,
+                backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
+            }]
+        },
+    });
+
+
+    // Gráfico de rosca: idade
+    const idadeChart = document.getElementById('idadeChart').getContext('2d');
+    new Chart(idadeChart, {
+        type: 'pie',
+        data: {
+            labels: idades.labels,
+            datasets: [{
+                label: 'Total',
+                data: idades.data,
                 backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
             }]
         },
@@ -170,23 +192,48 @@
         },
     });
 
-
-    // Gráfico de Barras: Idade
-    const idadeCtx = document.getElementById('idadeChart').getContext('2d');
-    new Chart(idadeCtx, {
-        type: 'bar',
+    // Gráfico de Barras: Classe econômica
+    const classeCtx = document.getElementById('classeEconomicaChart').getContext('2d');
+    new Chart(classeCtx, {
+        type: 'line',
         data: {
-            labels: idades.labels,
+            labels: classeEconomica.labels,
             datasets: [{
-                label: 'Total',
-                data: idades.data,
+                label: 'Classe Econômica',
+                data: classeEconomica.data,
                 backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
             }]
         },
         options: {
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Valor em Reais R$'
+                    }
+                },
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Classes Econômicas'
+                    }
+                }
+            },
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false,
+                    text: 'Classes Econômicas',
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
+                        }
+                    }
                 }
             }
         }
@@ -195,7 +242,7 @@
     // Gráfico de Barras: Etnia
     const etniaCtx = document.getElementById('etniaChart').getContext('2d');
     new Chart(etniaCtx, {
-        type: 'bar',
+        type: 'polarArea',
         data: {
             labels: etnias.labels,
             datasets: [{
@@ -204,13 +251,13 @@
                 backgroundColor: ['#c8a2c8', '#e6cce6', '#f3e6f3', '#5a3d5a']
             }]
         },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+        // options: {
+        //     scales: {
+        //         y: {
+        //             beginAtZero: true
+        //         }
+        //     }
+        // }
     });
 
     // Configurar ícones do Leaflet

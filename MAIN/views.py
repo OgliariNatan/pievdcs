@@ -44,6 +44,11 @@ def relatorios(request):
             "data": [random.randint(1,10), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,50)]
         },
 
+        "classeEconomica": { #classeEconomicaChart
+            "labels": ["Classe A", "Classe B", "Classe C", "Classe D", "Classe E"],
+            "data": [random.randint(1,1000), random.randint(1,1000), random.randint(1,1000), random.randint(1,1000), random.randint(1,1000)]
+        },
+
         "bairros": [
             {"nome": "Bairro 1", "lat": -26.7650, "lng": -53.1830, "casos": 10},
             {"nome": "Bairro 2", "lat": -26.7670, "lng": -53.1850, "casos": 20},
