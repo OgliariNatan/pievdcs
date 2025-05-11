@@ -20,3 +20,14 @@ function gerarCoresAleatorias(qtd) {
     }
     return cores;
 }
+
+// Função para gerar um array de cores baseadas no lilás
+function gerarCoresLilas(qtd) {
+    const cores = [];
+    for (let i = 0; i < qtd; i++) {
+        cores.push(gerarCorLilas());
+    }
+    return cores;
+}
+
+
