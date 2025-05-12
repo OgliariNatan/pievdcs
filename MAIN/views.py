@@ -62,8 +62,8 @@ def relatorios(request):
         },
 
         "parentesco_do_agressor": { #parentescoChart
-            "labels": ["Pai", "Tio", "Cônjuge", "Filho", "Cunhado", "Padrastro"],
-            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
+            "labels": ["Pai", "Tio", "Cônjuge", "Filho", "Cunhado", "Padrastro", "Outros"],
+            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10)]
         },
     }
     return render(request, "relatorios.html", context)

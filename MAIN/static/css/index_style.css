@@ -46,11 +46,15 @@ section {
     display: flex;
     flex-wrap: wrap;
     /* Permite que os cartões se ajustem em várias linhas */
-    gap: 20px;
+    gap: 10px;
     /* Espaçamento entre os cartões */
     justify-content: center;
     /* Centraliza os cartões */
     padding: 20px;
+}
+
+.cards-container .card {
+    margin-bottom: 10px;
 }
 
 /* Estilo para os cartões */
@@ -61,11 +65,12 @@ section {
     /* Texto preto */
     border: 1px solid var(--cor-lilas-escuro);
     /* Borda lilás escuro */
-    border-radius: 10px;
+    border-radius: 20px;
     /* Arredonda os cantos */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     /* Adiciona sombra */
     padding: 20px;
+
     flex: 1 1 calc(33.333% - 40px);
     /* Cartões ocupam 1/3 da largura com espaçamento */
     max-width: 300px;
