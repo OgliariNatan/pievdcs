@@ -4,8 +4,8 @@
 
 
 {% block nav %}
-<button class="btn button-sm" onclick="location.href='{% url 'index' %}'">Início</button>
-<button class="btn btn-sm" onclick="history.back()">Voltar</button>
+<!-- <button class="btn button-sm" onclick="location.href='{% url 'index' %}'">Início</button>
+<button class="btn btn-sm" onclick="history.back()">Voltar</button> -->
 {% endblock %}
 
 
@@ -15,28 +15,32 @@
 
 <div class="main-layout nav">
     <!-- Barra lateral -->
-    <div class="sidebar button_link nav">
+    <aside class="sidebar button_link">
         <button>
             <a href="#">Atendimentos Realizados</a>
         </button>
-        <button>
-            <a href="https://www.google.com.br" target="_blank">Encaminhamentos <span id="span_encaminhamentos">
-                    [5]</span></a>
+        <button class="btn">
+            <a href="#">Encaminhamentos <span class="badge badge-info" id="span_encaminhamentos">
+                    {{ encaminhamentos }}</span></a>
         </button>
         <button>
-            <a href="https://www.google.com.br">Notificações <span id="span_alert">[2]</span></a>
+            <a href="#">Notificações
+                <span class="badge badge-danger" id="span_alert">{{ alert }}</span></a>
         </button>
         <button>
             <a href="{% url 'relatorios' %}">Relatórios</a>
         </button>
-    </div>
+    </aside>
 
     <!-- Conteúdo principal -->
     <div id="root-content">
 
         <h1>{{ title }}</h1>
-        <p>Bem-vindo à página da {{ title }}.</p>
+        <p>Bem-vindo a página da {{ title }}.</p>
+        <button class="btn btn-primary btn-sm">Buscar</button>
+        <button class="btn btn-secondary btn-sm">Cadastrar</button>
         <p>Esta página contém informações relevantes sobre a {{ title }} e seus serviços.</p>
+        <p>{% lorem 10 p %}</p>
     </div>
 </div>
 {% endblock %}
