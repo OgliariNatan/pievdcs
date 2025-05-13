@@ -45,8 +45,8 @@ def relatorios(request):
         },
 
         "classeEconomica": { #classeEconomicaChart
-            "labels": ["Classe A", "Classe B", "Classe C", "Classe D", "Classe E"],
-            "data": [random.randint(1,1000), random.randint(1,1000), random.randint(1,1000), random.randint(1,1000), random.randint(1,1000)]
+            "labels": ["Acima de R$28.240,00", "De R$7.017,64 a R$28.239,99", "De R$3.636,01 a R$7.017,63", "De R$3.636,00 a R$1.518,00", "Abaixo de R$1.518,00"],
+            "data": [random.randint(1,5), random.randint(1,10), random.randint(1,150), random.randint(1,150), random.randint(1,50)]
         },
 
         "bairros": [
@@ -57,13 +57,17 @@ def relatorios(request):
         ],
         
         "Tipos_de_Violência": {
-            "labels": ["Física", "Psicológica", "Sexual", "Econômica"],
-            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
+            "labels": ["Física", "Psicológica", "Sexual", "Econômica", "Patrimonial", "Moral"],
+            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
         },
 
         "parentesco_do_agressor": { #parentescoChart
             "labels": ["Pai", "Tio", "Cônjuge", "Filho", "Cunhado", "Padrastro", "Outros"],
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10)]
+        },
+        "grauInstrucao": { #grauInstrucaoChart
+            "labels": ["Analfabeto", "Fundamental", "Médio", "Superior", "Pós-graduação"],
+            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,10)]
         },
     }
     return render(request, "relatorios.html", context)

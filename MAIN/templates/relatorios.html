@@ -84,6 +84,12 @@
         <canvas id="classeEconomicaChart"></canvas>
     </div>
 
+    <!-- Gráfico de Barras: Grau de instrução -->
+    <div class="chart-container">
+        <h2>Grau de Instrução</h2>
+        <canvas id="grauInstrucaoChart"></canvas>
+    </div>
+
     <!-- Gráfico de Barras: Parentesco -->
     <div class="chart-container">
         <h2>Grau de parentesco do Agressor</h2>
@@ -125,6 +131,7 @@
     const violencia = {{ Tipos_de_Violência| safe }};
     const parentesco = {{ parentesco_do_agressor| safe }};
     const classeEconomica = {{ classeEconomica| safe }};
+    const grauInstrucao = {{ grauInstrucao| safe }};
     const bairros = {{ bairros| safe }};
 
     // Inicializar o mapa
@@ -174,19 +181,80 @@
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Idade em Anos'
+                        text: 'Casos de Violência'
                     }
                 },
                 x: {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Grupos de idades'
+                        text: 'Grupos de Idades em Anos'
                     }
                 }
-            }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            },
+            responsive: true
         }
     });
+
+
+    // Gráfico de rosca: grau de instrução
+    const grauChart = document.getElementById('grauInstrucaoChart').getContext('2d');
+    new Chart(grauChart, {
+        type: 'bar',
+        data: {
+            labels: grauInstrucao.labels,
+            datasets: [{
+                label: 'Total',
+                data: grauInstrucao.data,
+                backgroundColor: gerarCoresHSL(grauInstrucao.data.length)
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Casos de Violência'
+                    }
+                },
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Grau de Instrução'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            },
+            responsive: true,
+        }
+    });
+
+
 
     // Gráfico de rosca: Tipo de violência
     const violenciaChart = document.getElementById('violenciaChart').getContext('2d');
@@ -234,7 +302,7 @@
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Valor em Reais R$'
+                        text: 'Casos de Violência'
                     }
                 },
                 x: {
