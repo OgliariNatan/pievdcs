@@ -181,17 +181,30 @@
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Idade em Anos'
+                        text: 'Casos de Violência'
                     }
                 },
                 x: {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Grupos de idades'
+                        text: 'Grupos de Idades em Anos'
                     }
                 }
-            }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            },
+            responsive: true
         }
     });
 
@@ -214,17 +227,30 @@
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Grau de Instrução'
+                        text: 'Casos de Violência'
                     }
                 },
                 x: {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Grupos de Grau de Instrução'
+                        text: 'Grau de Instrução'
                     }
                 }
-            }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            },
+            responsive: true,
         }
     });
 
@@ -276,7 +302,7 @@
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Valor em Reais R$'
+                        text: 'Casos de Violência'
                     }
                 },
                 x: {

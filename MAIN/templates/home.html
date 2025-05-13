@@ -55,18 +55,18 @@
 <div class="main-layout nav">
     <!-- Barra lateral -->
     <aside class="sidebar button_link">
-        <button>
+        <button class="btn" disabled>
             <a href="#">Atendimentos Realizados</a>
         </button>
-        <button class="btn">
+        <button class="btn" disabled>
             <a href="#" target="_blank">Encaminhamentos <span class="badge badge-info" id="span_encaminhamentos">
                     {{ encaminhamentos }}</span></a>
         </button>
-        <button>
+        <button class="btn" disabled>
             <a href="#">Notificações
                 <span class="badge badge-danger" id="span_alert">{{ alert }}</span></a>
         </button>
-        <button>
+        <button class="btn">
             <a href="{% url 'relatorios' %}">Relatórios</a>
         </button>
     </aside>
