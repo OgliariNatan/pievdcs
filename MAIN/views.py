@@ -65,6 +65,10 @@ def relatorios(request):
             "labels": ["Pai", "Tio", "Cônjuge", "Filho", "Cunhado", "Padrastro", "Outros"],
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10)]
         },
+        "grauInstrucao": { #grauInstrucaoChart
+            "labels": ["Analfabeto", "Fundamental", "Médio", "Superior", "Pós-graduação"],
+            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,10)]
+        },
     }
     return render(request, "relatorios.html", context)
 
