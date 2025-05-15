@@ -30,7 +30,7 @@ def relatorios(request):
 
         "cidade_maps": "Maravilha/SC",
         "cidades": {
-            "labels": ["Maravilha", "Tigrinhos", "Irceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
+            "labels": ["Maravilha", "Tigrinhos", "Iraceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
         },
 
@@ -50,10 +50,16 @@ def relatorios(request):
         },
 
         "bairros": [
-            {"nome": "Bairro 1", "lat": -26.7650, "lng": -53.1830, "casos": 10},
+            {"nome": "Bairro 1", "lat": -26.771567, "lng": -53.190010, "casos": 10},
             {"nome": "Bairro 2", "lat": -26.7670, "lng": -53.1850, "casos": 20},
             {"nome": "Bairro 3", "lat": -26.7690, "lng": -53.1810, "casos": 15},
             {"nome": "Bairro 4", "lat": -26.7630, "lng": -53.1870, "casos": 25},
+            {"nome": "Linha Sanga Silva", "lat": -26.73157, "lng": -53.19992, "casos": 1},
+            {"nome": "Iraceminha", "lat": -26.823437, "lng": -53.273439, "casos": 5},
+            {"nome": "Flor do Sertão", "lat": -26.777475, "lng": -53.349358, "casos": 2},
+            {"nome": "São Miguel da Boa Vista", "lat": -26.692041, "lng": -53.257654, "casos": 3},
+            {"nome": "Tigrinhos", "lat": -26.686780, "lng": -53.157091, "casos": 8},
+            {"nome": "Santa Terezinha do Progresso", "lat": -26.618440, "lng": -53.198218, "casos": 4},
         ],
         
         "Tipos_de_Violência": {
