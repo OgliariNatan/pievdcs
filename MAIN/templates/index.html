@@ -41,7 +41,7 @@
         <div class="card">
             <p>Rede de apoio</p>
             <!-- Frase -->
-            <div class="chart-container">
+            <div class="chart-container" id="frase">
                 <div class="card-body">
                     <blockquote class="blockquote mb-0">
                         <p>Somos exímimos construtores, filhos do sistema cartesiano. A dor humana virou estatística.
@@ -90,7 +90,7 @@
             <p>Perguntas frequentes</p>
             <p>{% lorem 3 p %}</p>
         </div>
-        <div class="card">
+        <div class="card" id="contato">
             <p>Informações para contato</p>
             <p>{% lorem 3 p %}</p>
         </div>
@@ -104,6 +104,18 @@
             <!-- <p><a href="{% url 'relatorios' %}">Dados Estatísticos</a></p> -->
             <button class="btn btn-sm" onclick="location.href='{% url 'relatorios' %}'">Dados
                 Estatísticos</button>
+        </div>
+        <div class="card" id="sobre-projeto">
+            <!-- <p><a href="{% url 'relatorios' %}">Dados Estatísticos</a></p> -->
+            <h3>Sobre este projeto</h3>
+            <p>Conheça as pessoas engajadas nesta plataforma:</p>
+            <ul>
+                <li>Maria da Penha</li>
+                <li>Joana D'Arc</li>
+                <li>Frida Kahlo</li>
+                <li>Malala Yousafzai</li>
+                <li>Simone de Beauvoir</li>
+            </ul>
         </div>
     </div>
 </main>
