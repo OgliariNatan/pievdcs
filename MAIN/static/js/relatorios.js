@@ -1,6 +1,12 @@
 // Função para atualizar o texto do botão do dropdown
-function updateDropdownText(selectedText) {
+function updateDropdownText2(selectedText) {
     const dropdownButton = document.getElementById('dropdownMenu2');
+    dropdownButton.textContent = selectedText; // Atualiza o texto do botão
+}
+
+// Função para atualizar o texto do botão do dropdown
+function updateDropdownText(selectedText) {
+    const dropdownButton = document.getElementById('dropdownMenu');
     dropdownButton.textContent = selectedText; // Atualiza o texto do botão
 }
 

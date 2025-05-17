@@ -10,8 +10,8 @@ def home(request):
     context = {
         "title": "Página Inicial",
         "welcome_message": "Bem-vindo à Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais!",
-        'encaminhamentos': 3, #Criar variaveis para encaminhamentos
-        'alert': 4, #criar variavel para notificações
+        'encaminhamentos': 0, #Criar variaveis para encaminhamentos
+        'alert': 0, #criar variavel para notificações
     }
     return render(request, "home.html", context)
 
@@ -63,8 +63,8 @@ def relatorios(request):
         ],
         
         "Tipos_de_Violência": {
-            "labels": ["Física", "Psicológica", "Sexual", "Econômica", "Patrimonial", "Moral"],
-            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
+            "labels": ["Física", "Psicológica", "Sexual", "Patrimonial", "Moral"],
+            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
         },
 
         "parentesco_do_agressor": { #parentescoChart
