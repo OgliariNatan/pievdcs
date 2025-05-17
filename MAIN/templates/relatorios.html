@@ -41,10 +41,46 @@
             </blockquote>
         </div>
     </div>
+    <!-- Filtros -->
+    <div class="chart-container">
+        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu2"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            Filtro
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            <li><button class="dropdown-item active" type="button"
+                    onclick="updateDropdownText2('Semanal')">Semanal</button></li>
+            <li><button class="dropdown-item" type="button" onclick="updateDropdownText2('Mensal')">Mensal</button>
+            </li>
+            <li><button class="dropdown-item" type="button" onclick="updateDropdownText2('Anual')">Anual</button>
+            </li>
+            <li><button class="dropdown-item" type="button" onclick="updateDropdownText2('Todos')">Todos</button>
+            </li>
+        </ul>
 
+        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            Comarcas
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+            <li><button class="dropdown-item active" type="button"
+                    onclick="updateDropdownText('Maravilha')">Maravilha</button></li>
+            <li><button class="dropdown-item" type="button"
+                    onclick="updateDropdownText('Pinhalzinho')">Pinhalzinho</button>
+            </li>
+            <li><button class="dropdown-item" type="button" onclick="updateDropdownText('Cunha Porã')">Cunha
+                    Porã</button>
+            </li>
+            <li><button class="dropdown-item" type="button" onclick="updateDropdownText('Modelo')">Modelo</button>
+            </li>
+        </ul>
+
+
+    </div>
     <!-- Gráfico de Rosca: Comarcas -->
     <div class="chart-container">
         <h2>Distribuição por Comarca</h2>
+
         <canvas id="cidadeChart"></canvas>
     </div>
 
@@ -52,18 +88,7 @@
     <div class="chart-container">
         <div class="dropdown">
             <h2>Distribuição por Idade</h2>
-            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu2"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                Filtro
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                <li><button class="dropdown-item active" type="button"
-                        onclick="updateDropdownText('Semanal')">Semanal</button></li>
-                <li><button class="dropdown-item" type="button" onclick="updateDropdownText('Mensal')">Mensal</button>
-                </li>
-                <li><button class="dropdown-item" type="button" onclick="updateDropdownText('Anual')">Anual</button>
-                </li>
-            </ul>
+
         </div>
         <canvas id="idadeChart"></canvas>
     </div>
@@ -332,7 +357,7 @@
     // Gráfico de Barras: Etnia
     const etniaCtx = document.getElementById('etniaChart').getContext('2d');
     new Chart(etniaCtx, {
-        type: 'polarArea',
+        type: 'pie',
         data: {
             labels: etnias.labels,
             datasets: [{
