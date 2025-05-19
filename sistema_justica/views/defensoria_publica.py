@@ -1,7 +1,11 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
-from ..views.permission_group import grupos_permitidos
+from .permission_group import grupos_permitidos
+
+
+
 
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Defensoria Pública'])

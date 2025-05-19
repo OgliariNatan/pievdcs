@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.contrib.auth.models import Group
 from django.http import HttpResponseForbidden
-from ..views.permission_group import grupos_permitidos
+
+from .permission_group import grupos_permitidos
 
 
 @login_required(login_url=reverse_lazy('login'))
