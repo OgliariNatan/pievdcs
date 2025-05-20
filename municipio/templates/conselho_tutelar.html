@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block nav %}
-<button class="btn button-sm" onclick="location.href='{% url 'index' %}'">Início</button>
+<!-- <button class="btn button-sm" onclick="location.href='{% url 'index' %}'">Início</button> -->
 <!-- <button class="btn btn-sm" onclick="history.back()">Voltar</button> -->
 {% endblock %}
 
@@ -26,10 +26,10 @@
         </button>
         <button>
             <a href="https://www.google.com.br" target="_blank">Encaminhamentos <span id="span_encaminhamentos">
-                    [5]</span></a>
+                    {{ encaminhamentos }}</span></a>
         </button>
         <button>
-            <a href="https://www.google.com.br">Notificações <span id="span_alert">[2]</span></a>
+            <a href="https://www.google.com.br">Notificações <span id="span_alert">{{ notificacao }}</span></a>
         </button>
         <button>
             <a href="{% url 'relatorios' %}">Relatórios</a>
@@ -39,9 +39,19 @@
     <!-- Conteúdo principal -->
     <div id="root-content">
 
-        <h1>{{ title }}</h1>
-        <p>Bem-vindo à página da {{ title }}.</p>
-        <p>Esta página contém informações relevantes sobre o {{ title }} e seus serviços.</p>
+        <h1>{{ title }} &#x2014; Usuário: {{ user.first_name }} {{ user.last_name }}</h1>
+        <p>Bem-vindo a página da {{ title }}.</p>
+        <p>Esta página contém informações relevantes sobre a {{ title }} e seus serviços.</p>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.search }}
+        </form>
+
+        <input type="text" class="form-control-sm" placeholder="Nome ou CPF">
+        <button class="btn btn-primary btn-sm">Pesquisar</button>
+        <button class="btn btn-secondary btn-sm">Cadastrar</button>
+        <p>Esta página contém informações relevantes sobre a {{ title }} e seus serviços.</p>
+        <p>{% lorem 10 p %}</p>
     </div>
 </div>
 {% endblock %}
