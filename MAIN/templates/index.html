@@ -2,9 +2,14 @@
 {% load static %}
 {% block titulo %}{{ title }}{% endblock %}
 
+{% block head %}
+<!-- <link rel="stylesheet" href="{% static 'css/index_style.css' %}"> -->
+<!-- <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}"> -->
+{% endblock %}
+
 {% block main_content %}
 <main>
-    <section>
+    <section id="inicio">
         <h2>Aqui será incorporada a página inicial, onde será aberta; será do tipo 'one-page'</h2>
     </section>
     <div class="cards-container">
@@ -139,5 +144,8 @@
             </ul>
         </div>
     </div>
+
 </main>
+<a href="#inicio" id="topo" class="remo_print"> <img src="{% static 'img/arrow-circle-up.png' %}" height="30"
+        alt="Topo do site"></a>
 {% endblock %}
