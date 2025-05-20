@@ -25,11 +25,13 @@
             <a href="#">Atendimentos Realizados</a>
         </button>
         <button>
-            <a href="https://www.google.com.br" target="_blank">Encaminhamentos <span id="span_encaminhamentos">
+            <a href="https://www.google.com.br" target="_blank">Encaminhamentos <span class="badge badge-info"
+                    id="span_encaminhamentos">
                     {{ encaminhamentos }}</span></a>
         </button>
         <button>
-            <a href="https://www.google.com.br">Notificações <span id="span_alert">{{ notificacao }}</span></a>
+            <a href="https://www.google.com.br">Notificações <span class="badge badge-danger"
+                    id="span_alert">{{ notificacao }}</span></a>
         </button>
         <button>
             <a href="{% url 'relatorios' %}">Relatórios</a>

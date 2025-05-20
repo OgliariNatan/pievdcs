@@ -9,8 +9,8 @@ def cras(request):
     contexto = {
         'title': 'Centros de Referência de Assistência Social',
         'description': 'This page provides information about the CRAS system.',
-        'notificacao': 0,
-        'encaminhamentos': 0,
+        'notificacao': 1,
+        'encaminhamentos': 1,
         'user' : request.user,
     }
     return render(request, "cras.html", contexto)
