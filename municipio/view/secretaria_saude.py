@@ -4,14 +4,14 @@ from django.urls import reverse_lazy
 from .permission_group import grupos_permitidos
 
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['CREAS'])
+@grupos_permitidos(['Secretaria de Saúde'])
 
-def creas(request):
+def secretaria_saude(request):
     contexto = {
-        'title': 'CREAS',
-        'description': 'This page provides information about the CREAS system.',
+        'title': 'Secretaria de Saúde',
+        'description': 'This page provides information about the Secretaria de Saúde system.',
         'encaminhamentos': 2,  # Criar variaveis para encaminhamentos
         'notificacao': 1,
         'user' : request.user,
     }
-    return render(request, "creas.html", contexto)
+    return render(request, "secretaria_saude.html", contexto)
