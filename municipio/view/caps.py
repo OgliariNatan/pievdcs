@@ -11,7 +11,7 @@ def caps(request):
         'title': 'Centros de Atenção Psicossocial',
         'description': 'This page provides information about the CAPS system.',
         'notificacao': 0,
-        'encaminhamentos': 0,
+        'encaminhamentos': 2,
         'user' : request.user,
     }
     return render(request, "caps.html", contexto)

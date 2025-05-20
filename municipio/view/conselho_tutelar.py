@@ -9,8 +9,8 @@ def conselho_tutelar(request):
     contexto = {
         'title': 'Conselho Tutelar',
         'description': 'This page provides information about the conselho tutelar system.',
-        'encaminhamentos': 0,  # Criar variaveis para encaminhamentos
-        'notificacao': 0,
+        'encaminhamentos': 1,  # Criar variaveis para encaminhamentos
+        'notificacao': 1,
         'user' : request.user,
     }
     return render(request, "conselho_tutelar.html", contexto)

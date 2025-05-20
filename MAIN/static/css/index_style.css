@@ -87,6 +87,20 @@ section {
     /* Aumenta a sombra */
 }
 
+
+/*Fixa o botão de topo no canto inferior direito */
+#topo {
+    position: fixed;
+    right: 20px;
+    /* Ajuste para afastar um pouco mais da borda */
+    bottom: 20px;
+    /* Ajuste para afastar um pouco mais da borda */
+    z-index: 999;
+    /* Garante que fique acima de outros elementos */
+    cursor: pointer;
+}
+
+
 /* Responsividade para telas menores */
 @media (max-width: 768px) {
     .card {
