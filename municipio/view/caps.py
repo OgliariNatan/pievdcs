@@ -10,7 +10,7 @@ def caps(request):
     contexto = {
         'title': 'Centros de Atenção Psicossocial',
         'description': 'This page provides information about the CAPS system.',
-        'notificacao': 0,
+        'notificacao': 3,
         'encaminhamentos': 2,
         'user' : request.user,
     }

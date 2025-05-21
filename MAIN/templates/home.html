@@ -60,11 +60,11 @@
             <a href="#">Atendimentos Realizados</a>
         </button>
         <button class="btn" disabled>
-            <a href="#" target="_blank">Encaminhamentos <!-- <span class="badge badge-info" id="span_encaminhamentos">
+            <a href="{% url 'encaminhamentos' %}" target="_blank">Encaminhamentos <!-- <span class="badge badge-info" id="span_encaminhamentos">
                     {{ encaminhamentos }} --> </span></a>
         </button>
         <button class="btn" disabled>
-            <a href="#">Notificações
+            <a href="{% url 'notificacoes' 0 %}">Notificações
                 <!-- <span class="badge badge-danger" id="span_alert">{{ alert }}</span>  --></a>
         </button>
         <button class="btn">

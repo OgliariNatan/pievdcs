@@ -22,6 +22,24 @@ def index(request):
     }
     return render(request, "index.html", context)
 
+@login_required
+def encaminhamentos(request):
+    context = {
+        "title": "Encaminhamentos",
+        "description": "Visualize os encaminhamentos realizados na plataforma.",
+        'user': request.user,
+    }
+    return render(request, "encaminhamentos.html", context)
+
+@login_required
+def notificacoes(request, notificacoes=0):
+    context = {
+        "title": "Notificações",
+        "description": "Visualize as notificações recebidas na plataforma.",
+        'notificacao': notificacoes,
+        'user': request.user,
+    }
+    return render(request, "notificacoes.html", context)
 
 def relatorios(request):
     context = {

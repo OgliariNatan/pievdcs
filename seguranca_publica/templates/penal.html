@@ -20,11 +20,12 @@
             <a href="#">Atendimentos Realizados</a>
         </button>
         <button class="btn">
-            <a href="#" target="_blank">Encaminhamentos <span class="badge badge-info" id="span_encaminhamentos">
+            <a href="{% url 'encaminhamentos' %}">Encaminhamentos <span class="badge badge-warning"
+                    id="span_encaminhamentos">
                     {{ encaminhamentos }}</span></a>
         </button>
         <button>
-            <a href="#">Notificações
+            <a href="{% url 'notificacoes' alert %}">Notificações
                 <span class="badge badge-danger" id="span_alert">{{ alert }}</span></a>
         </button>
         <button>
