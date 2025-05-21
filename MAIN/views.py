@@ -63,8 +63,8 @@ def relatorios(request):
         },
 
         "classeEconomica": { #classeEconomicaChart
-            "labels": ["Acima de R$28.240,00", "De R$7.017,64 a R$28.239,99", "De R$3.636,01 a R$7.017,63", "De R$3.636,00 a R$1.518,00", "Abaixo de R$1.518,00"],
-            "data": [random.randint(1,5), random.randint(1,10), random.randint(1,150), random.randint(1,150), random.randint(1,50)]
+            "labels": ["Abaixo de R$1.518,00", "De R$3.636,00 a R$1.518,00", "De R$3.636,01 a R$7.017,63", "De R$7.017,64 a R$28.239,99", "Acima de R$28.240,00"],
+            "data": [random.randint(1,90), random.randint(1,110), random.randint(1,50), random.randint(1,5), random.randint(1,5)]
         },
 
         "bairros": [

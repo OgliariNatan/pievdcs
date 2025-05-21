@@ -46,7 +46,7 @@
         <h2>Selecione o(s) Filtro(s)</h2>
         <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu2"
             data-bs-toggle="dropdown" aria-expanded="false">
-            Filtro
+            Período
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
             <li><button class="dropdown-item active" type="button"
@@ -74,7 +74,7 @@
             </li>
             <li><button class="dropdown-item" type="button" onclick="updateDropdownText('Modelo')">Modelo</button>
             </li>
-            <li><button class="dropdown-item" type="button" onclick="updateDropdownText('Modelo')">Todas</button>
+            <li><button class="dropdown-item" type="button" onclick="updateDropdownText('Todas')">Todas</button>
             </li>
         </ul>
 
@@ -82,10 +82,18 @@
     </div>
     <!-- Gráfico de Rosca: Comarcas -->
     <div class="chart-container">
-        <h2>Distribuição por Comarca</h2>
+        <h2>Distribuição por Cidades</h2>
 
         <canvas id="cidadeChart"></canvas>
     </div>
+
+    <!-- Gráfico de Rosca: Comarcas -->
+    <div class="chart-container">
+        <h2>Distribuição por Comarcas</h2>
+        <p>A implementar</p>
+        <canvas id="comarcaChart"></canvas>
+    </div>
+
 
     <!-- Gráfico de Barras: Idade -->
     <div class="chart-container">
@@ -128,7 +136,7 @@
 
     <!-- Mapa Interativo -->
     <div class="chart-container">
-        <h2>Bairros de {{ cidade_maps }}</h2>
+        <h2>Comarca de {{ cidade_maps }}</h2>
         <div id="map"></div>
     </div>
 
