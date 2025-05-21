@@ -32,10 +32,11 @@ def encaminhamentos(request):
     return render(request, "encaminhamentos.html", context)
 
 @login_required
-def notificacoes(request):
+def notificacoes(request, notificacoes=0):
     context = {
         "title": "Notificações",
         "description": "Visualize as notificações recebidas na plataforma.",
+        'notificacao': notificacoes,
         'user': request.user,
     }
     return render(request, "notificacoes.html", context)

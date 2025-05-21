@@ -12,7 +12,19 @@
 
 {% block main_content %}
 
-<h1>{{ description }}</h1>
-<p>notificacoes.html</p>
+
+<div id="root-content">
+    <button class="btn btn-info btn-sm">Buscar Notificações</button>
+    <h1>{{ description }}</h1>
+    <ul>
+        {% for notificacao in notifica %}
+        <li>Notificação {{ notificacao }}</li>
+        {% empty %}
+        <li>Nenhuma notificação encontrada {{ notificacao }}.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- <p>{% lorem 20 p %}</p> -->
+</div>
 
 {% endblock %}
