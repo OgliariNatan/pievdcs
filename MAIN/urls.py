@@ -19,7 +19,7 @@ from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from MAIN.views import home, index, relatorios
+from MAIN.views import home, index, relatorios, encaminhamentos, notificacoes
 
 app_name = 'MAIN'
 
@@ -35,6 +35,8 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
     
     path("relatorios/", relatorios, name="relatorios"),
+    path("encaminhamentos/", encaminhamentos, name="encaminhamentos"),
+    path("notificacoes/", notificacoes, name="notificacoes"),
     path("admin/", admin.site.urls),
     path('seguranca/', include('seguranca_publica.urls')), #destinados a segurança publica
     path('justica/', include('sistema_justica.urls')),  #Destinado aos sistemas de justiças
