@@ -74,7 +74,8 @@
             </li>
             <li><button class="dropdown-item" type="button" onclick="updateDropdownText('Modelo')">Modelo</button>
             </li>
-            <li><button class="dropdown-item" type="button" onclick="updateDropdownText('Todas')">Todas</button>
+            <li><button class="dropdown-item" type="button" onclick="updateDropdownText('Todas')">Todas as
+                    comarcas</button>
             </li>
         </ul>
 
@@ -247,7 +248,17 @@
             responsive: true
         }
     });
-
+    //Legendas para o gráfico de idade
+    const idadeColors = gerarCoresHSL(idades.data.length);
+    const idadeLabels = idades.labels;
+    let idadeLegendHtml = '';
+    idadeLabels.forEach((label, i) => {
+        idadeLegendHtml += `<span style="display:inline-block;margin-right:15px;">
+        <span style="display:inline-block;width:15px;height:15px;background:${idadeColors[i]};margin-right:5px;border-radius:3px;"></span>
+        ${label}
+    </span>`;
+    });
+    document.getElementById('idade-legend').innerHTML = idadeLegendHtml;
 
     // Gráfico de barras: grau de instrução
     const grauChart = document.getElementById('grauInstrucaoChart').getContext('2d');

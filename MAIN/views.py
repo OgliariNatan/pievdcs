@@ -46,6 +46,8 @@ def relatorios(request):
         "title": "Painel Informativo",
         "description": "Visualize o painel informativo estatístico gerados na plataforma.",
 
+        "comarcas": ["Maravilha", "São Miguel do Oeste", "Chapecó", "Xaxim", "Concórdia", "Seara", "Palmitos", "Pinhalzinho", "São Carlos"],
+
         "cidade_maps": "Maravilha/SC",
         "cidades": {
             "labels": ["Maravilha", "Tigrinhos", "Iraceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
