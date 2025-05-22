@@ -1,6 +1,8 @@
 # pievdcs
 Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais
 
+[![wakatime](https://wakatime.com/badge/github/OgliariNatan/pievdcs.svg)](https://wakatime.com/badge/github/OgliariNatan/pievdcs)
+
 * Alinhado as Objetivos de desenvolvimento sustentável, nº 5, nº 16.
 
 * O presente projeto tem como objetivo o desenvolvimento de uma plataforma digital no modelo SaaS (Software as a Service), voltada ao enfrentamento da violência doméstica e crimes sexuais. A plataforma integrará as forças de segurança pública, núcleos municipais de atenção à família, Ministério Público, Defensoria Pública e o Poder Judiciário. A atividade central é a criação de um sistema seguro, colaborativo e funcional, que permita o compartilhamento de informações, acompanhamento de casos e articulação de ações interinstitucionais, proporcionando mais agilidade e efetividade no atendimento às vítimas.
