@@ -183,3 +183,7 @@ cython_debug/
 
 #Remove arquivos de configurções
 .env
+
+#Remove arquivos de de texto
+*.txt
+*.log
