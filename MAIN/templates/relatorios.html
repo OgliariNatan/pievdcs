@@ -64,19 +64,10 @@
             Comarcas
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-            <li><button class="dropdown-item active" type="button"
-                    onclick="updateDropdownText('Maravilha')">Maravilha</button></li>
+            {% for comarca in comarcas %}
             <li><button class="dropdown-item" type="button"
-                    onclick="updateDropdownText('Pinhalzinho')">Pinhalzinho</button>
-            </li>
-            <li><button class="dropdown-item" type="button" onclick="updateDropdownText('Cunha Porã')">Cunha
-                    Porã</button>
-            </li>
-            <li><button class="dropdown-item" type="button" onclick="updateDropdownText('Modelo')">Modelo</button>
-            </li>
-            <li><button class="dropdown-item" type="button" onclick="updateDropdownText('Todas')">Todas as
-                    comarcas</button>
-            </li>
+                    onclick="updateDropdownText('{{ comarca }}')">{{ comarca }}</button></li>
+            {% endfor %}
         </ul>
 
 
@@ -139,7 +130,7 @@
 
     <!-- Mapa Interativo -->
     <div class="chart-container">
-        <h2>Comarca de {{ cidade_maps }}</h2>
+        <h2>Comarca: <span id="comarcaSelecionada">{% if comarca %}{{ comarca }}{% else %}Todas{% endif %}</span></h2>
         <div id="map"></div>
     </div>
 
