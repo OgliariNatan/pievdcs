@@ -57,6 +57,13 @@ canvas {
     /* Centraliza os gráficos */
 }
 
+/* para legenda */
+.chart-legend {
+    margin-top: 10px;
+    font-size: 12px;
+}
+
+
 /* Para mapas */
 .chart-container #map {
     width: 100%;

@@ -99,9 +99,9 @@
     <div class="chart-container">
         <div class="dropdown">
             <h2>Distribuição por Idade</h2>
-
         </div>
         <canvas id="idadeChart"></canvas>
+        <div id="idade-legend" class="chart-legend"></div>
     </div>
 
     <!-- Gráfico de Barras: Tipo de violência -->
@@ -120,12 +120,14 @@
     <div class="chart-container">
         <h2>Classe Econômica</h2>
         <canvas id="classeEconomicaChart"></canvas>
+        <div id="classe-legend" class="chart-legend"></div>
     </div>
 
     <!-- Gráfico de Barras: Grau de instrução -->
     <div class="chart-container">
         <h2>Grau de Instrução</h2>
         <canvas id="grauInstrucaoChart"></canvas>
+        <div id="grau-legend" class="chart-legend"></div>
     </div>
 
     <!-- Gráfico de Barras: Parentesco -->
@@ -247,7 +249,7 @@
     });
 
 
-    // Gráfico de rosca: grau de instrução
+    // Gráfico de barras: grau de instrução
     const grauChart = document.getElementById('grauInstrucaoChart').getContext('2d');
     new Chart(grauChart, {
         type: 'bar',
@@ -278,7 +280,8 @@
             },
             plugins: {
                 legend: {
-                    display: false
+                    display: false,
+                    position: 'right',
                 },
                 tooltip: {
                     callbacks: {
@@ -291,7 +294,18 @@
             responsive: true,
         }
     });
+    // Legenda do gráfico de grau de instrução
+    const grauColors = gerarCoresHSL(grauInstrucao.data.length);
+    const grauLabels = grauInstrucao.labels;
 
+    let legendHtml = '';
+    grauLabels.forEach((label, i) => {
+        legendHtml += `<span style="display:inline-block;margin-right:15px;">
+        <span style="display:inline-block;width:15px;height:15px;background:${grauColors[i]};margin-right:5px;border-radius:3px;"></span>
+        ${label}
+    </span>`;
+    });
+    document.getElementById('grau-legend').innerHTML = legendHtml;
 
 
     // Gráfico de rosca: Tipo de violência
@@ -365,6 +379,20 @@
             responsive: true
         }
     });
+
+    // Legenda do gráfico de Classe Econômica
+    const classeColors = gerarCoresHSL(classeEconomica.data.length);
+    const classeLabels = classeEconomica.labels;
+
+    let classeLegendHtml = '';
+    classeLabels.forEach((label, i) => {
+        classeLegendHtml += `<span style="display:inline-block;margin-right:15px;">
+        <span style="display:inline-block;width:15px;height:15px;background:${classeColors[i]};margin-right:5px;border-radius:3px;"></span>
+        ${label}
+    </span>`;
+    });
+    document.getElementById('classe-legend').innerHTML = classeLegendHtml;
+
     // Gráfico de Barras: Etnia
     const etniaCtx = document.getElementById('etniaChart').getContext('2d');
     new Chart(etniaCtx, {
