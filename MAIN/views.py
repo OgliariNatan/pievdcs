@@ -36,7 +36,7 @@ def notificacoes(request, notificacoes=0):
     context = {
         "title": "Notificações",
         "description": "Visualize as notificações recebidas na plataforma.",
-        'notificacao': notificacoes,
+        'notificacao': [notificacoes],
         'user': request.user,
     }
     return render(request, "notificacoes.html", context)

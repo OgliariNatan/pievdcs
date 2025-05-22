@@ -45,14 +45,14 @@
     <div class="chart-container">
         <h2>Selecione o(s) Filtro(s)</h2>
 
-        <select name="periodo" id="periodo">
+        <select name="periodo" id="periodo" class="form-control-sm">
             <option value="">Período</option>
-            {% for periodo in periodos %}
-            <option value="{{ periodo }}">{{ periodo }}</option>
+            {% for periodos in periodo %}
+            <option value="{{ periodos }}">{{ periodos }}</option>
             {% endfor %}
         </select>
 
-        <select name="comarca" id="comarca">
+        <select name="comarca" id="comarca" class="form-control-sm">
             <option value="">Comarca</option>
             {% for comarca in comarcas %}
             <option value="{{ comarca }}">{{ comarca }}</option>
@@ -120,7 +120,7 @@
 
     <!-- Mapa Interativo -->
     <div class="chart-container">
-        <h2>Comarca: <span id="comarcaSelecionada">{% if comarca %}{{ comarca }}{% else %}Todas{% endif %}</span></h2>
+        <h2>Comarca: <span id="comarca">{% if comarca %}{{ comarca }}{% else %}Todas{% endif %}</span></h2>
         <div id="map"></div>
     </div>
 
