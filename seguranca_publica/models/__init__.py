@@ -1,4 +1,5 @@
 from django.db import models
+from .penal import *
 
 class Vitima(models.Model):
     nome = models.CharField(max_length=100)

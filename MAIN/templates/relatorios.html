@@ -44,34 +44,24 @@
     <!-- Filtros -->
     <div class="chart-container">
         <h2>Selecione o(s) Filtro(s)</h2>
-        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu2"
-            data-bs-toggle="dropdown" aria-expanded="false">
-            Período
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-            <li><button class="dropdown-item active" type="button"
-                    onclick="updateDropdownText2('Semanal')">Semanal</button></li>
-            <li><button class="dropdown-item" type="button" onclick="updateDropdownText2('Mensal')">Mensal</button>
-            </li>
-            <li><button class="dropdown-item" type="button" onclick="updateDropdownText2('Anual')">Anual</button>
-            </li>
-            <li><button class="dropdown-item" type="button" onclick="updateDropdownText2('Todos')">Todos</button>
-            </li>
-        </ul>
 
-        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenu"
-            data-bs-toggle="dropdown" aria-expanded="false">
-            Comarcas
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-            {% for comarca in comarcas %}
-            <li><button class="dropdown-item" type="button"
-                    onclick="updateDropdownText('{{ comarca }}')">{{ comarca }}</button></li>
+        <select name="periodo" id="periodo" class="form-control-sm">
+            <option value="">Período</option>
+            {% for periodos in periodo %}
+            <option value="{{ periodos }}">{{ periodos }}</option>
             {% endfor %}
-        </ul>
+        </select>
 
-
+        <select name="comarca" id="comarca" class="form-control-sm">
+            <option value="">Comarca</option>
+            {% for comarca in comarcas %}
+            <option value="{{ comarca }}">{{ comarca }}</option>
+            {% endfor %}
+        </select>
     </div>
+
+
+
     <!-- Gráfico de Rosca: Comarcas -->
     <div class="chart-container">
         <h2>Distribuição por Cidades</h2>
@@ -83,6 +73,7 @@
     <div class="chart-container">
         <h2>Distribuição por Comarcas</h2>
         <p>A implementar</p>
+        <p>Implementar comparação por período</p>
         <canvas id="comarcaChart"></canvas>
     </div>
 
@@ -130,7 +121,7 @@
 
     <!-- Mapa Interativo -->
     <div class="chart-container">
-        <h2>Comarca: <span id="comarcaSelecionada">{% if comarca %}{{ comarca }}{% else %}Todas{% endif %}</span></h2>
+        <h2>Comarca: <span id="comarca">{% if comarca %}{{ comarca }}{% else %}Todas{% endif %}</span></h2>
         <div id="map"></div>
     </div>
 

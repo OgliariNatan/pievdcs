@@ -17,10 +17,10 @@
     <button class="btn btn-info btn-sm">Buscar Notificações</button>
     <h1>{{ description }}</h1>
     <ul>
-        {% for notificacao in notifica %}
-        <li>Notificação {{ notificacao }}</li>
+        {% for notifi in notificacao %}
+        <li>Notificação {{ notifi }}</li>
         {% empty %}
-        <li>Nenhuma notificação encontrada {{ notificacao }}.</li>
+        <li>Nenhuma notificação encontrada {{ notifi }}.</li>
         {% endfor %}
     </ul>
 
