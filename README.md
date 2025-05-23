@@ -150,7 +150,7 @@ ____________________
 <li>Tipos de Grupos de Atendimentos</li>
 <p>&#x2610; Instituição Responsavel: str[50] FK 'Instituições.nome'</p>
 <p>&#x2610; Tematica : str[50] --- Dropdown['Domestica', 'sexual', 'psicológica', '...']</p>
-<p>&#x2610; Avaliação Coletiva : str[500].</p>
+
 
 > Destinado as grupos de atendimentos individuias/coletivos.
 <br>

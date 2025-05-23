@@ -1,0 +1,1 @@
+#from .seguranca_publica.models.penal import *
