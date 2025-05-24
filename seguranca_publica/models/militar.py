@@ -1,6 +1,7 @@
 
 from django.db import models
 from .base import OcorrenciaBase
+from seguranca_publica.models.base import Vitima_dados
 
 class Patrulhamento(models.Model):
     local = models.CharField(max_length=255)
