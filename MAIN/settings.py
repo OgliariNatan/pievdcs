@@ -29,7 +29,7 @@ DEBUG = config('DEBUG', default=False)  # Updated to use config
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
 
-GDAL_LIBRARY_PATH = config('GDAL_LIBRARY_PATH', default='C:\\OSGeo4W\\bin\\gdal302.dll')
+
 # Application definition
 
 INSTALLED_APPS = [

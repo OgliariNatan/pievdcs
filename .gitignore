@@ -187,3 +187,7 @@ cython_debug/
 #Remove arquivos de de texto
 *.txt
 *.log
+
+
+#Ignora pasta migrations
+migrations/

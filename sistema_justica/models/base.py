@@ -151,7 +151,7 @@ class agressor_dados(models.Model):
     data_nascimento = models.DateField(
         verbose_name="Data de Nascimento do Agressor", 
         unique=True, null=False, blank=False,
-        help_text="Data de nascimento do agressor",
+        help_text="DD/MM/AAAA",
     )
     sexo = models.CharField(
         max_length=1,
