@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'corsheaders', # Para acesso cruzado
     'dbbackup', #Para realizar backup
+    'smart_selects',#Para selecionar os municipios
     'rest_framework', #Para criação de API
     'seguranca_publica', #Segurança pública
     'usuarios', #Usuarios autorizados
