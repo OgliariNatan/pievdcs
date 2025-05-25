@@ -1,5 +1,6 @@
 from django.db import models
 from seguranca_publica.models import *
+from django import forms
 
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -189,15 +190,14 @@ class Vitima_dados(models.Model):
     class Meta:
         verbose_name = "Dados da Vítima"
         verbose_name_plural = "Dados das Vítimas"
-
+       
 class Agressor_dados(models.Model):
     """
     Modelo para armazenar os dados do agressor.
     """
     id = models.AutoField(
         primary_key=True,
-        #auto_increment=True, 
-        
+        verbose_name="ID do Agressor",
     )
     nome = models.CharField(
         max_length=250, 
