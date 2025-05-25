@@ -4,6 +4,14 @@ from seguranca_publica.models import *
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+status_MP_choices = [
+    ("SO", "Solicitada"),
+    ("AP", "Aprovada"),
+    ("RE", "Rejeitada"),
+    ("CA", "Cancelada"),
+    ("AT", "Ativa"),
+    ("EV", "Em Vigor"),
+]
 
 sexo_choices = [
     ("M", "Masculino"),
@@ -34,6 +42,35 @@ escolaridade_choices = [
 ]
 
 
+estado_choices = [
+    ("AC", "Acre"),
+    ("AL", "Alagoas"),
+    ("AP", "Amapá"),
+    ("AM", "Amazonas"),
+    ("BA", "Bahia"),
+    ("CE", "Ceará"),
+    ("DF", "Distrito Federal"),
+    ("ES", "Espírito Santo"),
+    ("GO", "Goiás"),
+    ("MA", "Maranhão"),
+    ("MT", "Mato Grosso"),
+    ("MS", "Mato Grosso do Sul"),
+    ("MG", "Minas Gerais"),
+    ("PA", "Pará"),
+    ("PB", "Paraíba"),
+    ("PR", "Paraná"),
+    ("PE", "Pernambuco"),
+    ("PI", "Piauí"),
+    ("RJ", "Rio de Janeiro"),
+    ("RN", "Rio Grande do Norte"),
+    ("RS", "Rio Grande do Sul"),
+    ("RO", "Rondônia"),
+    ("RR", "Roraima"),
+    ("SC", "Santa Catarina"),
+    ("SP", "São Paulo"),
+    ("SE", "Sergipe"),
+    ("TO", "Tocantins")
+]
 
 class Vitima_dados(models.Model):
     """
@@ -76,12 +113,14 @@ class Vitima_dados(models.Model):
         null=True, blank=False,
         help_text="Escolha a nacionalidade da vítima",
     )  
-
-    endereco = models.CharField(max_length=255, verbose_name="Endereço da Vítima")
-    telefone = models.CharField(
-        max_length=15, 
-        verbose_name="Telefone da Vítima", 
-        help_text="Formato: (DDD) XXXXX-XXXX",
+    
+    estado = models.CharField(
+        max_length=2,
+        verbose_name="Estado da Vítima",
+        choices=estado_choices,
+        default="SC",
+        null=True, blank=False,
+        help_text="Escolha o estado de nascimento da vítima",
     )
     email = models.EmailField(verbose_name="Email da Vítima", unique=True, null=True, blank=False)
     escolaridade = models.CharField(
@@ -92,12 +131,32 @@ class Vitima_dados(models.Model):
         null=True, blank=False,
         help_text="Escolha a escolaridade da vítima",
     )
-    nome_agressor = models.CharField(
-        "agressor_dados.nome", 
-        max_length=250, 
-        null=True, blank=False,
-        help_text="Nome do agressor, se conhecido. Caso contrário, deixe em branco.",
+    agressor = models.ForeignKey(
+        'Agressor_dados',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Agressor",
+        help_text="Selecione o agressor cadastrado. Caso não exista, cadastre primeiro em 'Dados do Agressor'.",
+        related_name="vitimas"
     )
+    numero_AUTOS = models.CharField(
+        verbose_name="Número do Auto",
+        max_length=50,  
+        null=True, blank=False,
+        help_text="Número do auto de prisão em flagrante",
+    )
+
+    status_MP = models.CharField(
+        max_length=2,
+        choices=status_MP_choices,
+        verbose_name="Status da Medida Protetiva",
+        default="SO",
+        help_text="Status da medida protetiva",
+    )
+
+
+
     usuario = models.OneToOneField(
         User, 
         on_delete=models.CASCADE, 
@@ -177,7 +236,14 @@ class Agressor_dados(models.Model):
         null=False, blank=False,
         help_text="Escolha a nacionalidade do agressor",
     )  
-
+    estado = models.CharField(
+        max_length=2, 
+        verbose_name="Estado do Agressor", 
+        choices=estado_choices, 
+        default="SC",
+        null=False, blank=False,
+        help_text="Escolha o estado de nascimento do agressor",
+    )
     endereco = models.CharField(max_length=255, verbose_name="Endereço do Agressor")
     telefone = models.CharField(
         max_length=15, 
@@ -203,3 +269,64 @@ class Agressor_dados(models.Model):
     class Meta:
         verbose_name = "Dados do Agressor"
         verbose_name_plural = "Dados dos Agressores"
+
+
+
+class Filhos_dados(models.Model):
+    """
+    Modelo para armazenar os dados dos filhos.
+    """
+    id = models.AutoField(primary_key=True)
+    nome = models.CharField(max_length=250, verbose_name="Nome Completo do Filho", null=True, blank=False)
+    data_nascimento = models.DateField(verbose_name="Data de Nascimento do Filho", null=True, blank=False)
+    sexo = models.CharField(max_length=1, choices=sexo_choices, verbose_name="Sexo do Filho", null=True, blank=False)
+    idade = models.PositiveIntegerField(null=True, blank=True, editable=False)
+    nacionalidade = models.CharField(
+        max_length=2, 
+        verbose_name="Nacionalidade do Filho", 
+        choices=nacionalidade_choices, 
+        default="BR",
+        null=True, blank=False,
+        help_text="Escolha a nacionalidade do filho",
+    )
+    nome_pai = models.ForeignKey(
+        Agressor_dados,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Nome do Pai",
+        help_text="Selecione o pai do filho",
+    )
+
+    nome_mae = models.ForeignKey(
+        Vitima_dados,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Nome da Mãe",
+        help_text="Selecione a mãe do filho",
+    )
+    estado = models.CharField(
+        max_length=2, 
+        verbose_name="Estado do Filho", 
+        choices=estado_choices, 
+        default="SC",
+        null=False, blank=False,
+        help_text="Escolha o estado de nascimento do filho",
+    )
+
+    def save(self, *args, **kwargs):
+        # Calcula a idade antes de salvar
+        today = timezone.now().date()
+        if self.data_nascimento:
+            self.idade = today.year - self.data_nascimento.year - (
+                (today.month, today.day) < (self.data_nascimento.month, self.data_nascimento.day)
+            )
+        else:
+            self.idade = None
+
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Dados dos Filhos"
+        verbose_name_plural = "Dados dos Filhos"
