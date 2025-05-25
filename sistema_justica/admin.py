@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models.base import Vitima_dados, Agressor_dados, Filhos_dados
+from .models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio
 
 # Register your models here.
 
@@ -54,3 +54,4 @@ class AgressorAdmin(admin.ModelAdmin):
     inlines = [FilhosInlinePai]
 
 admin.site.register(Filhos_dados)
+admin.site.register(Municipio)

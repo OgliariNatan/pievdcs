@@ -1,6 +1,7 @@
 from django.db import models
 from seguranca_publica.models import *
 from django import forms
+from smart_selects.db_fields import ChainedForeignKey
 
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -70,8 +71,29 @@ estado_choices = [
     ("SC", "Santa Catarina"),
     ("SP", "São Paulo"),
     ("SE", "Sergipe"),
-    ("TO", "Tocantins")
+    ("TO", "Tocantins"),
+    ("EX", "Estrangeiro"),
 ]
+
+
+
+class Municipio(models.Model):
+    """
+    Modelo para armazenar os dados do município.
+    """
+    nome = models.CharField(max_length=100, verbose_name="Município")
+    estado = models.CharField(
+        max_length=2,
+        choices=estado_choices,
+        verbose_name="Estado",
+        help_text="Estado ao qual o município pertence"
+    )
+
+    def __str__(self):
+        return f"{self.nome} ({self.estado})"
+
+
+
 
 class Vitima_dados(models.Model):
     """
@@ -117,11 +139,23 @@ class Vitima_dados(models.Model):
     
     estado = models.CharField(
         max_length=2,
-        verbose_name="Estado da Vítima",
         choices=estado_choices,
         default="SC",
         null=True, blank=False,
+        verbose_name="Estado da Vítima",
         help_text="Escolha o estado de nascimento da vítima",
+    )
+    municipio = ChainedForeignKey(
+        Municipio,
+        chained_field="estado",
+        chained_model_field="estado",
+        show_all=False,
+        auto_choose=True,
+        sort=True,
+        null=True,
+        blank=False,
+        verbose_name="Município da Vítima",
+        help_text="Informe o município de nascimento da vítima",
     )
     email = models.EmailField(verbose_name="Email da Vítima", unique=True, null=True, blank=False)
     escolaridade = models.CharField(
@@ -158,13 +192,13 @@ class Vitima_dados(models.Model):
 
 
 
-    usuario = models.OneToOneField(
-        User, 
-        on_delete=models.CASCADE, 
-        null=True, blank=True,
-        verbose_name="Usuário",
-        help_text="Usuário Responsável pelos dados da vítima",
-        )
+    # usuario = models.OneToOneField(
+    #     User, 
+    #     on_delete=models.CASCADE, 
+    #     null=True, blank=True,
+    #     verbose_name="Usuário",
+    #     help_text="Usuário Responsável pelos dados da vítima",
+    #     )
 
     def save(self, *args, **kwargs):
         # Calcula a idade antes de salvar

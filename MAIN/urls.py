@@ -42,4 +42,6 @@ urlpatterns = [
     path('seguranca/', include('seguranca_publica.urls')), #destinados a segurança publica
     path('justica/', include('sistema_justica.urls')),  #Destinado aos sistemas de justiças
     path('municipio/', include('municipio.urls')), #Destinado ao municipio
+    path('chaining/', include('smart_selects.urls')),# Para selecionar os municipios
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
