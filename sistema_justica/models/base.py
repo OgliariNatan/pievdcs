@@ -33,33 +33,38 @@ escolaridade_choices = [
     ("PO", "Pós-Graduação"),
 ]
 
+
+
 class Vitima_dados(models.Model):
+    """
+    Modelo para armazenar os dados da vítima.
+    """
     id = models.AutoField(primary_key=True)
     nome = models.CharField(
         max_length=250, 
         unique=True, 
         verbose_name="Nome Completo da Vítima", 
-        null=False, blank=False,
+        null=True, blank=False,
         help_text="Nome completo da vítima",
     )
     cpf = models.CharField(
         max_length=14,  # 000.000.000-00
         unique=False,
         verbose_name="CPF da Vítima",
-        null=False, blank=False,
+        null=True, blank=False,
         help_text="Formato: 000.000.000-00",
     )
 
     data_nascimento = models.DateField(
         verbose_name="Data de Nascimento da Vítima", 
-        unique=True, null=False, blank=False,
+        unique=True, null=True, blank=False,
         help_text="Data de nascimento da vítima",
     )
     sexo = models.CharField(
         max_length=1,
         choices=sexo_choices,
         verbose_name="Sexo da Vítima",
-        null=False, blank=False,
+        null=True, blank=False,
         help_text="Escolha o sexo da vítima",
     )
     idade = models.PositiveIntegerField(null=True, blank=True, editable=False)
@@ -68,7 +73,7 @@ class Vitima_dados(models.Model):
         verbose_name="Nacionalidade da Vítima", 
         choices=nacionalidade_choices, 
         default="BR",
-        null=False, blank=False,
+        null=True, blank=False,
         help_text="Escolha a nacionalidade da vítima",
     )  
 
@@ -78,19 +83,19 @@ class Vitima_dados(models.Model):
         verbose_name="Telefone da Vítima", 
         help_text="Formato: (DDD) XXXXX-XXXX",
     )
-    email = models.EmailField(verbose_name="Email da Vítima", unique=True, null=False, blank=False)
+    email = models.EmailField(verbose_name="Email da Vítima", unique=True, null=True, blank=False)
     escolaridade = models.CharField(
         max_length=2, 
         choices=escolaridade_choices, 
         verbose_name="Escolaridade da Vítima", 
         default="EF",
-        null=False, blank=False,
+        null=True, blank=False,
         help_text="Escolha a escolaridade da vítima",
     )
     nome_agressor = models.CharField(
         "agressor_dados.nome", 
         max_length=250, 
-        null=False, blank=False,
+        null=True, blank=False,
         help_text="Nome do agressor, se conhecido. Caso contrário, deixe em branco.",
     )
     usuario = models.OneToOneField(
@@ -126,7 +131,10 @@ class Vitima_dados(models.Model):
         verbose_name = "Dados da Vítima"
         verbose_name_plural = "Dados das Vítimas"
 
-class agressor_dados(models.Model):
+class Agressor_dados(models.Model):
+    """
+    Modelo para armazenar os dados do agressor.
+    """
     id = models.AutoField(
         primary_key=True,
         #auto_increment=True, 
@@ -191,3 +199,7 @@ class agressor_dados(models.Model):
         today = timezone.now().date()
         if self.data_nascimento:
             self.idade = today.year - self.data_nascimento
+
+    class Meta:
+        verbose_name = "Dados do Agressor"
+        verbose_name_plural = "Dados dos Agressores"
