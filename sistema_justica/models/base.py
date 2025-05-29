@@ -143,6 +143,7 @@ class Vitima_dados(models.Model):
         max_length=1,
         choices=sexo_choices,
         verbose_name="Sexo:*",
+        default="F",
         null=False, blank=False,
         #help_text="Escolha o sexo da vítima",
     )
@@ -236,6 +237,7 @@ class Vitima_dados(models.Model):
             )
         else:
             self.idade = None
+        super().save(*args, **kwargs)
 
         # Remove qualquer caractere não numérico do CPF
         cpf_digits = ''.join(filter(str.isdigit, self.cpf))
@@ -246,8 +248,8 @@ class Vitima_dados(models.Model):
 
 
     def __str__(self):
-        return self.nome
-    
+        return f"{self.nome} ({self.cpf})"
+
     class Meta:
         verbose_name = "Dados da Vítima"
         verbose_name_plural = "Dados das Vítimas"
@@ -291,7 +293,7 @@ class Agressor_dados(models.Model):
     )
     nome_da_mae = models.CharField(
         max_length=250,
-        verbose_name="Nome da Mãe:",
+        verbose_name="Nome da Mãe:*",
         null=True, blank=False,
         #help_text="Nome completo da mãe da vítima",
     )
@@ -304,6 +306,7 @@ class Agressor_dados(models.Model):
         max_length=1,
         choices=sexo_choices,
         verbose_name="Sexo:*",
+        default="M",
         null=False, blank=False,
         #help_text="Escolha o sexo do agressor",
     )
@@ -324,6 +327,18 @@ class Agressor_dados(models.Model):
         null=False, blank=False,
         #help_text="Escolha o estado de nascimento do agressor",
     )
+    municipio = ChainedForeignKey(
+        Municipio,
+        chained_field="estado",
+        chained_model_field="estado",
+        show_all=False,
+        auto_choose=True,
+        sort=True,
+        null=True,
+        blank=False,
+        verbose_name="Município:*",
+        #help_text="Informe o município de nascimento da vítima",
+    )
     endereco = models.CharField(
         max_length=255, 
         verbose_name="Endereço:*",
@@ -332,7 +347,7 @@ class Agressor_dados(models.Model):
     telefone = models.CharField(
         max_length=15, 
         verbose_name="Telefone:*", 
-        help_text="(DDD) XXXXX-XXXX",
+        help_text="(DD) XXXXX-XXXX",
     )
     email = models.EmailField(verbose_name="Email:", unique=True, null=True, blank=True)
     escolaridade = models.CharField(
@@ -348,12 +363,19 @@ class Agressor_dados(models.Model):
         # Calcula a idade antes de salvar
         today = timezone.now().date()
         if self.data_nascimento:
-            self.idade = today.year - self.data_nascimento
+            self.idade = today.year - self.data_nascimento.year - (
+                (today.month, today.day) < (self.data_nascimento.month, self.data_nascimento.day)
+            )
+        else:
+            self.idade = None
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Dados do Agressor"
         verbose_name_plural = "Dados dos Agressores"
 
+    def __str__(self):
+        return f"{self.nome} ({self.cpf})"
 
 
 class Filhos_dados(models.Model):
@@ -428,7 +450,6 @@ class Filhos_dados(models.Model):
             )
         else:
             self.idade = None
-
         super().save(*args, **kwargs)
 
     class Meta:

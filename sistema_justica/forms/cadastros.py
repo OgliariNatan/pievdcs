@@ -7,3 +7,7 @@ class CadastroVitimaForm(forms.ModelForm):
         fields = '__all__'
 
     
+class CadastroAgressorForm(forms.ModelForm):
+    class Meta:
+        model = Agressor_dados
+        fields = '__all__'      
