@@ -35,9 +35,11 @@ nacionalidade_choices = [
 ]
 
 escolaridade_choices = [
-    ("AN", "Analfabeto"),
-    ("EF", "Ensino Fundamental"),
-    ("EM", "Ensino Médio"),
+    ("AN", "Não Alfabetizado"),
+    ("FI", "Ensino Fundamental Incompleto"),
+    ("FC", "Ensino Fundamental Completo"),
+    ("EI", "Ensino Médio Incompleto"),
+    ("EC", "Ensino Médio Completo"),
     ("SU", "Superior Incompleto"),
     ("SS", "Superior Completo"),
     ("PO", "Pós-Graduação"),
@@ -104,7 +106,7 @@ class Vitima_dados(models.Model):
         max_length=250, 
         unique=False, 
         verbose_name="Nome Completo da Vítima", 
-        null=True, blank=True,
+        null=False, blank=False,
         help_text="Nome completo da vítima",
     )
     cpf = models.CharField(
@@ -114,7 +116,24 @@ class Vitima_dados(models.Model):
         null=False, blank=False,
         help_text="Formato: 000.000.000-00",
     )
-
+    nome_social = models.CharField(
+        max_length=250,
+        verbose_name="Nome Social da Vítima",
+        null=True, blank=True,
+        help_text="Nome social da vítima",
+    )
+    nome_do_pai = models.CharField(
+        max_length=250,
+        verbose_name="Nome do Pai da Vítima",
+        null=False, blank=False,
+        help_text="Nome completo do pai da vítima",
+    )
+    nome_da_mae = models.CharField(
+        max_length=250,
+        verbose_name="Nome da Mãe da Vítima",
+        null=False, blank=False,
+        help_text="Nome completo da mãe da vítima",
+    )
     data_nascimento = models.DateField(
         verbose_name="Data de Nascimento da Vítima", 
         unique=False, null=False, blank=False,
@@ -124,7 +143,7 @@ class Vitima_dados(models.Model):
         max_length=1,
         choices=sexo_choices,
         verbose_name="Sexo da Vítima",
-        null=True, blank=False,
+        null=False, blank=False,
         help_text="Escolha o sexo da vítima",
     )
     idade = models.PositiveIntegerField(null=True, blank=True, editable=False)
@@ -133,7 +152,7 @@ class Vitima_dados(models.Model):
         verbose_name="Nacionalidade da Vítima", 
         choices=nacionalidade_choices, 
         default="BR",
-        null=True, blank=True,
+        null=False, blank=False,
         help_text="Escolha a nacionalidade da vítima",
     )  
     
@@ -141,7 +160,7 @@ class Vitima_dados(models.Model):
         max_length=2,
         choices=estado_choices,
         default="SC",
-        null=True, blank=True,
+        null=False, blank=False,
         verbose_name="Estado da Vítima",
         help_text="Escolha o estado de nascimento da vítima",
     )
@@ -153,30 +172,38 @@ class Vitima_dados(models.Model):
         auto_choose=True,
         sort=True,
         null=True,
-        blank=True,
+        blank=False,
         verbose_name="Município da Vítima",
         help_text="Informe o município de nascimento da vítima",
     )
-    endereco_rua = models.CharField(max_length=255, verbose_name="Endereço da Vítima", null=True, blank=False)
+    endereco_rua = models.CharField(
+        max_length=255, 
+        verbose_name="Endereço da Vítima", 
+        null=True, blank=False,
+        help_text="Informe o endereço residencial da vítima",
+    )
     endereco_numero = models.CharField(
         max_length=20, 
         verbose_name="Número do Endereço da Vítima", 
-        null=True, blank=False,
+        null=True, blank=True,
     )
-    email = models.EmailField(verbose_name="Email da Vítima", unique=True, null=True, blank=True)
+    email = models.EmailField(
+        verbose_name="Email da Vítima", 
+        unique=True, null=True, blank=True
+    )
     escolaridade = models.CharField(
         max_length=2, 
         choices=escolaridade_choices, 
         verbose_name="Escolaridade da Vítima", 
         default="EF",
-        null=True, blank=False,
+        null=False, blank=False,
         help_text="Escolha a escolaridade da vítima",
     )
     agressor = models.ForeignKey(
         'Agressor_dados',
         on_delete=models.SET_NULL,
         null=True,
-        blank=True,
+        blank=False,
         verbose_name="Agressor",
         help_text="Selecione o agressor cadastrado. Caso não exista, cadastre primeiro em 'Dados do Agressor'.",
         related_name="vitimas"
@@ -184,7 +211,7 @@ class Vitima_dados(models.Model):
     numero_AUTOS = models.CharField(
         verbose_name="Número do Auto",
         max_length=50,  
-        null=True, blank=False,
+        null=True, blank=True,
         help_text="Número do auto de prisão em flagrante",
     )
 
@@ -239,6 +266,7 @@ class Agressor_dados(models.Model):
         #related_name="agressor_ID",
         help_text="Nome completo do agressor",
     )
+    
     cpf = models.CharField(
         max_length=14,  # 000.000.000-00
         unique=True,
@@ -246,7 +274,24 @@ class Agressor_dados(models.Model):
         null=False, blank=False,
         help_text="Formato: 000.000.000-00",
     )
-
+    nome_social = models.CharField(
+        max_length=250,
+        verbose_name="Nome Social da Vítima",
+        null=True, blank=True,
+        help_text="Nome social da vítima",
+    )
+    nome_do_pai = models.CharField(
+        max_length=250,
+        verbose_name="Nome do Pai da Vítima",
+        null=True, blank=False,
+        help_text="Nome completo do pai da vítima",
+    )
+    nome_da_mae = models.CharField(
+        max_length=250,
+        verbose_name="Nome da Mãe da Vítima",
+        null=True, blank=False,
+        help_text="Nome completo da mãe da vítima",
+    )
     data_nascimento = models.DateField(
         verbose_name="Data de Nascimento do Agressor", 
         unique=False, null=False, blank=False,

@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django import forms
 from .models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio
-
 # Register your models here.
 
 # Formulários personalizados para mostrar o calendário nos campos de data
