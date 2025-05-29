@@ -1,0 +1,49 @@
+{% load static %}
+
+
+<div class="modal fade show" style="display:block; background:rgba(0,0,0,0.5);" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color: #f3e6fa;">
+            <form hx-post="{% url 'sistema_justica:cadastro_vitima_submit' %}" hx-target="#modal-vitima"
+                hx-swap="innerHTML">
+                {% csrf_token %}
+                <div class="modal-header" style="background-color: #e6d6f3;">
+                    <h5 class="modal-title">Cadastrar Vítima</h5>
+                    <button type="button" class="btn-close"
+                        onclick="document.getElementById('modal-vitima').innerHTML = ''"></button>
+                </div>
+                <div class="modal-body">
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {% if field.name == "agressor" %}
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            {{ field }}
+                            <button type="button" class="btn btn-sm p-0"
+                                hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-agressor"
+                                hx-trigger="click" hx-swap="innerHTML">
+                                <img src="{% static 'img/add.png' %}" alt="Adicionar" style="width:20px; height:20px;">
+                            </button>
+                        </div>
+                        {% else %}
+                        {{ field }}
+                        {% endif %}
+                        {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="modal-footer" style="background-color: #e6d6f3;">
+                    <button type="button" class="btn btn-secondary btn-sm"
+                        onclick="document.getElementById('modal-vitima').innerHTML = ''">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="modal-agressor"></div>

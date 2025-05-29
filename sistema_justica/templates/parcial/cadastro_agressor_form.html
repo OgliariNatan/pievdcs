@@ -1,0 +1,24 @@
+{% load static %}
+<div class="modal fade show" style="display:block; background:rgba(0,0,0,0.5);" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form hx-post="{% url 'sistema_justica:cadastro_agressor_submit' %}" hx-target="#modal-agressor"
+                hx-swap="innerHTML">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Cadastrar Agressor</h5>
+                    <button type="button" class="btn-close"
+                        onclick="document.getElementById('modal-agressor').innerHTML = ''"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm"
+                        onclick="document.getElementById('modal-agressor').innerHTML = ''">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
