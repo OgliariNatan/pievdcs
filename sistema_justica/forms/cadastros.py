@@ -11,3 +11,8 @@ class CadastroAgressorForm(forms.ModelForm):
     class Meta:
         model = Agressor_dados
         fields = '__all__'      
+
+class CadastroMunicipioForm(forms.ModelForm):
+    class Meta:
+        model = Municipio
+        fields = '__all__'
