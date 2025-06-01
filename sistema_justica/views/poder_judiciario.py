@@ -16,6 +16,7 @@ def poder_judiciario(request):
         'encaminhamentos': 5,
         'notificacoes': 4,
         'user': request.user,
+        
     }
     return render(request, "poder_judiciario.html", contexto)
 

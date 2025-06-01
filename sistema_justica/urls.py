@@ -16,4 +16,5 @@ urlpatterns = [
     path('cadastro_vitima_submit/', cadastro_vitima_submit, name='cadastro_vitima_submit'), #Submissão do formulário de cadastro de vitima
     path('cadastro_agressor_form/', cadastro_agressor_form, name='cadastro_agressor_form'), #Formulário de cadastro de agressor
     path('cadastro_agressor_submit/', cadastro_agressor_submit, name='cadastro_agressor_submit'), #Submissão do formulário de cadastro de agressor
+    
 ]
