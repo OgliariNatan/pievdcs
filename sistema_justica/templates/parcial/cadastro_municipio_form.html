@@ -1,0 +1,24 @@
+{% load static %}
+<div class="modal fade show" style="display:block; background:rgba(0,0,0,0.5);" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color: #f3e6fa;">
+            <form hx-post="{% url 'sistema_justica:cadastro_municipio_submit' %}" hx-target="#modal-municipio"
+                hx-swap="innerHTML">
+                {% csrf_token %}
+                <div class="modal-header" style="background-color: #e6d6f3;">
+                    <h5 class="modal-title">Cadastrar Município</h5>
+                    <button type="button" class="btn-close"
+                        onclick="document.getElementById('modal-municipio').innerHTML = ''"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form.as_p }}
+                </div>
+                <div class="modal-footer" style="background-color: #e6d6f3;">
+                    <button type="button" class="btn btn-secondary btn-sm"
+                        onclick="document.getElementById('modal-municipio').innerHTML = ''">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

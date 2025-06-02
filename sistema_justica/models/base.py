@@ -88,7 +88,7 @@ class Municipio(models.Model):
         max_length=2,
         choices=estado_choices,
         verbose_name="Estado",
-        help_text="Estado ao qual o município pertence"
+        #help_text="Estado ao qual o município pertence"
     )
 
     def __str__(self):
