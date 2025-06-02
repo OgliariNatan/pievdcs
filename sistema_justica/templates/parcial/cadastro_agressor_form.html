@@ -1,14 +1,14 @@
 {% load static %}
 <div class="modal fade show" style="display:block; background:rgba(0,0,0,0.5);" tabindex="-1">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content" style="background-color: #f3e6fa;">
+        <div class="modal-content" style="background-color: #d6e5f3;">
             <form hx-post="{% url 'sistema_justica:cadastro_vitima_submit' %}" hx-target="#modal-vitima"
                 hx-swap="innerHTML">
                 {% csrf_token %}
-                <div class="modal-header" style="background-color: #e6d6f3;">
-                    <h5 class="modal-title">Cadastrar Vítima</h5>
+                <div class="modal-header" style="background-color: #d6e5f3;">
+                    <h5 class="modal-title">Cadastrar Agressor</h5>
                     <button type="button" class="btn-close"
-                        onclick="document.getElementById('modal-vitima').innerHTML = ''"></button>
+                        onclick="document.getElementById('modal-agressor').innerHTML = ''"></button>
                 </div>
                 <div class="modal-body">
                     {% for field in form %}
@@ -35,7 +35,7 @@
                     </div>
                     {% endfor %}
                 </div>
-                <div class="modal-footer" style="background-color: #e6d6f3;">
+                <div class="modal-footer" style="background-color: #d6e5f3;">
                     <button type="button" class="btn btn-secondary btn-sm"
                         onclick="document.getElementById('modal-vitima').innerHTML = ''">Cancelar</button>
                     <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
