@@ -128,6 +128,11 @@
 
 </div>
 
+{% endblock %}
+
+{% block script %}
+{{ cidades|json_script:"cidades-data" }}
+
 <!-- Script do Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -148,7 +153,9 @@
 
 
     // Dados passados pelo Django
-    const cidades = {{ cidades| safe }};
+    //const cidades = {{ cidades| safe }};
+    const cidades = JSON.parse(document.getElementById('cidades-data').textContent);
+
     const idades = {{ idades| safe }};
     const etnias = {{ etnias| safe }};
     const violencia = {{ Tipos_de_Violência| safe }};
