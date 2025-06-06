@@ -2,6 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
+#from ..seguranca_publica.models.base import Vitima_dados
+from django.db import models
 
 import random
 
@@ -42,6 +44,11 @@ def notificacoes(request, notificacoes=0):
     return render(request, "notificacoes.html", context)
 
 def relatorios(request):
+    """
+        Renderiza a página de relatórios com dados estatísticos.
+    """
+    #quantidade_de_vitimas = Vitima_dados.objects.count()
+
     context = {
         "title": "Painel Informativo",
         "description": "Visualize o painel informativo estatístico gerados na plataforma.",
