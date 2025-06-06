@@ -14,7 +14,13 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 
 <div class="dashboard">
+    {% for x in quantidade_de_vitimas %}
+    <h1 class="text-center">Painel Informativo Estatístico[{{ quantidade_de_vitimas }}]</h1>
+    {% empty %}
     <h1 class="text-center">Painel Informativo Estatístico</h1>
+
+    {% endfor %}
+
 
     <!-- Frase -->
     <div class="chart-container">
