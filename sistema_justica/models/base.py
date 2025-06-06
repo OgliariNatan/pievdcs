@@ -46,6 +46,13 @@ escolaridade_choices = [
     ("PO", "Pós-Graduação"),
 ]
 
+etnia_choices = [
+    ("BR", "Branca"),
+    ("PR", "Preta"),
+    ("PA", "Parda"),
+    ("AM", "Amarela"),
+    ("IN", "Indígena"),
+]
 
 estado_choices = [
     ("AC", "Acre"),
@@ -78,7 +85,13 @@ estado_choices = [
     ("EX", "Estrangeiro"),
 ]
 
-
+classeEconomica_choices = [
+    ("AB", "Abaixo de R$1.518,00"),
+    ("BA", "De R$1.518,01 a R$3.636,00"),
+    ("BC", "De R$3.636,01 a R$7.017,63"),
+    ("BD", "De R$7.017,64 a R$28.239,99"),
+    ("AC", "Acima de R$28.240,00"),
+]
 
 class Municipio(models.Model):
     """
@@ -152,6 +165,13 @@ class Vitima_dados(models.Model):
         null=False, blank=False,
         #help_text="Escolha o sexo da vítima",
     )
+    etnia = models.CharField(
+        max_length=2,
+        choices=etnia_choices,
+        verbose_name="Etnia*",
+        null=False, blank=False,
+    )
+
     idade = models.PositiveIntegerField(null=True, blank=True, editable=False)
     telefone = models.CharField(
         max_length=15,
@@ -198,9 +218,8 @@ class Vitima_dados(models.Model):
         null=True, blank=False,
         #help_text="Informe o endereço residencial da vítima",
     )
-    endereco_numero = models.CharField(
-        max_length=20, 
-        verbose_name="Nº*", 
+    endereco_numero = models.IntegerField(
+        verbose_name="Nº*",
         null=True, blank=True,
     )
     email = models.EmailField(
@@ -215,6 +234,17 @@ class Vitima_dados(models.Model):
         default="EF",
         null=False, blank=False,
         #help_text="Escolha a escolaridade da vítima",
+    )
+    classeEconomica = models.CharField(
+        max_length=2,
+        choices=classeEconomica_choices,
+        verbose_name="Classe Econômica*",
+        null=False, blank=False,
+    )
+    profissao = models.CharField(
+        max_length=100,
+        verbose_name="Profissão*",
+        null=False, blank=False,
     )
     agressor = models.ForeignKey(
         'Agressor_dados',
@@ -238,7 +268,6 @@ class Vitima_dados(models.Model):
         verbose_name="Status da Medida Protetiva",
         default="SO",
         null=True, blank=True,
-        #help_text="Status da medida protetiva",
     )
 
 
@@ -317,6 +346,7 @@ class Agressor_dados(models.Model):
         unique=False, null=False, blank=False,
         help_text="DD/MM/AAAA",
     )
+    
     sexo = models.CharField(
         max_length=1,
         choices=sexo_choices,
@@ -325,7 +355,18 @@ class Agressor_dados(models.Model):
         null=False, blank=False,
         #help_text="Escolha o sexo do agressor",
     )
+    etnia = models.CharField(
+        max_length=2,
+        choices=etnia_choices,
+        verbose_name="Etnia*",
+        null=False, blank=False,
+    )
+
     idade = models.PositiveIntegerField(null=True, blank=True, editable=False)
+    telefone = models.CharField(
+        max_length=15, 
+        verbose_name="Telefone*",
+    )
     nacionalidade = models.CharField(
         max_length=2, 
         verbose_name="Nacionalidade*", 
@@ -365,10 +406,10 @@ class Agressor_dados(models.Model):
         verbose_name="Endereço*",
         null=True, blank=False,
     )
-    telefone = models.CharField(
-        max_length=15, 
-        verbose_name="Telefone*", 
-        #help_text="(DD) XXXXX-XXXX",
+    
+    endereco_numero = models.IntegerField(
+        verbose_name="Nº*",
+        null=True, blank=True,
     )
     
     email = models.EmailField(verbose_name="Email", unique=True, null=True, blank=True)
@@ -380,6 +421,17 @@ class Agressor_dados(models.Model):
         default="EF",
         null=False, blank=False,
         #help_text="Escolha a escolaridade do agressor",
+    )
+    classeEconomica = models.CharField(
+        max_length=2,
+        choices=classeEconomica_choices,
+        verbose_name="Classe Econômica*",
+        null=True, blank=True,
+    )
+    profissao = models.CharField(
+        max_length=100,
+        verbose_name="Profissão*",
+        null=True, blank=True,
     )
 
     def save(self, *args, **kwargs):
