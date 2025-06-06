@@ -409,7 +409,7 @@ class Agressor_dados(models.Model):
     
     endereco_numero = models.IntegerField(
         verbose_name="Nº*",
-        null=True, blank=True,
+        null=False, blank=False,
     )
     
     email = models.EmailField(verbose_name="Email", unique=True, null=True, blank=True)
@@ -425,13 +425,13 @@ class Agressor_dados(models.Model):
     classeEconomica = models.CharField(
         max_length=2,
         choices=classeEconomica_choices,
-        verbose_name="Classe Econômica*",
-        null=True, blank=True,
+        verbose_name="Renda Mensal*",
+        null=False, blank=False,
     )
     profissao = models.CharField(
         max_length=100,
         verbose_name="Profissão*",
-        null=True, blank=True,
+        null=False, blank=False,
     )
 
     def save(self, *args, **kwargs):
