@@ -78,19 +78,21 @@ def relatorios(request):
         
         "etnias": {
             "labels": ["Branca", "Parda", "Preta", "Amarela", "Indígena"],
-            "data": [random.randint(1,10), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,50)]
+            #"data": [random.randint(1,10), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,10)]
+            "data": [Vitima_dados.objects.filter(etnia='BR').count(), Vitima_dados.objects.filter(etnia='PA').count(), Vitima_dados.objects.filter(etnia='PR').count(), Vitima_dados.objects.filter(etnia='AM').count(), Vitima_dados.objects.filter(etnia='IN').count()]
         },
 
         "classeEconomica": { #classeEconomicaChart
             "labels": ["Abaixo de R$1.518,00", "De R$3.636,00 a R$1.518,00", "De R$3.636,01 a R$7.017,63", "De R$7.017,64 a R$28.239,99", "Acima de R$28.240,00"],
-            "data": [random.randint(1,90), random.randint(1,110), random.randint(1,50), random.randint(1,5), random.randint(1,5)]
+            #"data": [random.randint(1,90), random.randint(1,110), random.randint(1,50), random.randint(1,5), random.randint(1,5)]
+            "data": [Vitima_dados.objects.filter(classeEconomica='AB').count(), Vitima_dados.objects.filter(classeEconomica='BA').count(), Vitima_dados.objects.filter(classeEconomica='BC').count(), Vitima_dados.objects.filter(classeEconomica='BD').count(), Vitima_dados.objects.filter(classeEconomica='AC').count()]
         },
 
         "bairros": [
-            {"nome": "Bairro 1", "lat": -26.771567, "lng": -53.190010, "casos": 10},
-            {"nome": "Bairro 2", "lat": -26.7670, "lng": -53.1850, "casos": 20},
-            {"nome": "Bairro 3", "lat": -26.7690, "lng": -53.1810, "casos": 15},
-            {"nome": "Bairro 4", "lat": -26.7630, "lng": -53.1870, "casos": 25},
+            {"nome": "Novo Bairro", "lat": -26.771567, "lng": -53.190010, "casos": 10},
+            {"nome": "Centro", "lat": -26.7670, "lng": -53.1850, "casos": 20},
+            {"nome": "Morada do Sol", "lat": -26.7690, "lng": -53.1700, "casos": 15},
+            {"nome": "Padre Antonio", "lat": -26.7630, "lng": -53.1870, "casos": 25},
             {"nome": "Linha Sanga Silva", "lat": -26.73157, "lng": -53.19992, "casos": 1},
             {"nome": "Iraceminha", "lat": -26.823437, "lng": -53.273439, "casos": 5},
             {"nome": "Flor do Sertão", "lat": -26.777475, "lng": -53.349358, "casos": 2},
@@ -109,8 +111,9 @@ def relatorios(request):
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10)]
         },
         "grauInstrucao": { #grauInstrucaoChart
-            "labels": ["Não Alfabetizado", "Fundamental", "Médio", "Superior", "Pós-graduação"],
-            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,10)]
+            "labels": ["Não Alfabetizado", "Fundamental Incompleto", "Fundamental Completo", "Médio Incompleto", "Médio Completo", "Superior Incompleto", "Superior Completo", "Pós-graduação"],
+            #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,10)]
+            "data": [Vitima_dados.objects.filter(escolaridade='AN').count(), Vitima_dados.objects.filter(escolaridade='FI').count(), Vitima_dados.objects.filter(escolaridade='FC').count(), Vitima_dados.objects.filter(escolaridade='EI').count(), Vitima_dados.objects.filter(escolaridade='EC').count(), Vitima_dados.objects.filter(escolaridade='SU').count(), Vitima_dados.objects.filter(escolaridade='SS').count(), Vitima_dados.objects.filter(escolaridade='PO').count()]
         },
     }
     return render(request, "relatorios.html", context)
