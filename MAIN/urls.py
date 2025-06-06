@@ -38,7 +38,7 @@ urlpatterns = [
     path("encaminhamentos/", encaminhamentos, name="encaminhamentos"),
     path("notificacoes/<int:notificacoes>", notificacoes, name="notificacoes"),
     #path("notificacoes/", notificacoes, name="notificacoes"),
-    path("admin/", admin.site.urls),
+    path("admin/", admin.site.urls, name="admin"),  # Rota para o admin do Django
     path('seguranca/', include('seguranca_publica.urls')), #destinados a segurança publica
     path('justica/', include('sistema_justica.urls')),  #Destinado aos sistemas de justiças
     path('municipio/', include('municipio.urls')), #Destinado ao municipio
