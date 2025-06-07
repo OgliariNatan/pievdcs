@@ -8,4 +8,5 @@ admin.site.register(OcorrenciaMilitar)
 admin.site.register(Patrulhamento)
 admin.site.register(OcorrenciaCivil)
 admin.site.register(Investigacao)
+
 #admin.site.register(OcorrenciaBase)

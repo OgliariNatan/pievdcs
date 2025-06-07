@@ -2,8 +2,9 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
-#from ..seguranca_publica.models.base import Vitima_dados
-from seguranca_publica.models.base import Vitima_dados
+
+from sistema_justica.models.base import Vitima_dados
+from seguranca_publica.models.base import OcorrenciaBase
 from django.db import models, connection
 
 import random
@@ -56,7 +57,7 @@ def relatorios(request):
 
     extrai_grupo_etnico = Vitima_dados.objects.values_list('etnia', flat=True)
     print(f'Grupo étnico: {extrai_grupo_etnico}')
-
+    #print(OcorrenciaBase.objects.count())
     context = {
         "title": "Painel Informativo",
         "description": "Visualize o painel informativo estatístico gerados na plataforma.",
@@ -65,7 +66,7 @@ def relatorios(request):
 
         "comarcas": ["Todas", "Abelardo Luz", "Anchieta", "Anita Garibaldi", "Araquari", "Araranguá", "Armazém", "Ascurra", "Balneário Camboriú", "Balneário Piçarras", "Barra Velha", "Biguaçu", "Blumenau - Foro Central", "Blumenau - Fórum Universitário", "Bom Retiro", "Braço do Norte", "Brusque", "Caçador", "Camboriú", "Campo Belo do Sul", "Campo Erê", "Campos Novos", "Canoinhas", "Capinzal", "Capital", "Capital - Estadual Bancário", "Capital - Continente", "Capital - Eduardo Luz", "Capital - Norte da Ilha", "Capivari de Baixo", "Catanduvas", "Chapecó", "Concórdia", "Coronel Freitas", "Correia Pinto", "Criciúma", "Cunha Porã", "Curitibanos", "Descanso", "Dionísio Cerqueira", "Forquilhinha", "Fraiburgo", "Garopaba", "Garuva", "Gaspar", "Guaramirim", "Herval D'Oeste", "Ibirama", "Içara", "Imaruí", "Imbituba", "Indaial", "Ipumirim", "Itá", "Itaiópolis", "Itajaí", "Itapema", "Itapiranga", "Itapoá", "Ituporanga", "Jaguaruna", "Jaraguá do Sul", "Joaçaba", "Joinville", "Joinville - Fórum Fazendário", "Lages", "Laguna", "Lauro Müller", "Lebon Régis", "Mafra", "Maravilha", "Meleiro", "Modelo", "Mondaí", "Navegantes", "Orleans", "Otacílio Costa", "Palhoça", "Palmitos", "Papanduva", "Penha", "Pinhalzinho", "Pomerode", "Ponte Serrada", "Porto Belo", "Porto União", "Presidente Getúlio", "Quilombo", "Rio do Campo", "Rio do Oeste", "Rio do Sul", "Rio Negrinho", "Santa Cecília", "Santa Rosa do Sul", "Santo Amaro da Imperatriz", "São Bento do Sul", "São Carlos", "São Domingos", "São Francisco do Sul", "São João Batista", "São Joaquim", "São José", "São José do Cedro", "São Lourenço do Oeste", "São Miguel do Oeste", "Seara", "Sombrio", "Taió", "Tangará", "Tijucas", "Timbó", "Trombudo Central", "Tubarão", "Turvo", "Urubici", "Urussanga", "Videira", "Xanxerê", "Xaxim"],
 
-        "quantidade_de_vitimas": [quantidade_de_vitimas],
+        "quantidade_de_vitimas": quantidade_de_vitimas,
         "cidades": {
             "labels": ["Maravilha", "Tigrinhos", "Iraceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
@@ -103,6 +104,13 @@ def relatorios(request):
         
         "Tipos_de_Violência": {
             "labels": ["Física", "Psicológica", "Sexual", "Patrimonial", "Moral"],
+            #"data": [
+            #    OcorrenciaBase.objects.filter(tipo_de_violencia='Fisica').count(),
+            #    OcorrenciaBase.objects.filter(tipo_de_violencia='Psicologica').count(),
+            #    OcorrenciaBase.objects.filter(tipo_de_violencia='Sexual').count(),
+            #    OcorrenciaBase.objects.filter(tipo_de_violencia='Patrimonial').count(),
+            #    OcorrenciaBase.objects.filter(tipo_de_violencia='Moral').count()
+            #]
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
         },
 
