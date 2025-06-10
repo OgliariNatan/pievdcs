@@ -2,8 +2,9 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
-#from ..seguranca_publica.models.base import Vitima_dados
-from seguranca_publica.models.base import Vitima_dados
+
+from sistema_justica.models.base import Vitima_dados
+from seguranca_publica.models.militar import OcorrenciaMilitar
 from django.db import models, connection
 
 import random
@@ -56,6 +57,10 @@ def relatorios(request):
 
     extrai_grupo_etnico = Vitima_dados.objects.values_list('etnia', flat=True)
     print(f'Grupo étnico: {extrai_grupo_etnico}')
+    #print(OcorrenciaBase.objects.count())
+
+    #Criar uma contagem para a distribuição por idade nas faixas:
+    # ['0-13', '14-18', '19-30', '31-50, '50+']
 
     context = {
         "title": "Painel Informativo",
@@ -65,7 +70,7 @@ def relatorios(request):
 
         "comarcas": ["Todas", "Abelardo Luz", "Anchieta", "Anita Garibaldi", "Araquari", "Araranguá", "Armazém", "Ascurra", "Balneário Camboriú", "Balneário Piçarras", "Barra Velha", "Biguaçu", "Blumenau - Foro Central", "Blumenau - Fórum Universitário", "Bom Retiro", "Braço do Norte", "Brusque", "Caçador", "Camboriú", "Campo Belo do Sul", "Campo Erê", "Campos Novos", "Canoinhas", "Capinzal", "Capital", "Capital - Estadual Bancário", "Capital - Continente", "Capital - Eduardo Luz", "Capital - Norte da Ilha", "Capivari de Baixo", "Catanduvas", "Chapecó", "Concórdia", "Coronel Freitas", "Correia Pinto", "Criciúma", "Cunha Porã", "Curitibanos", "Descanso", "Dionísio Cerqueira", "Forquilhinha", "Fraiburgo", "Garopaba", "Garuva", "Gaspar", "Guaramirim", "Herval D'Oeste", "Ibirama", "Içara", "Imaruí", "Imbituba", "Indaial", "Ipumirim", "Itá", "Itaiópolis", "Itajaí", "Itapema", "Itapiranga", "Itapoá", "Ituporanga", "Jaguaruna", "Jaraguá do Sul", "Joaçaba", "Joinville", "Joinville - Fórum Fazendário", "Lages", "Laguna", "Lauro Müller", "Lebon Régis", "Mafra", "Maravilha", "Meleiro", "Modelo", "Mondaí", "Navegantes", "Orleans", "Otacílio Costa", "Palhoça", "Palmitos", "Papanduva", "Penha", "Pinhalzinho", "Pomerode", "Ponte Serrada", "Porto Belo", "Porto União", "Presidente Getúlio", "Quilombo", "Rio do Campo", "Rio do Oeste", "Rio do Sul", "Rio Negrinho", "Santa Cecília", "Santa Rosa do Sul", "Santo Amaro da Imperatriz", "São Bento do Sul", "São Carlos", "São Domingos", "São Francisco do Sul", "São João Batista", "São Joaquim", "São José", "São José do Cedro", "São Lourenço do Oeste", "São Miguel do Oeste", "Seara", "Sombrio", "Taió", "Tangará", "Tijucas", "Timbó", "Trombudo Central", "Tubarão", "Turvo", "Urubici", "Urussanga", "Videira", "Xanxerê", "Xaxim"],
 
-        "quantidade_de_vitimas": [quantidade_de_vitimas],
+        "quantidade_de_vitimas": quantidade_de_vitimas,
         "cidades": {
             "labels": ["Maravilha", "Tigrinhos", "Iraceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
@@ -73,7 +78,14 @@ def relatorios(request):
 
         "idades": {
             "labels": ["0-13", "14-18", "19-30", "31-50", "51+"],
-            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
+            "data": [
+                Vitima_dados.objects.filter(idade__range=(0, 13)).count(),
+                Vitima_dados.objects.filter(idade__range=(14, 18)).count(),
+                Vitima_dados.objects.filter(idade__range=(19, 30)).count(),
+                Vitima_dados.objects.filter(idade__range=(31, 50)).count(),
+                Vitima_dados.objects.filter(idade__gte=51).count(),
+            ]
+            #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
         },
         
         "etnias": {
@@ -103,17 +115,42 @@ def relatorios(request):
         
         "Tipos_de_Violência": {
             "labels": ["Física", "Psicológica", "Sexual", "Patrimonial", "Moral"],
-            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
+            "data": [
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Fisica').count(),
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Psicologica').count(),
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Sexual').count(),
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Patrimonial').count(),
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Moral').count()
+            ]
+            #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
         },
 
         "parentesco_do_agressor": { #parentescoChart
             "labels": ["Pai", "Tio", "Cônjuge", "Filho", "Cunhado", "Padrastro", "Outros"],
-            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10)]
+            "data": [  
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Pai').count(), 
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Tio').count(), 
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Conjuge').count(), 
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Filho').count(),
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Cunhado').count(),
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Padastro').count(), 
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Outros').count(),
+            ]
+            #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10)]
         },
         "grauInstrucao": { #grauInstrucaoChart
             "labels": ["Não Alfabetizado", "Fundamental Incompleto", "Fundamental Completo", "Médio Incompleto", "Médio Completo", "Superior Incompleto", "Superior Completo", "Pós-graduação"],
             #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,10)]
-            "data": [Vitima_dados.objects.filter(escolaridade='AN').count(), Vitima_dados.objects.filter(escolaridade='FI').count(), Vitima_dados.objects.filter(escolaridade='FC').count(), Vitima_dados.objects.filter(escolaridade='EI').count(), Vitima_dados.objects.filter(escolaridade='EC').count(), Vitima_dados.objects.filter(escolaridade='SU').count(), Vitima_dados.objects.filter(escolaridade='SS').count(), Vitima_dados.objects.filter(escolaridade='PO').count()]
+            "data": [
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='AN').count(), 
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='FI').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='FC').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='EI').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='EC').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='SU').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='SS').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='PO').count(),
+            ]
         },
     }
     return render(request, "relatorios.html", context)
