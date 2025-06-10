@@ -35,7 +35,6 @@ class OcorrenciaMilitar(OcorrenciaBase):
     equipe = models.ForeignKey(
         Patrulhamento,
         on_delete=models.SET_NULL,
-
         null=True,
         verbose_name="Equipe",
     )

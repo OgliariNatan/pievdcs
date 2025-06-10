@@ -12,6 +12,16 @@ tipo_de_violencia_choices = (
 )
 
 
+grau_parentesco_agressor_choices = (
+    ('Pai', 'Pai'),
+    ('Tio', 'Tio'),
+    ('Conjuge', 'Cônjuge'),
+    ('Filho', 'Filho'),
+    ('Cunhado', 'Cunhado'),
+    ('Padasto', 'Padastro'),
+    ('Outros', 'Outros'),
+)
+
 class OcorrenciaBase(models.Model):
     numero_ocorrencia = models.AutoField(
         primary_key=True,  
@@ -27,13 +37,18 @@ class OcorrenciaBase(models.Model):
     )
     agressor = models.ForeignKey(
         Agressor_dados, 
-        on_delete=models.CASCADE, 
+        on_delete= models.CASCADE, 
         null=True, blank=True,
     )
     tipo_de_violencia = models.CharField(
-        max_length=50, 
-        choices=tipo_de_violencia_choices, 
-        verbose_name="Tipo de Violência"
+        max_length= 50, 
+        choices= tipo_de_violencia_choices, 
+        verbose_name= "Tipo de Violência"
+    )
+    grau_parentesco_agressor = models.CharField(
+        max_length= 15,
+        choices= grau_parentesco_agressor_choices,
+        default='Pai',
     )
     descricao = models.TextField(verbose_name="Descrição da Ocorrência")
 

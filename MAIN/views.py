@@ -58,6 +58,10 @@ def relatorios(request):
     extrai_grupo_etnico = Vitima_dados.objects.values_list('etnia', flat=True)
     print(f'Grupo étnico: {extrai_grupo_etnico}')
     #print(OcorrenciaBase.objects.count())
+
+    #Criar uma contagem para a distribuição por idade nas faixas:
+    # ['0-13', '14-18', '19-30', '31-50, '50+']
+
     context = {
         "title": "Painel Informativo",
         "description": "Visualize o painel informativo estatístico gerados na plataforma.",
@@ -74,7 +78,14 @@ def relatorios(request):
 
         "idades": {
             "labels": ["0-13", "14-18", "19-30", "31-50", "51+"],
-            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
+            "data": [
+                Vitima_dados.objects.filter(idade__range=(0, 13)).count(),
+                Vitima_dados.objects.filter(idade__range=(14, 18)).count(),
+                Vitima_dados.objects.filter(idade__range=(19, 30)).count(),
+                Vitima_dados.objects.filter(idade__range=(31, 50)).count(),
+                Vitima_dados.objects.filter(idade__gte=51).count(),
+            ]
+            #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
         },
         
         "etnias": {
@@ -117,6 +128,7 @@ def relatorios(request):
         "parentesco_do_agressor": { #parentescoChart
             "labels": ["Pai", "Tio", "Cônjuge", "Filho", "Cunhado", "Padrastro", "Outros"],
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10)]
+            #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10)]
         },
         "grauInstrucao": { #grauInstrucaoChart
             "labels": ["Não Alfabetizado", "Fundamental Incompleto", "Fundamental Completo", "Médio Incompleto", "Médio Completo", "Superior Incompleto", "Superior Completo", "Pós-graduação"],

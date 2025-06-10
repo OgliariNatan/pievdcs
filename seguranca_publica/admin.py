@@ -12,6 +12,7 @@ class OcorrenciaMilitarAdmin(admin.ModelAdmin):
         'equipe',  # agora usa o property
         'vtr',
     )
+    
 
 
 
