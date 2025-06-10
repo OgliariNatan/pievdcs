@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 
 from sistema_justica.models.base import Vitima_dados
-from seguranca_publica.models.base import OcorrenciaBase
+from seguranca_publica.models.militar import OcorrenciaMilitar
 from django.db import models, connection
 
 import random
@@ -115,34 +115,42 @@ def relatorios(request):
         
         "Tipos_de_Violência": {
             "labels": ["Física", "Psicológica", "Sexual", "Patrimonial", "Moral"],
-            #"data": [
-            #    OcorrenciaBase.objects.filter(tipo_de_violencia='Fisica').count(),
-            #    OcorrenciaBase.objects.filter(tipo_de_violencia='Psicologica').count(),
-            #    OcorrenciaBase.objects.filter(tipo_de_violencia='Sexual').count(),
-            #    OcorrenciaBase.objects.filter(tipo_de_violencia='Patrimonial').count(),
-            #    OcorrenciaBase.objects.filter(tipo_de_violencia='Moral').count()
-            #]
-            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
+            "data": [
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Fisica').count(),
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Psicologica').count(),
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Sexual').count(),
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Patrimonial').count(),
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Moral').count()
+            ]
+            #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
         },
 
         "parentesco_do_agressor": { #parentescoChart
             "labels": ["Pai", "Tio", "Cônjuge", "Filho", "Cunhado", "Padrastro", "Outros"],
-            "data": [
-                
-                random.randint(1,100), 
-                random.randint(1,100), 
-                random.randint(1,100), 
-                random.randint(1,100), 
-                random.randint(1,100), 
-                random.randint(1,100), 
-                random.randint(1,10)
+            "data": [  
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Pai').count(), 
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Tio').count(), 
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Conjuge').count(), 
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Filho').count(),
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Cunhado').count(),
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Padastro').count(), 
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Outros').count(),
             ]
             #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10)]
         },
         "grauInstrucao": { #grauInstrucaoChart
             "labels": ["Não Alfabetizado", "Fundamental Incompleto", "Fundamental Completo", "Médio Incompleto", "Médio Completo", "Superior Incompleto", "Superior Completo", "Pós-graduação"],
             #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,10)]
-            "data": [Vitima_dados.objects.filter(escolaridade='AN').count(), Vitima_dados.objects.filter(escolaridade='FI').count(), Vitima_dados.objects.filter(escolaridade='FC').count(), Vitima_dados.objects.filter(escolaridade='EI').count(), Vitima_dados.objects.filter(escolaridade='EC').count(), Vitima_dados.objects.filter(escolaridade='SU').count(), Vitima_dados.objects.filter(escolaridade='SS').count(), Vitima_dados.objects.filter(escolaridade='PO').count()]
+            "data": [
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='AN').count(), 
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='FI').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='FC').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='EI').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='EC').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='SU').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='SS').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='PO').count(),
+            ]
         },
     }
     return render(request, "relatorios.html", context)

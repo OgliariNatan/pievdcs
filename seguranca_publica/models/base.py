@@ -68,7 +68,7 @@ class OcorrenciaBase(models.Model):
     descricao = models.TextField(verbose_name="Descrição da Ocorrência")
 
     def __str__(self):
-        return f"{self.numero_ocorrencia} - {self.data.strftime('%d/%m/%Y %H:%M')}"
+        return f"Ocorrência: {self.id} - {self.data.strftime('%d/%m/%Y')}"
 
     class Meta:
         abstract = True
