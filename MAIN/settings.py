@@ -106,6 +106,11 @@ DATABASES = {
         'PASSWORD': config('DATABASE_PASSWORD'),
         'HOST': config('DATABASE_HOST', default='localhost'),  # Updated to use config
         'PORT': config('DATABASE_PORT', default='5432'),  # Updated to use config
+        'OPTIONS' : {
+            "application_name": "pievdcs",
+            "connect_timeout": 30,
+            "client_encoding": "utf8",
+        }
     }
 }
 

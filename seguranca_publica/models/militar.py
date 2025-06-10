@@ -7,7 +7,7 @@ tipo_de_patrulha_choices = [
     ("EM", "Emergência 190"),
     ("PM", "Policiamento Montado"),
     ("TP","Pelotão de Patrulhamento Tático"),
-    ("RP", "Radiopatrulha "),
+    ("RP", "Radio Patrulha "),
     ("PE", "Policiamento de Eventos"),
     ("OA", "Operações de Aviação Policial"),
     ("OE", "Operações Especiais"),
@@ -21,15 +21,22 @@ tipo_de_patrulha_choices = [
 ]
 
 class Patrulhamento(models.Model):
+   pass
+
+
+class OcorrenciaMilitar(OcorrenciaBase):
     vtr = models.CharField(
         max_length=20,
         verbose_name="VTR",
     )
     horario = models.DateTimeField(
-        auto_now_add=True,
+        auto_now=True,
     )
-    equipe = models.CharField(
-        max_length=255,
+    equipe = models.ForeignKey(
+        Patrulhamento,
+        on_delete=models.SET_NULL,
+
+        null=True,
         verbose_name="Equipe",
     )
     tipo_patrulha = models.CharField(
@@ -38,7 +45,3 @@ class Patrulhamento(models.Model):
         max_length=4,
         choices=tipo_de_patrulha_choices,
     )
-
-class OcorrenciaMilitar(OcorrenciaBase):
-    tipo_patrulha = models.CharField(max_length=100)
-    patrulhamento = models.ForeignKey(Patrulhamento, on_delete=models.SET_NULL, null=True)
