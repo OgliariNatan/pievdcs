@@ -11,6 +11,15 @@ tipo_de_violencia_choices = (
     ('Moral', 'Moral'),
 )
 
+status_MP_choices = [
+    ("SO", "Solicitada"),
+    ('NO', 'Não Solicitada'),
+    ("AP", "Aprovada"),
+    ("RE", "Rejeitada"),
+    ("CA", "Cancelada"),
+    ("AT", "Ativa"),
+    ("EV", "Em Vigor"),
+]
 
 grau_parentesco_agressor_choices = (
     ('Pai', 'Pai'),
@@ -23,11 +32,9 @@ grau_parentesco_agressor_choices = (
 )
 
 class OcorrenciaBase(models.Model):
-    numero_ocorrencia = models.AutoField(
+    id = models.AutoField(
         primary_key=True,  
-        verbose_name="nº",
     )
-
     data = models.DateTimeField(default=timezone.now, verbose_name="Data")
     #local = models.CharField(max_length=255, verbose_name="Local da Ocorrência")
     vitima = models.ForeignKey(
@@ -48,7 +55,15 @@ class OcorrenciaBase(models.Model):
     grau_parentesco_agressor = models.CharField(
         max_length= 15,
         choices= grau_parentesco_agressor_choices,
-        default='Pai',
+        default='Conjuge',
+    )
+
+    status_MP = models.CharField(# devemos soliciatar na ocorrencia
+        max_length=2,
+        choices=status_MP_choices,
+        verbose_name="Status da Medida Protetiva",
+        default="SO",
+        null=True, blank=True,
     )
     descricao = models.TextField(verbose_name="Descrição da Ocorrência")
 

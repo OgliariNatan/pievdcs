@@ -5,14 +5,11 @@ from .models.civil import OcorrenciaCivil, Investigacao
 from .models.base import OcorrenciaBase
 
 class OcorrenciaMilitarAdmin(admin.ModelAdmin):
-    list_display = (
-        'numero_ocorrencia',
-        'data',
-        'tipo_patrulha',
-        'equipe',  # agora usa o property
-        'vtr',
-    )
+    pass
+
+    #list_display = all
     
+
 
 
 

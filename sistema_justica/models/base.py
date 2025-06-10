@@ -6,15 +6,6 @@ from smart_selects.db_fields import ChainedForeignKey
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-status_MP_choices = [
-    ("SO", "Solicitada"),
-    ('NO', 'Não Solicitada'),
-    ("AP", "Aprovada"),
-    ("RE", "Rejeitada"),
-    ("CA", "Cancelada"),
-    ("AT", "Ativa"),
-    ("EV", "Em Vigor"),
-]
 
 sexo_choices = [
     ("M", "Masculino"),
@@ -246,31 +237,21 @@ class Vitima_dados(models.Model):
         verbose_name="Profissão*",
         null=False, blank=False,
     )
-    agressor = models.ForeignKey(
-        'Agressor_dados',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=False,
-        verbose_name="Agressor*",
-        #help_text="Selecione o agressor cadastrado. Caso não exista, cadastre primeiro em 'Dados do Agressor'.",
-        related_name="vitimas"
-    )
+    # agressor = models.ForeignKey(
+    #     'Agressor_dados',
+    #     on_delete=models.SET_NULL,
+    #     null=True, #Devemos relacionar apenas no cadastro da violencia 
+    #     blank=False,
+    #     verbose_name="Agressor*",
+    #     #help_text="Selecione o agressor cadastrado. Caso não exista, cadastre primeiro em 'Dados do Agressor'.",
+    #     related_name="vitimas"
+    # )
     numero_AUTOS = models.CharField(
         verbose_name="Nº Autos",
         max_length=50,  
         null=True, blank=True,
         #help_text="Número do auto de prisão em flagrante",
     )
-
-    status_MP = models.CharField(
-        max_length=2,
-        choices=status_MP_choices,
-        verbose_name="Status da Medida Protetiva",
-        default="SO",
-        null=True, blank=True,
-    )
-
-
 
     def save(self, *args, **kwargs):
         # Calcula a idade antes de salvar
