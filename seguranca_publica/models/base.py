@@ -57,7 +57,11 @@ class OcorrenciaBase(models.Model):
         choices= grau_parentesco_agressor_choices,
         default='Conjuge',
     )
-
+    bairro_ocorrencia = models.CharField(
+        max_length=150,
+        verbose_name='Bairro',
+        blank=False,
+    )
     status_MP = models.CharField(# devemos soliciatar na ocorrencia
         max_length=2,
         choices=status_MP_choices,
