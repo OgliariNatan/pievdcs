@@ -57,11 +57,15 @@ class OcorrenciaBase(models.Model):
         choices= grau_parentesco_agressor_choices,
         default='Conjuge',
     )
+
+    #Municipio da ocorrencia
+
     bairro_ocorrencia = models.CharField(
         max_length=150,
         verbose_name='Bairro',
         blank=False,
     )
+
     status_MP = models.CharField(# devemos soliciatar na ocorrencia
         max_length=2,
         choices=status_MP_choices,
@@ -69,7 +73,10 @@ class OcorrenciaBase(models.Model):
         default="SO",
         null=True, blank=True,
     )
-    descricao = models.TextField(verbose_name="Descrição da Ocorrência")
+    
+    descricao = models.TextField(
+        verbose_name="Descrição da Ocorrência",
+    )
 
     def __str__(self):
         return f"Ocorrência: {self.id} - {self.data.strftime('%d/%m/%Y')}"
