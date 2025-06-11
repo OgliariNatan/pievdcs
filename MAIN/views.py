@@ -9,7 +9,7 @@ from django.db import models, connection
 
 import random
 
-print(connection.vendor)
+print(f'\n\nBanco em uso: {connection.vendor}\n\n--------------------------------------------')
 @login_required
 def home(request):
     context = {
@@ -50,17 +50,6 @@ def relatorios(request):
     """
         Renderiza a página de relatórios com dados estatísticos.
     """
-    quantidade_de_vitimas = Vitima_dados.objects.count()
-    print(f'Banco em uso: {connection.vendor}')
-    print(quantidade_de_vitimas)
-    print(f'Nome das Vitimas: {Vitima_dados.objects.values_list("idade", 'nome')}')
-
-    extrai_grupo_etnico = Vitima_dados.objects.values_list('etnia', flat=True)
-    print(f'Grupo étnico: {extrai_grupo_etnico}')
-    #print(OcorrenciaBase.objects.count())
-
-    #Criar uma contagem para a distribuição por idade nas faixas:
-    # ['0-13', '14-18', '19-30', '31-50, '50+']
 
     context = {
         "title": "Painel Informativo",
@@ -70,7 +59,7 @@ def relatorios(request):
 
         "comarcas": ["Todas", "Abelardo Luz", "Anchieta", "Anita Garibaldi", "Araquari", "Araranguá", "Armazém", "Ascurra", "Balneário Camboriú", "Balneário Piçarras", "Barra Velha", "Biguaçu", "Blumenau - Foro Central", "Blumenau - Fórum Universitário", "Bom Retiro", "Braço do Norte", "Brusque", "Caçador", "Camboriú", "Campo Belo do Sul", "Campo Erê", "Campos Novos", "Canoinhas", "Capinzal", "Capital", "Capital - Estadual Bancário", "Capital - Continente", "Capital - Eduardo Luz", "Capital - Norte da Ilha", "Capivari de Baixo", "Catanduvas", "Chapecó", "Concórdia", "Coronel Freitas", "Correia Pinto", "Criciúma", "Cunha Porã", "Curitibanos", "Descanso", "Dionísio Cerqueira", "Forquilhinha", "Fraiburgo", "Garopaba", "Garuva", "Gaspar", "Guaramirim", "Herval D'Oeste", "Ibirama", "Içara", "Imaruí", "Imbituba", "Indaial", "Ipumirim", "Itá", "Itaiópolis", "Itajaí", "Itapema", "Itapiranga", "Itapoá", "Ituporanga", "Jaguaruna", "Jaraguá do Sul", "Joaçaba", "Joinville", "Joinville - Fórum Fazendário", "Lages", "Laguna", "Lauro Müller", "Lebon Régis", "Mafra", "Maravilha", "Meleiro", "Modelo", "Mondaí", "Navegantes", "Orleans", "Otacílio Costa", "Palhoça", "Palmitos", "Papanduva", "Penha", "Pinhalzinho", "Pomerode", "Ponte Serrada", "Porto Belo", "Porto União", "Presidente Getúlio", "Quilombo", "Rio do Campo", "Rio do Oeste", "Rio do Sul", "Rio Negrinho", "Santa Cecília", "Santa Rosa do Sul", "Santo Amaro da Imperatriz", "São Bento do Sul", "São Carlos", "São Domingos", "São Francisco do Sul", "São João Batista", "São Joaquim", "São José", "São José do Cedro", "São Lourenço do Oeste", "São Miguel do Oeste", "Seara", "Sombrio", "Taió", "Tangará", "Tijucas", "Timbó", "Trombudo Central", "Tubarão", "Turvo", "Urubici", "Urussanga", "Videira", "Xanxerê", "Xaxim"],
 
-        "quantidade_de_vitimas": quantidade_de_vitimas,
+        
         "cidades": {
             "labels": ["Maravilha", "Tigrinhos", "Iraceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
@@ -79,11 +68,11 @@ def relatorios(request):
         "idades": {
             "labels": ["0-13", "14-18", "19-30", "31-50", "51+"],
             "data": [
-                Vitima_dados.objects.filter(idade__range=(0, 13)).count(),
-                Vitima_dados.objects.filter(idade__range=(14, 18)).count(),
-                Vitima_dados.objects.filter(idade__range=(19, 30)).count(),
-                Vitima_dados.objects.filter(idade__range=(31, 50)).count(),
-                Vitima_dados.objects.filter(idade__gte=51).count(),
+                OcorrenciaMilitar.objects.filter(vitima__idade__range=(0, 13)).count(),
+                OcorrenciaMilitar.objects.filter(vitima__idade__range=(14, 18)).count(),
+                OcorrenciaMilitar.objects.filter(vitima__idade__range=(19, 30)).count(),
+                OcorrenciaMilitar.objects.filter(vitima__idade__range=(31, 50)).count(),
+                OcorrenciaMilitar.objects.filter(vitima__idade__gte=51).count(),
             ]
             #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
         },
@@ -91,16 +80,29 @@ def relatorios(request):
         "etnias": {
             "labels": ["Branca", "Parda", "Preta", "Amarela", "Indígena"],
             #"data": [random.randint(1,10), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,10)]
-            "data": [Vitima_dados.objects.filter(etnia='BR').count(), Vitima_dados.objects.filter(etnia='PA').count(), Vitima_dados.objects.filter(etnia='PR').count(), Vitima_dados.objects.filter(etnia='AM').count(), Vitima_dados.objects.filter(etnia='IN').count()]
+            "data": [
+                OcorrenciaMilitar.objects.filter(vitima__etnia='BR').count(),
+                OcorrenciaMilitar.objects.filter(vitima__etnia='PA').count(),
+                OcorrenciaMilitar.objects.filter(vitima__etnia='PR').count(),
+                OcorrenciaMilitar.objects.filter(vitima__etnia='AM').count(),
+                OcorrenciaMilitar.objects.filter(vitima__etnia='IN').count(),
+            ]
         },
 
         "classeEconomica": { #classeEconomicaChart
-            "labels": ["Abaixo de R$1.518,00", "De R$3.636,00 a R$1.518,00", "De R$3.636,01 a R$7.017,63", "De R$7.017,64 a R$28.239,99", "Acima de R$28.240,00"],
+            "labels": ["Sem Renda", "Abaixo de R$1.518,00", "De R$3.636,00 a R$1.518,00", "De R$3.636,01 a R$7.017,63", "De R$7.017,64 a R$28.239,99", "Acima de R$28.240,00"],
             #"data": [random.randint(1,90), random.randint(1,110), random.randint(1,50), random.randint(1,5), random.randint(1,5)]
-            "data": [Vitima_dados.objects.filter(classeEconomica='AB').count(), Vitima_dados.objects.filter(classeEconomica='BA').count(), Vitima_dados.objects.filter(classeEconomica='BC').count(), Vitima_dados.objects.filter(classeEconomica='BD').count(), Vitima_dados.objects.filter(classeEconomica='AC').count()]
+            "data": [
+                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='SR').count(),
+                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='AB').count(),
+                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='BA').count(),
+                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='BC').count(),
+                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='BD').count(),
+                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='AC').count(),
+            ]
         },
 
-        "bairros": [
+        "bairros": [ #Implementar na localidade da ocorrencia e local neutro, não no local exato da ocorrencia
             {"nome": "Novo Bairro", "lat": -26.771567, "lng": -53.190010, "casos": 10},
             {"nome": "Centro", "lat": -26.7670, "lng": -53.1850, "casos": 20},
             {"nome": "Morada do Sol", "lat": -26.7690, "lng": -53.1700, "casos": 15},
