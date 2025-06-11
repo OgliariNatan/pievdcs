@@ -77,6 +77,7 @@ estado_choices = [
 ]
 
 classeEconomica_choices = [
+    ("SR", "Sem Renda"),
     ("AB", "Abaixo de R$1.518,00"),
     ("BA", "De R$1.518,01 a R$3.636,00"),
     ("BC", "De R$3.636,01 a R$7.017,63"),
