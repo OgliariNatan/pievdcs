@@ -319,7 +319,7 @@ class Agressor_dados(models.Model):
     data_nascimento = models.DateField(
         verbose_name="Data de Nascimento*", 
         unique=False, null=True, blank=False,
-        default=date.today,
+        #default=date.today,
         help_text="DD/MM/AAAA",
     )
     
@@ -338,7 +338,10 @@ class Agressor_dados(models.Model):
         null=False, blank=False,
     )
 
-    idade = models.PositiveIntegerField(null=True, blank=True, editable=False)
+    idade = models.PositiveIntegerField(
+        null=True, blank=True, 
+        editable=False,
+    )
     telefone = models.CharField(
         max_length=15, 
         verbose_name="Telefone*",

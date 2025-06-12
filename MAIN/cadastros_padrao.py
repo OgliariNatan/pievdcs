@@ -7,7 +7,12 @@ def agressor_padrao():
     '''
     Quando é excluido uma informação, em vez de apagar toda a dependencia substitui-se por valores pré-estabelicidos
     '''
-    return Agressor_dados.objects.get_or_create(nome="Apagado")[0].id
+    def agressor_padrao():
+        return Agressor_dados.objects.get_or_create(
+            nome="Apagado", 
+            cpf="000.000.000-00", 
+            data_nascimento='2025/01/12')[0].id
+
 
 
 def vitima_padrao():
