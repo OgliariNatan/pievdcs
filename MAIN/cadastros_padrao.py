@@ -11,7 +11,8 @@ def agressor_padrao():
         return Agressor_dados.objects.get_or_create(
             nome="Apagado", 
             cpf="000.000.000-00", 
-            data_nascimento='2025/01/12')[0].id
+            data_nascimento='2025/01/12',
+        )[0].id
 
 
 
@@ -19,7 +20,10 @@ def vitima_padrao():
     '''
     Quando é excluido uma informação, em vez de apagar toda a dependencia substitui-se por valores pré-estabelicidos
     '''
-    return Vitima_dados.objects.get_or_create(nome='Apagada')[0].id
+    return Vitima_dados.objects.get_or_create(
+        nome='Apagada',
+        cpf='000.000.000-00',
+    )[0].id
 
 
 def filho_padrao():
@@ -28,4 +32,7 @@ def filho_padrao():
     @output: Cadastro de Filho pré estabelicido
     Quando é excluido uma informação, em vez de apagar toda a dependencia substitui-se por valores pré-estabelicidos
     '''
-    return Filhos_dados.objects.get_or_create(nome='Apagada')[0].id
+    return Filhos_dados.objects.get_or_create(
+        nome='Apagada',
+        cpf='000.000.000-00',
+    )[0].id
