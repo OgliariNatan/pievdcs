@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 
 from sistema_justica.models.base import Vitima_dados
 from seguranca_publica.models.militar import OcorrenciaMilitar
+from seguranca_publica.models.civil import OcorrenciaCivil
 from django.db import models, connection
 
 import random
@@ -72,7 +73,7 @@ def relatorios(request):
         "idades": {
             "labels": ["0-13", "14-18", "19-30", "31-50", "51+"],
             "data": [
-                OcorrenciaMilitar.objects.filter(vitima__idade__range=(0, 13)).count(),
+                OcorrenciaMilitar.objects.filter(vitima__idade__range=(0, 13)).count() + OcorrenciaCivil.objects.filter(vitima__idade__range=(0, 13)).count(),
                 OcorrenciaMilitar.objects.filter(vitima__idade__range=(14, 18)).count(),
                 OcorrenciaMilitar.objects.filter(vitima__idade__range=(19, 30)).count(),
                 OcorrenciaMilitar.objects.filter(vitima__idade__range=(31, 50)).count(),
@@ -85,7 +86,7 @@ def relatorios(request):
             "labels": ["Branca", "Parda", "Preta", "Amarela", "Indígena"],
             #"data": [random.randint(1,10), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,10)]
             "data": [
-                OcorrenciaMilitar.objects.filter(vitima__etnia='BR').count(),
+                OcorrenciaMilitar.objects.filter(vitima__etnia='BR').count() ,
                 OcorrenciaMilitar.objects.filter(vitima__etnia='PA').count(),
                 OcorrenciaMilitar.objects.filter(vitima__etnia='PR').count(),
                 OcorrenciaMilitar.objects.filter(vitima__etnia='AM').count(),
