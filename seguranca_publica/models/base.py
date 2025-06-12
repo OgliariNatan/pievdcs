@@ -2,9 +2,9 @@
 from django.db import models
 from django.utils import timezone
 from sistema_justica.models.base import Vitima_dados, Agressor_dados
+from MAIN.cadastros_padrao import agressor_padrao
 
-def agressor_padrao():
-    return Agressor_dados.objects.get_or_create(nome="Desconhecido")[0].id
+
 
 tipo_de_violencia_choices = (
     ('Fisica', 'Física'),
