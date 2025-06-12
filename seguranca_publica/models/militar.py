@@ -1,6 +1,7 @@
 
 from django.db import models
 from .base import OcorrenciaBase
+from django.utils import timezone
 from seguranca_publica.models.base import Vitima_dados
 
 tipo_de_patrulha_choices = [
@@ -21,7 +22,19 @@ tipo_de_patrulha_choices = [
 ]
 
 class Patrulhamento(models.Model):
-   pass
+   nome_patrulha = models.CharField(
+       max_length=15,
+       verbose_name='Patrulha:'
+   )
+
+   equipe = models.CharField(
+        max_length=15,
+        #on_delete=models.SET_NULL,
+        #null=True,
+        verbose_name="Equipe",
+    )
+   def __str__(self):
+       return self.nome_patrulha
 
 
 class OcorrenciaMilitar(OcorrenciaBase):
