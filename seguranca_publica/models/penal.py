@@ -5,7 +5,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from sistema_justica.models.base import Agressor_dados
 #from .penal import *
+
+
 
 
 setor_choices = (
@@ -42,8 +45,18 @@ tematica_choices = (
 
 
 class tipo_atendimento(models.Model):
-    instituicao_responsavel = models.CharField(max_length=100, verbose_name="Nome da Instituição responsável", choices=instituicao_choices, default='Policia Penal')
-    tematica = models.CharField(max_length=100, verbose_name="Temática", choices=tematica_choices, default='Saúde')
+    instituicao_responsavel = models.CharField(
+        max_length=100, 
+        verbose_name="Nome da Instituição responsável", 
+        choices=instituicao_choices, 
+        default='Policia Penal'
+    )
+    tematica = models.CharField(
+        max_length=100, 
+        verbose_name="Temática", 
+        choices=tematica_choices, 
+        default='Saúde'
+    )
 
     def __str__(self):
         return f"{self.instituicao_responsavel} - {self.tematica}"
@@ -57,12 +70,41 @@ class ModeloPenal(models.Model):
     Classe base para os modelos, Penal.
     """
     id = models.AutoField(primary_key=True)
-    data_atendimento = models.DateTimeField(default=timezone.now, verbose_name="Data do Atendimento")
-    tempo_atendimento = models.DurationField(verbose_name="Tempo de Atendimento", blank=True, null=True)
-    setor_atendimento = models.CharField(max_length=50, verbose_name="Setor de Atendimento", choices=setor_choices, default='assistente social')
-    atendimento = models.ForeignKey(tipo_atendimento, on_delete=models.CASCADE, verbose_name="Grupo de Atendimento", related_name='grupo_atendimento', null=True, blank=True)
-    avaliacao = models.TextField(verbose_name="Avaliação do Atendimento", blank=True, null=True)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Usuário", null=True, blank=True)
+    data_atendimento = models.DateTimeField(
+        default=timezone.now, 
+        verbose_name="Data do Atendimento"
+    )
+    tempo_atendimento = models.DurationField(
+        verbose_name="Tempo de Atendimento",
+        blank=True, null=True
+    )
+    setor_atendimento = models.CharField(
+        max_length=50, 
+        verbose_name="Setor de Atendimento", 
+        choices=setor_choices, 
+        default='assistente social'
+    )
+    atendimento = models.ForeignKey(
+        tipo_atendimento, 
+        on_delete=models.CASCADE, 
+        verbose_name="Grupo de Atendimento", 
+        related_name='grupo_atendimento', 
+        null=True, blank=True
+    )
+    agressores_atendidos = models.ManyToManyField(
+        Agressor_dados,
+        verbose_name='Participantes do Grupo',
+    )
+
+    avaliacao = models.TextField(
+        verbose_name="Avaliação do Atendimento", 
+        blank=True, null=True
+    )
+    usuario = models.ForeignKey(
+        User, on_delete=models.CASCADE, 
+        verbose_name="Usuário", 
+        null=True, blank=True
+    )
     teste = models.BooleanField(default=False, verbose_name="Teste")
 
 

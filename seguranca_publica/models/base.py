@@ -2,6 +2,9 @@
 from django.db import models
 from django.utils import timezone
 from sistema_justica.models.base import Vitima_dados, Agressor_dados
+from MAIN.cadastros_padrao import agressor_padrao
+
+
 
 tipo_de_violencia_choices = (
     ('Fisica', 'Física'),
@@ -44,7 +47,8 @@ class OcorrenciaBase(models.Model):
     )
     agressor = models.ForeignKey(
         Agressor_dados, 
-        on_delete= models.CASCADE, 
+        on_delete=models.SET_DEFAULT,
+        default=agressor_padrao, 
         null=True, blank=True,
     )
     tipo_de_violencia = models.CharField(
@@ -58,6 +62,14 @@ class OcorrenciaBase(models.Model):
         default='Conjuge',
     )
 
+    #Municipio da ocorrencia
+
+    bairro_ocorrencia = models.CharField(
+        max_length=150,
+        verbose_name='Bairro',
+        blank=False,
+    )
+
     status_MP = models.CharField(# devemos soliciatar na ocorrencia
         max_length=2,
         choices=status_MP_choices,
@@ -65,7 +77,10 @@ class OcorrenciaBase(models.Model):
         default="SO",
         null=True, blank=True,
     )
-    descricao = models.TextField(verbose_name="Descrição da Ocorrência")
+    
+    descricao = models.TextField(
+        verbose_name="Descrição da Ocorrência",
+    )
 
     def __str__(self):
         return f"Ocorrência: {self.id} - {self.data.strftime('%d/%m/%Y')}"

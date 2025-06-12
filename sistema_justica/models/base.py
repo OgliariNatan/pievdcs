@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date
 from seguranca_publica.models import *
 from django import forms
 from smart_selects.db_fields import ChainedForeignKey
@@ -238,15 +239,7 @@ class Vitima_dados(models.Model):
         verbose_name="Profissão*",
         null=False, blank=False,
     )
-    # agressor = models.ForeignKey(
-    #     'Agressor_dados',
-    #     on_delete=models.SET_NULL,
-    #     null=True, #Devemos relacionar apenas no cadastro da violencia 
-    #     blank=False,
-    #     verbose_name="Agressor*",
-    #     #help_text="Selecione o agressor cadastrado. Caso não exista, cadastre primeiro em 'Dados do Agressor'.",
-    #     related_name="vitimas"
-    # )
+    
     numero_AUTOS = models.CharField(
         verbose_name="Nº Autos",
         max_length=50,  
@@ -320,12 +313,13 @@ class Agressor_dados(models.Model):
     nome_da_mae = models.CharField(
         max_length=250,
         verbose_name="Nome da Mãe*",
-        null=True, blank=False,
+        null=True, blank=False, unique=False,
         #help_text="Nome completo da mãe da vítima",
     )
     data_nascimento = models.DateField(
         verbose_name="Data de Nascimento*", 
-        unique=False, null=False, blank=False,
+        unique=False, null=True, blank=False,
+        #default=date.today,
         help_text="DD/MM/AAAA",
     )
     
@@ -344,7 +338,10 @@ class Agressor_dados(models.Model):
         null=False, blank=False,
     )
 
-    idade = models.PositiveIntegerField(null=True, blank=True, editable=False)
+    idade = models.PositiveIntegerField(
+        null=True, blank=True, 
+        editable=False,
+    )
     telefone = models.CharField(
         max_length=15, 
         verbose_name="Telefone*",
@@ -391,7 +388,7 @@ class Agressor_dados(models.Model):
     
     endereco_numero = models.IntegerField(
         verbose_name="Nº*",
-        null=False, blank=False,
+        null=True, blank=False,
     )
     
     email = models.EmailField(verbose_name="Email", unique=True, null=True, blank=True)
