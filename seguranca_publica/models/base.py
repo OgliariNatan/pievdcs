@@ -3,6 +3,9 @@ from django.db import models
 from django.utils import timezone
 from sistema_justica.models.base import Vitima_dados, Agressor_dados
 
+def agressor_padrao():
+    return Agressor_dados.objects.get_or_create(nome="Desconhecido")[0].id
+
 tipo_de_violencia_choices = (
     ('Fisica', 'Física'),
     ('Psicologica', 'Psicológica'),
@@ -44,7 +47,8 @@ class OcorrenciaBase(models.Model):
     )
     agressor = models.ForeignKey(
         Agressor_dados, 
-        on_delete= models.CASCADE, 
+        on_delete=models.SET_DEFAULT,
+        default=agressor_padrao, 
         null=True, blank=True,
     )
     tipo_de_violencia = models.CharField(

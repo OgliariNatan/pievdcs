@@ -9,9 +9,6 @@ class OcorrenciaMilitarAdmin(admin.ModelAdmin):
     pass
 
     #list_display = all
-    
-
-
 
 admin.site.register(tipo_atendimento)
 admin.site.register(ModeloPenal)
