@@ -154,9 +154,9 @@ def relatorios(request):
                 OcorrenciaMilitar.objects.filter(vitima__escolaridade='FC').count() + OcorrenciaCivil.objects.filter(vitima__escolaridade='FC').count(),
                 OcorrenciaMilitar.objects.filter(vitima__escolaridade='EI').count() + OcorrenciaCivil.objects.filter(vitima__escolaridade='EI'),
                 OcorrenciaMilitar.objects.filter(vitima__escolaridade='EC').count() + OcorrenciaCivil.objects.filter(vitima__escolaridade='EC').count(),
-                OcorrenciaMilitar.objects.filter(vitima__escolaridade='SU').count(),
-                OcorrenciaMilitar.objects.filter(vitima__escolaridade='SS').count(),
-                OcorrenciaMilitar.objects.filter(vitima__escolaridade='PO').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='SU').count() + OcorrenciaCivil.objects.filter(vitima__escolaridade='SU').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='SS').count() + OcorrenciaCivil.objects.filter(vitima__escolaridade='SS').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='PO').count() + OcorrenciaCivil.objects.filter(vitima__escolaridade='PO').count(),
             ]
         },
     }
