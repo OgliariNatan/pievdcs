@@ -149,11 +149,11 @@ def relatorios(request):
             "labels": ["Não Alfabetizado", "Fundamental Incompleto", "Fundamental Completo", "Médio Incompleto", "Médio Completo", "Superior Incompleto", "Superior Completo", "Pós-graduação"],
             #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,10)]
             "data": [
-                OcorrenciaMilitar.objects.filter(vitima__escolaridade='AN').count(), 
-                OcorrenciaMilitar.objects.filter(vitima__escolaridade='FI').count(),
-                OcorrenciaMilitar.objects.filter(vitima__escolaridade='FC').count(),
-                OcorrenciaMilitar.objects.filter(vitima__escolaridade='EI').count(),
-                OcorrenciaMilitar.objects.filter(vitima__escolaridade='EC').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='AN').count() + OcorrenciaCivil.objects.filter(vitima__escolaridade='FI').count(), 
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='FI').count() + OcorrenciaCivil.objects.filter(vitima__escolaridade='FI').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='FC').count() + OcorrenciaCivil.objects.filter(vitima__escolaridade='FC').count(),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='EI').count() + OcorrenciaCivil.objects.filter(vitima__escolaridade='EI'),
+                OcorrenciaMilitar.objects.filter(vitima__escolaridade='EC').count() + OcorrenciaCivil.objects.filter(vitima__escolaridade='EC').count(),
                 OcorrenciaMilitar.objects.filter(vitima__escolaridade='SU').count(),
                 OcorrenciaMilitar.objects.filter(vitima__escolaridade='SS').count(),
                 OcorrenciaMilitar.objects.filter(vitima__escolaridade='PO').count(),
