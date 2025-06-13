@@ -74,10 +74,10 @@ def relatorios(request):
             "labels": ["0-13", "14-18", "19-30", "31-50", "51+"],
             "data": [
                 OcorrenciaMilitar.objects.filter(vitima__idade__range=(0, 13)).count() + OcorrenciaCivil.objects.filter(vitima__idade__range=(0, 13)).count(),
-                OcorrenciaMilitar.objects.filter(vitima__idade__range=(14, 18)).count(),
-                OcorrenciaMilitar.objects.filter(vitima__idade__range=(19, 30)).count(),
-                OcorrenciaMilitar.objects.filter(vitima__idade__range=(31, 50)).count(),
-                OcorrenciaMilitar.objects.filter(vitima__idade__gte=51).count(),
+                OcorrenciaMilitar.objects.filter(vitima__idade__range=(14, 18)).count() + OcorrenciaCivil.objects.filter(vitima__idade__range=(14, 18)).count(),
+                OcorrenciaMilitar.objects.filter(vitima__idade__range=(19, 30)).count() + OcorrenciaCivil.objects.filter(vitima__idade__range=(19, 30)).count(),
+                OcorrenciaMilitar.objects.filter(vitima__idade__range=(31, 50)).count() + OcorrenciaCivil.objects.filter(vitima__idade__range=(31, 50)).count(),
+                OcorrenciaMilitar.objects.filter(vitima__idade__gte=51).count() + OcorrenciaCivil.objects.filter(vitima__idade__gte=51).count(),
             ]
             #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
         },
@@ -86,11 +86,11 @@ def relatorios(request):
             "labels": ["Branca", "Parda", "Preta", "Amarela", "Indígena"],
             #"data": [random.randint(1,10), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,10)]
             "data": [
-                OcorrenciaMilitar.objects.filter(vitima__etnia='BR').count() ,
-                OcorrenciaMilitar.objects.filter(vitima__etnia='PA').count(),
-                OcorrenciaMilitar.objects.filter(vitima__etnia='PR').count(),
-                OcorrenciaMilitar.objects.filter(vitima__etnia='AM').count(),
-                OcorrenciaMilitar.objects.filter(vitima__etnia='IN').count(),
+                OcorrenciaMilitar.objects.filter(vitima__etnia='BR').count() + OcorrenciaCivil.objects.filter(vitima__etinia='BR').count(),
+                OcorrenciaMilitar.objects.filter(vitima__etnia='PA').count() + OcorrenciaCivil.objects.filter(vitima__etinia='PA').count(),
+                OcorrenciaMilitar.objects.filter(vitima__etnia='PR').count() + OcorrenciaCivil.objects.filter(vitima__etinia='PR').count(),
+                OcorrenciaMilitar.objects.filter(vitima__etnia='AM').count() + OcorrenciaCivil.objects.filter(vitima__etinia='AM').count(),
+                OcorrenciaMilitar.objects.filter(vitima__etnia='IN').count() + OcorrenciaCivil.objects.filter(vitima__etinia='IN').count(),
             ]
         },
 
