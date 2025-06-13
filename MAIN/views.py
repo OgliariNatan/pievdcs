@@ -63,7 +63,7 @@ def relatorios(request):
         "comarcas": ["Todas", "Abelardo Luz", "Anchieta", "Anita Garibaldi", "Araquari", "Araranguá", "Armazém", "Ascurra", "Balneário Camboriú", "Balneário Piçarras", "Barra Velha", "Biguaçu", "Blumenau - Foro Central", "Blumenau - Fórum Universitário", "Bom Retiro", "Braço do Norte", "Brusque", "Caçador", "Camboriú", "Campo Belo do Sul", "Campo Erê", "Campos Novos", "Canoinhas", "Capinzal", "Capital", "Capital - Estadual Bancário", "Capital - Continente", "Capital - Eduardo Luz", "Capital - Norte da Ilha", "Capivari de Baixo", "Catanduvas", "Chapecó", "Concórdia", "Coronel Freitas", "Correia Pinto", "Criciúma", "Cunha Porã", "Curitibanos", "Descanso", "Dionísio Cerqueira", "Forquilhinha", "Fraiburgo", "Garopaba", "Garuva", "Gaspar", "Guaramirim", "Herval D'Oeste", "Ibirama", "Içara", "Imaruí", "Imbituba", "Indaial", "Ipumirim", "Itá", "Itaiópolis", "Itajaí", "Itapema", "Itapiranga", "Itapoá", "Ituporanga", "Jaguaruna", "Jaraguá do Sul", "Joaçaba", "Joinville", "Joinville - Fórum Fazendário", "Lages", "Laguna", "Lauro Müller", "Lebon Régis", "Mafra", "Maravilha", "Meleiro", "Modelo", "Mondaí", "Navegantes", "Orleans", "Otacílio Costa", "Palhoça", "Palmitos", "Papanduva", "Penha", "Pinhalzinho", "Pomerode", "Ponte Serrada", "Porto Belo", "Porto União", "Presidente Getúlio", "Quilombo", "Rio do Campo", "Rio do Oeste", "Rio do Sul", "Rio Negrinho", "Santa Cecília", "Santa Rosa do Sul", "Santo Amaro da Imperatriz", "São Bento do Sul", "São Carlos", "São Domingos", "São Francisco do Sul", "São João Batista", "São Joaquim", "São José", "São José do Cedro", "São Lourenço do Oeste", "São Miguel do Oeste", "Seara", "Sombrio", "Taió", "Tangará", "Tijucas", "Timbó", "Trombudo Central", "Tubarão", "Turvo", "Urubici", "Urussanga", "Videira", "Xanxerê", "Xaxim"],
 
         "medidas_protetivas_solicitadas_ocorrencias": 
-            OcorrenciaMilitar.objects.filter(status_MP='SO').count(),
+            OcorrenciaMilitar.objects.filter(status_MP='SO').count() + OcorrenciaCivil.objects.filter(status_MP='SO').count(),
         
         "cidades": {
             "labels": ["Maravilha", "Tigrinhos", "Iraceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
@@ -98,12 +98,12 @@ def relatorios(request):
             "labels": ["Sem Renda", "Abaixo de R$1.518,00", "De R$3.636,00 a R$1.518,00", "De R$3.636,01 a R$7.017,63", "De R$7.017,64 a R$28.239,99", "Acima de R$28.240,00"],
             #"data": [random.randint(1,90), random.randint(1,110), random.randint(1,50), random.randint(1,5), random.randint(1,5)]
             "data": [
-                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='SR').count(),
-                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='AB').count(),
-                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='BA').count(),
-                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='BC').count(),
-                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='BD').count(),
-                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='AC').count(),
+                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='SR').count() + OcorrenciaCivil.objects.filter(vitima__classeEconomica='SR').count(),
+                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='AB').count() + OcorrenciaCivil.objects.filter(vitima__classeEconomica='AB').count(),
+                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='BA').count() + OcorrenciaCivil.objects.filter(vitima__classeEconomica='BA').count(),
+                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='BC').count() + OcorrenciaCivil.objects.filter(vitima__classeEconomica='BC').count(),
+                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='BD').count() + OcorrenciaCivil.objects.filter(vitima__classeEconomica='BD').count(),
+                OcorrenciaMilitar.objects.filter(vitima__classeEconomica='AC').count() + OcorrenciaCivil.objects.filter(vitima__classeEconomica='AC').count(),
             ]
         },
 
@@ -123,11 +123,11 @@ def relatorios(request):
         "Tipos_de_Violência": {
             "labels": ["Física", "Psicológica", "Sexual", "Patrimonial", "Moral"],
             "data": [
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Fisica').count(),
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Psicologica').count(),
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Sexual').count(),
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Patrimonial').count(),
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Moral').count()
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Fisica').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Fisica').count(),
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Psicologica').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Psicologica').count(),
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Sexual').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Sexual').count(),
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Patrimonial').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Patrimonial').count(),
+                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Moral').count()  + OcorrenciaCivil.objects.filter(tipo_de_violencia='Moral').count(),
             ]
             #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
         },
@@ -135,13 +135,13 @@ def relatorios(request):
         "parentesco_do_agressor": { #parentescoChart
             "labels": ["Pai", "Tio", "Cônjuge", "Filho", "Cunhado", "Padrastro", "Outros"],
             "data": [  
-                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Pai').count(), 
-                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Tio').count(), 
-                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Conjuge').count(), 
-                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Filho').count(),
-                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Cunhado').count(),
-                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Padasto').count(), 
-                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Outros').count(),
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Pai').count() + OcorrenciaCivil.objects.filter(grau_parentesco_agressor='Pai').count(), 
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Tio').count() + OcorrenciaCivil.objects.filter(grau_parentesco_agressor='Tio').count(), 
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Conjuge').count() + OcorrenciaCivil.objects.filter(grau_parentesco_agressor='Conjuge').count(), 
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Filho').count() + OcorrenciaCivil.objects.filter(grau_parentesco_agressor='Filho').count(),
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Cunhado').count() + OcorrenciaCivil.objects.filter(grau_parentesco_agressor='Cunhado').count(),
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Padasto').count() + OcorrenciaCivil.objects.filter(grau_parentesco_agressor='Padasto').count(), 
+                OcorrenciaMilitar.objects.filter(grau_parentesco_agressor='Outros').count() + OcorrenciaCivil.objects.filter(grau_parentesco_agressor='Outros').count(),
             ]
             #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,10)]
         },
