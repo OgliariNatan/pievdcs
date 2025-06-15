@@ -62,7 +62,8 @@ class tipo_atendimento(models.Model):
         return f"{self.instituicao_responsavel} - {self.tematica}"
 
     class Meta:
-        pass
+        verbose_name = 'Tipo de Atendimento'
+        verbose_name_plural = 'Tipos de Atendimentos'
 
 
 class ModeloPenal(models.Model):
