@@ -63,7 +63,7 @@ class tipo_atendimento(models.Model):
 
     class Meta:
         verbose_name = 'Tipo de Atendimento'
-        verbose_name_plural = 'Tipos de Atenimentos'
+        verbose_name_plural = 'Tipos de Atendimentos'
 
 
 class ModeloPenal(models.Model):
