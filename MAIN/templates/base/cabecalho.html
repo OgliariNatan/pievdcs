@@ -6,9 +6,6 @@
         <form action="{% url 'logout' %}" method="post" style="display: inline;">
             {% csrf_token %}
 
-            <!-- <button type="button" class="home-button" id="home"
-                onclick="window.location.href='{% url 'index' %}'">Página
-                inicial</button> -->
             <button type="button" class="btn home-button" id="home"
                 onclick="window.location.href='{% url 'home' %}'">home</button>
             <button type="submit" class="logout-button" id="logout">Deslogar</button>

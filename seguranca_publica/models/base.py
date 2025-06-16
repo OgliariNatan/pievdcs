@@ -80,7 +80,7 @@ class OcorrenciaBase(models.Model):
     
     possivel_causa = models.CharField(
         max_length= 25,
-        verbose_name= "Possível causa",
+        verbose_name= "Possível Causa",
     )
 
     descricao = models.TextField(
