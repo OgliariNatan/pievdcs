@@ -162,6 +162,10 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "municipio/static"),
 ]
 
+
+MEDIA_URL = '/img_home/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'img_home')  # Pasta para armazenar imagens carregadas
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
