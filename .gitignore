@@ -188,6 +188,8 @@ cython_debug/
 *.txt
 *.log
 
+#pastas de fotos de noticias
+img_home/
 
 #Ignora pasta migrations
 migrations/

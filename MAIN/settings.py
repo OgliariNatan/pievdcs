@@ -43,10 +43,12 @@ INSTALLED_APPS = [
     'dbbackup', #Para realizar backup
     'smart_selects',#Para selecionar os municipios
     'rest_framework', #Para criação de API
+    'MAIN',  # Aplicação principal
     'seguranca_publica', #Segurança pública
     'usuarios', #Usuarios autorizados
     'sistema_justica', #Sistemas de justica
     'municipio', #sistema municipal
+    
     
 ]
 
