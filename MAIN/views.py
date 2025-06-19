@@ -1,16 +1,66 @@
+# -*- coding: utf-8 -*-
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
-
+from collections import defaultdict
 from sistema_justica.models.base import Vitima_dados
 from seguranca_publica.models.militar import OcorrenciaMilitar
 from seguranca_publica.models.civil import OcorrenciaCivil
 from django.db import models, connection
-
+from .models import ConteudoHome
 import random
 
+
+
 print(f'\n\nBanco em uso: {connection.vendor}\n\n--------------------------------------------')
+
+
+
+def index(request):
+    context = {
+        "title": "Bem-vindo",
+        "description": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais"
+    }
+    return render(request, "index.html", context)
+
+
+def index_controlador(request):
+    """
+        Renderiza a página inicial com os conteúdos da página inicial.
+    """
+    itens  = ConteudoHome.objects.filter(publicado=True).order_by('-data_publicacao')
+    conteudos = defaultdict(list)
+
+    for item in itens:
+        conteudos[item.secao].append(item)
+
+    context = {
+        "conteudos": conteudos,
+        "title": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais",
+        "description": "Página Inicial",
+    }
+    return render(request, "index_controlador.html", context)
+
+
+
+def pre_visualizacao_conteudo(request, pk):
+    """
+        Renderiza a pré-visualização de um conteúdo específico da página inicial.
+    """
+    try:
+        conteudo = get_object_or_404(ConteudoHome, pk=pk)
+    except ConteudoHome.DoesNotExist:
+        return HttpResponse("Conteúdo não encontrado.", status=404)
+
+    context = {
+        "conteudo": conteudo,
+        "title": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais",
+        "description": "Pré-visualização do Conteúdo",
+    }
+    return render(request, "pre_visualizacao_conteudo.html", context)
+
+
 @login_required
 def home(request):
     context = {
@@ -21,12 +71,6 @@ def home(request):
     }
     return render(request, "home.html", context)
 
-def index(request):
-    context = {
-        "title": "Bem-vindo",
-        "description": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais"
-    }
-    return render(request, "index.html", context)
 
 @login_required
 def encaminhamentos(request):

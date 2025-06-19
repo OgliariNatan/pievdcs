@@ -1,0 +1,38 @@
+<!-- index_controlador.html -->
+{% extends 'base/base.html' %}
+{% load static %}
+{% block titulo %}{{ title }}{% endblock %}
+
+
+{% block head %}
+<!-- <link rel="stylesheet" href="{% static 'css/index_style.css' %}"> -->
+<link rel="icon" type="image/x-icon" href="{% static 'img/logo1.png' %}">
+{% endblock %}
+
+{% block main_content %}
+{% if conteudos %}
+{% for secao, itens in conteudos.items %}
+<h2>{{ secao }}</h2>
+<div class="row">
+    {% for item in itens %}
+    <div class="col-md-4">
+        <div class="card mb-4">
+            {% if item.imagem %}
+            <img src="{{ item.imagem.url }}" class="card-img-top" alt="{{ item.titulo }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ item.titulo }}</h5>
+                <p class="card-text">{{ item.texto|truncatewords:30 }}</p>
+                <p class="text-muted">Por {{ item.autor }} em {{ item.data_publicacao|date:"d/m/Y" }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+{% else %}
+<p class="text-muted">Nenhum conteúdo publicado ainda.</p>
+{% endif %}
+
+
+{% endblock %}

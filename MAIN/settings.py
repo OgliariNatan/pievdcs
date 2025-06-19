@@ -43,10 +43,12 @@ INSTALLED_APPS = [
     'dbbackup', #Para realizar backup
     'smart_selects',#Para selecionar os municipios
     'rest_framework', #Para criação de API
+    'MAIN',  # Aplicação principal
     'seguranca_publica', #Segurança pública
     'usuarios', #Usuarios autorizados
     'sistema_justica', #Sistemas de justica
     'municipio', #sistema municipal
+    
     
 ]
 
@@ -159,6 +161,10 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "sistema_justica/static"),
     os.path.join(BASE_DIR, "municipio/static"),
 ]
+
+
+MEDIA_URL = '/img_home/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'img_home')  # Pasta para armazenar imagens carregadas
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

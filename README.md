@@ -189,3 +189,12 @@ ____________________
 
 
 <!-- (http://10.40.22.110:8000/chaining/filter/sistema_justica/Municipio/estado/sistema_justica/Vitima_dados/municipio/SC/) -->
+
+
+
+
+<h5> Atualizar Licença </h5>
+Licença Pública Geral Affero (AGPL) deve publicar o código fonte
+<br>
+GNU General Public License (GPL)
+
