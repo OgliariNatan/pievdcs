@@ -36,6 +36,7 @@ def index_controlador(request):
     for item in itens:
         conteudos[item.secao].append(item)
 
+    conteudos = dict(conteudos) 
     context = {
         "conteudos": conteudos,
         "title": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais",

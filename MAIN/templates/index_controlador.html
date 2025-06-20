@@ -8,14 +8,6 @@
 
 {% block main_content %}
 
-<p>Total de conteúdos: {{ conteudos|length }}</p>
-<ul>
-    {% for secao, itens in conteudos.items %}
-    <li>{{ secao }}: {{ itens|length }} itens</li>
-    {% endfor %}
-</ul>
-
-
 
 <div class="container mt-5">
     <h2 class="mb-4">{{ title }}</h2>
