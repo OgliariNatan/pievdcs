@@ -10,7 +10,7 @@
 
 
 <div class="container mt-5">
-    <h2 class="mb-4">{{ description }}</h2>
+    <!-- <h2 class="mb-4">{{ description }}</h2> -->
     <p style="text-align: center;"><img src="{% static 'img/logo1.png' %}" alt="logo" height="250" width="250">
     </p>
     {% if conteudos %}
@@ -25,7 +25,7 @@
         {% else %}{{ secao|title }}
         {% endif %}
     </h4>
-    <div class="row" style="background-color: rgb(194, 54, 187);">
+    <div class="row">
         {% for conteudo in itens %}
         <div class=" col-md-6 col-lg-4 mb-4">
             <div class="card h-100">
@@ -38,14 +38,20 @@
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ conteudo.titulo }}</h5>
                     <p class="card-text">{{ conteudo.texto|safe|linebreaksbr }}</p>
-                    <p class="text-muted mb-1">
+                    <p class="card-text mb-5">
+                        {% if conteudo.link %}
+                        <a href="{{ conteudo.link }}" class="text-decoration-none" target="_blank"><img src="
+                            {%static 'img/fast-forward.gif'%}" height="50px" alt="Saiba Mais"> </a>
+                        {% endif %}
+                    </p>
+                    <p class="text-muted mb-0">
                         {% if conteudo.autor %}
                         Por {{ conteudo.autor }}
-                        {% endif %}
                         em {{ conteudo.data_publicacao|date:"d/m/Y H\h i\m\i\n" }}
+                        {% else %}
+                        {{ conteudo.data_publicacao|date:"d/m/Y H\h i\m\i\n" }}
+                        {% endif %}
                     </p>
-                    <!-- <a href="{% url 'pre_visualizacao_conteudo' conteudo.pk %}" class="btn btn-primary mt-auto">Ver
-                        mais</a> -->
                 </div>
             </div>
         </div>

@@ -12,7 +12,7 @@ secao_choices = (
     ('municipio', 'Município'),
     ('leis', 'Leis'),
     ('noticias', 'Notícias'),
-    ('outros', 'Outros'),
+    ('sobre', 'Sobre'),
 )
 
 
@@ -44,6 +44,12 @@ class ConteudoHome(models.Model):
         #auto_now_add=True,
         default= timezone.now,
         verbose_name="Data de Publicação",
+    )
+
+    link = models.URLField(
+        max_length=150,
+        null=True, blank= True,
+        verbose_name= "Link",
     )
     
     data_expiracao = models.DateTimeField(
