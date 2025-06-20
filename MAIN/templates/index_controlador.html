@@ -1,38 +1,62 @@
-<!-- index_controlador.html -->
 {% extends 'base/base.html' %}
 {% load static %}
 {% block titulo %}{{ title }}{% endblock %}
 
-
 {% block head %}
-<!-- <link rel="stylesheet" href="{% static 'css/index_style.css' %}"> -->
 <link rel="icon" type="image/x-icon" href="{% static 'img/logo1.png' %}">
 {% endblock %}
 
 {% block main_content %}
-{% if conteudos %}
-{% for secao, itens in conteudos.items %}
-<h2>{{ secao }}</h2>
-<div class="row">
-    {% for item in itens %}
-    <div class="col-md-4">
-        <div class="card mb-4">
-            {% if item.imagem %}
-            <img src="{{ item.imagem.url }}" class="card-img-top" alt="{{ item.titulo }}">
-            {% endif %}
-            <div class="card-body">
-                <h5 class="card-title">{{ item.titulo }}</h5>
-                <p class="card-text">{{ item.texto|truncatewords:30 }}</p>
-                <p class="text-muted">Por {{ item.autor }} em {{ item.data_publicacao|date:"d/m/Y" }}</p>
+
+<p>Total de conteúdos: {{ conteudos|length }}</p>
+<ul>
+    {% for secao, itens in conteudos.items %}
+    <li>{{ secao }}: {{ itens|length }} itens</li>
+    {% endfor %}
+</ul>
+
+
+
+<div class="container mt-5">
+    <h2 class="mb-4">{{ title }}</h2>
+    {% if conteudos %}
+    {% for secao, itens in conteudos.items %}
+    <h4 class="mt-4">
+        {% if secao == 'seguranca_publica' %}Segurança Pública
+        {% elif secao == 'sistema_justica' %}Sistema de Justiça
+        {% elif secao == 'municipio' %}Município
+        {% elif secao == 'leis' %}Leis
+        {% elif secao == 'noticias' %}Notícias
+        {% elif secao == 'outros' %}Outros
+        {% else %}{{ secao|title }}
+        {% endif %}
+    </h4>
+    <div class="row">
+        {% for conteudo in itens %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                {% if conteudo.imagem %}
+                <img src="{{ conteudo.imagem.url }}" class="card-img-top" alt="{{ conteudo.titulo }}">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ conteudo.titulo }}</h5>
+                    <p class="card-text">{{ conteudo.texto }}</p>
+                    <p class="text-muted mb-1">
+                        {% if conteudo.autor %}
+                        Por {{ conteudo.autor }}
+                        {% endif %}
+                        em {{ conteudo.data_publicacao|date:"d/m/Y H\h i\m\i\n" }}
+                    </p>
+                    <a href="{% url 'pre_visualizacao_conteudo' conteudo.pk %}" class="btn btn-primary mt-auto">Ver
+                        mais</a>
+                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
     {% endfor %}
+    {% else %}
+    <p>Nenhum conteúdo disponível no momento.</p>
+    {% endif %}
 </div>
-{% endfor %}
-{% else %}
-<p class="text-muted">Nenhum conteúdo publicado ainda.</p>
-{% endif %}
-
-
 {% endblock %}

@@ -27,7 +27,7 @@ app_name = 'MAIN'
 urlpatterns = [
     path("home/", home, name="home"),  # Rota para a página inicial após login
     path("", index_controlador, name="index"), #Página inicial one_page sem login
-    #Login & reset senha & logout
+    
     #path("", index, name="index"), #Página inicial one_page sem login
     #Login & reset senha & logout
     path('login/', auth_views.LoginView.as_view(template_name='login.html', next_page='/home/'), name='login'),
@@ -50,4 +50,8 @@ urlpatterns = [
     path('municipio/', include('municipio.urls')), #Destinado ao municipio
     path('chaining/', include('smart_selects.urls')),# Para selecionar os municipios
 
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(
+    settings.STATIC_URL, document_root=settings.STATIC_ROOT
+    ) + static(
+    settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )
