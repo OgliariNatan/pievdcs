@@ -61,5 +61,16 @@
     {% else %}
     <p>Nenhum conteúdo disponível no momento.</p>
     {% endif %}
+
+    <div class="card-body d-flex flex-column">
+        <h5 class="card-title text-center"><button onclick="location.href='{% url 'relatorios' %}'" class="btn"><img
+                    src="{% static 'img/line-chart.gif' %}" alt="Dados
+                Estatísticos" height="80px"></button></h5>
+
+    </div>
+
+
+
+
 </div>
 {% endblock %}
