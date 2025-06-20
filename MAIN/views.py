@@ -30,11 +30,13 @@ def index_controlador(request):
         Renderiza a página inicial com os conteúdos da página inicial.
     """
     itens  = ConteudoHome.objects.filter(publicado=True).order_by('-data_publicacao')
+    #itens = ConteudoHome.objects.all().order_by('-data_publicacao')
     conteudos = defaultdict(list)
 
     for item in itens:
         conteudos[item.secao].append(item)
 
+    conteudos = dict(conteudos) 
     context = {
         "conteudos": conteudos,
         "title": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais",

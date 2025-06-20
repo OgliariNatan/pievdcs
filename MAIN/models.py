@@ -26,10 +26,11 @@ class ConteudoHome(models.Model):
     )
     imagem = models.ImageField(
         upload_to='img_home/',
+        null=True, blank=True,
         verbose_name="Imagem",
     )
     publicado = models.BooleanField(
-        default=False,
+        default=True,
         verbose_name="Publicar na página Inicial?",
     )
     autor = models.ForeignKey(
@@ -43,6 +44,11 @@ class ConteudoHome(models.Model):
         #auto_now_add=True,
         default= timezone.now,
         verbose_name="Data de Publicação",
+    )
+    
+    data_expiracao = models.DateTimeField(
+        null=True, blank=True,
+        verbose_name="Data de Expiração",
     )
     secao = models.CharField(
         max_length=50,

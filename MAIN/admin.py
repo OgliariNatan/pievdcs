@@ -12,7 +12,7 @@ class ConteudoHomeAdmin(admin.ModelAdmin):
 
     def preview_link(self, obj):
         url = reverse('pre_visualizacao_conteudo', args=[obj.pk])
-        return format_html('<a class="button" href="{}" target="_blank">Pré-visualizar</a>', url)
+        return format_html('<a class="button" href="{}" >Pré-visualizar</a>', url)
     
     preview_link.short_description = 'Visualização'
 

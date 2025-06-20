@@ -13,12 +13,14 @@
 <div class="container mt-5">
     <div class="card">
         {% if conteudo.imagem %}
+
         <img src="{{ conteudo.imagem.url }}" class="card-img-top" alt="{{ conteudo.titulo }}">
         {% endif %}
         <div class="card-body">
             <h3 class="card-title">{{ conteudo.titulo }}</h3>
-            <p class="card-text">{{ conteudo.texto }}</p>
-            <p class="text-muted">Por {{ conteudo.autor }} em {{ conteudo.data_publicacao }}</p>
+            <p class="card-text">{{ conteudo.texto|safe|linebreaksbr }}</p>
+            <p class="text-muted">Por {{ conteudo.autor }} em {{ conteudo.data_publicacao|date:"d/m/Y H\h i\m\i\n" }}
+            </p>
             <a href="javascript:history.back()" class="btn btn-secondary mt-3">Voltar</a>
         </div>
     </div>
