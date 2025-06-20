@@ -27,8 +27,8 @@ app_name = 'MAIN'
 urlpatterns = [
     path("home/", home, name="home"),  # Rota para a página inicial após login
     path("", index_controlador, name="index"), #Página inicial one_page sem login
-    
     #path("", index, name="index"), #Página inicial one_page sem login
+    
     #Login & reset senha & logout
     path('login/', auth_views.LoginView.as_view(template_name='login.html', next_page='/home/'), name='login'),
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
