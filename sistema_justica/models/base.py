@@ -240,12 +240,6 @@ class Vitima_dados(models.Model):
         null=False, blank=False,
     )
     
-    numero_AUTOS = models.CharField(
-        verbose_name="Nº Autos",
-        max_length=50,  
-        null=True, blank=True,
-        #help_text="Número do auto de prisão em flagrante",
-    )
 
     def save(self, *args, **kwargs):
         # Calcula a idade antes de salvar
@@ -372,7 +366,6 @@ class Agressor_dados(models.Model):
         null=True,
         blank=False,
         verbose_name="Município*",
-        #help_text="Informe o município de nascimento da vítima",
     )
     bairro = models.CharField(
         max_length=100,
@@ -495,9 +488,18 @@ class Filhos_dados(models.Model):
         choices=estado_choices,
         default="SC",
         null=False, blank=False,
-        #help_text="Escolha o estado de nascimento do filho",
     )
-
+    municipio = ChainedForeignKey(
+        Municipio,
+        chained_field="estado",
+        chained_model_field="estado",
+        show_all=False,
+        auto_choose=True,
+        sort=True,
+        null=True,
+        blank=False,
+        verbose_name="Município*",
+    )
     def save(self, *args, **kwargs):
         # Calcula a idade antes de salvar
         today = timezone.now().date()
