@@ -30,9 +30,8 @@
         <div class=" col-md-6 col-lg-4 mb-4">
             <div class="card h-100">
                 {% if conteudo.imagem %}
-
                 <img src="{{ conteudo.imagem.url }}" class="card-img-top" alt="{{ conteudo.titulo }}"
-                    style="object-fit: cover;">
+                    style="object-fit: contain; width: 100%; max-height: 250px;">
                 {% else %}
                 {% endif %}
                 <div class="card-body d-flex flex-column">

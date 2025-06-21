@@ -18,6 +18,9 @@ print(f'\n\nBanco em uso: {connection.vendor}\n\n-------------------------------
 
 
 def index(request):
+    """
+    Subistituido pelo index_controlador
+    """
     context = {
         "title": "Bem-vindo",
         "description": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais"
