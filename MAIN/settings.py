@@ -180,6 +180,6 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True #Fecha a seção quando fecha o navegador
 
 #SESSION_COOKIE_SAMESITE = 'Lax' # não aceita cookie deterceiros
 #SESSION_COOKIE_SECURE = True #Só transmite informação se for seguro 'https'
-#SESSION_COOKIE_AGE = 0  # expira a seção após o fechamento da aba
+SESSION_COOKIE_AGE = 0  # expira a seção após o fechamento da aba
 
 #configurar logging
