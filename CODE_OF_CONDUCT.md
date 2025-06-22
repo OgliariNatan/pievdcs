@@ -39,11 +39,11 @@ Este código de conduta se aplica a todas as atividades e interações dentro da
 
 O documento é dinâmico e poderá ser revisado conforme a comunidade evoluir. Alterações serão registradas e comunicadas a todos os participantes, visando manter a transparência e a adequação das práticas às necessidades do grupo.
 
-7.Licenças
-As licenças dos projetos serão defenidos de acordo com cada projeto, os não explicitos, se herdarão da licença apache2.0 adicionado das condições:
+7. Licenças
+A licença dos projetos será definida de acordo com cada projeto, os não explícitos, se herdarão da licença apache2.0 adicionado das condições:
 > O direito de fazer alterações ou ajustes é reservado exclusivamente ao autor original ou à equipe de desenvolvimento designada.
 
-Uma vez estabelecida a licença, a sua subistituição, apenas será válida, caso todas as pessoas envolvidas no projeto concordarem com tal feito.
+Uma vez estabelecida a licença, a sua substituição, apenas será válida, caso todas as pessoas envolvidas no projeto concordarem com tal feito.
 
 8. Considerações Finais
 Agradecemos a todos os membros que contribuem para o avanço do projeto e se comprometem a seguir estas diretrizes. A colaboração, o respeito e a comunicação aberta são fundamentais para criarmos um ambiente produtivo e inovador, capaz de impulsionar as soluções tecnológicas e administrativas que almejamos desenvolver.
