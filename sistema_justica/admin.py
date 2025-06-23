@@ -53,4 +53,5 @@ class AgressorAdmin(admin.ModelAdmin):
     inlines = [FilhosInlinePai]
 
 admin.site.register(Filhos_dados)
+
 admin.site.register(Municipio)
