@@ -61,4 +61,3 @@ class CadastroMunicipioUpdateForm(forms.ModelForm):
             class Meta:
                 model = Municipio
                 fields = '__all__'
-
