@@ -7,7 +7,7 @@ Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais
 
 * O presente projeto tem como objetivo o desenvolvimento de uma plataforma digital no modelo SaaS (Software as a Service), voltada ao enfrentamento da violência doméstica e crimes sexuais. A plataforma integrará as forças de segurança pública, núcleos municipais de atenção à família, Ministério Público, Defensoria Pública e o Poder Judiciário. A atividade central é a criação de um sistema seguro, colaborativo e funcional, que permita o compartilhamento de informações, acompanhamento de casos e articulação de ações interinstitucionais, proporcionando mais agilidade e efetividade no atendimento às vítimas.
 
-* O projeto será desenvolvido por um reeducando com formação técnica, que terá a oportunidade de aplicar, na prática, os conhecimentos adquiridos sob supervisão institucional. Essa iniciativa reforça o papel do sistema prisional como agente de transformação social, ao oferecer condições reais para a ressocialização por meio do trabalho qualificado. Além de gerar impacto social direto, a ação contribui para a valorização profissional do reeducando e demonstra à sociedade que a reinserção de pessoas privadas de liberdade é possível e benéfica. A priorização do uso de tecnologias assertivas e de código aberto garante que a plataforma seja sustentável, escalável e viável a longo prazo. O projeto contempla os Eixos 1 e 2 do edital.
+* O projeto será desenvolvido por um reeducando com formação técnica, que terá a oportunidade de aplicar, na prática, os conhecimentos adquiridos sob supervisão institucional. Essa iniciativa reforça o papel do sistema prisional como agente de transformação social, ao oferecer condições reais para a ressocialização por meio do trabalho qualificado. Além de gerar impacto social direto, a ação contribui para a valorização profissional do reeducando e demonstra à sociedade que a reinserção de pessoas privadas de liberdade é possível e benéfica. A priorização do uso de tecnologias assertivas e de código aberto garante que a plataforma seja sustentável, escalável e viável a longo prazo.
 
 ____________________
 
@@ -52,11 +52,7 @@ ____________________
 <p>&#x2610; Escolaridade : str[15] --- Dropbox['Analfabeto', 'Fundamental Incompleto', '....'].</p>
 <p>&#x2610; n° AUTOS : int[30]. --- FK da 'violência domestica.n°Autos'</p>
 <p>&#x2610; Nome do Agressor : int[150]. --- FK do 'Agressor.ID'</p>
-<p>&#x2610; Início dos AUTOS : FK violencia_dometica.DATE.</p>
-<p>&#x2610; Status : Bool --- FK violencia_dometica.status.</p>
 <p>&#x2610; Possui Filhos : int[150]. --- com opção de adicionar mais, e com informações do nome do PAI. FK'filhos.ID'</p>
-<p>&#x2610; Data última visita : Date --- FK da 'PM atendimento'.</p>
-<p>&#x2610; Suporte médico : str[50] --- FK da 'consulta'</p>
 <p>&#x2610; Estado : str[2] --- Dropbox ['SC':'Santa Catarina', 'RS':'Rio Grande dos Sul', '...':'...', 'XY':'Estrangeiro']. ***carrega de GeoJSON***</p>
 <p>&#x2610; Municipio : str[15] --- Dropbox [dependerá do estado selecionado].</p>
 <p>&#x2610; Bairro : str[15] --- Dropbox.</p>
@@ -74,13 +70,7 @@ ____________________
 <p>&#x2610; Idade : int[3] (Define automatico, com base na data de nascimento).</p>
 <p>&#x2610; Escolaridade : str[15] --- Dropbox['Analfabeto', 'Fundamental Incompleto', '....'].</p>
 <p>&#x2610; Contato telefonico : int[15].</p>
-<p>&#x2610; n° AUTOS : int[30]. --- 'FK violencia_dometica.n°Autos'</p>
-<p>&#x2610; Nome da vítima : int[8]. --- 'FK vitima.ID'</p>
 <p>&#x2610; Possui Filhos : int[150]. --- com opção de adicionar mais, e com informações do nome da MÃE. FK'filhos.ID'</p>
-<p>&#x2610; Início dos AUTOS : FK violencia_dometica.DATE.</p>
-<p>&#x2610; Status : Bool 'FK violencia_dometica.status' .</p>
-<p>&#x2610; Suporte médico : str[50] --- FK da 'consulta'</p>
-<p>&#x2610; segregação cautelar : bool</p>
 <p>&#x2610; Estado : str[2] --- Dropbox ['SC':'Santa Catarina', 'RS':'Rio Grande dos Sul', '...':'...', 'XY':'Estrangeiro']. ***carrega de GeoJSON***</p>
 <p>&#x2610; Município : str[15] --- Dropbox [dependerá do estado selecionado].</p>
 <p>&#x2610; Bairro : str[15] --- Dropbox.</p>
