@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from .permission_group import grupos_permitidos
 from ..forms.cadastros import CadastroVitimaForm, CadastroAgressorForm, CadastroMunicipioForm
-from ..models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio
+from ..models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
 
 
 @login_required(login_url=reverse_lazy('login'))

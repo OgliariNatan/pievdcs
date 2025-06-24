@@ -2,7 +2,7 @@ from django.urls import path
 from .views.poder_judiciario import poder_judiciario, cadastro_vitima_form, cadastro_vitima_submit, cadastro_agressor_form, cadastro_agressor_submit, cadastro_municipio_form, cadastro_municipio_submit
 from .views.ministerio_publico import ministerio_publico
 from .views.defensoria_publica import defensoria_publica
-
+from sistema_justica.forms.cadastros import CadastroVitimaForm, CadastroAgressorForm, CadastroMunicipioForm
 
 app_name = 'sistema_justica'
 
