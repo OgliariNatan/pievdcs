@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio
+from .models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
 # Register your models here.
 
 # Formulários personalizados para mostrar o calendário nos campos de data
@@ -55,3 +55,11 @@ class AgressorAdmin(admin.ModelAdmin):
 admin.site.register(Filhos_dados)
 
 admin.site.register(Municipio)
+@admin.register(Estado)
+class EstadoAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'sigla')
+    search_fields = ('nome', 'sigla')
+    ordering = ('nome',)
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).order_by('nome')

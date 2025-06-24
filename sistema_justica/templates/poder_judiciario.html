@@ -43,6 +43,10 @@
             hx-target="#modal-vitima" hx-trigger="click" hx-swap="innerHTML">
             Cadastrar Vítima
         </button>
+        <button class="btn btn-primary btn-sm" hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}"
+            hx-target="#modal-vitima" hx-trigger="click" hx-swap="innerHTML">
+            Cadastrar Agressor
+        </button>
         <p>Esta página contém informações relevantes sobre o {{ title }} e seus serviços.</p>
         <p>{% lorem 10 p %}</p>
     </div>
