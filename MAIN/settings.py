@@ -76,6 +76,7 @@ MIDDLEWARE = [
 
 
 ROOT_URLCONF = "MAIN.urls"
+USE_DJANGO_JQUERY = True
 
 TEMPLATES = [
     {

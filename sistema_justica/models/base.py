@@ -46,36 +46,6 @@ etnia_choices = [
     ("IN", "Indígena"),
 ]
 
-estado_choices = [
-    ("AC", "Acre"),
-    ("AL", "Alagoas"),
-    ("AP", "Amapá"),
-    ("AM", "Amazonas"),
-    ("BA", "Bahia"),
-    ("CE", "Ceará"),
-    ("DF", "Distrito Federal"),
-    ("ES", "Espírito Santo"),
-    ("GO", "Goiás"),
-    ("MA", "Maranhão"),
-    ("MT", "Mato Grosso"),
-    ("MS", "Mato Grosso do Sul"),
-    ("MG", "Minas Gerais"),
-    ("PA", "Pará"),
-    ("PB", "Paraíba"),
-    ("PR", "Paraná"),
-    ("PE", "Pernambuco"),
-    ("PI", "Piauí"),
-    ("RJ", "Rio de Janeiro"),
-    ("RN", "Rio Grande do Norte"),
-    ("RS", "Rio Grande do Sul"),
-    ("RO", "Rondônia"),
-    ("RR", "Roraima"),
-    ("SC", "Santa Catarina"),
-    ("SP", "São Paulo"),
-    ("SE", "Sergipe"),
-    ("TO", "Tocantins"),
-    ("EX", "Estrangeiro"),
-]
 
 classeEconomica_choices = [
     ("SR", "Sem Renda"),
@@ -86,16 +56,35 @@ classeEconomica_choices = [
     ("AC", "Acima de R$28.240,00"),
 ]
 
+class Estado(models.Model):
+    """
+    Modelo para armazenar os estados brasileiros.
+    """
+    sigla = models.CharField(
+        max_length= 2,
+        verbose_name="Sigla do Estado",
+        unique=True,
+        null=True, blank=False,
+    )
+    nome = models.CharField(
+        max_length=100,
+        verbose_name="Nome do Estado",
+        null=True, blank=False,
+    )
+    def __str__(self):
+        return f'{self.sigla}'
+
+
 class Municipio(models.Model):
     """
     Modelo para armazenar os dados do município.
     """
     nome = models.CharField(max_length=100, verbose_name="Município")
-    estado = models.CharField(
-        max_length=2,
-        choices=estado_choices,
-        verbose_name="Estado",
-        #help_text="Estado ao qual o município pertence"
+    estado = models.ForeignKey(
+        Estado,
+        on_delete=models.PROTECT,
+        null=True, blank=False,
+        verbose_name="Estado"
     )
 
     def __str__(self):
@@ -135,13 +124,13 @@ class Vitima_dados(models.Model):
     )
     nome_do_pai = models.CharField(
         max_length=250,
-        verbose_name="Nome do Pai*",
+        verbose_name="Pai*",
         null=False, blank=False,
         #help_text="Nome completo do pai da vítima",
     )
     nome_da_mae = models.CharField(
         max_length=250,
-        verbose_name="Nome da Mãe*",
+        verbose_name="Mãe*",
         null=False, blank=False,
         #help_text="Nome completo da mãe da vítima",
     )
@@ -164,6 +153,19 @@ class Vitima_dados(models.Model):
         verbose_name="Etnia*",
         null=False, blank=False,
     )
+    estado_civil = models.CharField(
+        max_length=2,
+        choices=[
+            ("S", "Solteiro(a)"),
+            ("C", "Casado(a)"),
+            ("D", "Divorciado(a)"),
+            ("V", "Viúvo(a)"),
+            ("A", "Amasiado(a)"),
+            ("U", "União Estável"),
+            ("O", "Outros"),
+        ],
+        verbose_name="Estado Civil*",
+    )
 
     idade = models.PositiveIntegerField(null=True, blank=True, editable=False)
     telefone = models.CharField(
@@ -177,16 +179,13 @@ class Vitima_dados(models.Model):
         choices=nacionalidade_choices, 
         default="BR",
         null=False, blank=False,
-        #help_text="Escolha a nacionalidade da vítima",
     )  
     
-    estado = models.CharField(
-        max_length=2,
-        choices=estado_choices,
-        default="SC",
-        null=False, blank=False,
+    estado = models.ForeignKey(
+        Estado,
+        on_delete=models.SET_NULL,
+        null=True, blank=False,
         verbose_name="Estado*",
-        #help_text="Escolha o estado de nascimento da vítima",
     )
     municipio = ChainedForeignKey(
         Municipio,
@@ -195,10 +194,8 @@ class Vitima_dados(models.Model):
         show_all=False,
         auto_choose=True,
         sort=True,
-        null=True,
-        blank=False,
+        null=True, blank=False,
         verbose_name="Município*",
-        #help_text="Informe o município de nascimento da vítima",
     )
     bairro = models.CharField(
         max_length=100,
@@ -279,10 +276,8 @@ class Agressor_dados(models.Model):
     nome = models.CharField(
         max_length=250, 
         unique=False, 
-        verbose_name="Nome Completo*", 
+        verbose_name="Nome*", 
         null=False, blank=False,
-        #related_name="agressor_ID",
-        #help_text="Nome completo do agressor",
     )
     
     cpf = models.CharField(
@@ -300,20 +295,17 @@ class Agressor_dados(models.Model):
     )
     nome_do_pai = models.CharField(
         max_length=250,
-        verbose_name="Nome do Pai*",
+        verbose_name="Pai*",
         null=True, blank=False,
-        #help_text="Nome completo do pai da vítima",
     )
     nome_da_mae = models.CharField(
         max_length=250,
-        verbose_name="Nome da Mãe*",
+        verbose_name="Mãe*",
         null=True, blank=False, unique=False,
-        #help_text="Nome completo da mãe da vítima",
     )
     data_nascimento = models.DateField(
         verbose_name="Data de Nascimento*", 
         unique=False, null=True, blank=False,
-        #default=date.today,
         help_text="DD/MM/AAAA",
     )
     
@@ -323,7 +315,6 @@ class Agressor_dados(models.Model):
         verbose_name="Sexo*",
         default="M",
         null=False, blank=False,
-        #help_text="Escolha o sexo do agressor",
     )
     etnia = models.CharField(
         max_length=2,
@@ -331,7 +322,19 @@ class Agressor_dados(models.Model):
         verbose_name="Etnia*",
         null=False, blank=False,
     )
-
+    estado_civil = models.CharField(
+        max_length=2,
+        choices=[
+            ("S", "Solteiro(a)"),
+            ("C", "Casado(a)"),
+            ("D", "Divorciado(a)"),
+            ("V", "Viúvo(a)"),
+            ("A", "Amasiado(a)"),
+            ("U", "União Estável"),
+            ("O", "Outros"),
+        ],
+        verbose_name="Estado Civil*",
+    )
     idade = models.PositiveIntegerField(
         null=True, blank=True, 
         editable=False,
@@ -348,13 +351,11 @@ class Agressor_dados(models.Model):
         null=False, blank=False,
         #help_text="Escolha a nacionalidade do agressor",
     )  
-    estado = models.CharField(
-        max_length=2, 
-        verbose_name="Estado*", 
-        choices=estado_choices, 
-        default="SC",
-        null=False, blank=False,
-        #help_text="Escolha o estado de nascimento do agressor",
+    estado = models.ForeignKey(
+        Estado,
+        on_delete=models.SET_NULL,
+        null=True, blank=False,
+        verbose_name="Estado*",
     )
     municipio = ChainedForeignKey(
         Municipio,
@@ -363,8 +364,7 @@ class Agressor_dados(models.Model):
         show_all=False,
         auto_choose=True,
         sort=True,
-        null=True,
-        blank=False,
+        null=True, blank=False,
         verbose_name="Município*",
     )
     bairro = models.CharField(
@@ -470,7 +470,7 @@ class Filhos_dados(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name="Nome do Pai*",
+        verbose_name="Pai*",
         #help_text="Selecione o pai do filho",
     )
 
@@ -479,15 +479,14 @@ class Filhos_dados(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name="Nome da Mãe*",
+        verbose_name="Mãe*",
         #help_text="Selecione a mãe do filho",
     )
-    estado = models.CharField(
-        max_length=2,
+    estado = models.ForeignKey(
+        Estado,
+        on_delete=models.SET_NULL,
+        null=True, blank=False,
         verbose_name="Estado*",
-        choices=estado_choices,
-        default="SC",
-        null=False, blank=False,
     )
     municipio = ChainedForeignKey(
         Municipio,
