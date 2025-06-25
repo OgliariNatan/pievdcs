@@ -7,10 +7,14 @@ class CadastroVitimaForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
-            'estado': forms.Select(attrs={'id': 'id_estado'}),
-            'municipio': forms.Select(attrs={'id': 'id_estado'}),
+            #'estado': forms.Select(attrs={'id': 'id_estado'}),
+            'municipio': forms.Select(attrs={'id': 'id_municipio'}),
         }
-
+    def __init__(self, *args, **kwargs):
+        super(CadastroVitimaForm, self).__init__(*args, **kwargs)
+        self.fields['estado'].widget.attrs.update({'class': 'form-control, form-control-sm', 'type': 'text'})
+        self.fields['municipio'].widget.attrs.update({'class': 'form-control, form-control-sm', 'type': 'text'})
+        self.fields['data_nascimento'].widget.attrs.update({'class': 'form-control, form-control-sm', 'type': 'date'})
     
 class CadastroAgressorForm(forms.ModelForm):
     class Meta:
@@ -19,7 +23,7 @@ class CadastroAgressorForm(forms.ModelForm):
         widgets = {
             'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
             #'estado': forms.Select(attrs={'id': 'id_estado'}),
-            'municipio': forms.Select(attrs={'id': 'id_estado'}),
+            'municipio': forms.Select(attrs={'id': 'id_municipio'}),
         }
 
 class CadastroMunicipioForm(forms.ModelForm):

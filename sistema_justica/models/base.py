@@ -2,7 +2,7 @@ from django.db import models
 from datetime import date
 from seguranca_publica.models import *
 from django import forms
-from smart_selects.db_fields import ChainedForeignKey
+from smart_selects.db_fields import ChainedForeignKey, GroupedForeignKey
 
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -79,7 +79,10 @@ class Municipio(models.Model):
     """
     Modelo para armazenar os dados do município.
     """
-    nome = models.CharField(max_length=100, verbose_name="Município")
+    nome = models.CharField(
+        max_length=100, 
+        verbose_name="Município"
+    )
     estado = models.ForeignKey(
         Estado,
         on_delete=models.PROTECT,
