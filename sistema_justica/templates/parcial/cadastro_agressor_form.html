@@ -5,6 +5,7 @@
             <form hx-post="{% url 'sistema_justica:cadastro_agressor_submit' %}" hx-target="#modal-vitima"
                 hx-swap="innerHTML">
                 {% csrf_token %}
+                {{ form.media }}<!-- Importa as necessidades do smart-select -->
                 <div class="modal-header" style="background-color: #d6e5f3;">
                     <h5 class="modal-title">Cadastrar Agressor</h5>
                     <button type="button" class="btn-close"

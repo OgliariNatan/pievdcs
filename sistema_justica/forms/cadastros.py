@@ -8,7 +8,7 @@ class CadastroVitimaForm(forms.ModelForm):
         widgets = {
             'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
             #'estado': forms.Select(attrs={'id': 'id_estado'}),
-            'municipio': forms.Select(attrs={'id': 'id_municipio'}),
+            #'municipio': forms.Select(attrs={'id': 'id_municipio'}),
         }
     def __init__(self, *args, **kwargs):
         super(CadastroVitimaForm, self).__init__(*args, **kwargs)
@@ -23,7 +23,7 @@ class CadastroAgressorForm(forms.ModelForm):
         widgets = {
             'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
             #'estado': forms.Select(attrs={'id': 'id_estado'}),
-            'municipio': forms.Select(attrs={'id': 'id_municipio'}),
+            #'municipio': forms.Select(attrs={'id': 'id_municipio'}),
         }
 
 class CadastroMunicipioForm(forms.ModelForm):
