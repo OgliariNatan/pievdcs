@@ -54,7 +54,7 @@ def cadastro_agressor_submit(request):
                     // Opcional: recarregar o campo agressor via HTMX
                     htmx.trigger(htmx.find('#id_agressor'), 'change');
                 </script>
-                <div class="alert alert-success">Agressor cadastrado com sucesso! Selecione-o na lista.</div>
+                <div class="alert alert-success">Agressor cadastrado com sucesso!</div>
             """)
         else:
             return render(request, 'parcial/cadastro_agressor_form.html', {'form': form})
