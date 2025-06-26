@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
 from sistema_justica.models.base import Municipio, Estado
+from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField
 
 class ComarcasPoderJudiciario(models.Model):
     """
@@ -9,7 +10,19 @@ class ComarcasPoderJudiciario(models.Model):
     """
     nome = models.CharField(max_length=100, verbose_name='Nome da Comarca')
     estado = models.ForeignKey('Estado', on_delete=models.CASCADE, verbose_name='Estado')
-    municipios_abrangentes = models.ManyToManyField('Municipio', blank=True, verbose_name='Municípios Abrangentes')
+    municipios_abrangentes = ChainedManyToManyField(
+        Municipio,
+        chained_field="estado",
+        chained_model_field="estado",
+        show_all=False,
+        auto_choose=True,
+        sort=True,
+        blank=True,
+        null=True,
+        related_name='comarcas',
+        verbose_name='Municípios Abrangentes',
+    )
+    
 
     class Meta:
         verbose_name = 'Comarca do Poder Judiciário'
