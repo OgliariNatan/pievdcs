@@ -82,3 +82,5 @@ def cadastro_municipio_submit(request):
         else:
             return render(request, 'parcial/cadastro_municipio_form.html', {'form': form})
     return HttpResponse(status=405)
+
+    
