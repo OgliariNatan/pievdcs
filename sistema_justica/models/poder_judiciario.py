@@ -22,7 +22,7 @@ class ComarcasPoderJudiciario(models.Model):
         auto_choose=True,
         #sort=True,
         blank=True,
-        null=True,
+        #null=True,
         horizontal=True,
         verbose_name='Municípios Abrangentes',
     )
