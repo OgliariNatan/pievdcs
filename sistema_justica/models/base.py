@@ -419,6 +419,14 @@ class Agressor_dados(models.Model):
             self.idade = None
         super().save(*args, **kwargs)
 
+        # Remove qualquer caractere não numérico do CPF
+        cpf_digits = ''.join(filter(str.isdigit, self.cpf))
+        # Formata como 000.000.000-00 se o comprimento for 11
+        if len(cpf_digits) == 11:
+            self.cpf = f"{cpf_digits[:3]}.{cpf_digits[3:6]}.{cpf_digits[6:9]}-{cpf_digits[9:]}"
+        super().save(*args, **kwargs)
+
+
     class Meta:
         verbose_name = "Dados do Agressor"
         verbose_name_plural = "Dados dos Agressores"

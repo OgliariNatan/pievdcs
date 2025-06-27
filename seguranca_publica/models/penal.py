@@ -99,12 +99,8 @@ class ModeloPenal(models.Model):
     #     related_name='agressores_atendidos',
     #     blank=True,
     # )
-    agressores_atendidos = ChainedManyToManyField(
+    agressores_atendidos = models.ManyToManyField(
         Agressor_dados,
-        chained_field="agressor_dados",
-        chained_model_field="agressor_dados",
-        auto_choose=True,
-        horizontal=True,
         verbose_name='Participantes do Grupo',
         related_name='agressores_atendidos',
         blank=True,

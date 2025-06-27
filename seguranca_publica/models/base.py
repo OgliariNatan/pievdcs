@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from sistema_justica.models.base import Vitima_dados, Agressor_dados, Municipio, Estado
 from MAIN.cadastros_padrao import agressor_padrao
+from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
 
 
 
@@ -70,8 +71,13 @@ class OcorrenciaBase(models.Model):
         verbose_name="Estado",
     )
 
-    municipio_ocorrencia = models.ForeignKey(
+    municipio_ocorrencia = ChainedForeignKey(
         Municipio,
+        chained_field="Estado",
+        chained_model_field="estado",
+        show_all=False,
+        auto_choose=True,
+        sort=True,
         on_delete=models.CASCADE,
         null=True, blank=True,
         verbose_name="Município",
