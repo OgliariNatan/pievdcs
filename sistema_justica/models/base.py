@@ -2,7 +2,7 @@ from django.db import models
 from datetime import date
 from seguranca_publica.models import *
 from django import forms
-from smart_selects.db_fields import ChainedForeignKey, GroupedForeignKey
+from smart_selects.db_fields import ChainedForeignKey
 
 from django.contrib.auth.models import User
 from django.utils import timezone

@@ -1,7 +1,7 @@
 
 from django.db import models
 from django.utils import timezone
-from sistema_justica.models.base import Vitima_dados, Agressor_dados
+from sistema_justica.models.base import Vitima_dados, Agressor_dados, Municipio, Estado
 from MAIN.cadastros_padrao import agressor_padrao
 
 
@@ -63,6 +63,19 @@ class OcorrenciaBase(models.Model):
     )
 
     #Municipio da ocorrencia
+    Estado = models.ForeignKey(
+        Estado,
+        on_delete=models.CASCADE,
+        null=True, blank=True,
+        verbose_name="Estado",
+    )
+
+    municipio_ocorrencia = models.ForeignKey(
+        Municipio,
+        on_delete=models.CASCADE,
+        null=True, blank=True,
+        verbose_name="Município",
+    )
 
     bairro_ocorrencia = models.CharField(
         max_length=150,
