@@ -2,7 +2,7 @@ from django.db import models
 from datetime import date
 from seguranca_publica.models import *
 from django import forms
-from smart_selects.db_fields import ChainedForeignKey, GroupedForeignKey
+from smart_selects.db_fields import ChainedForeignKey
 
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -418,6 +418,14 @@ class Agressor_dados(models.Model):
         else:
             self.idade = None
         super().save(*args, **kwargs)
+
+        # Remove qualquer caractere não numérico do CPF
+        cpf_digits = ''.join(filter(str.isdigit, self.cpf))
+        # Formata como 000.000.000-00 se o comprimento for 11
+        if len(cpf_digits) == 11:
+            self.cpf = f"{cpf_digits[:3]}.{cpf_digits[3:6]}.{cpf_digits[6:9]}-{cpf_digits[9:]}"
+        super().save(*args, **kwargs)
+
 
     class Meta:
         verbose_name = "Dados do Agressor"

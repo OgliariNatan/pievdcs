@@ -5,7 +5,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from sistema_justica.models.base import Agressor_dados
+from sistema_justica.models.base import Agressor_dados, Municipio, Estado
+from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
 #from .penal import *
 
 
@@ -92,10 +93,19 @@ class ModeloPenal(models.Model):
         related_name='grupo_atendimento', 
         null=True, blank=True
     )
+    # agressores_atendidos = models.ManyToManyField(
+    #     Agressor_dados,
+    #     verbose_name='Participantes do Grupo',
+    #     related_name='agressores_atendidos',
+    #     blank=True,
+    # )
     agressores_atendidos = models.ManyToManyField(
         Agressor_dados,
         verbose_name='Participantes do Grupo',
+        related_name='agressores_atendidos',
+        blank=True,
     )
+
 
     avaliacao = models.TextField(
         verbose_name="Avaliação do Atendimento", 

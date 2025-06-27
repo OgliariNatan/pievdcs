@@ -38,7 +38,7 @@
                 </div>
                 <div class="modal-footer" style="background-color: #d6e5f3;">
                     <button type="button" class="btn btn-secondary btn-sm"
-                        onclick="document.getElementById('modal-agressor').innerHTML = ''">Cancelar</button>
+                        onclick="document.getElementById('modal-vitima').innerHTML = ''">Cancelar</button>
                     <button type="submit" class="btn btn-primary btn-sm">Salvar</button>
                 </div>
             </form>
@@ -46,7 +46,3 @@
     </div>
 </div>
 <div id="modal-municipio"></div>
-
-{% block script %}
-<script src="{% static 'smart-selects/admin/js/chainedfk.js' %}"></script>
-{% endblock %}

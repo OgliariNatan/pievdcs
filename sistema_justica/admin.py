@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django import forms
 from .models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
+from .models.poder_judiciario import ComarcasPoderJudiciario
+# admin.py
 # Register your models here.
 
 # Formulários personalizados para mostrar o calendário nos campos de data
@@ -63,3 +65,11 @@ class EstadoAdmin(admin.ModelAdmin):
     
     def get_queryset(self, request):
         return super().get_queryset(request).order_by('nome')
+    
+
+    
+@admin.register(ComarcasPoderJudiciario)
+class ComarcasPoderJudiciarioAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'estado')
+    search_fields = ('nome',)
+    ordering = ('nome',)
