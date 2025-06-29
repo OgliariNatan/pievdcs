@@ -80,6 +80,10 @@ ROOT_URLCONF = "MAIN.urls"
 USE_DJANGO_JQUERY = True
 SMART_SELECTS_INCLUDE_JQUERY = True
 
+
+
+
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -180,10 +184,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = '/login/'  # URL para redirecionar usuários não autenticados
 LOGIN_REDIRECT_URL = '/home/'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True #Fecha a seção quando fecha o navegador
+SESSION_COOKIE_NAME = 'sistema_justica_session'  # Nome do cookie de sessão
+SESSION_COOKIE_AGE = 900  # 15 minutos em segundos
+SESSION_SAVE_EVERY_REQUEST = False  # Só renova se houver atividade
 
-#SESSION_COOKIE_SAMESITE = 'Lax' # não aceita cookie deterceiros
+CSRF_COOKIE_HTTPONLY = True       # Impede acesso via JavaScript (aumenta a segurança)
+SESSION_COOKIE_SAMESITE = 'Lax' # não aceita cookie deterceiros
 #SESSION_COOKIE_SECURE = True #Só transmite informação se for seguro 'https'
-#SESSION_COOKIE_AGE = 0  # expira a seção após o fechamento da aba
+
 
 #configurar logging
 LOOGING = {
