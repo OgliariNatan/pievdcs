@@ -30,33 +30,17 @@
     <!-- Frases -->
     <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border-primary">
         <h2 class="text-xl font-semibold mb-4 text-primary">Frases</h2>
-        <blockquote class="space-y-4 text-gray-700">
-            <div>
-                <p class="italic">"Somos exímios construtores, filhos do sistema cartesiano. A dor humana virou
-                    estatística."</p>
-                <footer class="text-sm text-gray-500">Augusto <cite>Cury</cite></footer>
-            </div>
-            <div>
-                <p class="italic">
-                    "Primeiro eles vieram atrás dos socialistas, e eu não me manifestei porque eu não era
-                    socialista.<br>
-                    Depois, vieram atrás dos sindicalistas, e eu não me manifestei porque eu não era sindicalista.<br>
-                    Depois, vieram atrás dos judeus, e eu não me manifestei porque eu não era judeu.<br>
-                    Finalmente, vieram atrás de mim, e não havia ninguém para se manifestar por mim."
-                </p>
-                <footer class="text-sm text-gray-500">Martin <cite>Niemöller</cite></footer>
-            </div>
-            <div>
-                <p class="italic">
-                    "A história do ovo e do bacon fala sobre envolvimento e comprometimento. Quando você come o bacon, o
-                    porco está comprometido, já que ele é o próprio. O ovo, você come e o envolvimento da galinha é de
-                    menos. Que por sua vez aproveitará o tempo livre para ciscar o chão e continuará a procurar
-                    minhocas."
-                </p>
-                <footer class="text-sm text-gray-500">Mestre <cite>Ariévlis</cite></footer>
-            </div>
+        <blockquote id="frase-block" class="space-y-4 text-gray-700">
+            <!-- Frase será inserida via JS -->
         </blockquote>
+        <div class="flex justify-end mt-4 space-x-2">
+            <button id="prev-frase"
+                class="px-3 py-1 rounded bg-primary text-white hover:bg-secondary transition">Anterior</button>
+            <button id="next-frase"
+                class="px-3 py-1 rounded bg-primary text-white hover:bg-secondary transition">Próxima</button>
+        </div>
     </div>
+
 
     <!-- Contagens rápidas -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
@@ -87,17 +71,18 @@
 
     <!-- Gráficos em grid responsivo -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        <!-- Gráfico de Rosca: Cidades -->
-        <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Cidades</h2>
-            <canvas id="cidadeChart"></canvas>
-        </div>
         <!-- Gráfico de Rosca: Comarcas -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
             <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Comarcas</h2>
             <p class="text-sm text-gray-500 mb-2">A implementar. Implementar comparação por período.</p>
             <canvas id="comarcaChart"></canvas>
         </div>
+        <!-- Gráfico de Rosca: Cidades -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Cidades (Mostrar nome da comarca)</h2>
+            <canvas id="cidadeChart"></canvas>
+        </div>
+
         <!-- Gráfico de Barras: Idade -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
             <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Idade</h2>
@@ -448,5 +433,65 @@
     });
     // Inicialmente oculto
     backToTopBtn.style.display = 'none';
+
+
+    //Frase
+    const frases = [
+        {
+            texto: `"Somos exímios construtores, filhos do sistema cartesiano. A dor humana virou estatística."`,
+            autor: `Augusto <cite>Cury</cite>`
+        },
+        {
+            texto: `"Primeiro eles vieram atrás dos socialistas, e eu não me manifestei porque eu não era socialista.<br>
+            Depois, vieram atrás dos sindicalistas, e eu não me manifestei porque eu não era sindicalista.<br>
+            Depois, vieram atrás dos judeus, e eu não me manifestei porque eu não era judeu.<br>
+            Finalmente, vieram atrás de mim, e não havia ninguém para se manifestar por mim."`,
+            autor: `Martin <cite>Niemöller</cite>`
+        },
+        {
+            texto: `"A história do ovo e do bacon fala sobre envolvimento e comprometimento. Quando você come o bacon, o porco está comprometido, já que ele é o próprio. O ovo, você come e o envolvimento da galinha é de menos. Que por sua vez aproveitará o tempo livre para ciscar o chão e continuará a procurar minhocas."`,
+            autor: `Mestre <cite>Ariévlis</cite>`
+        }
+    ];
+
+    let fraseAtual = 0;
+    let fraseTimer = null;
+
+    function mostrarFrase(idx) {
+        const frase = frases[idx];
+        document.getElementById('frase-block').innerHTML = `
+                <div>
+                    <p class="italic">${frase.texto}</p>
+                    <footer class="text-sm text-gray-500">${frase.autor}</footer>
+                </div>
+            `;
+    }
+
+    function proximaFrase() {
+        fraseAtual = (fraseAtual + 1) % frases.length;
+        mostrarFrase(fraseAtual);
+        reiniciarTimer();
+    }
+
+    function anteriorFrase() {
+        fraseAtual = (fraseAtual - 1 + frases.length) % frases.length;
+        mostrarFrase(fraseAtual);
+        reiniciarTimer();
+    }
+
+    function reiniciarTimer() {
+        if (fraseTimer) clearInterval(fraseTimer);
+        fraseTimer = setInterval(proximaFrase, 30000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        mostrarFrase(fraseAtual);
+        document.getElementById('prev-frase').onclick = anteriorFrase;
+        document.getElementById('next-frase').onclick = proximaFrase;
+        reiniciarTimer();
+    });
+
+
+
 </script>
 {% endblock %}
