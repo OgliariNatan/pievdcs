@@ -145,6 +145,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#DESABILITA O FRAMEWORK REST
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
