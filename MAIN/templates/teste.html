@@ -1,0 +1,306 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B5A9F',
+                        secondary: '#B19CD9',
+                        accent: '#E8D5F2',
+                        dark: '#2D1B40'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-primary to-secondary shadow-lg sticky top-0 z-50">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <i class="fas fa-shield-heart text-primary text-xl"></i>
+                    </div>
+                    <h1 class="text-white font-bold text-lg hidden md:block">
+                        Plataforma Integrada
+                    </h1>
+                </div>
+                <!-- Navigation -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#home" class="text-white hover:text-accent transition-colors duration-200">Início</a>
+                    <a href="#sections" class="text-white hover:text-accent transition-colors duration-200">Seções</a>
+                    <a href="{% url 'relatorios' %}"
+                        class="text-white hover:text-accent transition-colors duration-200">Estatísticas</a>
+                    <a href="{% url 'login' %}"
+                        class="bg-white text-primary px-4 py-2 rounded-lg hover:bg-accent transition-colors duration-200">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    </a>
+                </div>
+                <!-- Mobile menu button -->
+                <button class="md:hidden text-white" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="md:hidden hidden pb-4">
+                <div class="flex flex-col space-y-2">
+                    <a href="#home" class="text-white hover:text-accent py-2">Início</a>
+                    <a href="#sections" class="text-white hover:text-accent py-2">Seções</a>
+                    <a href="#statistics" class="text-white hover:text-accent py-2">Estatísticas</a>
+                    <a href="{% url 'login' %}"
+                        class="bg-white text-primary px-4 py-2 rounded-lg hover:bg-accent transition-colors duration-200 w-fit">
+                        Login
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="bg-gradient-to-br from-primary via-secondary to-accent py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="mb-8">
+                <div
+                    class="inline-flex items-center justify-center w-32 h-32 bg-white rounded-full shadow-2xl mb-6 overflow-hidden">
+                    <img src="{% static 'img/logo1.png' %}" alt="" class="object-contain w-24 h-24" />
+                </div>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                Enfrentamento à<br>
+                <span class="text-accent">Violência Doméstica</span>
+            </h1>
+            <p class="text-xl text-white opacity-90 mb-8 max-w-3xl mx-auto">
+                Uma plataforma integrada que conecta segurança pública, sistema de justiça e sociedade
+                no combate à violência doméstica e crimes sexuais.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'relatorios' %}"
+                    class="bg-white text-primary px-8 py-4 rounded-lg font-semibold hover:bg-accent transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center justify-center">
+                    <i class="fas fa-chart-line mr-2"></i>Ver Estatísticas
+                </a>
+                <a href="#sections"
+                    class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-primary transition-all duration-200 flex items-center justify-center">
+                    <i class="fas fa-info-circle mr-2"></i>Saiba Mais
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Search and Filter Section -->
+        <div class="mb-12">
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <div class="flex-1">
+                        <div class="relative">
+                            <input id="searchInput" type="text" placeholder="Buscar conteúdo..."
+                                class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <i
+                                class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="filterContent('all', this)"
+                            class="filter-btn active px-4 py-2 rounded-lg bg-primary text-white">
+                            Todos
+                        </button>
+                        {% for secao in conteudos.keys %}
+                        <button onclick="filterContent('{{ secao|slugify }}', this)"
+                            class="filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-primary hover:text-white transition-colors capitalize">
+                            {{ secao|cut:"_"|title }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Sections -->
+        <div id="sections">
+            {% for secao, itens in conteudos.items %}
+            <section class="content-section mb-16" data-category="{{ secao|slugify }}">
+                <div class="flex items-center mb-8">
+                    <div class="w-12 h-12 rounded-lg flex items-center justify-center mr-4
+                        {% if secao == 'seguranca_publica' %}bg-blue-100
+                        {% elif secao == 'sistema_justica' %}bg-purple-100
+                        {% elif secao == 'leis' %}bg-green-100
+                        {% else %}bg-gray-100{% endif %}">
+                        {% if secao == 'seguranca_publica' %}
+                        <i class="fas fa-shield-alt text-blue-600 text-xl"></i>
+                        {% elif secao == 'sistema_justica' %}
+                        <i class="fas fa-balance-scale text-purple-600 text-xl"></i>
+                        {% elif secao == 'leis' %}
+                        <i class="fas fa-gavel text-green-600 text-xl"></i>
+                        {% else %}
+                        <i class="fas fa-folder text-gray-600 text-xl"></i>
+                        {% endif %}
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-800 capitalize">{{ secao|cut:"_"|title }}</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {% for conteudo in itens %}
+                    <article
+                        class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
+                        {% if conteudo.imagem %}
+                        <div class="h-48 flex items-center justify-center bg-gray-50">
+                            <img src="{{ conteudo.imagem.url }}" alt="{{ conteudo.titulo }}"
+                                class="max-h-44 object-contain w-full">
+                        </div>
+                        {% else %}
+                        <div class="h-48 flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
+                            <i class="fas fa-file-alt text-gray-400 text-4xl"></i>
+                        </div>
+                        {% endif %}
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">{{ conteudo.titulo }}</h3>
+                            <p class="text-gray-600 mb-4 line-clamp-3">{{ conteudo.texto|striptags }}</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">
+                                    <i class="far fa-clock mr-1"></i>
+                                    {{ conteudo.data_publicacao|date:"d/m/Y" }}
+                                </span>
+                                {% if conteudo.link %}
+                                <a href="{{ conteudo.link }}" class="text-primary hover:text-secondary font-semibold"
+                                    target="_blank">
+                                    Ler mais <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endfor %}
+        </div>
+
+        <!-- Statistics Section -->
+        <section id="statistics" class="mt-20 bg-white rounded-2xl shadow-lg p-8">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-4">
+                    <i class="fas fa-chart-line text-white text-2xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Painel Estatístico</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Visualize dados em tempo real sobre casos de violência doméstica e crimes sexuais,
+                    contribuindo para a transparência e eficácia das políticas públicas.
+                </p>
+            </div>
+            <div class="text-center">
+                <a href="{% url 'relatorios' %}"
+                    class="bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 transform hover:scale-105 inline-block">
+                    <i class="fas fa-chart-line mr-2"></i>
+                    Acessar Painel Completo
+                </a>
+            </div>
+        </section>
+    </main>
+
+    {% include 'base/rodape.html' %}
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Content filtering
+        function filterContent(category, btn) {
+            const sections = document.querySelectorAll('.content-section');
+            const buttons = document.querySelectorAll('.filter-btn');
+
+            // Update button states
+            buttons.forEach(b => {
+                b.classList.remove('active', 'bg-primary', 'text-white');
+                b.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            if (btn) {
+                btn.classList.add('active', 'bg-primary', 'text-white');
+                btn.classList.remove('bg-gray-200', 'text-gray-700');
+            }
+
+            // Filter sections
+            sections.forEach(section => {
+                if (category === 'all' || section.dataset.category === category) {
+                    section.style.display = 'block';
+                    section.classList.add('animate-fade-in');
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        }
+
+        // Busca de conteúdo
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const search = this.value.toLowerCase();
+            document.querySelectorAll('.content-section').forEach(section => {
+                let found = false;
+                section.querySelectorAll('article').forEach(card => {
+                    const text = card.innerText.toLowerCase();
+                    if (text.includes(search)) {
+                        card.style.display = '';
+                        found = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                section.style.display = found ? 'block' : 'none';
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                if (this.getAttribute('href') !== "#") {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Add custom CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            .animate-fade-in {
+                animation: fadeIn 0.5s ease-in;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .line-clamp-3 {
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+
+</html>

@@ -1,4 +1,57 @@
-<footer class="footer">
-    <p>&copy; 2025 Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais</p>
-    <p>Todos os direitos reservados.</p>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#8B5A9F',
+                    secondary: '#B19CD9',
+                    accent: '#E8D5F2',
+                    dark: '#2D1B40'
+                }
+            }
+        }
+    }
+</script>
+
+
+
+
+
+<footer class="bg-dark text-white mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                        <i class="fas fa-shield-heart text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Plataforma Integrada</h3>
+                </div>
+                <p class="text-gray-300">
+                    Enfrentamento à Violência Doméstica e Crimes Sexuais através de tecnologia e integração.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Links Úteis</h4>
+                <ul class="space-y-2 text-gray-300">
+                    <li><a href="#" class="hover:text-accent transition-colors">Denunciar</a></li>
+                    <li><a href="#" class="hover:text-accent transition-colors">Buscar Ajuda</a></li>
+                    <li><a href="#" class="hover:text-accent transition-colors">Recursos</a></li>
+                    <li><a href="#" class="hover:text-accent transition-colors">Contato</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Emergência</h4>
+                <div class="space-y-2">
+                    <p class="text-xl font-bold text-accent">190 - Polícia Militar</p>
+                    <p class="text-xl font-bold text-accent">180 - Central da Mulher</p>
+                    <p class="text-gray-300">Disque 100 - Direitos Humanos</p>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+            <p>&copy; 2025 Plataforma Integrada de Enfrentamento à Violência Doméstica. Todos os direitos reservados.
+            </p>
+        </div>
+    </div>
 </footer>

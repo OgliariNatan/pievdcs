@@ -193,3 +193,8 @@ img_home/
 
 #Ignora pasta migrations
 migrations/
+
+
+
+codigo.txt
+*.png

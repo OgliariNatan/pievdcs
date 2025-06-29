@@ -20,13 +20,14 @@ from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from MAIN.views import home, index, relatorios, encaminhamentos, notificacoes, pre_visualizacao_conteudo, index_controlador
+from MAIN.views import home, index, relatorios, encaminhamentos, notificacoes, pre_visualizacao_conteudo, index_controlador, index_tailwind
 
 app_name = 'MAIN'
 
 urlpatterns = [
     path("home/", home, name="home"),  # Rota para a página inicial após login
-    path("", index_controlador, name="index"), #Página inicial one_page sem login
+    #path("", index_controlador, name="index"), #Página inicial one_page sem login
+    path("", index_tailwind, name="index"), #Página inicial one_page sem login com tailwind    
     #path("", index, name="index"), #Página inicial one_page sem login
     
     #Login & reset senha & logout
