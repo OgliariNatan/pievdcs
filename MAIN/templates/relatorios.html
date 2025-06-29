@@ -6,6 +6,20 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#8B5A9F',
+                    secondary: '#B19CD9',
+                    accent: '#E8D5F2',
+                    dark: '#2D1B40'
+                }
+            }
+        }
+    }
+</script>
 {% endblock %}
 
 {% block main_content %}
@@ -14,7 +28,7 @@
     <h1 class="text-3xl font-bold text-center text-primary mb-10">Painel Informativo Estatístico</h1>
 
     <!-- Frases -->
-    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border-primary">
         <h2 class="text-xl font-semibold mb-4 text-primary">Frases</h2>
         <blockquote class="space-y-4 text-gray-700">
             <div>
@@ -126,6 +140,13 @@
         <div id="map" class="w-full h-96 rounded-lg"></div>
     </div>
 </div>
+
+<!-- Botão Voltar ao Topo -->
+<button id="backToTopBtn"
+    class="fixed bottom-6 right-6 z-50 rounded-full shadow-lg p-2 border border-gray-200 transition-colors"
+    onclick="window.scrollTo({top: 0, behavior: 'smooth'});" title="Voltar ao topo">
+    <img src="{% static 'img/arrow-circle-up.png' %}" alt="Voltar ao topo" class="w-10 h-10">
+</button>
 {% endblock %}
 
 {% block script %}
@@ -354,12 +375,7 @@
                         text: 'Casos de Violência'
                     }
                 },
-                // x: {
-                //     title: {
-                //         display: true,
-                //         text: 'Classes Econômicas (Mensal)'
-                //     }
-                // }
+
             },
             plugins: {
                 legend: {
@@ -420,5 +436,17 @@
             .addTo(map)
             .bindPopup(`<b>${bairro.nome}</b><br>Casos: ${bairro.casos}`);
     });
+
+    // Mostrar/esconder botão de voltar ao topo
+    const backToTopBtn = document.getElementById('backToTopBtn');
+    window.addEventListener('scroll', function () {
+        if (window.scrollY > 200) {
+            backToTopBtn.style.display = 'block';
+        } else {
+            backToTopBtn.style.display = 'none';
+        }
+    });
+    // Inicialmente oculto
+    backToTopBtn.style.display = 'none';
 </script>
 {% endblock %}
