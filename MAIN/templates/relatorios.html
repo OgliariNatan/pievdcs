@@ -3,70 +3,81 @@
 
 {% block titulo %}{{ title }}{% endblock %}
 {% block head %}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="{% static 'css/relatorios_style.css' %}">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#8B5A9F',
+                    secondary: '#B19CD9',
+                    accent: '#E8D5F2',
+                    dark: '#2D1B40'
+                }
+            }
+        }
+    }
+</script>
 {% endblock %}
 
-
-
 {% block main_content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-<div class="dashboard">
+    <h1 class="text-3xl font-bold text-center text-primary mb-10">Painel Informativo Estatístico</h1>
 
-    <h1 class="text-center">Painel Informativo Estatístico</h1>
-
-
-
-    <!-- Frase -->
-    <div class="chart-container">
-        <h2>Frases</h2>
-        <div class="card-body">
-            <blockquote class="blockquote mb-0">
-                <p>Somos exímimos construtores, filhos do sistema cartesiano. A dor humana virou estatística.</p>
-                <footer class="blockquote-footer">Augusto<cite title="Título da fonte">Cury</cite>
-                </footer>
-
-                <p>Primeiro eles vieram atrás dos socialistas, e eu não me manifestei porque eu não era socialista. <br>
-                    Depois, vieram atrás dos sindicalistas, e eu não me manifestei porque eu não era sindicalista. <br>
-                    Depois, vieram atrás dos judeus, e eu não me manifestei porque eu não era judeu. <br>
-                    Finalmente, vieram atrás de mim, e não havia ninguém para se manifestar por mim.</p>
-                <footer class="blockquote-footer">Martin <cite title="Título da fonte">Niemöller</cite>
-                </footer>
-
-                <p>A história do ovo e do bacon fala sobre envolvimento e comprometimento. Quando você come o bacon, o
+    <!-- Frases -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border-primary">
+        <h2 class="text-xl font-semibold mb-4 text-primary">Frases</h2>
+        <blockquote class="space-y-4 text-gray-700">
+            <div>
+                <p class="italic">"Somos exímios construtores, filhos do sistema cartesiano. A dor humana virou
+                    estatística."</p>
+                <footer class="text-sm text-gray-500">Augusto <cite>Cury</cite></footer>
+            </div>
+            <div>
+                <p class="italic">
+                    "Primeiro eles vieram atrás dos socialistas, e eu não me manifestei porque eu não era
+                    socialista.<br>
+                    Depois, vieram atrás dos sindicalistas, e eu não me manifestei porque eu não era sindicalista.<br>
+                    Depois, vieram atrás dos judeus, e eu não me manifestei porque eu não era judeu.<br>
+                    Finalmente, vieram atrás de mim, e não havia ninguém para se manifestar por mim."
+                </p>
+                <footer class="text-sm text-gray-500">Martin <cite>Niemöller</cite></footer>
+            </div>
+            <div>
+                <p class="italic">
+                    "A história do ovo e do bacon fala sobre envolvimento e comprometimento. Quando você come o bacon, o
                     porco está comprometido, já que ele é o próprio. O ovo, você come e o envolvimento da galinha é de
                     menos. Que por sua vez aproveitará o tempo livre para ciscar o chão e continuará a procurar
-                    minhocas.</p>
-                <footer class="blockquote-footer">Mestre <cite title="Título da fonte">Ariévlis</cite>
-                </footer>
-            </blockquote>
+                    minhocas."
+                </p>
+                <footer class="text-sm text-gray-500">Mestre <cite>Ariévlis</cite></footer>
+            </div>
+        </blockquote>
+    </div>
+
+    <!-- Contagens rápidas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl text-white flex flex-col items-center">
+            <i class="fas fa-shield-alt text-3xl mb-2"></i>
+            <span class="text-lg">Medidas Protetivas</span>
+            <span class="text-2xl font-bold">{{ medidas_protetivas_solicitadas_ocorrencias }}</span>
         </div>
+        <!-- Adicione mais cards se desejar outras contagens rápidas -->
     </div>
-
-    <!-- Contagens -->
-    <div class="chart-container">
-        <h2>Algumas Contagens absolutas:</h2>
-        <li>Quantidade de medidas <strong>protetivas solicitadas </strong> em ocorrências:
-            {{ medidas_protetivas_solicitadas_ocorrencias }}
-        </li>
-
-    </div>
-
 
     <!-- Filtros -->
-    <div class="chart-container">
-        <h2>Selecione o(s) Filtro(s)</h2>
-
-        <select name="periodo" id="periodo" class="form-control-sm">
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 flex flex-col md:flex-row gap-4 items-center">
+        <h2 class="text-lg font-semibold text-primary mb-2 md:mb-0">Selecione o(s) Filtro(s):</h2>
+        <select name="periodo" id="periodo" class="form-select border-gray-300 rounded-lg">
             <option value="">Período</option>
             {% for periodos in periodo %}
             <option value="{{ periodos }}">{{ periodos }}</option>
             {% endfor %}
         </select>
-
-        <select name="comarca" id="comarca" class="form-control-sm">
+        <select name="comarca" id="comarca" class="form-select border-gray-300 rounded-lg">
             <option value="">Comarca</option>
             {% for comarca in comarcas %}
             <option value="{{ comarca }}">{{ comarca }}</option>
@@ -74,87 +85,76 @@
         </select>
     </div>
 
-
-
-    <!-- Gráfico de Rosca: Comarcas -->
-    <div class="chart-container">
-        <h2>Distribuição por Cidades</h2>
-
-        <canvas id="cidadeChart"></canvas>
-    </div>
-
-    <!-- Gráfico de Rosca: Comarcas -->
-    <div class="chart-container">
-        <h2>Distribuição por Comarcas</h2>
-        <p>A implementar</p>
-        <p>Implementar comparação por período</p>
-        <canvas id="comarcaChart"></canvas>
-    </div>
-
-
-    <!-- Gráfico de Barras: Idade -->
-    <div class="chart-container">
-        <div class="dropdown">
-            <h2>Distribuição por Idade</h2>
+    <!-- Gráficos em grid responsivo -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <!-- Gráfico de Rosca: Cidades -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Cidades</h2>
+            <canvas id="cidadeChart"></canvas>
         </div>
-        <canvas id="idadeChart"></canvas>
-        <div id="idade-legend" class="chart-legend"></div>
-    </div>
-
-    <!-- Gráfico de Barras: Tipo de violência -->
-    <div class="chart-container">
-        <h2>Tipo de violência</h2>
-        <canvas id="violenciaChart"></canvas>
-    </div>
-
-    <!-- Gráfico de Barras: Etnia -->
-    <div class="chart-container">
-        <h2>Distribuição por Etnia</h2>
-        <canvas id="etniaChart"></canvas>
-    </div>
-
-    <!-- Gráfico de Barras: Classe Econômica -->
-    <div class="chart-container">
-        <h2>Classe Econômica</h2>
-        <canvas id="classeEconomicaChart"></canvas>
-        <div id="classe-legend" class="chart-legend"></div>
-    </div>
-
-    <!-- Gráfico de Barras: Grau de instrução -->
-    <div class="chart-container">
-        <h2>Grau de Instrução</h2>
-        <canvas id="grauInstrucaoChart"></canvas>
-        <div id="grau-legend" class="chart-legend"></div>
-    </div>
-
-    <!-- Gráfico de Barras: Parentesco -->
-    <div class="chart-container">
-        <h2>Grau de parentesco do Agressor</h2>
-        <canvas id="parentescoChart"></canvas>
+        <!-- Gráfico de Rosca: Comarcas -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Comarcas</h2>
+            <p class="text-sm text-gray-500 mb-2">A implementar. Implementar comparação por período.</p>
+            <canvas id="comarcaChart"></canvas>
+        </div>
+        <!-- Gráfico de Barras: Idade -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Idade</h2>
+            <canvas id="idadeChart"></canvas>
+            <div id="idade-legend" class="chart-legend mt-2"></div>
+        </div>
+        <!-- Gráfico de Barras: Tipo de violência -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-lg font-semibold mb-4 text-primary">Tipo de Violência</h2>
+            <canvas id="violenciaChart"></canvas>
+        </div>
+        <!-- Gráfico de Barras: Etnia -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Etnia</h2>
+            <canvas id="etniaChart"></canvas>
+        </div>
+        <!-- Gráfico de Barras: Classe Econômica -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-lg font-semibold mb-4 text-primary">Classe Econômica</h2>
+            <canvas id="classeEconomicaChart"></canvas>
+            <div id="classe-legend" class="chart-legend mt-2"></div>
+        </div>
+        <!-- Gráfico de Barras: Grau de instrução -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-lg font-semibold mb-4 text-primary">Grau de Instrução</h2>
+            <canvas id="grauInstrucaoChart"></canvas>
+            <div id="grau-legend" class="chart-legend mt-2"></div>
+        </div>
+        <!-- Gráfico de Barras: Parentesco -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-lg font-semibold mb-4 text-primary">Grau de Parentesco do Agressor</h2>
+            <canvas id="parentescoChart"></canvas>
+        </div>
     </div>
 
     <!-- Mapa Interativo -->
-    <div class="chart-container">
-        <h2>Comarca: <span id="comarca">{% if comarca %}{{ comarca }}{% else %}Todas{% endif %}</span></h2>
-        <div id="map"></div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+        <h2 class="text-lg font-semibold mb-4 text-primary">Comarca: <span id="comarca">{% if comarca %}{{ comarca }}{%
+                else %}Todas{% endif %}</span></h2>
+        <div id="map" class="w-full h-96 rounded-lg"></div>
     </div>
-
-
 </div>
 
+<!-- Botão Voltar ao Topo -->
+<button id="backToTopBtn"
+    class="fixed bottom-6 right-6 z-50 rounded-full shadow-lg p-2 border border-gray-200 transition-colors"
+    onclick="window.scrollTo({top: 0, behavior: 'smooth'});" title="Voltar ao topo">
+    <img src="{% static 'img/arrow-circle-up.png' %}" alt="Voltar ao topo" class="w-10 h-10">
+</button>
 {% endblock %}
 
 {% block script %}
 <script src="{% static 'js/relatorios.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-
-
 {{ cidades|json_script:"cidades-data" }}
-
-<!-- Script do Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="{% static 'js/relatorios.js' %}"></script>
 <script>
     // Função para gerar paleta de cores dinâmica utilizando HSL.
     function gerarCoresHSL(qtd) {
@@ -375,12 +375,7 @@
                         text: 'Casos de Violência'
                     }
                 },
-                // x: {
-                //     title: {
-                //         display: true,
-                //         text: 'Classes Econômicas (Mensal)'
-                //     }
-                // }
+
             },
             plugins: {
                 legend: {
@@ -442,5 +437,16 @@
             .bindPopup(`<b>${bairro.nome}</b><br>Casos: ${bairro.casos}`);
     });
 
+    // Mostrar/esconder botão de voltar ao topo
+    const backToTopBtn = document.getElementById('backToTopBtn');
+    window.addEventListener('scroll', function () {
+        if (window.scrollY > 200) {
+            backToTopBtn.style.display = 'block';
+        } else {
+            backToTopBtn.style.display = 'none';
+        }
+    });
+    // Inicialmente oculto
+    backToTopBtn.style.display = 'none';
 </script>
 {% endblock %}

@@ -141,6 +141,8 @@
                         {% if secao == 'seguranca_publica' %}bg-blue-100
                         {% elif secao == 'sistema_justica' %}bg-purple-100
                         {% elif secao == 'leis' %}bg-green-100
+                        {% elif secao == 'sobre' %}bg-yellow-100
+                        {% elif secao == 'noticia' %}bg-pink-100
                         {% else %}bg-gray-100{% endif %}">
                         {% if secao == 'seguranca_publica' %}
                         <i class="fas fa-shield-alt text-blue-600 text-xl"></i>
@@ -148,11 +150,29 @@
                         <i class="fas fa-balance-scale text-purple-600 text-xl"></i>
                         {% elif secao == 'leis' %}
                         <i class="fas fa-gavel text-green-600 text-xl"></i>
+                        {% elif secao == 'sobre' %}
+                        <i class="fas fa-info-circle text-yellow-600 text-xl"></i>
+                        {% elif secao == 'noticia' %}
+                        <i class="fas fa-newspaper text-pink-600 text-xl"></i>
                         {% else %}
                         <i class="fas fa-folder text-gray-600 text-xl"></i>
                         {% endif %}
                     </div>
-                    <h2 class="text-3xl font-bold text-gray-800 capitalize">{{ secao|cut:"_"|title }}</h2>
+                    <h2 class="text-3xl font-bold text-gray-800 capitalize">
+                        {% if secao == 'seguranca_publica' %}
+                        Segurança Pública
+                        {% elif secao == 'sistema_justica' %}
+                        Sistema de Justiça
+                        {% elif secao == 'leis' %}
+                        Leis
+                        {% elif secao == 'sobre' %}
+                        Sobre
+                        {% elif secao == 'noticias' %}
+                        Notícias
+                        {% else %}
+                        {{ secao|cut:"_"|title }}
+                        {% endif %}
+                    </h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {% for conteudo in itens %}
@@ -203,6 +223,49 @@
                     contribuindo para a transparência e eficácia das políticas públicas.
                 </p>
             </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-blue-100 text-sm">Medidas Protetivas</p>
+                            <p class="text-3xl font-bold">{{ medidas_protetivas_solicitadas_ocorrencias }}</p>
+                        </div>
+                        <i class="fas fa-shield-alt text-4xl text-blue-200"></i>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-green-100 text-sm">Casos Mediados</p>
+                            <p class="text-3xl font-bold">{{ casos_mediados }}</p>
+                        </div>
+                        <i class="fas fa-check-circle text-4xl text-green-200"></i>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-xl text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-purple-100 text-sm">Atendimentos</p>
+                            <p class="text-3xl font-bold">{{ atendimentos }}</p>
+                        </div>
+                        <i class="fas fa-users text-4xl text-purple-200"></i>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-xl text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-orange-100 text-sm">Encaminhamentos</p>
+                            <p class="text-3xl font-bold">{{ encaminhamentos }}</p>
+                        </div>
+                        <i class="fas fa-arrow-right text-4xl text-orange-200"></i>
+                    </div>
+                </div>
+            </div>
+
             <div class="text-center">
                 <a href="{% url 'relatorios' %}"
                     class="bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 transform hover:scale-105 inline-block">
@@ -212,6 +275,14 @@
             </div>
         </section>
     </main>
+
+
+    <!-- Botão "voltar ao topo" -->
+    <button id="backToTopBtn"
+        class="fixed bottom-6 right-6 z-50 rounded-full shadow-lg p-2 border border-gray-200 transition-colors"
+        onclick="window.scrollTo({top: 0, behavior: 'smooth'});" title="Voltar ao topo">
+        <img src="{% static 'img/arrow-circle-up.png' %}" alt="Voltar ao topo" class="w-10 h-10">
+    </button>
 
     {% include 'base/rodape.html' %}
 
@@ -300,6 +371,19 @@
             }
         `;
         document.head.appendChild(style);
+
+
+        // Mostrar/esconder botão de voltar ao topo
+        const backToTopBtn = document.getElementById('backToTopBtn');
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 200) {
+                backToTopBtn.style.display = 'block';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        });
+        // Inicialmente oculto
+        backToTopBtn.style.display = 'none';
     </script>
 </body>
 
