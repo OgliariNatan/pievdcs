@@ -23,6 +23,11 @@ def index_tailwind(request):
     #itens = ConteudoHome.objects.all().order_by('-data_publicacao')
     conteudos = defaultdict(list)
 
+    medidas_protetivas_solicitadas_ocorrencias = (
+        OcorrenciaMilitar.objects.filter(status_MP='SO').count() + 
+        OcorrenciaCivil.objects.filter(status_MP='SO').count()
+    )
+
     for item in itens:
         conteudos[item.secao].append(item)
 
@@ -31,8 +36,12 @@ def index_tailwind(request):
         "conteudos": conteudos,
         "title": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais",
         "description": "Página Inicial",
+        'medidas_protetivas_solicitadas_ocorrencias': medidas_protetivas_solicitadas_ocorrencias,
+        'encaminhamentos': random.randint(1,100),  # Criar variaveis para encaminhamentos
+        'casos_mediados': random.randint(1,100),  # Criar variavel para casos mediados
+        'atendimentos': random.randint(1,1000),  # Criar variavel para atendimentos
     }
-    return render(request, "teste.html", context)
+    return render(request, "index_tailwind.html", context)
 
 
 
