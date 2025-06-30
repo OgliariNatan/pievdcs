@@ -131,12 +131,13 @@
                                 Público e Defensoria.</p>
                             <div class="flex flex-wrap gap-2">
                                 <span class="bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full"><a
-                                        href="{% url 'sistema_justica:poder_judiciario' %}">Judiciário</a></span>
+                                        href="{% url 'sistema_justica:poder_judiciario' %}">Poder Judiciário</a></span>
                                 <span class="bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full"><a
                                         href="{% url 'sistema_justica:ministerio_publico' %}">Ministério
                                         Público</a></span>
                                 <span class="bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full"><a
-                                        href="{% url 'sistema_justica:defensoria_publica' %}">Defensoria</a></span>
+                                        href="{% url 'sistema_justica:defensoria_publica' %}">Defensoria
+                                        Pública</a></span>
                             </div>
                         </div>
 
@@ -151,10 +152,16 @@
                             </div>
                             <p class="text-blue-600 mb-4">Ferramentas para as forças policiais e segurança pública.</p>
                             <div class="flex flex-wrap gap-2">
-                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full">PM</span>
-                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full">PC</span>
-                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full">Científica</span>
-                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full">Penal</span>
+                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full"><a
+                                        href="{% url 'seguranca_publica:militar' %}">Polícia
+                                        Militar</a></span>
+                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full"><a
+                                        href="{% url 'seguranca_publica:civil' %}">Polícia
+                                        Civil</a></span>
+                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full">Polícia
+                                    Científica</span>
+                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full">Polícia
+                                    Penal</span>
                             </div>
                         </div>
 
@@ -210,11 +217,6 @@
                             <i class="fas fa-chart-line mr-2"></i>
                             Ver Estatísticas
                         </a>
-                        <a href="#"
-                            class="border-2 border-primary text-primary px-6 py-3 rounded-lg font-semibold hover:bg-primary hover:text-white transition-all duration-200 flex items-center justify-center">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            Saiba Mais
-                        </a>
                     </div>
                 </div>
             </main>
@@ -223,7 +225,7 @@
 </div>
 
 <script>
-    // Add smooth animations for cards
+    // Adicione animações suaves para cartões
     document.addEventListener('DOMContentLoaded', function () {
         const cards = document.querySelectorAll('.group');
         cards.forEach((card, index) => {
@@ -232,7 +234,7 @@
         });
     });
 
-    // Add custom CSS for animations
+    // Adicionar CSS personalizado para animações
     const style = document.createElement('style');
     style.textContent = `
         .animate-fade-in-up {
