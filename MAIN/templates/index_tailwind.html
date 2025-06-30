@@ -203,31 +203,32 @@
                                 class="max-h-44 object-contain w-full">
                         </div>
                         {% else %}
-                        <div class="h-48 flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
-                            <i class="fas fa-file-alt text-gray-400 text-4xl"></i>
-                        </div>
-                        {% endif %}
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-gray-800 mb-3">{{ conteudo.titulo }}</h3>
-                            <p class="text-gray-600 mb-4 line-clamp-3">{{ conteudo.texto|striptags }}</p>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-500">
-                                    <i class="far fa-clock mr-1"></i>
-                                    {{ conteudo.data_publicacao|date:"d/m/Y" }}
-                                </span>
-                                {% if conteudo.link %}
-                                <a href="{{ conteudo.link }}" class="text-primary hover:text-secondary font-semibold"
-                                    target="_blank">
-                                    Ler mais <i class="fas fa-arrow-right ml-1"></i>
-                                </a>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </article>
-                    {% endfor %}
+
+                        <!-- <div class="h-48 flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
+                            <i class="fas fa-file-alt text-gray-400 text-4xl"></i> -->
                 </div>
-            </section>
-            {% endfor %}
+                {% endif %}
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">{{ conteudo.titulo }}</h3>
+                    <p class="text-gray-600 mb-4 line-clamp-3">{{ conteudo.texto|striptags }}</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-500">
+                            <i class="far fa-clock mr-1"></i>
+                            {{ conteudo.data_publicacao|date:"d/m/Y" }}
+                        </span>
+                        {% if conteudo.link %}
+                        <a href="{{ conteudo.link }}" class="text-primary hover:text-secondary font-semibold"
+                            target="_blank">
+                            Ler mais <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                </article>
+                {% endfor %}
+        </div>
+        </section>
+        {% endfor %}
         </div>
 
         <!-- Statistics Section -->
