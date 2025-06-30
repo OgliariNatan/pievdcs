@@ -150,7 +150,7 @@
                                 </div>
                                 <h3 class="text-xl font-bold text-blue-800">Segurança Pública</h3>
                             </div>
-                            <p class="text-blue-600 mb-4">Ferramentas para as forças policiais e segurança pública.</p>
+                            <p class="text-blue-600 mb-4">Ferramentas para as forças policiais.</p>
                             <div class="flex flex-wrap gap-2">
                                 <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full"><a
                                         href="{% url 'seguranca_publica:militar' %}">Polícia
@@ -188,7 +188,7 @@
                                 <span class="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full"><a
                                         href="{% url 'municipio:caps' %}">CAPS</a></span>
                                 <span class="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full"><a
-                                        href="{% url 'municipio:secretaria_saude' %}">Secretaria da Saúde</a></span>
+                                        href="{% url 'municipio:secretaria_saude' %}">Secretária da Saúde</a></span>
                             </div>
                         </div>
                     </div>
@@ -204,16 +204,21 @@
                     </div>
 
                     <div class="prose max-w-none text-gray-600">
-                        <p class="mb-4">{% lorem 5 w %} Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation ullamco laboris.</p>
+                        <!-- Frases -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border-primary">
+                            <h2 class="text-xl font-semibold mb-4 text-primary">Cuidados que importam</h2>
+                            <blockquote id="frase-block" class="space-y-4 text-gray-700">
+                                <!-- Frase será inserida via JS -->
+                            </blockquote>
+                            <div class="flex justify-end mt-4 space-x-2">
+                                <button id="prev-frase"
+                                    class="px-3 py-1 rounded bg-primary text-white hover:bg-secondary transition">Anterior</button>
+                                <button id="next-frase"
+                                    class="px-3 py-1 rounded bg-primary text-white hover:bg-secondary transition">Próxima</button>
+                            </div>
+                        </div>
 
-                        <p class="mb-4">{% lorem 8 w %} Duis aute irure dolor in reprehenderit in voluptate velit esse
-                            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
-                            in culpa qui officia deserunt mollit anim id est laborum.</p>
 
-                        <p>{% lorem 7 w %} Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-                            doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.</p>
                     </div>
 
                     <!-- Action Buttons -->
@@ -259,5 +264,83 @@
         }
     `;
     document.head.appendChild(style);
+
+
+    //Frase
+    const frases = [
+        {
+            texto: `"Somos exímios construtores, filhos do sistema cartesiano. A dor humana virou estatística."`,
+            autor: `Augusto <cite>Cury</cite>`
+        },
+        {
+            texto: `"Primeiro eles vieram atrás dos socialistas, e eu não me manifestei porque eu não era socialista.<br>
+            Depois, vieram atrás dos sindicalistas, e eu não me manifestei porque eu não era sindicalista.<br>
+            Depois, vieram atrás dos judeus, e eu não me manifestei porque eu não era judeu.<br>
+            Finalmente, vieram atrás de mim, e não havia ninguém para se manifestar por mim."`,
+            autor: `Martin <cite>Niemöller</cite>`
+        },
+        {
+            texto: `“Cada campo preenchido corretamente é um passo rumo a decisões mais inteligentes.”`,
+            autor: ` `
+        },
+        {
+            texto: `“Você faz parte do processo — e seu cuidado faz toda a diferença.”`
+        },
+        {
+            texto: `"A história do ovo e do bacon fala sobre envolvimento e comprometimento. Quando você come o bacon, o porco está comprometido, já que ele é o próprio. O ovo, você come e o envolvimento da galinha é de menos. Que por sua vez aproveitará o tempo livre para ciscar o chão e continuará a procurar minhocas."`,
+            autor: `Mestre <cite>Ariévlis</cite>`
+        },
+        {
+            texto: `“Cada informação preenchida com atenção pode representar proteção e acolhimento para alguém.”`
+        },
+        {
+            texto: `“Uma ficha bem preenchida não é apenas um dado — pode ser um pedido de socorro escutado a tempo.”`
+        },
+        {
+            texto: `“Preencher com atenção é um gesto de empatia com quem pode estar vivendo o invisível.”`
+        },
+        {
+            texto: `“Sua atenção hoje pode ser a segurança de alguém amanhã.”`
+        }
+    ];
+
+    let fraseAtual = 0;
+    let fraseTimer = null;
+
+    function mostrarFrase(idx) {
+        const frase = frases[idx];
+        document.getElementById('frase-block').innerHTML = `
+                <div>
+                    <p class="italic">${frase.texto}</p>
+                    <footer class="text-sm text-gray-500">${frase.autor}</footer>
+                </div>
+            `;
+    }
+
+    function proximaFrase() {
+        fraseAtual = (fraseAtual + 1) % frases.length;
+        mostrarFrase(fraseAtual);
+        reiniciarTimer();
+    }
+
+    function anteriorFrase() {
+        fraseAtual = (fraseAtual - 1 + frases.length) % frases.length;
+        mostrarFrase(fraseAtual);
+        reiniciarTimer();
+    }
+
+    function reiniciarTimer() {
+        if (fraseTimer) clearInterval(fraseTimer);
+        fraseTimer = setInterval(proximaFrase, 18000);
+    }
+
+    // Inicializa a primeira frase ao carregar a página
+    document.addEventListener('DOMContentLoaded', function () {
+        mostrarFrase(fraseAtual);
+        reiniciarTimer();
+
+        document.getElementById('next-frase').addEventListener('click', proximaFrase);
+        document.getElementById('prev-frase').addEventListener('click', anteriorFrase);
+    });
 </script>
 {% endblock %}
