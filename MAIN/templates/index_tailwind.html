@@ -60,7 +60,7 @@
             <!-- Mobile menu -->
             <div id="mobile-menu" class="md:hidden hidden pb-4">
                 <div class="flex flex-col space-y-2">
-                    <a href="#home" class="text-white hover:text-accent py-2">Início</a>
+                    <a href="#home" class="text-white hover:text-accent py-2"> Início</a>
                     <a href="#sections" class="text-white hover:text-accent py-2">Seções</a>
                     <a href="#statistics" class="text-white hover:text-accent py-2">Estatísticas</a>
                     <a href="{% url 'login' %}"
@@ -124,7 +124,22 @@
                         {% for secao in conteudos.keys %}
                         <button onclick="filterContent('{{ secao|slugify }}', this)"
                             class="filter-btn px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-primary hover:text-white transition-colors capitalize">
+                            {% if secao == 'seguranca_publica' %}
+                            Segurança Pública
+                            {% elif secao == 'sistema_justica' %}
+                            Sistema de Justiça
+                            {% elif secao == 'leis' %}
+                            <i class="fas fa-gavel text-green-600 text-xl " title='Leis'></i>
+                            Legislação
+                            {% elif secao == 'sobre' %}
+                            Sobre
+                            {% elif secao == 'noticias' %}
+                            Notícias
+                            {% elif secao == 'municipio' %}
+                            Município
+                            {% else %}
                             {{ secao|cut:"_"|title }}
+                            {% endif %}
                         </button>
                         {% endfor %}
                     </div>
@@ -149,11 +164,13 @@
                         {% elif secao == 'sistema_justica' %}
                         <i class="fas fa-balance-scale text-purple-600 text-xl"></i>
                         {% elif secao == 'leis' %}
-                        <i class="fas fa-gavel text-green-600 text-xl"></i>
+                        <i class="fas fa-gavel text-green-600 text-xl " title='Leis'></i>
                         {% elif secao == 'sobre' %}
                         <i class="fas fa-info-circle text-yellow-600 text-xl"></i>
-                        {% elif secao == 'noticia' %}
+                        {% elif secao == 'noticias' %}
                         <i class="fas fa-newspaper text-pink-600 text-xl"></i>
+                        {% elif secao == 'municipio' %}
+                        <i class="fas fa-city text-red-600 text-xl"></i>
                         {% else %}
                         <i class="fas fa-folder text-gray-600 text-xl"></i>
                         {% endif %}
@@ -164,11 +181,13 @@
                         {% elif secao == 'sistema_justica' %}
                         Sistema de Justiça
                         {% elif secao == 'leis' %}
-                        Leis
+                        Legislação
                         {% elif secao == 'sobre' %}
                         Sobre
                         {% elif secao == 'noticias' %}
                         Notícias
+                        {% elif secao == 'municipio' %}
+                        Município
                         {% else %}
                         {{ secao|cut:"_"|title }}
                         {% endif %}
