@@ -1,19 +1,161 @@
-<header>
-    <div class="container">
-        <h1>Bem-vindo à Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais!</h1>
-        {% if user.is_authenticated %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<header class="bg-gradient-to-r from-primary to-secondary shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Logo e Título -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                    <i class="fas fa-shield-heart text-primary text-xl"></i>
+                </div>
+                <h1 class="text-white font-bold text-lg hidden md:block">
+                    Plataforma Integrada de Enfrentamento à Violência
+                </h1>
+                <h1 class="text-white font-bold text-sm md:hidden">
+                    Plataforma Integrada
+                </h1>
+            </div>
 
-        <form action="{% url 'logout' %}" method="post" style="display: inline;">
-            {% csrf_token %}
+            <!-- Navegação Desktop -->
+            <div class="hidden md:flex items-center space-x-6">
+                {% if user.is_authenticated %}
+                <!-- Usuário Autenticado -->
+                <div class="flex items-center space-x-4">
+                    <span class="text-white opacity-90 text-sm">
+                        <i class="fas fa-user mr-1"></i>
+                        Olá, {{ user.first_name|default:user.username }}
+                    </span>
 
-            <button type="button" class="btn home-button" id="home"
-                onclick="window.location.href='{% url 'home' %}'">home</button>
-            <button type="submit" class="logout-button" id="logout">Deslogar</button>
+                    <button type="button" onclick="window.location.href='{% url 'home' %}'"
+                        class="text-white hover:text-accent transition-colors duration-200 flex items-center space-x-1">
+                        <i class="fas fa-home"></i>
+                        <span>Início</span>
+                    </button>
 
-        </form>
+                    <form action="{% url 'logout' %}" method="post" class="inline-block">
+                        {% csrf_token %}
+                        <button type="submit"
+                            class="bg-white text-primary hover:bg-accent hover:text-dark px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2 font-semibold">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Sair</span>
+                        </button>
+                    </form>
+                </div>
+                {% else %}
+                <!-- Usuário Não Autenticado -->
+                <a href="{% url 'login' %}"
+                    class="bg-white text-primary px-4 py-2 rounded-lg hover:bg-accent transition-colors duration-200 flex items-center space-x-2 font-semibold">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Entrar</span>
+                </a>
+                {% endif %}
+            </div>
 
-        {% else %}
-        <a href="{% url 'login' %}" class="login-button" id="login">Login</a>
-        {% endif %}
+            <!-- Botão Menu Mobile -->
+            <button class="md:hidden text-white hover:text-accent transition-colors duration-200"
+                onclick="toggleMobileMenu()">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Menu Mobile -->
+        <div id="mobile-menu" class="md:hidden hidden pb-4">
+            <div class="border-t border-white border-opacity-20 pt-4">
+                {% if user.is_authenticated %}
+                <!-- Menu Mobile - Usuário Autenticado -->
+                <div class="flex flex-col space-y-3">
+                    <div class="text-white opacity-90 text-sm pb-2 border-b border-white border-opacity-20">
+                        <i class="fas fa-user mr-2"></i>
+                        {{ user.first_name|default:user.username }}
+                    </div>
+
+                    <button type="button" onclick="window.location.href='{% url 'home' %}'"
+                        class="text-white hover:text-accent py-2 text-left flex items-center space-x-2">
+                        <i class="fas fa-home"></i>
+                        <span>Início</span>
+                    </button>
+
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit"
+                            class="bg-green-100 bg-opacity-20 hover:bg-opacity-30 text-green-800 px-4 py-2 rounded-lg transition-all duration-200 w-full text-left flex items-center space-x-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Sair</span>
+                        </button>
+                    </form>
+                </div>
+                {% else %}
+                <!-- Menu Mobile - Usuário Não Autenticado -->
+                <a href="{% url 'login' %}"
+                    class="bg-white text-primary px-4 py-2 rounded-lg hover:bg-accent transition-colors duration-200 flex items-center space-x-2 font-semibold w-fit">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Entrar</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </header>
+
+<script>
+    // Função para toggle do menu mobile
+    function toggleMobileMenu() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('hidden');
+    }
+
+    // Fechar menu mobile ao clicar fora
+    document.addEventListener('click', function (event) {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuButton = event.target.closest('button');
+
+        if (!menuButton || !menuButton.onclick || menuButton.onclick.toString().indexOf('toggleMobileMenu') === -1) {
+            if (!mobileMenu.contains(event.target) && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
+        }
+    });
+
+    // Fechar menu mobile ao redimensionar a tela
+    window.addEventListener('resize', function () {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (window.innerWidth >= 768) { // md breakpoint
+            mobileMenu.classList.add('hidden');
+        }
+    });
+</script>
+
+<style>
+    /* Configuração das cores customizadas do Tailwind */
+    :root {
+        --color-primary: #8B5A9F;
+        --color-secondary: #B19CD9;
+        --color-accent: #E8D5F2;
+        --color-dark: #2D1B40;
+    }
+
+    .from-primary {
+        background-image: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+    }
+
+    .to-secondary {}
+
+    .text-primary {
+        color: var(--color-primary);
+    }
+
+    .text-accent {
+        color: var(--color-accent);
+    }
+
+    .bg-primary {
+        background-color: var(--color-primary);
+    }
+
+    .hover\:bg-accent:hover {
+        background-color: var(--color-accent);
+    }
+
+    .hover\:text-accent:hover {
+        color: var(--color-accent);
+    }
+</style>

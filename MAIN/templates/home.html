@@ -4,81 +4,343 @@
 
 {% block nav %}
 
-<ul class="menu">
-    <li>
-        <button onclick="location.href='{% url 'index' %}'">Início</button>
-    </li>
-    <li>
-        <button>Sistema de Justiça</button>
-        <ul class="submenu">
-            <li><button onclick="location.href='{% url 'sistema_justica:poder_judiciario' %}'">Poder Judiciário</button>
-            </li>
-            <li><button onclick="location.href='{% url 'sistema_justica:ministerio_publico' %}'">Ministério
-                    Público</button></li>
-            <li><button onclick="location.href='{% url 'sistema_justica:defensoria_publica' %}'">Defensoria
-                    Pública</button></li>
-        </ul>
-    </li>
-    <li>
-        <button>Segurança Pública</button>
-        <ul class="submenu">
-            <li><button onclick="location.href='{% url 'seguranca_publica:militar' %}'">Polícia Militar</button>
-            </li>
-            <li><button onclick="location.href='{% url 'seguranca_publica:civil' %}'">Polícia Civil</button></li>
-            <li><button onclick="location.href='{% url 'seguranca_publica:cientifica' %}'">Polícia
-                    Científica</button></li>
-            <li><button onclick="location.href='{% url 'seguranca_publica:penal' %}'">Polícia Penal</button></li>
-        </ul>
-    </li>
-    <li>
-        <button>Órgãos municipais</button>
-        <ul class="submenu">
-            <li><button onclick="location.href='{% url 'municipio:creas' %}'">CREAS</button></li>
-            <li>
-                <button onclick="location.href='{% url 'municipio:conselho_tutelar' %}'">Conselho Tutelar</button>
-            </li>
-            <li><button onclick="location.href='{% url 'municipio:cras' %}'">CRAS</button></li>
-            <li><button onclick="location.href='{% url 'municipio:caps' %}'">CAPS</button></li>
-            <li><button onclick="location.href='{% url 'municipio:secretaria_saude' %}'">SECRETARIA DE SAÚDE</button>
-            </li>
-            <li><button onclick="location.href='#'">HOSPITAIS???</button></li>
-        </ul>
-    <li>
-        <button onclick="location.href='{% url 'admin:index' %}'">admin</button>
-    </li>
-    </li>
-</ul>
 
+<style>
+    /* Custom Tailwind config colors */
+    :root {
+        --primary: #8B5A9F;
+        --secondary: #B19CD9;
+        --accent: #E8D5F2;
+        --dark: #2D1B40;
+    }
+
+    .text-primary {
+        color: var(--primary);
+    }
+
+    .bg-primary {
+        background-color: var(--primary);
+    }
+
+    .text-secondary {
+        color: var(--secondary);
+    }
+
+    .bg-secondary {
+        background-color: var(--secondary);
+    }
+
+    .text-accent {
+        color: var(--accent);
+    }
+
+    .bg-accent {
+        background-color: var(--accent);
+    }
+
+    .text-dark {
+        color: var(--dark);
+    }
+
+    .bg-dark {
+        background-color: var(--dark);
+    }
+
+    .from-primary {
+        --tw-gradient-from: var(--primary);
+    }
+
+    .to-secondary {
+        --tw-gradient-to: var(--secondary);
+    }
+
+    .hover\:bg-accent:hover {
+        background-color: var(--accent);
+    }
+
+    .hover\:text-accent:hover {
+        color: var(--accent);
+    }
+
+    .hover\:text-primary:hover {
+        color: var(--primary);
+    }
+</style>
 {% endblock %}
 
-
 {% block main_content %}
+<div class="min-h-screen bg-gray-50">
 
-<div class="main-layout nav">
-    <!-- Barra lateral -->
-    <aside class="sidebar button_link">
-        <button class="btn" disabled>
-            <a href="#">Atendimentos Realizados</a>
-        </button>
-        <button class="btn" disabled>
-            <a href="{% url 'encaminhamentos' %}" target="_blank">Encaminhamentos <!-- <span class="badge badge-info" id="span_encaminhamentos">
-                    {{ encaminhamentos }} --> </span></a>
-        </button>
-        <button class="btn" disabled>
-            <a href="{% url 'notificacoes' 0 %}">Notificações
-                <!-- <span class="badge badge-danger" id="span_alert">{{ alert }}</span>  --></a>
-        </button>
-        <button class="btn">
-            <a href="{% url 'relatorios' %}">Relatórios</a>
-        </button>
-    </aside>
 
-    <!-- Conteúdo principal -->
-    <div id="root-content">
-        <h1>Selecione a sua instituição.</h1>
-        <p>conforme o usuário estiver habilitado serão exibidas as informações aqui.</p>
-        <p>{% lorem 20 p %}</p>
+
+    <!-- Main Layout -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
+            <aside class="lg:col-span-1 space-y-4">
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-tachometer-alt mr-3 text-primary"></i>
+                        Painel de Controle
+                    </h2>
+                    <nav class="space-y-2">
+
+
+                        <!-- Relatórios -->
+                        <a href="{% url 'relatorios' %}"
+                            class="block p-4 bg-green-50 rounded-lg border-l-4 border-green-500 hover:bg-green-100 transition-colors duration-200">
+                            <div class="flex items-center">
+                                <i class="fas fa-chart-line text-green-600 mr-3"></i>
+                                <span class="text-green-800 font-medium">Relatórios</span>
+                            </div>
+                        </a>
+                    </nav>
+                </div>
+
+
+            </aside>
+
+            <!-- Main Content -->
+            <main class="lg:col-span-3" id="root-content">
+                <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                    <div class="text-center">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-6">
+                            <i class="fas fa-building text-white text-2xl"></i>
+                        </div>
+                        <h1 class="text-3xl font-bold text-gray-800 mb-4">
+                            Selecione a sua instituição
+                        </h1>
+                        <p class="text-gray-600 mb-8 max-w-2xl mx-auto">
+                            Conforme o usuário estiver habilitado, serão exibidas as informações correspondentes à sua
+                            instituição.
+                        </p>
+                    </div>
+
+                    <!-- Institution Cards Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                        <!-- Sistema de Justiça -->
+                        <div
+                            class="group bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl border border-purple-200 hover:shadow-lg transition-all duration-300 cursor-pointer">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-balance-scale text-white text-xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-purple-800">Sistema de Justiça</h3>
+                            </div>
+                            <p class="text-purple-600 mb-4">Acesse funcionalidades do Poder Judiciário, Ministério
+                                Público e Defensoria.</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full"><a
+                                        href="{% url 'sistema_justica:poder_judiciario' %}">Poder Judiciário</a></span>
+                                <span class="bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full"><a
+                                        href="{% url 'sistema_justica:ministerio_publico' %}">Ministério
+                                        Público</a></span>
+                                <span class="bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full"><a
+                                        href="{% url 'sistema_justica:defensoria_publica' %}">Defensoria
+                                        Pública</a></span>
+                            </div>
+                        </div>
+
+                        <!-- Segurança Pública -->
+                        <div
+                            class="group bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200 hover:shadow-lg transition-all duration-300 cursor-pointer">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-shield-alt text-white text-xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-blue-800">Segurança Pública</h3>
+                            </div>
+                            <p class="text-blue-600 mb-4">Ferramentas para as forças policiais.</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full"><a
+                                        href="{% url 'seguranca_publica:militar' %}">Polícia
+                                        Militar</a></span>
+                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full"><a
+                                        href="{% url 'seguranca_publica:civil' %}">Polícia
+                                        Civil</a></span>
+                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full"><a
+                                        href="{% url 'seguranca_publica:cientifica' %}">Polícia
+                                        Científica</a></span>
+                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full"><a
+                                        href="{% url 'seguranca_publica:penal' %}">Polícia
+                                        Penal</a></span>
+                            </div>
+                        </div>
+
+                        <!-- Órgãos Municipais -->
+                        <div
+                            class="group bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl border border-red-200 hover:shadow-lg transition-all duration-300 cursor-pointer md:col-span-2">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-city text-white text-xl"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-red-800">Órgãos Municipais</h3>
+                            </div>
+                            <p class="text-red-600 mb-4">Acesso aos serviços de assistência social, saúde e proteção
+                                municipal.</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full"><a
+                                        href="{% url 'municipio:creas' %}">CREAS</a></span>
+                                <span class="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full"><a
+                                        href="{% url 'municipio:cras' %}">CRAS</a></span>
+                                <span class="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full"><a
+                                        href="{% url 'municipio:conselho_tutelar' %}">Conselho Tutelar</a></span>
+                                <span class="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full"><a
+                                        href="{% url 'municipio:caps' %}">CAPS</a></span>
+                                <span class="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full"><a
+                                        href="{% url 'municipio:secretaria_saude' %}">Secretária da Saúde</a></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Information Section -->
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
+                            <i class="fas fa-lightbulb text-yellow-600 text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800">Informações Importantes</h2>
+                    </div>
+
+                    <div class="prose max-w-none text-gray-600">
+                        <!-- Frases -->
+                        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border-primary">
+                            <h2 class="text-xl font-semibold mb-4 text-primary">Cuidados que importam</h2>
+                            <blockquote id="frase-block" class="space-y-4 text-gray-700">
+                                <!-- Frase será inserida via JS -->
+                            </blockquote>
+                            <div class="flex justify-end mt-4 space-x-2">
+                                <button id="prev-frase"
+                                    class="px-3 py-1 rounded bg-primary text-white hover:bg-secondary transition">Anterior</button>
+                                <button id="next-frase"
+                                    class="px-3 py-1 rounded bg-primary text-white hover:bg-secondary transition">Próxima</button>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                        <a href="{% url 'relatorios' %}"
+                            class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 transform hover:scale-105 flex items-center justify-center">
+                            <i class="fas fa-chart-line mr-2"></i>
+                            Ver Estatísticas
+                        </a>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
 </div>
 
+<script>
+    // Adicione animações suaves para cartões
+    document.addEventListener('DOMContentLoaded', function () {
+        const cards = document.querySelectorAll('.group');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.classList.add('animate-fade-in-up');
+        });
+    });
+
+    // Adicionar CSS personalizado para animações
+    const style = document.createElement('style');
+    style.textContent = `
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .rotate-180 {
+            transform: rotate(180deg);
+        }
+    `;
+    document.head.appendChild(style);
+
+
+    //Frase
+    const frases = [
+        {
+            texto: `"Somos exímios construtores, filhos do sistema cartesiano. A dor humana virou estatística."`,
+            autor: `Augusto <cite>Cury</cite>`
+        },
+        {
+            texto: `"Primeiro eles vieram atrás dos socialistas, e eu não me manifestei porque eu não era socialista.<br>
+            Depois, vieram atrás dos sindicalistas, e eu não me manifestei porque eu não era sindicalista.<br>
+            Depois, vieram atrás dos judeus, e eu não me manifestei porque eu não era judeu.<br>
+            Finalmente, vieram atrás de mim, e não havia ninguém para se manifestar por mim."`,
+            autor: `Martin <cite>Niemöller</cite>`
+        },
+        {
+            texto: `“Cada campo preenchido corretamente é um passo rumo a decisões mais inteligentes.”`,
+            autor: ` `
+        },
+        {
+            texto: `“Você faz parte do processo — e seu cuidado faz toda a diferença.”`
+        },
+        {
+            texto: `"A história do ovo e do bacon fala sobre envolvimento e comprometimento. Quando você come o bacon, o porco está comprometido, já que ele é o próprio. O ovo, você come e o envolvimento da galinha é de menos. Que por sua vez aproveitará o tempo livre para ciscar o chão e continuará a procurar minhocas."`,
+            autor: `Mestre <cite>Ariévlis</cite>`
+        },
+        {
+            texto: `“Cada informação preenchida com atenção pode representar proteção e acolhimento para alguém.”`
+        },
+        {
+            texto: `“Uma ficha bem preenchida não é apenas um dado — pode ser um pedido de socorro escutado a tempo.”`
+        },
+        {
+            texto: `“Preencher com atenção é um gesto de empatia com quem pode estar vivendo o invisível.”`
+        },
+        {
+            texto: `“Sua atenção hoje pode ser a segurança de alguém amanhã.”`
+        }
+    ];
+
+    let fraseAtual = 0;
+    let fraseTimer = null;
+
+    function mostrarFrase(idx) {
+        const frase = frases[idx];
+        document.getElementById('frase-block').innerHTML = `
+                <div>
+                    <p class="italic">${frase.texto}</p>
+                    <footer class="text-sm text-gray-500">${frase.autor}</footer>
+                </div>
+            `;
+    }
+
+    function proximaFrase() {
+        fraseAtual = (fraseAtual + 1) % frases.length;
+        mostrarFrase(fraseAtual);
+        reiniciarTimer();
+    }
+
+    function anteriorFrase() {
+        fraseAtual = (fraseAtual - 1 + frases.length) % frases.length;
+        mostrarFrase(fraseAtual);
+        reiniciarTimer();
+    }
+
+    function reiniciarTimer() {
+        if (fraseTimer) clearInterval(fraseTimer);
+        fraseTimer = setInterval(proximaFrase, 18000);
+    }
+
+    // Inicializa a primeira frase ao carregar a página
+    document.addEventListener('DOMContentLoaded', function () {
+        mostrarFrase(fraseAtual);
+        reiniciarTimer();
+
+        document.getElementById('next-frase').addEventListener('click', proximaFrase);
+        document.getElementById('prev-frase').addEventListener('click', anteriorFrase);
+    });
+</script>
 {% endblock %}
