@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.views import LoginView
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from collections import defaultdict
@@ -247,4 +248,12 @@ class CustomPasswordResetView:
     email_template_nome = 'registration/password_reset_email.html'
     subject_template_name = 'registration/password_reset_subject.txt'
     success_url = reverse_lazy('password_reset_done.html')
-    
+
+class CustomLoginView(LoginView):
+    template_name = 'login.html'
+    next_page = '/home/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('/home/')
+        return super().dispatch(request, *args, **kwargs)
