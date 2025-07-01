@@ -25,13 +25,21 @@ def poder_judiciario(request):
 def cadastro_vitima_form(request):
     form = CadastroVitimaForm()
     return render(request, 'parcial/cadastro_vitima_form.html', {'form': form})
+
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_vitima_submit(request):
     if request.method == 'POST':
         form = CadastroVitimaForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponse('<div class="alert alert-success">Vítima cadastrada com sucesso!</div>')
+            return HttpResponse(
+                """
+                    <script>
+                        exibirPopupSucesso('Vítima cadastrada com sucesso!', 'feminino');
+                        document.getElementById('modal-vitima').innerHTML = '';
+                    </script>
+                """
+            )
     else:
         return render(request, "parcial/cadastro_vitima_form.html", {"form": form})
     return HttpResponse(status=405)
@@ -48,14 +56,15 @@ def cadastro_agressor_submit(request):
         if form.is_valid():
             agressor = form.save()
             # Retorne um script para fechar o modal e recarregar o campo agressor do formulário de vítima
-            return HttpResponse("""
-                <script>
-                    document.getElementById('modal-agressor').innerHTML = '';
-                    // Opcional: recarregar o campo agressor via HTMX
-                    htmx.trigger(htmx.find('#id_agressor'), 'change');
-                </script>
-                <div class="alert alert-success">Agressor cadastrado com sucesso!</div>
-            """)
+            return HttpResponse(
+                """
+                    <script>
+                        exibirPopupSucesso('Agressor cadastrado com sucesso!', 'masculino');
+                        document.getElementById('modal-agressor').innerHTML = '';
+                        htmx.trigger(htmx.find('#id_agressor'), 'change');
+                    </script>
+                """
+            )
         else:
             return render(request, 'parcial/cadastro_agressor_form.html', {'form': form})
     return HttpResponse(status=405)

@@ -14,6 +14,9 @@
 
 {% block main_content %}
 
+<!-- Toast/Popup container -->
+<div id="popup-sucesso-container" class="fixed top-6 right-6 z-[9999]"></div>
+
 <div class="main-layout nav">
     <!-- Barra lateral -->
     <div class="sidebar button_link nav">
@@ -56,4 +59,44 @@
 </div>
 
 
+{% endblock %}
+
+{% block script %}
+<script>
+    function exibirPopupSucesso(mensagem, tipo) {
+        // Remove popup anterior se existir
+        const container = document.getElementById('popup-sucesso-container');
+        container.innerHTML = '';
+        // Define cor e ícone conforme tipo
+        let bg = 'bg-pink-500', icon = 'fa-female';
+        if (tipo === 'masculino') {
+            bg = 'bg-blue-600';
+            icon = 'fa-male';
+        }
+        // Cria popup
+        const popup = document.createElement('div');
+        popup.className = `${bg} text-white px-6 py-4 rounded-xl shadow-lg flex items-center gap-3 animate-fade-in-up mb-2 min-w-[250px]`;
+        popup.innerHTML = `
+        <i class="fas ${icon} text-2xl"></i>
+        <span class="font-semibold">${mensagem}</span>
+        <button onclick="this.parentElement.remove()" class="ml-auto text-white hover:text-gray-200 text-xl font-bold">&times;</button>
+    `;
+        container.appendChild(popup);
+        // Remove automaticamente após 4s
+        setTimeout(() => { popup.remove(); }, 4000);
+    }
+
+    // Animação
+    const style = document.createElement('style');
+    style.textContent = `
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+.animate-fade-in-up {
+    animation: fadeInUp 0.4s cubic-bezier(.4,2,.6,1) both;
+}
+`;
+    document.head.appendChild(style);
+</script>
 {% endblock %}
