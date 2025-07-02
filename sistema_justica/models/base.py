@@ -351,7 +351,6 @@ class Agressor_dados(models.Model):
         choices=nacionalidade_choices, 
         default="BR",
         null=False, blank=False,
-        #help_text="Escolha a nacionalidade do agressor",
     )  
     estado = models.ForeignKey(
         Estado,
