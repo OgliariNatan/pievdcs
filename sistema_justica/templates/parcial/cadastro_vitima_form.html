@@ -128,4 +128,12 @@
             aplicarMascarasModal();
         }
     });
+
+    // Fechar popup com ESC
+    document.addEventListener('keydown', function (e) {
+        if (e.key === "Escape") {
+            const modal = document.querySelector('.fixed.inset-0');
+            if (modal) modal.remove();
+        }
+    });
 </script>
