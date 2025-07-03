@@ -2,9 +2,13 @@
 from pathlib import Path
 import os
 from decouple import config
+import locale
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')  # Configura o locale para português do Brasil
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
