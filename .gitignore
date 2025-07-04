@@ -128,7 +128,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+
 .venv
 env/
 venv/
@@ -181,8 +181,7 @@ cython_debug/
 /staticfiles/
 
 
-#Remove arquivos de configurções
-.env
+
 
 #Remove arquivos de de texto
 *.txt
