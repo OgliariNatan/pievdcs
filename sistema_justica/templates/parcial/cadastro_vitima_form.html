@@ -124,7 +124,7 @@
     document.addEventListener('DOMContentLoaded', aplicarMascarasModal);
     // Aplica novamente sempre que o modal for atualizado via HTMX
     document.body.addEventListener('htmx:afterSwap', function (evt) {
-        if (evt.target && evt.target.id === "modal-vitima") {
+        if (evt.target && evt.target.id === "modal-vitima" || evt.target.id === "modal-agressor") {
             aplicarMascarasModal();
         }
     });

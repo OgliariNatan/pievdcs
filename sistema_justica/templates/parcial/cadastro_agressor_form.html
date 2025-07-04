@@ -17,32 +17,139 @@
                 </button>
             </div>
             <!-- Corpo -->
-            <div class="px-6 py-6 space-y-5 bg-blue-50">
-                {% for field in form %}
-                <div>
-                    <label for="{{ field.id_for_label }}"
-                        class="block font-semibold text-blue-700 mb-1">{{ field.label }}</label>
-                    {% if field.name == "municipio" %}
-                    <div class="flex gap-2 items-center">
-                        {{ field }}
-                        <button type="button"
-                            class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-white rounded-full w-8 h-8 transition"
-                            hx-get="{% url 'sistema_justica:cadastro_municipio_form' %}" hx-target="#modal-municipio"
-                            hx-trigger="click" hx-swap="innerHTML" title="Adicionar município">
-                            <img src="{% static 'img/add.png' %}" alt="Adicionar" class="w-4 h-4">
-                        </button>
+            <div class="px-6 py-6 bg-blue-50">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Nome e CPF -->
+                    <div>
+                        <label for="{{ form.nome.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Nome</label>
+                        {{ form.nome }}
                     </div>
-                    {% else %}
-                    {{ field }}
-                    {% endif %}
-                    {% if field.help_text %}
-                    <small class="text-blue-500">{{ field.help_text }}</small>
-                    {% endif %}
-                    {% for error in field.errors %}
-                    <div class="text-red-600 text-sm mt-1">{{ error }}</div>
-                    {% endfor %}
+                    <div>
+                        <label for="{{ form.cpf.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">CPF</label>
+                        {{ form.cpf }}
+                    </div>
+
+                    <!-- Nome Social (linha inteira) -->
+                    <div class="sm:col-span-2">
+                        <label for="{{ form.nome_social.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Nome Social</label>
+                        {{ form.nome_social }}
+                    </div>
+
+                    <!-- Pai e Mãe -->
+                    <div>
+                        <label for="{{ form.nome_do_pai.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Nome do Pai</label>
+                        {{ form.nome_do_pai }}
+                    </div>
+                    <div>
+                        <label for="{{ form.nome_da_mae.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Nome da Mãe</label>
+                        {{ form.nome_da_mae }}
+                    </div>
+
+                    <!-- Data de Nascimento e Sexo -->
+                    <div>
+                        <label for="{{ form.data_nascimento.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Data de Nascimento</label>
+                        {{ form.data_nascimento }}
+                    </div>
+                    <div>
+                        <label for="{{ form.sexo.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Sexo</label>
+                        {{ form.sexo }}
+                    </div>
+
+                    <!-- Etnia e Estado Civil -->
+                    <div>
+                        <label for="{{ form.etnia.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Etnia</label>
+                        {{ form.etnia }}
+                    </div>
+                    <div>
+                        <label for="{{ form.estado_civil.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Estado Civil</label>
+                        {{ form.estado_civil }}
+                    </div>
+
+                    <!-- Telefone e Nacionalidade -->
+                    <div>
+                        <label for="{{ form.telefone.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Telefone</label>
+                        {{ form.telefone }}
+                    </div>
+                    <div>
+                        <label for="{{ form.nacionalidade.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Nacionalidade</label>
+                        {{ form.nacionalidade }}
+                    </div>
+
+                    <!-- Estado e Município -->
+                    <div>
+                        <label for="{{ form.estado.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Estado</label>
+                        {{ form.estado }}
+                    </div>
+                    <div>
+                        <label for="{{ form.municipio.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Município</label>
+                        <div class="flex gap-2 items-center">
+                            {{ form.municipio }}
+                            <button type="button"
+                                class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-white rounded-full w-8 h-8 transition"
+                                hx-get="{% url 'sistema_justica:cadastro_municipio_form' %}"
+                                hx-target="#modal-municipio" hx-trigger="click" hx-swap="innerHTML"
+                                title="Adicionar município">
+                                <img src="{% static 'img/add.png' %}" alt="Adicionar" class="w-4 h-4">
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bairro e Endereço -->
+                    <div>
+                        <label for="{{ form.bairro.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Bairro</label>
+                        {{ form.bairro }}
+                    </div>
+                    <div>
+                        <label for="{{ form.endereco.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Endereço</label>
+                        {{ form.endereco }}
+                    </div>
+
+                    <!-- Número e Email -->
+                    <div>
+                        <label for="{{ form.endereco_numero.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Nº</label>
+                        {{ form.endereco_numero }}
+                    </div>
+                    <div>
+                        <label for="{{ form.email.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Email</label>
+                        {{ form.email }}
+                    </div>
+
+                    <!-- Escolaridade e Classe Econômica -->
+                    <div>
+                        <label for="{{ form.escolaridade.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Escolaridade</label>
+                        {{ form.escolaridade }}
+                    </div>
+                    <div>
+                        <label for="{{ form.classeEconomica.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Renda Mensal</label>
+                        {{ form.classeEconomica }}
+                    </div>
+
+                    <!-- Profissão (linha inteira) -->
+                    <div class="sm:col-span-2">
+                        <label for="{{ form.profissao.id_for_label }}"
+                            class="block text-sm font-medium text-blue-700">Profissão</label>
+                        {{ form.profissao }}
+                    </div>
                 </div>
-                {% endfor %}
             </div>
             <!-- Rodapé -->
             <div class="flex justify-end gap-2 px-6 py-4 rounded-b-2xl bg-gradient-to-r from-blue-600 to-blue-400">
@@ -115,7 +222,7 @@
     document.addEventListener('DOMContentLoaded', aplicarMascarasModal);
     // Aplica novamente sempre que o modal for atualizado via HTMX
     document.body.addEventListener('htmx:afterSwap', function (evt) {
-        if (evt.target && evt.target.id === "modal-vitima") {
+        if (evt.target && evt.target.id === "modal-vitima" || evt.target.id === "modal-agressor") {
             aplicarMascarasModal();
         }
     });
