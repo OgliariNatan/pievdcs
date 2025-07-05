@@ -3,59 +3,73 @@
 
 {% block titulo %}{{ title }}{% endblock %}
 
-
-{% block nav %}
-<!-- <button class="btn button-sm" onclick="location.href='{% url 'index' %}'">Início</button>
-<button class="btn btn-sm" onclick="history.back()">Voltar</button> -->
-{% endblock %}
-
 {% block main_content %}
-
 <!-- Toast/Popup container -->
 <div id="popup-sucesso-container" class="fixed top-6 right-6 z-[9999]"></div>
 
-<div class="main-layout nav">
-    <!-- Barra lateral -->
-    <div class="sidebar button_link nav">
-        <button>
-            <a href="#">Atendimentos Realizados</a>
-        </button>
-        <button>
-            <a href="{% url 'encaminhamentos' %}">Encaminhamentos <span class="badge badge-warning"
-                    id="span_encaminhamentos">
-                    {{ encaminhamentos }}</span></a>
-        </button>
-        <button>
-            <a href="{% url 'notificacoes' notificacoes %}">Notificações <span class="badge badge-danger"
-                    id="span_alert">{{ notificacoes }}</span></a>
-        </button>
-        <button>
-            <a href="{% url 'relatorios' %}">Relatórios</a>
-        </button>
-    </div>
+<div class="flex min-h-[80vh] bg-gray-50">
+    <!-- Sidebar -->
+    <aside
+        class="w-64 bg-gradient-to-b from-primary to-secondary text-white rounded-r-3xl shadow-lg py-8 px-4 flex flex-col gap-4">
+        <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-accent/30 transition">
+            <i class="fas fa-hand-holding-heart text-xl"></i>
+            <span>Atendimentos Realizados</span>
+        </a>
+        <a href="{% url 'encaminhamentos' %}"
+            class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-accent/30 transition">
+            <i class="fas fa-share-square text-xl"></i>
+            <span>Encaminhamentos</span>
+            <span class="ml-auto bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full"
+                id="span_encaminhamentos">{{ encaminhamentos }}</span>
+        </a>
+        <a href="{% url 'notificacoes' notificacoes %}"
+            class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-accent/30 transition">
+            <i class="fas fa-bell text-xl"></i>
+            <span>Notificações</span>
+            <span class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full"
+                id="span_alert">{{ notificacoes }}</span>
+        </a>
+        <a href="{% url 'relatorios' %}"
+            class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-accent/30 transition">
+            <i class="fas fa-chart-line text-xl"></i>
+            <span>Relatórios</span>
+        </a>
+    </aside>
 
     <!-- Conteúdo principal -->
-    <div id="root-content">
-
-        <h1>{{ title }} &#x2014; Usuário: {{ user.first_name }} {{ user.last_name }}</h1>
-        <p>Bem-vindo à página da {{ title }}.</p>
-        <button class="btn btn-primary btn-sm" style="background-color: #c8a2c8; color: black;"
-            hx-get="{% url 'sistema_justica:cadastro_vitima_form' %}" hx-target="#modal-vitima" hx-trigger="click"
-            hx-swap="innerHTML">
-            Cadastrar Vítima
-        </button>
-        <button class="btn btn-primary btn-sm" hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}"
-            hx-target="#modal-vitima" hx-trigger="click" hx-swap="innerHTML">
-            Cadastrar Agressor
-        </button>
-        <p>Esta página contém informações relevantes sobre o {{ title }} e seus serviços.</p>
-        <p>{% lorem 10 p %}</p>
-    </div>
-    <!-- Modal container HTMX -->
-    <div id="modal-vitima"></div>
+    <main class="flex-1 p-10">
+        <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <h1 class="text-3xl font-bold text-primary mb-2 flex items-center gap-2">
+                <i class="fas fa-balance-scale text-secondary"></i>
+                {{ title }}
+            </h1>
+            <p class="text-gray-700 mb-4">Usuário: <span class="font-semibold">{{ user.first_name }}
+                    {{ user.last_name }}</span></p>
+            <p class="text-gray-600 mb-6">Bem-vindo à página da <span class="font-semibold">{{ title }}</span>.</p>
+            <div class="flex flex-wrap gap-4 mb-6">
+                <button
+                    class="bg-primary text-white px-6 py-2 rounded-lg font-semibold shadow hover:bg-secondary transition"
+                    hx-get="{% url 'sistema_justica:cadastro_vitima_form' %}" hx-target="#modal-vitima"
+                    hx-trigger="click" hx-swap="innerHTML">
+                    <i class="fas fa-female mr-2"></i> Cadastrar Vítima
+                </button>
+                <button
+                    class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold shadow hover:bg-blue-700 transition"
+                    hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-vitima"
+                    hx-trigger="click" hx-swap="innerHTML">
+                    <i class="fas fa-male mr-2"></i> Cadastrar Agressor
+                </button>
+            </div>
+            <div class="prose max-w-none text-gray-700">
+                <p>Esta página contém informações relevantes sobre o <span class="font-semibold">{{ title }}</span> e
+                    seus serviços.</p>
+                <p>{% lorem 10 p %}</p>
+            </div>
+        </div>
+        <!-- Modal container HTMX -->
+        <div id="modal-vitima"></div>
+    </main>
 </div>
-
-
 {% endblock %}
 
 {% block script %}
