@@ -1,26 +1,380 @@
 {% extends 'base/base.html' %}
 {% load static %}
-{% block titulo %}Login{% endblock %}
+{% block titulo %}Login - Plataforma Integrada{% endblock %}
 
 {% block main_content %}
-<div class="login-page">
-    <!-- <div class="logo-container">
-
-    </div> -->
-    <div class="login-container">
-        <!-- <h2>Login</h2> -->
-        <img src="{% static 'img/logo1.png' %}" alt="Logo" class="logo" height="250px" width="250px">
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="login-button">Entrar</button>
-        </form>
-        <p>
-            <a href="{% url 'password_reset' %}" class="forgot-password-link">Esqueceu sua senha?</a>
-        </p>
-
+<div
+    class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 flex items-center justify-center px-4 py-8">
+    <!-- Background decorative elements -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"></div>
+        <div
+            class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-primary/3 to-secondary/3 rounded-full blur-3xl">
+        </div>
     </div>
 
+    <!-- Main login container -->
+    <div class="relative w-full max-w-md">
+        <!-- Login card -->
+        <div class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+            <!-- Header section with logo and branding -->
+            <div class="bg-gradient-to-r from-primary to-secondary p-8 text-center relative">
+                <div class="absolute inset-0 bg-black/5"></div>
+                <div class="relative z-10">
+                    <!-- Logo container with enhanced styling -->
+                    <div class="mb-4 flex justify-center">
+                        <div
+                            class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/30">
+                            <img src="{% static 'img/logo1.png' %}" alt="Logo da Plataforma"
+                                class="w-12 h-12 object-contain">
+                        </div>
+                    </div>
+
+                    <!-- Title and subtitle -->
+                    <h1 class="text-2xl font-bold text-white mb-2">
+                        Plataforma Integrada
+                    </h1>
+                    <p class="text-white/90 text-sm font-medium">
+                        Enfrentamento à Violência
+                    </p>
+                </div>
+            </div>
+
+            <!-- Form section -->
+            <div class="p-8">
+                <!-- Welcome message -->
+                <div class="text-center mb-8">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">
+                        Bem-vindo de volta
+                    </h2>
+                    <p class="text-gray-600 text-sm">
+                        Faça login para acessar sua conta
+                    </p>
+                </div>
+
+                <!-- Login form -->
+                <form method="post" class="space-y-6" id="loginForm">
+                    {% csrf_token %}
+
+                    <!-- Username field -->
+                    <div class="space-y-2">
+                        <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            <i class="fas fa-user text-primary mr-2"></i>
+                            Nome de usuário
+                        </label>
+                        <div class="relative">
+                            <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}"
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 placeholder-gray-400"
+                                placeholder="Digite seu nome de usuário" required>
+                            <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400 text-sm"></i>
+                            </div>
+                        </div>
+                        {% if form.username.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {% for error in form.username.errors %}
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-exclamation-circle text-xs"></i>
+                                {{ error }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password field -->
+                    <div class="space-y-2">
+                        <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            <i class="fas fa-lock text-primary mr-2"></i>
+                            Senha
+                        </label>
+                        <div class="relative">
+                            <input type="password" name="{{ form.password.name }}" id="{{ form.password.id_for_label }}"
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 placeholder-gray-400"
+                                placeholder="Digite sua senha" required>
+                            <button type="button"
+                                class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                                onclick="togglePassword(this)">
+                                <i class="fas fa-eye text-sm" id="toggleIcon"></i>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {% for error in form.password.errors %}
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-exclamation-circle text-xs"></i>
+                                {{ error }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Remember me checkbox -->
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" name="remember_me"
+                                class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary/20 focus:ring-2">
+                            <span class="text-sm text-gray-600">Manter conectado</span>
+                        </label>
+                    </div>
+
+                    <!-- Submit button -->
+                    <button type="submit"
+                        class="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        id="submitButton">
+                        <span class="flex items-center justify-center gap-2">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Entrar</span>
+                        </span>
+                    </button>
+
+                    <!-- Form errors -->
+                    {% if form.non_field_errors %}
+                    <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+                        {% for error in form.non_field_errors %}
+                        <div class="flex items-center gap-2 text-red-700 text-sm">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>{{ error }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </form>
+
+                <!-- Forgot password link -->
+                <div class="mt-6 text-center">
+                    <a href="{% url 'password_reset' %}"
+                        class="text-primary hover:text-secondary font-medium text-sm transition-colors duration-200 inline-flex items-center gap-1">
+                        <i class="fas fa-key text-xs"></i>
+                        Esqueceu sua senha?
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer info -->
+        <div class="mt-8 text-center">
+            <p class="text-gray-600 text-sm">
+                Sistema seguro e protegido
+            </p>
+            <div class="flex justify-center items-center gap-4 mt-2 text-xs text-gray-500">
+                <span class="flex items-center gap-1">
+                    <i class="fas fa-shield-alt text-green-500"></i>
+                    Criptografia SSL
+                </span>
+                <span class="flex items-center gap-1">
+                    <i class="fas fa-lock text-blue-500"></i>
+                    Dados protegidos
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast container for notifications -->
+    <div id="toast-container" class="fixed top-6 right-6 z-50 space-y-2"></div>
 </div>
 
+<script>
+    // Enhanced form handling with better UX
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('loginForm');
+        const submitButton = document.getElementById('submitButton');
+        const inputs = form.querySelectorAll('input[required]');
+
+        // Real-time validation feedback
+        inputs.forEach(input => {
+            input.addEventListener('input', function () {
+                validateInput(this);
+                updateSubmitButton();
+            });
+
+            input.addEventListener('blur', function () {
+                validateInput(this);
+            });
+        });
+
+        // Form submission with loading state
+        form.addEventListener('submit', function (e) {
+            showLoadingState();
+        });
+
+        // Validate individual input
+        function validateInput(input) {
+            const isValid = input.checkValidity() && input.value.trim() !== '';
+
+            if (isValid) {
+                input.classList.remove('border-red-300', 'focus:border-red-500', 'focus:ring-red-200');
+                input.classList.add('border-green-300', 'focus:border-green-500', 'focus:ring-green-200');
+            } else if (input.value.trim() !== '') {
+                input.classList.remove('border-green-300', 'focus:border-green-500', 'focus:ring-green-200');
+                input.classList.add('border-red-300', 'focus:border-red-500', 'focus:ring-red-200');
+            } else {
+                input.classList.remove('border-red-300', 'focus:border-red-500', 'focus:ring-red-200', 'border-green-300', 'focus:border-green-500', 'focus:ring-green-200');
+            }
+        }
+
+        // Update submit button state
+        function updateSubmitButton() {
+            const allValid = Array.from(inputs).every(input =>
+                input.checkValidity() && input.value.trim() !== ''
+            );
+
+            submitButton.disabled = !allValid;
+
+            if (allValid) {
+                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                submitButton.classList.add('hover:scale-[1.02]');
+            } else {
+                submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+                submitButton.classList.remove('hover:scale-[1.02]');
+            }
+        }
+
+        // Show loading state on submit
+        function showLoadingState() {
+            submitButton.disabled = true;
+            submitButton.innerHTML = `
+                <span class="flex items-center justify-center gap-2">
+                    <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Entrando...</span>
+                </span>
+            `;
+        }
+
+        // Initial validation
+        updateSubmitButton();
+    });
+
+    // Toggle password visibility
+    function togglePassword(button) {
+        const passwordInput = button.previousElementSibling;
+        const icon = button.querySelector('i');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // Toast notification system
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+
+        const colors = {
+            success: 'bg-green-500',
+            error: 'bg-red-500',
+            info: 'bg-blue-500',
+            warning: 'bg-yellow-500'
+        };
+
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            info: 'fa-info-circle',
+            warning: 'fa-exclamation-triangle'
+        };
+
+        toast.className = `${colors[type]} text-white px-6 py-4 rounded-xl shadow-lg flex items-center gap-3 animate-fade-in-up transform translate-x-full`;
+        toast.innerHTML = `
+            <i class="fas ${icons[type]}"></i>
+            <span class="font-medium">${message}</span>
+            <button onclick="this.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        container.appendChild(toast);
+
+        // Animate in
+        setTimeout(() => {
+            toast.classList.remove('translate-x-full');
+        }, 100);
+
+        // Auto remove
+        setTimeout(() => {
+            toast.style.animation = 'slideOutRight 0.3s ease-in-out forwards';
+            setTimeout(() => toast.remove(), 300);
+        }, 5000);
+    }
+
+    // Enhanced animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px) scale(0.95);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes slideOutRight {
+            to { 
+                opacity: 0; 
+                transform: translateX(100%);
+            }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+        
+        /* Custom focus styles */
+        input:focus {
+            box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+        }
+        
+        /* Smooth transitions for all interactive elements */
+        input, button, a {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Loading animation */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Backdrop blur support */
+        .backdrop-blur-xl {
+            backdrop-filter: blur(24px);
+        }
+        
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(var(--primary-rgb), 0.3);
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(var(--primary-rgb), 0.5);
+        }
+    `;
+    document.head.appendChild(style);
+</script>
 {% endblock %}
