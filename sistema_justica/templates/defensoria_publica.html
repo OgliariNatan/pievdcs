@@ -133,6 +133,30 @@
                 </div>
             </div>
 
+
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8">
+                <button
+                    class="group bg-pink-500 hover:bg-pink-400 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
+                    hx-get="{% url 'sistema_justica:cadastro_vitima_form' %}" hx-target="#modal-content"
+                    hx-swap="innerHTML">
+                    <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-female text-sm"></i>
+                    </div>
+                    <span class="font-medium">Cadastrar Vítima</span>
+                </button>
+
+                <button
+                    class="group bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
+                    hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-content"
+                    hx-swap="innerHTML">
+                    <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-thin fa-hands-holding-child"></i>
+                    </div>
+                    <span class="font-medium">Solicitar MPU</span>
+                </button>
+            </div>
+
+
             <!-- Conteúdo descritivo -->
             <div class="prose max-w-none text-gray-700 leading-relaxed">
                 <div
