@@ -8,7 +8,7 @@ from .permission_group import grupos_permitidos
 
 
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['Ministério Público'])
+@grupos_permitidos(['Ministério Público',])
 def ministerio_publico(request):
     contexto = {
         'title': 'Ministério Público',

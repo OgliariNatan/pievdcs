@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from .permission_group import grupos_permitidos
 
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['CRAS'])
+@grupos_permitidos(['CRAS',])
 def cras(request):
     contexto = {
         'title': 'Centros de Referência de Assistência Social',

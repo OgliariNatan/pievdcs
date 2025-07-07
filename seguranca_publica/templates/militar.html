@@ -3,49 +3,463 @@
 
 {% block titulo %}{{ title }}{% endblock %}
 
-
-{% block nav %}
-<!-- <button class="btn button-sm" onclick="location.href='{% url 'index' %}'">Início</button>
-<button class="btn btn-sm" onclick="history.back()">Voltar</button> -->
-{% endblock %}
-
-
-
-
 {% block main_content %}
+<!-- Toast/Popup container -->
+<div id="popup-sucesso-container" class="fixed top-6 right-6 z-[9999]"></div>
 
-<div class="main-layout nav">
-    <!-- Barra lateral -->
-    <aside class="sidebar button_link">
-        <button>
-            <a href="#">Atendimentos Realizados</a>
-        </button>
-        <button class="btn">
-            <a href="{% url 'encaminhamentos' %}">Encaminhamentos <span class="badge badge-warning"
-                    id="span_encaminhamentos">
-                    {{ encaminhamentos }}</span></a>
-        </button>
-        <button>
-            <a href="{% url 'notificacoes' alert %}">Notificações
-                <span class="badge badge-danger" id="span_alert">{{ alert }}</span></a>
-        </button>
-        <button>
-            <a href="{% url 'relatorios' %}">Relatórios</a>
-        </button>
+<div class="flex min-h-[80vh] bg-gray-50">
+    <!-- Sidebar responsiva com efeito hover -->
+    <aside class="sidebar-container relative z-10 h-full
+        bg-gradient-to-b from-purple-600 to-purple-800 text-white shadow-xl py-6 px-2
+        flex flex-col gap-3
+        w-16 transition-all duration-300 ease-in-out rounded-r-3xl
+        overflow-hidden" style="min-width: 4rem;">
+
+        <!-- Header do sidebar -->
+        <div class="flex items-center gap-3 px-2 py-2 mb-2">
+            <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <i class="fas fa-solid fa-building-shield"></i>
+            </div>
+            <span class="sidebar-label whitespace-nowrap font-semibold text-sm">
+                {{ title }}
+            </span>
+        </div>
+
+        <!-- Divisor -->
+        <div class="h-px bg-white/20 mx-2 mb-2"></div>
+
+        <!-- Menu items -->
+        <nav class="flex flex-col gap-2 flex-1">
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i
+                        class="fas fa-hand-holding-heart text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span class="sidebar-label whitespace-nowrap font-medium">
+                    Atendimentos Realizados
+                </span>
+            </a>
+
+            <a href="{% url 'encaminhamentos' %}"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item relative">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i
+                        class="fas fa-share-square text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span class="sidebar-label whitespace-nowrap font-medium">
+                    Encaminhamentos
+                </span>
+                <span
+                    class="sidebar-badge bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded-full min-w-[1.5rem] text-center"
+                    id="span_encaminhamentos">{{ encaminhamentos }}</span>
+                <!-- Badge para sidebar collapsed -->
+                <span
+                    class="collapsed-badge absolute -top-1 -right-1 bg-amber-400 text-amber-900 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
+                    style="font-size: 10px;">{{ encaminhamentos }}</span>
+            </a>
+
+            <a href="{% url 'notificacoes' alert %}"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item relative">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="fas fa-bell text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span class="sidebar-label whitespace-nowrap font-medium">
+                    Notificações
+                </span>
+                <span
+                    class="sidebar-badge bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[1.5rem] text-center"
+                    id="span_alert">{{ alert }}</span>
+                <!-- Badge para sidebar collapsed -->
+                <span
+                    class="collapsed-badge absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
+                    style="font-size: 10px;">{{ alert }}</span>
+            </a>
+
+            <a href="{% url 'relatorios' %}"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i
+                        class="fas fa-chart-line text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span class="sidebar-label whitespace-nowrap font-medium">
+                    Relatórios
+                </span>
+            </a>
+        </nav>
+
+        <!-- Footer do sidebar -->
+        <div class="mt-auto pt-4 border-t border-white/20">
+            <div class="flex items-center gap-3 px-3 py-2">
+                <div class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user text-sm"></i>
+                </div>
+                <span class="sidebar-label whitespace-nowrap font-medium text-sm">
+                    {{ user.first_name }}
+                </span>
+            </div>
+        </div>
     </aside>
 
     <!-- Conteúdo principal -->
-    <div id="root-content">
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 transition-all duration-300">
+        <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8 mb-6 border border-gray-100">
+            <!-- Header da página -->
+            <div class="mb-6">
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-purple-600 mb-3 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-solid fa-building-shield text-purple-300"></i>
+                    </div>
+                    {{ title }}
+                </h1>
+                <div class="space-y-1 text-sm sm:text-base">
+                    <p class="text-gray-700">
+                        <span class="font-medium">Usuário:</span>
+                        <span class="text-purple-600 font-semibold">{{ user.first_name }} {{ user.last_name }}</span>
+                    </p>
+                    <p class="text-gray-600">
+                        Bem-vindo à página da <span class="font-semibold text-purple-600">{{ title }}</span>
+                    </p>
+                </div>
+            </div>
 
-        <h1>{{ title }} &#x2014; Usuário: {{ user.first_name }} {{ user.last_name }}</h1>
-        <p>Bem-vindo a página da {{ title }}.</p>
-        <input type="text" class="form-control-sm" placeholder="Nome ou CPF">
-        <button class="btn btn-primary btn-sm">Pesquisar</button>
-        <button class="btn btn-secondary btn-sm">Cadastrar</button>
-        <p>Esta página contém informações relevantes sobre a {{ title }} e seus serviços.</p>
-        <p>{% lorem 10 p %}</p>
-    </div>
+            <!-- Barra de pesquisa moderna -->
+            <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-6 border-l-4 border-purple-600 mb-6">
+                <h3 class="text-lg font-semibold text-purple-600 mb-4 flex items-center gap-2">
+                    <i class="fas fa-search text-purple-500"></i>
+                    Pesquisar Registros
+                </h3>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="flex-1 relative">
+                        <input type="text"
+                            class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm"
+                            placeholder="Digite o nome ou CPF para buscar...">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <div class="flex gap-2">
+                        <button
+                            class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2">
+                            <i class="fas fa-search text-sm"></i>
+                            Pesquisar
+                        </button>
+                        <button
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2">
+                            <i class="fas fa-plus text-sm"></i>
+                            Cadastrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conteúdo informativo -->
+            <div class="prose max-w-none text-gray-700 leading-relaxed">
+                <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 border-l-4 border-blue-600 mb-6">
+                    <h3 class="text-lg font-semibold text-blue-600 mb-2 flex items-center gap-2">
+                        <i class="fas fa-info-circle text-blue-500"></i>
+                        Sobre a {{ title }}
+                    </h3>
+                    <p class="text-gray-700 mb-2">
+                        Esta página contém informações relevantes sobre a <span
+                            class="font-semibold text-blue-600">{{ title }}</span> e seus serviços especializados.
+                    </p>
+                    <p class="text-gray-600 text-sm">
+                        Use as ferramentas acima para pesquisar registros existentes ou cadastrar novos casos.
+                    </p>
+                </div>
+
+                <!-- Cards de recursos -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-hand-holding-heart text-white"></i>
+                            </div>
+                            <h4 class="font-semibold text-purple-800">Atendimentos</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Sistema completo para registro e acompanhamento de atendimentos realizados.
+                        </p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-6 border border-amber-200">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-share-square text-white"></i>
+                            </div>
+                            <h4 class="font-semibold text-amber-800">Encaminhamentos</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Controle e acompanhamento de encaminhamentos entre diferentes setores.
+                        </p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 border border-red-200">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-bell text-white"></i>
+                            </div>
+                            <h4 class="font-semibold text-red-800">Notificações</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Sistema de alertas e notificações para casos que requerem atenção.
+                        </p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-chart-line text-white"></i>
+                            </div>
+                            <h4 class="font-semibold text-green-800">Relatórios</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Geração de relatórios detalhados e análises estatísticas.
+                        </p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-shield-alt text-white"></i>
+                            </div>
+                            <h4 class="font-semibold text-blue-800">Segurança</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Dados protegidos com criptografia e acesso controlado por níveis.
+                        </p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-clock text-white"></i>
+                            </div>
+                            <h4 class="font-semibold text-indigo-800">Histórico</h4>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Acompanhamento temporal completo de todos os casos e processos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </div>
 
+<!-- Overlay para mobile quando sidebar estiver expandido -->
+<div class="fixed inset-0 bg-black/50 z-5 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"
+    id="sidebar-overlay"></div>
 
+<style>
+    /* Estilos para o hover da sidebar */
+    .sidebar-container {
+        width: 4rem;
+        transition: width 0.3s ease-in-out;
+    }
+
+    .sidebar-container:hover {
+        width: 18rem;
+    }
+
+    /* Labels inicialmente ocultos */
+    .sidebar-label {
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    /* Mostrar labels quando hover na sidebar */
+    .sidebar-container:hover .sidebar-label {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    /* Badges expandidos */
+    .sidebar-badge {
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        margin-left: auto;
+    }
+
+    .sidebar-container:hover .sidebar-badge {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    /* Badges colapsados */
+    .collapsed-badge {
+        opacity: 1;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .sidebar-container:hover .collapsed-badge {
+        opacity: 0;
+    }
+
+    /* Animações personalizadas */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes fadeOutUp {
+        from {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateY(-20px) scale(0.95);
+        }
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    /* Scrollbar customizada */
+    .sidebar-container::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .sidebar-container::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-container::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+    }
+
+    .sidebar-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Responsividade para mobile */
+    @media (max-width: 1024px) {
+        .sidebar-container {
+            width: 4rem;
+        }
+
+        .sidebar-container.mobile-expanded {
+            width: 18rem;
+        }
+
+        .sidebar-container.mobile-expanded .sidebar-label {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .sidebar-container.mobile-expanded .sidebar-badge {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .sidebar-container.mobile-expanded .collapsed-badge {
+            opacity: 0;
+        }
+    }
+</style>
+
+<script>
+    // Função para exibir popup de sucesso
+    function exibirPopupSucesso(mensagem, tipo = 'sucesso') {
+        const container = document.getElementById('popup-sucesso-container');
+        container.innerHTML = '';
+
+        // Configurações por tipo
+        const configs = {
+            sucesso: { bg: 'bg-gradient-to-r from-green-500 to-green-600', icon: 'fa-check-circle' },
+            erro: { bg: 'bg-gradient-to-r from-red-500 to-red-600', icon: 'fa-exclamation-circle' },
+            info: { bg: 'bg-gradient-to-r from-blue-500 to-blue-600', icon: 'fa-info-circle' },
+            aviso: { bg: 'bg-gradient-to-r from-amber-500 to-amber-600', icon: 'fa-exclamation-triangle' }
+        };
+
+        const config = configs[tipo] || configs.sucesso;
+
+        // Criar popup
+        const popup = document.createElement('div');
+        popup.className = `${config.bg} text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in-up mb-3 min-w-[280px] max-w-[400px] backdrop-blur-sm border border-white/20`;
+        popup.innerHTML = `
+            <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <i class="fas ${config.icon} text-lg"></i>
+            </div>
+            <span class="font-medium flex-1">${mensagem}</span>
+            <button onclick="fecharPopup(this)" class="w-6 h-6 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors duration-200">
+                <i class="fas fa-times text-xs"></i>
+            </button>
+        `;
+
+        container.appendChild(popup);
+
+        // Auto-remove após 5 segundos
+        setTimeout(() => {
+            if (popup.parentNode) {
+                popup.style.animation = 'fadeOutUp 0.4s ease-in-out forwards';
+                setTimeout(() => popup.remove(), 400);
+            }
+        }, 5000);
+    }
+
+    // Função para fechar popup
+    function fecharPopup(button) {
+        const popup = button.closest('.animate-fade-in-up');
+        popup.style.animation = 'fadeOutUp 0.4s ease-in-out forwards';
+        setTimeout(() => popup.remove(), 400);
+    }
+
+    // Controle do sidebar em mobile
+    function toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar-container');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        if (window.innerWidth < 1024) {
+            sidebar.classList.toggle('mobile-expanded');
+            overlay.classList.toggle('opacity-0');
+            overlay.classList.toggle('pointer-events-none');
+        }
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function () {
+        // Sidebar overlay click
+        document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar);
+
+        // Comportamento em mobile
+        const sidebar = document.querySelector('.sidebar-container');
+        if (window.innerWidth < 1024) {
+            sidebar.addEventListener('mouseenter', () => {
+                sidebar.classList.add('mobile-expanded');
+                document.getElementById('sidebar-overlay').classList.remove('opacity-0', 'pointer-events-none');
+            });
+
+            sidebar.addEventListener('mouseleave', () => {
+                sidebar.classList.remove('mobile-expanded');
+                document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none');
+            });
+        }
+
+        // Exemplo de uso do popup (remova em produção)
+        // Simular uma ação de sucesso após 2 segundos
+        // setTimeout(() => {
+        //     exibirPopupSucesso('Dados carregados com sucesso!', 'sucesso');
+        // }, 2000);
+    });
+</script>
+
+{% endblock %}
+
+{% block script %}
+<!-- Scripts adicionais podem ser colocados aqui -->
 {% endblock %}

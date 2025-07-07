@@ -5,7 +5,7 @@ from .permission_group import grupos_permitidos
 
 #@permission_required('CAPS.view_caps', login_url=reverse_lazy('login'))
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['CAPS'])
+@grupos_permitidos(['CAPS',])
 def caps(request):
     contexto = {
         'title': 'Centros de Atenção Psicossocial',

@@ -9,7 +9,7 @@ from ..models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio,
 
 
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['Poder Judiciário'])
+@grupos_permitidos(['Poder Judiciário',])
 def poder_judiciario(request):
     contexto = {
         'title': 'Poder Judiciário',

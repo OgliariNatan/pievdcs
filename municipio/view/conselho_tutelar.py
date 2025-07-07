@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from .permission_group import grupos_permitidos
 
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['Conselho Tutelar'])
+@grupos_permitidos(['Conselho Tutelar',])
 def conselho_tutelar(request):
     contexto = {
         'title': 'Conselho Tutelar',
