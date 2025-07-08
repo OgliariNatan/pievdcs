@@ -150,20 +150,7 @@
                         {{ form.profissao }}
                     </div>
 
-                    <!-- Agressor (linha inteira, com botão) -->
-                    <div class="sm:col-span-2">
-                        <label for="{{ form.agressor.id_for_label }}"
-                            class="block text-sm font-medium text-pink-700">Agressor</label>
-                        <div class="flex gap-2 items-center">
-                            {{ form.agressor }}
-                            <button type="button"
-                                class="inline-flex items-center justify-center bg-pink-500 hover:bg-pink-400 text-white rounded-full w-8 h-8 transition"
-                                hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-agressor"
-                                hx-trigger="click" hx-swap="innerHTML" title="Adicionar agressor">
-                                <img src="{% static 'img/add.png' %}" alt="Adicionar" class="w-4 h-4">
-                            </button>
-                        </div>
-                    </div>
+
                 </div>
             </div>
             <!-- Rodapé -->

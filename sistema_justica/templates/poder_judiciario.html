@@ -128,7 +128,7 @@
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8">
                 <button
                     class="group bg-pink-500 hover:bg-pink-400 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
-                    hx-get="{% url 'sistema_justica:cadastro_vitima_form' %}" hx-target="#modal-content"
+                    hx-get="{% url 'sistema_justica:cadastro_vitima_form' %}" hx-target="#modal-vitima"
                     hx-swap="innerHTML">
                     <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                         <i class="fas fa-female text-sm"></i>
@@ -196,11 +196,11 @@
             class="fixed inset-0 bg-black/50 z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
         <div id="modal-vitima"
             class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
-            <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-                <!-- Conteúdo do modal será carregado aqui via HTMX -->
-            </div>
+            <!-- <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"> -->
+            <!-- Conteúdo do modal será carregado aqui via HTMX -->
         </div>
-    </main>
+</div>
+</main>
 </div>
 
 <!-- Overlay para mobile quando sidebar estiver expandido -->
@@ -432,7 +432,7 @@
         }
 
         document.body.addEventListener('htmx:afterSwap', function (evt) {
-            if (evt.detail.target.id === 'modal-content') {
+            if (evt.detail.target.id === 'modal-vitima') {
                 abrirModal();
             }
         });
