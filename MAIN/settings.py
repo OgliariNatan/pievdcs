@@ -182,7 +182,7 @@ LOGIN_URL = '/login/'  # URL para redirecionar usuários não autenticados
 LOGIN_REDIRECT_URL = '/home/'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True #Fecha a seção quando fecha o navegador
 SESSION_COOKIE_NAME = 'sistema_justica_session'  # Nome do cookie de sessão
-SESSION_COOKIE_AGE = 900  # 15 minutos em segundos
+SESSION_COOKIE_AGE = 9000  # x minutos em segundos
 SESSION_SAVE_EVERY_REQUEST = False  # Só renova se houver atividade
 
 CSRF_COOKIE_HTTPONLY = True       # Impede acesso via JavaScript (aumenta a segurança)
