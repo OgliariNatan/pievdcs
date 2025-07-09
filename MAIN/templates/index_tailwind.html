@@ -129,7 +129,6 @@
                             {% elif secao == 'sistema_justica' %}
                             Sistema de Justiça
                             {% elif secao == 'leis' %}
-                            <!-- <i class="fas fa-gavel text-green-600 text-xl " title='Leis'></i> -->
                             Legislação
                             {% elif secao == 'sobre' %}
                             Sobre
@@ -151,48 +150,124 @@
         <div id="sections">
             {% for secao, itens in conteudos.items %}
             <section class="content-section mb-16" data-category="{{ secao|slugify }}">
-                <div class="flex items-center mb-8">
-                    <!-- ...ícone e título da seção... -->
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
+                            {% if secao == 'seguranca_publica' %}
+                            <i class="fas fa-shield-alt text-white text-xl"></i>
+                            {% elif secao == 'sistema_justica' %}
+                            <i class="fas fa-balance-scale text-white text-xl"></i>
+                            {% elif secao == 'leis' %}
+                            <i class="fas fa-gavel text-white text-xl"></i>
+                            {% elif secao == 'sobre' %}
+                            <i class="fas fa-info-circle text-white text-xl"></i>
+                            {% elif secao == 'noticias' %}
+                            <i class="fas fa-newspaper text-white text-xl"></i>
+                            {% elif secao == 'municipio' %}
+                            <i class="fas fa-city text-white text-xl"></i>
+                            {% else %}
+                            <i class="fas fa-file-text text-white text-xl"></i>
+                            {% endif %}
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 capitalize">
+                            {% if secao == 'seguranca_publica' %}
+                            Segurança Pública
+                            {% elif secao == 'sistema_justica' %}
+                            Sistema de Justiça
+                            {% elif secao == 'leis' %}
+                            Legislação
+                            {% elif secao == 'sobre' %}
+                            Sobre
+                            {% elif secao == 'noticias' %}
+                            Notícias
+                            {% elif secao == 'municipio' %}
+                            Município
+                            {% else %}
+                            {{ secao|cut:"_"|title }}
+                            {% endif %}
+                        </h2>
+                    </div>
+
+                    <!-- Contador de itens -->
                     {% if itens %}
-                    {% for conteudo in itens %}
-                    <article
-                        class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
-                        {% if conteudo.imagem %}
-                        <div class="h-48 flex items-center justify-center bg-gray-50">
-                            <img src="{{ conteudo.imagem.url }}" alt="{{ conteudo.titulo }}"
-                                class="max-h-44 object-contain w-full">
+                    <div class="text-sm text-gray-500">
+                        <!-- Total: {{ itens|length }} item{{ itens|length|pluralize:"s" }} -->
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Container para os cards -->
+                <div class="news-container" data-section="{{ secao|slugify }}">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                        id="news-grid-{{ secao|slugify }}">
+                        {% if itens %}
+                        {% for conteudo in itens %}
+                        <article
+                            class="news-item bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1"
+                            data-index="{{ forloop.counter0 }}"
+                            style="{% if forloop.counter0 >= 3 %}display: none;{% endif %}">
+                            {% if conteudo.imagem %}
+                            <div class="h-48 flex items-center justify-center bg-gray-50">
+                                <img src="{{ conteudo.imagem.url }}" alt="{{ conteudo.titulo }}"
+                                    class="max-h-44 object-contain w-full">
+                            </div>
+                            {% endif %}
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold text-gray-800 mb-3">{{ conteudo.titulo }}</h3>
+                                <p class="text-gray-600 mb-4 line-clamp-3">{{ conteudo.texto|striptags }}</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">
+                                        <i class="far fa-clock mr-1"></i>
+                                        {{ conteudo.data_publicacao|date:"d/m/Y" }}
+                                    </span>
+                                    {% if conteudo.link %}
+                                    <a href="{{ conteudo.link }}"
+                                        class="text-primary hover:text-secondary font-semibold" target="_blank">
+                                        Ler mais <i class="fas fa-arrow-right ml-1"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </article>
+                        {% endfor %}
+                        {% else %}
+                        <div class="col-span-3 text-center py-12 text-gray-400 text-lg italic">
+                            Nenhum conteúdo cadastrado para esta seção.
                         </div>
                         {% endif %}
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-gray-800 mb-3">{{ conteudo.titulo }}</h3>
-                            <p class="text-gray-600 mb-4 line-clamp-3">{{ conteudo.texto|striptags }}</p>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-500">
-                                    <i class="far fa-clock mr-1"></i>
-                                    {{ conteudo.data_publicacao|date:"d/m/Y" }}
-                                </span>
-                                {% if conteudo.link %}
-                                <a href="{{ conteudo.link }}" class="text-primary hover:text-secondary font-semibold"
-                                    target="_blank">
-                                    Ler mais <i class="fas fa-arrow-right ml-1"></i>
-                                </a>
-                                {% endif %}
+                    </div>
+
+                    <!-- Paginação -->
+                    {% if itens and itens|length > 3 %}
+                    <div class="pagination-container mt-8 text-center" id="pagination-{{ secao|slugify }}">
+                        <div class="flex items-center justify-center gap-4 mb-4">
+                            <button
+                                class="pagination-btn prev-btn bg-gray-200 hover:bg-primary hover:text-white px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                onclick="changePage('{{ secao|slugify }}', -1)" disabled>
+                                <i class="fas fa-chevron-left mr-2"></i>Anterior
+                            </button>
+
+                            <div class="flex items-center gap-2" id="page-numbers-{{ secao|slugify }}">
+                                <!-- Números das páginas serão inseridos aqui via JavaScript -->
                             </div>
+
+                            <button
+                                class="pagination-btn next-btn bg-gray-200 hover:bg-primary hover:text-white px-4 py-2 rounded-lg transition-colors duration-200"
+                                onclick="changePage('{{ secao|slugify }}', 1)">
+                                Próxima<i class="fas fa-chevron-right ml-2"></i>
+                            </button>
                         </div>
-                    </article>
-                    {% endfor %}
-                    {% else %}
-                    <div class="col-span-3 text-center py-12 text-gray-400 text-lg italic">
-                        Nenhum conteúdo cadastrado para esta seção.
+
+                        <div class="text-sm text-gray-500">
+                            Página <span id="current-page-{{ secao|slugify }}">1</span> de <span
+                                id="total-pages-{{ secao|slugify }}">{{ itens|length|floatformat:0|add:2|floatformat:0|divisibleby:3|yesno:"1,2" }}</span>
+                        </div>
                     </div>
                     {% endif %}
                 </div>
             </section>
             {% endfor %}
         </div>
-
 
         <!-- Statistics Section -->
         <section id="statistics" class="mt-20 bg-white rounded-2xl shadow-lg p-8">
@@ -243,11 +318,6 @@
                         <div>
                             <p class="text-orange-100 text-sm">Grupos Temáticos</p>
                             <p class="text-3xl font-bold">{{ encaminhamentos }}</p>
-                            <!-- <p class="text-1xl font-bold">Física</p>
-                            <p class="text-1xl font-bold">Moral</p>
-                            <p class="text-1xl font-bold">Psicológica</p>
-                            <p class="text-1xl font-bold">Patrimonial</p>
-                            <p class="text-1xl font-bold">Sexual</p> -->
                         </div>
                         <i class="fas fa-arrow-right text-4xl text-orange-200"></i>
                     </div>
@@ -264,7 +334,6 @@
         </section>
     </main>
 
-
     <!-- Botão "voltar ao topo" -->
     <button id="backToTopBtn"
         class="fixed bottom-6 right-6 z-50 rounded-full shadow-lg p-2 border border-gray-200 transition-colors"
@@ -275,6 +344,126 @@
     {% include 'base/rodape.html' %}
 
     <script>
+        // Objeto para armazenar o estado da paginação de cada seção
+        const paginationState = {};
+
+        // Inicializar paginação para todas as seções
+        document.addEventListener('DOMContentLoaded', function () {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                const sectionId = section.dataset.category;
+                const items = section.querySelectorAll('.news-item');
+
+                if (items.length > 3) {
+                    initializePagination(sectionId, items.length);
+                }
+            });
+        });
+
+        // Inicializar paginação para uma seção específica
+        function initializePagination(sectionId, totalItems) {
+            const itemsPerPage = 3;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+            paginationState[sectionId] = {
+                currentPage: 1,
+                totalPages: totalPages,
+                totalItems: totalItems,
+                itemsPerPage: itemsPerPage
+            };
+
+            // Atualizar elementos da interface
+            document.getElementById(`total-pages-${sectionId}`).textContent = totalPages;
+            updatePageNumbers(sectionId);
+        }
+
+        // Atualizar números das páginas
+        function updatePageNumbers(sectionId) {
+            const state = paginationState[sectionId];
+            const pageNumbersContainer = document.getElementById(`page-numbers-${sectionId}`);
+
+            if (!pageNumbersContainer) return;
+
+            pageNumbersContainer.innerHTML = '';
+
+            // Criar botões de número das páginas
+            for (let i = 1; i <= state.totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-number-btn px-3 py-1 rounded-lg transition-colors duration-200 ${i === state.currentPage
+                    ? 'bg-primary text-white'
+                    : 'bg-gray-200 hover:bg-primary hover:text-white'
+                    }`;
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => goToPage(sectionId, i);
+                pageNumbersContainer.appendChild(pageBtn);
+            }
+        }
+
+        // Mudar página
+        function changePage(sectionId, direction) {
+            const state = paginationState[sectionId];
+            const newPage = state.currentPage + direction;
+
+            if (newPage >= 1 && newPage <= state.totalPages) {
+                goToPage(sectionId, newPage);
+            }
+        }
+
+        // Ir para uma página específica
+        function goToPage(sectionId, pageNumber) {
+            const state = paginationState[sectionId];
+
+            if (pageNumber < 1 || pageNumber > state.totalPages) return;
+
+            state.currentPage = pageNumber;
+
+            // Atualizar exibição dos items
+            const items = document.querySelectorAll(`[data-section="${sectionId}"] .news-item`);
+            const startIndex = (pageNumber - 1) * state.itemsPerPage;
+            const endIndex = startIndex + state.itemsPerPage;
+
+            items.forEach((item, index) => {
+                if (index >= startIndex && index < endIndex) {
+                    item.style.display = 'block';
+                    item.classList.add('animate-fade-in');
+                } else {
+                    item.style.display = 'none';
+                    item.classList.remove('animate-fade-in');
+                }
+            });
+
+            // Atualizar interface da paginação
+            updatePaginationUI(sectionId);
+        }
+
+        // Atualizar interface da paginação
+        function updatePaginationUI(sectionId) {
+            const state = paginationState[sectionId];
+
+            // Atualizar número da página atual
+            const currentPageElement = document.getElementById(`current-page-${sectionId}`);
+            if (currentPageElement) {
+                currentPageElement.textContent = state.currentPage;
+            }
+
+            // Atualizar botões anterior/próximo
+            const prevBtn = document.querySelector(`#pagination-${sectionId} .prev-btn`);
+            const nextBtn = document.querySelector(`#pagination-${sectionId} .next-btn`);
+
+            if (prevBtn) {
+                prevBtn.disabled = state.currentPage === 1;
+                prevBtn.classList.toggle('opacity-50', state.currentPage === 1);
+            }
+
+            if (nextBtn) {
+                nextBtn.disabled = state.currentPage === state.totalPages;
+                nextBtn.classList.toggle('opacity-50', state.currentPage === state.totalPages);
+            }
+
+            // Atualizar números das páginas
+            updatePageNumbers(sectionId);
+        }
+
         // Mobile menu toggle
         function toggleMobileMenu() {
             const mobileMenu = document.getElementById('mobile-menu');
@@ -301,6 +490,12 @@
                 if (category === 'all' || section.dataset.category === category) {
                     section.style.display = 'block';
                     section.classList.add('animate-fade-in');
+
+                    // Resetar paginação para a primeira página quando filtrar
+                    const sectionId = section.dataset.category;
+                    if (paginationState[sectionId]) {
+                        goToPage(sectionId, 1);
+                    }
                 } else {
                     section.style.display = 'none';
                 }
@@ -310,18 +505,44 @@
         // Busca de conteúdo
         document.getElementById('searchInput').addEventListener('input', function () {
             const search = this.value.toLowerCase();
+
             document.querySelectorAll('.content-section').forEach(section => {
+                const sectionId = section.dataset.category;
                 let found = false;
-                section.querySelectorAll('article').forEach(card => {
-                    const text = card.innerText.toLowerCase();
+
+                // Mostrar todos os items durante a busca
+                const items = section.querySelectorAll('.news-item');
+                items.forEach(item => {
+                    item.style.display = 'block';
+                });
+
+                // Filtrar items baseado na busca
+                items.forEach(item => {
+                    const text = item.innerText.toLowerCase();
                     if (text.includes(search)) {
-                        card.style.display = '';
+                        item.style.display = 'block';
                         found = true;
                     } else {
-                        card.style.display = 'none';
+                        item.style.display = 'none';
                     }
                 });
-                section.style.display = found ? 'block' : 'none';
+
+                // Mostrar/esconder seção e paginação
+                if (search.trim() === '') {
+                    // Se não há busca, restaurar paginação
+                    section.style.display = 'block';
+                    if (paginationState[sectionId]) {
+                        goToPage(sectionId, 1);
+                        section.querySelector('.pagination-container').style.display = 'block';
+                    }
+                } else {
+                    // Durante a busca, esconder paginação
+                    section.style.display = found ? 'block' : 'none';
+                    const paginationContainer = section.querySelector('.pagination-container');
+                    if (paginationContainer) {
+                        paginationContainer.style.display = 'none';
+                    }
+                }
             });
         });
 
@@ -341,6 +562,18 @@
             });
         });
 
+        // Mostrar/esconder botão de voltar ao topo
+        const backToTopBtn = document.getElementById('backToTopBtn');
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 200) {
+                backToTopBtn.style.display = 'block';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        });
+        // Inicialmente oculto
+        backToTopBtn.style.display = 'none';
+
         // Add custom CSS for animations
         const style = document.createElement('style');
         style.textContent = `
@@ -357,21 +590,19 @@
                 -webkit-box-orient: vertical;
                 overflow: hidden;
             }
+            .pagination-btn:disabled {
+                cursor: not-allowed;
+                opacity: 0.5;
+            }
+            .page-number-btn {
+                min-width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
         `;
         document.head.appendChild(style);
-
-
-        // Mostrar/esconder botão de voltar ao topo
-        const backToTopBtn = document.getElementById('backToTopBtn');
-        window.addEventListener('scroll', function () {
-            if (window.scrollY > 200) {
-                backToTopBtn.style.display = 'block';
-            } else {
-                backToTopBtn.style.display = 'none';
-            }
-        });
-        // Inicialmente oculto
-        backToTopBtn.style.display = 'none';
     </script>
 </body>
 
