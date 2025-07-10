@@ -4,6 +4,9 @@
 {% block titulo %}{{ title }}{% endblock %}
 
 {% block main_content %}
+<!-- Toast/Popup container -->
+<div id="popup-sucesso-container" class="fixed top-6 right-6 z-[9999]"></div>
+
 <!-- Cabeçalho -->
 <header class="bg-white shadow-lg border-b-4 border-purple-600">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -14,47 +17,37 @@
             </div>
             <div>
                 <h1 class="text-xl font-bold text-gray-900">{{ title }}</h1>
-                <p class="text-sm text-gray-600">Sistema Integrado - Poder Judiciário</p>
+                <p class="text-sm text-gray-600">Sistema Integrado de Proteção à Mulher</p>
             </div>
         </div>
-
-
-
     </div>
 </header>
 
 <!-- Conteúdo principal -->
-<div class="flex min-h-screen">
+<div class="flex min-h-screen bg-gray-50">
     <!-- Sidebar -->
     <aside class="w-64 bg-gradient-to-b from-purple-900 to-purple-800 text-white p-6 space-y-6">
         <nav class="space-y-2">
             <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/10">
                 <i class="fas fa-home"></i><span>Início</span>
             </a>
-            <!-- Busca inteligente -->
-            <div class="max-w-md w-full relative">
+            <div class="relative">
                 <input type="text" placeholder="Buscar vítimas, CPFs..."
-                    class="w-full py-3 pl-12 pr-4 rounded-xl border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-600 text-black">
-                <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    class="w-full py-3 pl-12 pr-4 rounded-xl border-2 border-purple-700 bg-purple-800/50 placeholder-purple-300 text-white focus:outline-none focus:ring-2 focus:ring-purple-400">
+                <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-300"></i>
             </div>
             <a href="{% url 'notificacoes' notificacoes %}"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item relative">
-                <div class="w-6 h-6 flex items-center justify-center">
-                    <i class="fas fa-bell text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
-                </div>
-                <span class="sidebar-label whitespace-nowrap font-medium">
-                    Notificações
-                </span>
+                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10">
+                <i class="fas fa-bell"></i>
+                <span>Notificações</span>
+                {% if notificacoes %}
                 <span
-                    class="sidebar-badge bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[1.5rem] text-center"
-                    id="span_alert">{{ notificacoes }}</span>
-                <!-- Badge para sidebar collapsed -->
-                <!-- <span
-                    class="collapsed-badge absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
-                    style="font-size: 10px;">{{ notificacoes }}</span> -->
+                    class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">{{ notificacoes }}</span>
+                {% endif %}
             </a>
             <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10">
-                <i class="fas fa-clipboard-list"></i><span>Encaminhamentos</span>
+                <i class="fas fa-clipboard-list"></i>
+                <span>Encaminhamentos</span>
                 {% if encaminhamentos %}
                 <span
                     class="ml-auto bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded-full">{{ encaminhamentos }}</span>
@@ -67,74 +60,108 @@
     </aside>
 
     <!-- Conteúdo -->
-    <main class="flex-1 p-8 space-y-10">
-        <!-- Métricas -->
+    <main class="flex-1 p-8 space-y-8">
+        <!-- Métricas de Violência Doméstica -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-blue-500">
-                <h3 class="text-sm font-medium text-gray-600">Casos Ativos</h3>
-                <p class="text-2xl font-bold text-gray-900">156</p>
-                <p class="text-sm text-green-600">+12% este mês</p>
+            <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-purple-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-600">Casos Ativos</h3>
+                        <p class="text-2xl font-bold text-gray-900 mt-1">156</p>
+                        <p class="text-sm text-green-600 mt-1">+12% este mês</p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-folder-open text-purple-600 text-xl"></i>
+                    </div>
+                </div>
             </div>
-            <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-red-500">
-                <h3 class="text-sm font-medium text-gray-600">Alto Risco</h3>
-                <p class="text-2xl font-bold text-gray-900">23</p>
-                <p class="text-sm text-red-600">Atenção necessária</p>
+            <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-red-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-600">Alto Risco</h3>
+                        <p class="text-2xl font-bold text-gray-900 mt-1">23</p>
+                        <p class="text-sm text-red-600 mt-1">Atenção urgente</p>
+                    </div>
+                    <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                    </div>
+                </div>
             </div>
-            <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-green-500">
-                <h3 class="text-sm font-medium text-gray-600">Resolvidos</h3>
-                <p class="text-2xl font-bold text-gray-900">89</p>
-                <p class="text-sm text-green-600">+5% este mês</p>
+            <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-green-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-600">Medidas Protetivas</h3>
+                        <p class="text-2xl font-bold text-gray-900 mt-1">89</p>
+                        <p class="text-sm text-green-600 mt-1">Em vigência</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-green-600 text-xl"></i>
+                    </div>
+                </div>
             </div>
-            <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-purple-500">
-                <h3 class="text-sm font-medium text-gray-600">IA Score</h3>
-                <p class="text-2xl font-bold text-gray-900">94%</p>
-                <p class="text-sm text-purple-600">Eficiência do sistema</p>
+            <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-amber-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-600">Atendimentos Hoje</h3>
+                        <p class="text-2xl font-bold text-gray-900 mt-1">12</p>
+                        <p class="text-sm text-amber-600 mt-1">Última: 14:23</p>
+                    </div>
+                    <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-clock text-amber-600 text-xl"></i>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Ações rápidas -->
-        <section class="bg-white rounded-2xl p-8 shadow space-y-6">
-            <h2 class="text-xl font-bold text-gray-900">Ações Rápidas</h2>
+        <section class="bg-white rounded-2xl p-8 shadow-lg">
+            <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <i class="fas fa-rocket text-purple-600"></i>
+                Ações Rápidas
+            </h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <button
-                    class="group p-6 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-xl hover:scale-105 transition"
+                    class="group p-6 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
                     hx-get="{% url 'sistema_justica:cadastro_vitima_form' %}" hx-target="#modal-vitima"
                     hx-swap="innerHTML">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                        <div
+                            class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 transition">
                             <i class="fas fa-female text-2xl"></i>
                         </div>
-                        <div>
+                        <div class="text-left">
                             <h3 class="font-semibold">Cadastrar Vítima</h3>
-                            <p class="text-sm text-pink-100">Análise IA</p>
+                            <p class="text-sm text-pink-100">Registro completo</p>
                         </div>
                     </div>
                 </button>
 
                 <button
-                    class="group p-6 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:scale-105 transition"
+                    class="group p-6 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
                     hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-agressor"
                     hx-swap="innerHTML">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-male text-2xl"></i>
+                        <div
+                            class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 transition">
+                            <i class="fas fa-user-slash text-2xl"></i>
                         </div>
-                        <div>
+                        <div class="text-left">
                             <h3 class="font-semibold">Cadastrar Agressor</h3>
-                            <p class="text-sm text-purple-100">Monitoramento judicial</p>
+                            <p class="text-sm text-purple-100">Ficha criminal</p>
                         </div>
                     </div>
                 </button>
 
                 <button
-                    class="group p-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:scale-105 transition">
+                    class="group p-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-search text-2xl"></i>
+                        <div
+                            class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 transition">
+                            <i class="fas fa-gavel text-2xl"></i>
                         </div>
-                        <div>
-                            <h3 class="font-semibold">Consultar Dados</h3>
-                            <p class="text-sm text-blue-100">Busca com IA</p>
+                        <div class="text-left">
+                            <h3 class="font-semibold">Medida Protetiva</h3>
+                            <p class="text-sm text-blue-100">Solicitar urgente</p>
                         </div>
                     </div>
                 </button>
@@ -144,181 +171,235 @@
         <!-- Modais HTMX -->
         <div id="modal-vitima"></div>
         <div id="modal-agressor"></div>
+    </main>
+</div>
 
-
-        <!-- Chat IA -->
-        <div class="fixed bottom-6 right-6 z-50">
-            <div id="chat-box"
-                class="hidden w-96 h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-                <div
-                    class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-4 py-3 flex justify-between items-center">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-robot"></i>
-                        <span class="font-semibold">Assistente Jurídico</span>
-                    </div>
-                    <button onclick="document.getElementById('chat-box').classList.add('hidden')">
-                        <i class="fas fa-times"></i>
-                    </button>
+<!-- Chat IA Especializado em Violência Doméstica -->
+<div class="fixed bottom-6 right-6 z-50">
+    <!-- Chat Box -->
+    <div id="chat-box"
+        class="hidden w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden transform transition-all duration-300 scale-95 opacity-0">
+        <!-- Header do Chat -->
+        <div
+            class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-robot"></i>
                 </div>
-                <div id="chat-messages" class="flex-1 p-4 space-y-3 overflow-y-auto text-sm">
-                    <div class="flex items-start gap-2">
-                        <div
-                            class="w-7 h-7 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center">
-                            <i class="fas fa-robot text-xs"></i>
-                        </div>
-                        <div class="bg-gray-100 rounded-xl p-3">
-                            Olá! Em que posso ajudar com os dados jurídicos?
-                        </div>
-                    </div>
+                <div>
+                    <span class="font-semibold">Assistente Jurídico</span>
+                    <p class="text-xs text-purple-200">Especialista em Violência Doméstica</p>
                 </div>
-                <form id="chat-form" hx-post="{% url 'sistema_justica:chat_ia' %}" hx-target="#chat-messages"
-                    hx-swap="beforeend" class="p-3 border-t flex gap-2">
-                    <input type="text" name="mensagem" id="chat-input" placeholder="Digite sua pergunta..."
-                        class="flex-1 border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                    <button type="submit"
-                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl transition">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </form>
             </div>
-
-            <button id="toggle-chat"
-                class="w-16 h-16 rounded-full bg-gradient-to-r from-purple-600 to-purple-800 text-white shadow-lg hover:scale-110 transition">
-                <i class="fas fa-robot text-2xl"></i>
+            <button onclick="toggleChat()"
+                class="w-8 h-8 hover:bg-white/20 rounded-full flex items-center justify-center transition">
+                <i class="fas fa-times"></i>
             </button>
         </div>
 
-    </main>
+        <!-- Sugestões Rápidas -->
+        <div class="bg-purple-50 px-4 py-3 border-b">
+            <p class="text-xs text-gray-600 mb-2">Perguntas frequentes:</p>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="enviarPerguntaRapida('Como solicitar medida protetiva?')"
+                    class="text-xs bg-white px-3 py-1 rounded-full border border-purple-200 hover:bg-purple-100 transition">
+                    Medida Protetiva
+                </button>
+                <button onclick="enviarPerguntaRapida('Quais documentos são necessários?')"
+                    class="text-xs bg-white px-3 py-1 rounded-full border border-purple-200 hover:bg-purple-100 transition">
+                    Documentos
+                </button>
+                <button onclick="enviarPerguntaRapida('Como funciona o acolhimento?')"
+                    class="text-xs bg-white px-3 py-1 rounded-full border border-purple-200 hover:bg-purple-100 transition">
+                    Acolhimento
+                </button>
+            </div>
+        </div>
+
+        <!-- Área de Mensagens -->
+        <div id="chat-messages" class="flex-1 p-4 space-y-3 overflow-y-auto bg-gray-50">
+            <div class="flex items-start gap-2">
+                <div
+                    class="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-robot text-sm"></i>
+                </div>
+                <div class="bg-white rounded-xl p-3 shadow-sm max-w-[80%]">
+                    <p class="text-sm text-gray-700">Olá! Sou sua assistente jurídica especializada em casos de
+                        violência doméstica.</p>
+                    <p class="text-sm text-gray-700 mt-2">Como posso ajudar você hoje? Posso orientar sobre:</p>
+                    <ul class="text-sm text-gray-600 mt-2 space-y-1">
+                        <li>• Medidas protetivas de urgência</li>
+                        <li>• Procedimentos de denúncia</li>
+                        <li>• Direitos da vítima</li>
+                        <li>• Rede de apoio disponível</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulário de Envio -->
+        <form id="chat-form" class="p-3 border-t bg-white">
+            {% csrf_token %}
+            <div class="flex gap-2">
+                <input type="text" name="mensagem" id="chat-input"
+                    placeholder="Digite sua pergunta sobre violência doméstica..."
+                    class="flex-1 border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                    autocomplete="off">
+                <button type="submit" id="chat-submit"
+                    class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl transition flex items-center gap-2">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            <!-- Indicador de digitação -->
+            <div id="typing-indicator" class="hidden mt-2 text-xs text-gray-500 flex items-center gap-2">
+                <div class="flex gap-1">
+                    <div class="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
+                    <div class="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                    <div class="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                </div>
+                <span>Assistente está digitando...</span>
+            </div>
+        </form>
+    </div>
+
+    <!-- Botão Flutuante do Chat -->
+    <button id="toggle-chat" onclick="toggleChat()"
+        class="w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-purple-800 text-white shadow-lg hover:scale-110 transition-all duration-200 flex items-center justify-center group">
+        <i class="fas fa-comments text-xl group-hover:hidden"></i>
+        <i class="fas fa-robot text-xl hidden group-hover:block"></i>
+        <span class="absolute -top-2 -right-2 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+    </button>
 </div>
 
 {% endblock %}
 
-
 {% block script %}
 <script>
-    // Função para exibir popup de sucesso aprimorada
-    function exibirPopupSucesso(mensagem, tipo = 'feminino') {
-        const container = document.getElementById('popup-sucesso-container');
-        container.innerHTML = '';
+    // Função do Chat
+    function toggleChat() {
+        const chatBox = document.getElementById('chat-box');
+        const toggleBtn = document.getElementById('toggle-chat');
 
-        // Configurações por tipo
+        if (chatBox.classList.contains('hidden')) {
+            chatBox.classList.remove('hidden');
+            setTimeout(() => {
+                chatBox.classList.remove('scale-95', 'opacity-0');
+                chatBox.classList.add('scale-100', 'opacity-100');
+            }, 10);
+            document.getElementById('chat-input').focus();
+            toggleBtn.querySelector('.animate-pulse')?.remove();
+        } else {
+            chatBox.classList.add('scale-95', 'opacity-0');
+            chatBox.classList.remove('scale-100', 'opacity-100');
+            setTimeout(() => {
+                chatBox.classList.add('hidden');
+            }, 300);
+        }
+    }
+
+    // Enviar pergunta rápida
+    function enviarPerguntaRapida(pergunta) {
+        document.getElementById('chat-input').value = pergunta;
+        document.getElementById('chat-form').requestSubmit();
+    }
+
+    // Configurar o formulário do chat
+    document.addEventListener('DOMContentLoaded', function () {
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const typingIndicator = document.getElementById('typing-indicator');
+
+        chatForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const mensagem = chatInput.value.trim();
+            if (!mensagem) return;
+
+            // Mostrar indicador de digitação
+            typingIndicator.classList.remove('hidden');
+
+            // Limpar input
+            chatInput.value = '';
+
+            try {
+                const formData = new FormData(chatForm);
+                formData.set('mensagem', mensagem);
+
+                const response = await fetch("{% url 'sistema_justica:chat_ia' %}", {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (response.ok) {
+                    const html = await response.text();
+                    chatMessages.insertAdjacentHTML('beforeend', html);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            } catch (error) {
+                console.error('Erro ao enviar mensagem:', error);
+                // Mostrar mensagem de erro
+                const errorHtml = `
+                <div class='flex items-start gap-2 mb-3'>
+                    <div class='w-8 h-8 bg-red-100 text-red-600 rounded-full flex items-center justify-center flex-shrink-0'>
+                        <i class='fas fa-exclamation-triangle text-sm'></i>
+                    </div>
+                    <div class='bg-red-50 rounded-xl p-4 max-w-[80%] shadow-md border border-red-200'>
+                        <p class='text-sm text-red-700'>Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente.</p>
+                    </div>
+                </div>
+            `;
+                chatMessages.insertAdjacentHTML('beforeend', errorHtml);
+            } finally {
+                // Esconder indicador de digitação
+                typingIndicator.classList.add('hidden');
+                chatInput.focus();
+            }
+        });
+    });
+
+    // Função para exibir popup
+    function exibirPopupSucesso(mensagem, tipo = 'sucesso') {
+        const container = document.getElementById('popup-sucesso-container');
+
         const configs = {
-            feminino: { bg: 'bg-gradient-to-r from-pink-500 to-pink-600', icon: 'fa-female' },
-            masculino: { bg: 'bg-gradient-to-r from-blue-600 to-blue-700', icon: 'fa-male' },
-            sucesso: { bg: 'bg-gradient-to-r from-green-500 to-green-600', icon: 'fa-check-circle' },
-            erro: { bg: 'bg-gradient-to-r from-red-500 to-red-600', icon: 'fa-exclamation-circle' },
-            info: { bg: 'bg-gradient-to-r from-blue-500 to-blue-600', icon: 'fa-info-circle' }
+            sucesso: { bg: 'bg-green-500', icon: 'fa-check-circle' },
+            erro: { bg: 'bg-red-500', icon: 'fa-exclamation-circle' },
+            info: { bg: 'bg-blue-500', icon: 'fa-info-circle' },
+            feminino: { bg: 'bg-pink-500', icon: 'fa-female' },
+            masculino: { bg: 'bg-blue-600', icon: 'fa-male' }
         };
 
-        const config = configs[tipo] || configs.feminino;
+        const config = configs[tipo] || configs.sucesso;
 
-        // Criar popup
         const popup = document.createElement('div');
-        popup.className = `${config.bg} text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in-up mb-3 min-w-[280px] max-w-[400px] backdrop-blur-sm border border-white/20`;
+        popup.className = `${config.bg} text-white px-6 py-4 rounded-xl shadow-lg flex items-center gap-3 mb-3 animate-fade-in-up`;
         popup.innerHTML = `
-        <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-            <i class="fas ${config.icon} text-lg"></i>
-        </div>
-        <span class="font-medium flex-1">${mensagem}</span>
-        <button onclick="fecharPopup(this)" class="w-6 h-6 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors duration-200">
-            <i class="fas fa-times text-xs"></i>
+        <i class="fas ${config.icon} text-xl"></i>
+        <span class="flex-1">${mensagem}</span>
+        <button onclick="this.parentElement.remove()" class="hover:opacity-80">
+            <i class="fas fa-times"></i>
         </button>
     `;
 
         container.appendChild(popup);
-
-        // Auto-remove após 5 segundos
-        setTimeout(() => {
-            if (popup.parentNode) {
-                popup.style.animation = 'fadeOutUp 0.4s ease-in-out forwards';
-                setTimeout(() => popup.remove(), 400);
-            }
-        }, 5000);
+        setTimeout(() => popup.remove(), 5000);
     }
 
-    // Função para fechar popup
-    function fecharPopup(button) {
-        const popup = button.closest('.animate-fade-in-up');
-        popup.style.animation = 'fadeOutUp 0.4s ease-in-out forwards';
-        setTimeout(() => popup.remove(), 400);
+    // Animações CSS
+    const style = document.createElement('style');
+    style.textContent = `
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
-
-    // Controle do sidebar em mobile
-    function toggleSidebar() {
-        const sidebar = document.querySelector('.sidebar-container');
-        const overlay = document.getElementById('sidebar-overlay');
-
-        if (window.innerWidth < 1024) {
-            sidebar.classList.toggle('mobile-expanded');
-            overlay.classList.toggle('opacity-0');
-            overlay.classList.toggle('pointer-events-none');
-        }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.3s ease-out;
     }
-
-    // Event listeners
-    document.addEventListener('DOMContentLoaded', function () {
-        // Sidebar overlay click
-        document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar);
-
-        // Comportamento em mobile
-        const sidebar = document.querySelector('.sidebar-container');
-        if (window.innerWidth < 1024) {
-            sidebar.addEventListener('mouseenter', () => {
-                sidebar.classList.add('mobile-expanded');
-                document.getElementById('sidebar-overlay').classList.remove('opacity-0', 'pointer-events-none');
-            });
-
-            sidebar.addEventListener('mouseleave', () => {
-                sidebar.classList.remove('mobile-expanded');
-                document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none');
-            });
-        }
-
-        // Modal event listeners
-        const backdrop = document.getElementById('modal-backdrop');
-        backdrop.addEventListener('click', fecharModal);
-
-        // Fechar modal com ESC
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                fecharModal();
-            }
-        });
-
-        // Para demonstração, use formulários simulados se as URLs não existirem
-
-
-        function fecharModal() {
-            document.getElementById('modal-backdrop').classList.add('opacity-0', 'pointer-events-none');
-            document.getElementById('modal-vitima').classList.add('opacity-0', 'pointer-events-none');
-        }
-
-        document.body.addEventListener('htmx:afterSwap', function (evt) {
-            if (evt.detail.target.id === 'modal-vitima') {
-                abrirModal();
-            }
-        });
-
-        document.getElementById('modal-backdrop').addEventListener('click', fecharModal);
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                fecharModal();
-            }
-        });
-    });
-
-    // Abrir o chat
-    document.getElementById('toggle-chat').addEventListener('click', () => {
-        document.getElementById('chat-box').classList.toggle('hidden');
-        document.getElementById('chat-input').focus();
-    });
-
-    // Focar no input ao enviar
-    document.body.addEventListener('htmx:afterRequest', (e) => {
-        document.getElementById('chat-input').value = '';
-        document.getElementById('chat-input').focus();
-        const container = document.getElementById('chat-messages');
-        container.scrollTop = container.scrollHeight;
-    });
+`;
+    document.head.appendChild(style);
 </script>
 {% endblock %}
