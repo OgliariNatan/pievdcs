@@ -144,20 +144,54 @@
         <!-- Modais HTMX -->
         <div id="modal-vitima"></div>
         <div id="modal-agressor"></div>
+
+
+        <!-- Chat IA -->
+        <div class="fixed bottom-6 right-6 z-50">
+            <div id="chat-box"
+                class="hidden w-96 h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+                <div
+                    class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-4 py-3 flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-robot"></i>
+                        <span class="font-semibold">Assistente Jurídico</span>
+                    </div>
+                    <button onclick="document.getElementById('chat-box').classList.add('hidden')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="chat-messages" class="flex-1 p-4 space-y-3 overflow-y-auto text-sm">
+                    <div class="flex items-start gap-2">
+                        <div
+                            class="w-7 h-7 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-robot text-xs"></i>
+                        </div>
+                        <div class="bg-gray-100 rounded-xl p-3">
+                            Olá! Em que posso ajudar com os dados jurídicos?
+                        </div>
+                    </div>
+                </div>
+                <form id="chat-form" hx-post="{% url 'sistema_justica:chat_ia' %}" hx-target="#chat-messages"
+                    hx-swap="beforeend" class="p-3 border-t flex gap-2">
+                    <input type="text" name="mensagem" id="chat-input" placeholder="Digite sua pergunta..."
+                        class="flex-1 border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <button type="submit"
+                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl transition">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+
+            <button id="toggle-chat"
+                class="w-16 h-16 rounded-full bg-gradient-to-r from-purple-600 to-purple-800 text-white shadow-lg hover:scale-110 transition">
+                <i class="fas fa-robot text-2xl"></i>
+            </button>
+        </div>
+
     </main>
 </div>
 
-<!-- Assistente IA Flutuante -->
-<div class="fixed bottom-6 right-6 z-50">
-    <button
-        class="w-16 h-16 rounded-full bg-gradient-to-r from-purple-600 to-purple-800 text-white shadow-lg hover:scale-110 transition">
-        <i class="fas fa-robot text-2xl"></i>
-    </button>
-</div>
 {% endblock %}
-
-
-
 
 
 {% block script %}
@@ -271,6 +305,20 @@
                 fecharModal();
             }
         });
+    });
+
+    // Abrir o chat
+    document.getElementById('toggle-chat').addEventListener('click', () => {
+        document.getElementById('chat-box').classList.toggle('hidden');
+        document.getElementById('chat-input').focus();
+    });
+
+    // Focar no input ao enviar
+    document.body.addEventListener('htmx:afterRequest', (e) => {
+        document.getElementById('chat-input').value = '';
+        document.getElementById('chat-input').focus();
+        const container = document.getElementById('chat-messages');
+        container.scrollTop = container.scrollHeight;
     });
 </script>
 {% endblock %}

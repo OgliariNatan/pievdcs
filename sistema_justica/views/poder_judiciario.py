@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import openai
+from django.conf import settings
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -6,6 +8,9 @@ from django.urls import reverse_lazy
 from .permission_group import grupos_permitidos
 from ..forms.cadastros import CadastroVitimaForm, CadastroAgressorForm, CadastroMunicipioForm
 from ..models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
+from django.views.decorators.csrf import csrf_exempt
+from django.template.loader import render_to_string
+
 
 
 @login_required(login_url=reverse_lazy('login'))
@@ -92,4 +97,22 @@ def cadastro_municipio_submit(request):
             return render(request, 'parcial/cadastro_municipio_form.html', {'form': form})
     return HttpResponse(status=405)
 
+
+@csrf_exempt
+def chat_ia(request):
+    if request.method == "POST":
+        msg = request.POST.get("mensagem", "")
+        resposta = f"Simulação de resposta jurídica para: '{msg}'"
+        html = f"""
+        <div class='flex justify-end'>
+            <div class='bg-purple-600 text-white rounded-xl p-3 max-w-xs'>{msg}</div>
+        </div>
+        <div class='flex items-start gap-2'>
+            <div class='w-7 h-7 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center'>
+                <i class='fas fa-robot text-xs'></i>
+            </div>
+            <div class='bg-gray-100 rounded-xl p-3 max-w-xs'>{resposta}</div>
+        </div>
+        """
+        return HttpResponse(html)
     
