@@ -6,6 +6,11 @@
 {% block main_content %}
 <!-- Toast/Popup container -->
 <div id="popup-sucesso-container" class="fixed top-6 right-6 z-[9999]"></div>
+<!-- chama o hx-indicator -->
+<div id="spinner" class="fixed top-6 right-6 z-[9999] hidden text-white bg-gray-800 px-4 py-2 rounded shadow-lg">
+    🔄 Carregando...
+</div>
+
 
 <div class="flex min-h-[80vh] bg-gray-50">
     <!-- Sidebar responsiva com efeito hover  -->
@@ -138,7 +143,7 @@
 
                 <button
                     class="group bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
-                    hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-vitima"
+                    hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-agressor"
                     hx-swap="innerHTML">
                     <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                         <i class="fas fa-male text-sm"></i>
@@ -191,12 +196,8 @@
             </div>
         </div>
 
-        <!-- Modal container com backdrop -->
-
-        <div id="modal-vitima">
-
-
-        </div>
+        <div id="modal-vitima"> </div>
+        <div id="modal-agressor"> </div>
     </main>
 </div>
 
@@ -326,6 +327,9 @@
     }
 </style>
 
+{% endblock %}
+
+{% block script %}
 <script>
     // Função para exibir popup de sucesso aprimorada
     function exibirPopupSucesso(mensagem, tipo = 'feminino') {
@@ -417,11 +421,7 @@
         });
 
         // Para demonstração, use formulários simulados se as URLs não existirem
-        // Remove estas linhas quando suas URLs do Django estiverem funcionando
-        function abrirModal() {
-            document.getElementById('modal-backdrop').classList.remove('opacity-0', 'pointer-events-none');
-            document.getElementById('modal-vitima').classList.remove('opacity-0', 'pointer-events-none');
-        }
+
 
         function fecharModal() {
             document.getElementById('modal-backdrop').classList.add('opacity-0', 'pointer-events-none');
@@ -442,9 +442,4 @@
         });
     });
 </script>
-
-{% endblock %}
-
-{% block script %}
-<!-- Scripts adicionais podem ser colocados aqui -->
 {% endblock %}

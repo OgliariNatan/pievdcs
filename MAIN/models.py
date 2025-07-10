@@ -29,6 +29,12 @@ class ConteudoHome(models.Model):
         null=True, blank=True,
         verbose_name="Imagem",
     )
+    video = models.FileField(
+        upload_to='videos/',
+        null=True, blank=True,
+        verbose_name='Vídeo',
+    )
+
     publicado = models.BooleanField(
         default=True,
         verbose_name="Publicar na página Inicial?",

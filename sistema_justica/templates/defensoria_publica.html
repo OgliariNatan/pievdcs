@@ -6,6 +6,13 @@
 {% block main_content %}
 <!-- Toast/Popup container -->
 <div id="popup-sucesso-container" class="fixed top-6 right-6 z-[9999]"></div>
+<!-- chama o hx-indicator -->
+<div id="spinner" class="fixed top-6 right-6 z-[9999] hidden text-white bg-gray-800 px-4 py-2 rounded shadow-lg"> 🔄
+    Carregando...
+</div>
+<!-- <div id="spinner" class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"><span
+        class="ml-2 text-gray-700">Carregando...</span>
+</div> -->
 
 <div class="flex min-h-[80vh] bg-gray-50">
     <!-- Sidebar responsiva com efeito hover aprimorado -->
@@ -137,7 +144,7 @@
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8">
                 <button
                     class="group bg-pink-500 hover:bg-pink-400 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
-                    hx-get="{% url 'sistema_justica:cadastro_vitima_form' %}" hx-target="#modal-content"
+                    hx-get="{% url 'sistema_justica:cadastro_vitima_form' %}" hx-target="#modal-vitima"
                     hx-swap="innerHTML">
                     <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                         <i class="fas fa-female text-sm"></i>
@@ -184,7 +191,7 @@
                     </p>
                 </div>
 
-
+                <div id="modal-vitima"> </div>
 
                 <!-- Conteúdo lorem ipsum -->
                 <div class="bg-gray-50 rounded-xl p-6">
@@ -193,7 +200,18 @@
                         Informações Gerais
                     </h4>
                     <div class="text-gray-600 text-sm leading-relaxed">
-                        <p>{% lorem 10 p %}</p>
+                        <p class="text-red-400">O botão de 'Cadastrar Vitíma', já esta funcionado. Podes cadastrar
+                            fictício.</p>
+                        <p class="text-pink-500"><a href="/admin/">http://10.40.22.110:8000/admin/</a> <<-- possui
+                                algumas funcionalidades para testes, podes usufruir à vontade. </p> <br>
+
+                                <p class="text-green-600">Iniciei o<a href="/admin/sistema_justica/" class="text-4xl">
+                                        formulário para a
+                                        solicitação da Medida
+                                        Protetiva</a>, aos poucos irei inserindo mais campos. atualizado em: 09/07
+                                    11h12min</p>
+                                <br>
+                                <p>{% lorem 5 p %}</p>
                     </div>
                 </div>
             </div>

@@ -13,6 +13,8 @@ locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')  # Configura o locale para portug
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False)  # Updated to use config
@@ -182,7 +184,7 @@ LOGIN_URL = '/login/'  # URL para redirecionar usuários não autenticados
 LOGIN_REDIRECT_URL = '/home/'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True #Fecha a seção quando fecha o navegador
 SESSION_COOKIE_NAME = 'sistema_justica_session'  # Nome do cookie de sessão
-SESSION_COOKIE_AGE = 900  # 15 minutos em segundos
+SESSION_COOKIE_AGE = 9000  # x minutos em segundos
 SESSION_SAVE_EVERY_REQUEST = False  # Só renova se houver atividade
 
 CSRF_COOKIE_HTTPONLY = True       # Impede acesso via JavaScript (aumenta a segurança)

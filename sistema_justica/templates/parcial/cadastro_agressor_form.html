@@ -186,6 +186,19 @@
 </style>
 
 <script>
+
+    $(document).ready(function () {
+        // Máscara para CPF (000.000.000-00)
+        $('#id_cpf').mask('000.000.000-00', { reverse: true });
+
+        // Máscara para Telefone ((00) 00000-0000)
+        $('#id_telefone').mask('(00) 0000Z-0000', {
+            translation: {
+                'Z': { pattern: /[0-9]/, optional: true }
+            }
+        });
+    });
+
     function aplicarMascaraCPF(input) {
         input.addEventListener('input', function (e) {
             let v = e.target.value.replace(/\D/g, '').slice(0, 11);

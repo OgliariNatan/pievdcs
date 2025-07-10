@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ministério Público - Sistema Inteligente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .glass-effect {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .animated-gradient {
+            background: linear-gradient(-45deg, #8B5A9F, #B19CD9, #E8D5F2, #8B5A9F);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .chat-bubble {
+            max-width: 300px;
+            word-wrap: break-word;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #8B5A9F;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header com notificações inteligentes -->
+    <header class="bg-white shadow-lg border-b-4 border-purple-600 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-r from-purple-600 to-purple-800 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-balance-scale text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">Ministério Público</h1>
+                        <p class="text-sm text-gray-600">Sistema Inteligente</p>
+                    </div>
+                </div>
+
+                <!-- Barra de busca inteligente -->
+                <div class="flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <input type="text" id="smart-search" placeholder="Buscar casos, pessoas, documentos..."
+                            class="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-all duration-300">
+                        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <div id="search-suggestions"
+                            class="absolute top-full left-0 right-0 bg-white shadow-xl rounded-xl mt-2 hidden z-50">
+                            <!-- Sugestões aparecerão aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notificações e perfil -->
+                <div class="flex items-center gap-4">
+                    <button class="relative p-2 text-gray-600 hover:text-purple-600 transition-colors">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span
+                            class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+                    </button>
+                    <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-white text-sm"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar aprimorada -->
+        <aside class="w-64 bg-gradient-to-b from-purple-900 to-purple-800 text-white shadow-2xl">
+            <div class="p-6">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold">Dashboard</h2>
+                        <p class="text-sm text-purple-200">Visão Geral</p>
+                    </div>
+                </div>
+
+                <!-- Menu de navegação -->
+                <nav class="space-y-2">
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/10 text-white">
+                        <i class="fas fa-home"></i>
+                        <span>Início</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors">
+                        <i class="fas fa-female"></i>
+                        <span>Vítimas</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Medidas Protetivas</span>
+                        <span class="ml-auto bg-red-500 text-xs px-2 py-1 rounded-full">12</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Relatórios</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors">
+                        <i class="fas fa-robot"></i>
+                        <span>Assistente IA</span>
+                        <span class="ml-auto pulse-dot w-2 h-2 bg-green-400 rounded-full"></span>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Conteúdo principal -->
+        <main class="flex-1 p-8">
+            <!-- Dashboard com métricas IA -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-blue-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-600">Casos Ativos</h3>
+                            <p class="text-2xl font-bold text-gray-900">156</p>
+                            <p class="text-sm text-green-600">+12% este mês</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-folder-open text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-red-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-600">Alto Risco</h3>
+                            <p class="text-2xl font-bold text-gray-900">23</p>
+                            <p class="text-sm text-red-600">Atenção necessária</p>
+                        </div>
+                        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-red-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-green-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-600">Resolvidos</h3>
+                            <p class="text-2xl font-bold text-gray-900">89</p>
+                            <p class="text-sm text-green-600">+5% este mês</p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-purple-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-600">IA Score</h3>
+                            <p class="text-2xl font-bold text-gray-900">94%</p>
+                            <p class="text-sm text-purple-600">Eficiência sistema</p>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-brain text-purple-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ações rápidas aprimoradas -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg mb-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-6">Ações Rápidas</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button
+                        class="group p-6 rounded-xl bg-gradient-to-r from-pink-500 to-pink-600 text-white hover:from-pink-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-105">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-female text-2xl"></i>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="font-semibold">Cadastrar Vítima</h3>
+                                <p class="text-sm text-pink-100">Com análise de risco IA</p>
+                            </div>
+                        </div>
+                    </button>
+
+                    <button
+                        class="group p-6 rounded-xl bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-shield-alt text-2xl"></i>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="font-semibold">Medida Protetiva</h3>
+                                <p class="text-sm text-purple-100">Recomendação automática</p>
+                            </div>
+                        </div>
+                    </button>
+
+                    <button
+                        class="group p-6 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-search text-2xl"></i>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="font-semibold">Consultar Caso</h3>
+                                <p class="text-sm text-blue-100">Busca inteligente</p>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Gráfico de análise -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg">
+                <h2 class="text-xl font-bold text-gray-900 mb-6">Análise de Casos - Últimos 6 Meses</h2>
+                <canvas id="casesChart" height="100"></canvas>
+            </div>
+        </main>
+    </div>
+
+    <!-- Assistente IA flutuante -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <div id="chat-container"
+            class="hidden mb-4 w-96 h-96 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col">
+            <div class="p-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold">Assistente Jurídico</h3>
+                            <p class="text-xs text-purple-100">Online</p>
+                        </div>
+                    </div>
+                    <button id="close-chat" class="text-white hover:text-purple-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-robot text-purple-600 text-sm"></i>
+                    </div>
+                    <div class="chat-bubble bg-gray-100 rounded-xl p-3">
+                        <p class="text-sm">Olá! Sou seu assistente jurídico. Como posso ajudá-lo hoje?</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 border-t">
+                <div class="flex gap-2">
+                    <input type="text" id="chat-input" placeholder="Digite sua pergunta..."
+                        class="flex-1 px-4 py-2 rounded-xl border border-gray-300 focus:border-purple-500 focus:outline-none">
+                    <button id="send-message"
+                        class="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <button id="ai-toggle"
+            class="animated-gradient w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-white hover:scale-110 transition-transform duration-300">
+            <i class="fas fa-robot text-2xl"></i>
+        </button>
+    </div>
+
+    <!-- Notificações toast -->
+    <div id="toast-container" class="fixed top-6 right-6 z-50 space-y-2">
+        <!-- Notificações aparecerão aqui -->
+    </div>
+
+    <script>
+        // Configuração do gráfico
+        const ctx = document.getElementById('casesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [{
+                    label: 'Casos Registrados',
+                    data: [45, 52, 48, 61, 58, 67],
+                    borderColor: '#8B5A9F',
+                    backgroundColor: 'rgba(139, 90, 159, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Casos Resolvidos',
+                    data: [38, 43, 41, 52, 49, 58],
+                    borderColor: '#10B981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Assistente IA
+        const aiToggle = document.getElementById('ai-toggle');
+        const chatContainer = document.getElementById('chat-container');
+        const closeChat = document.getElementById('close-chat');
+        const chatInput = document.getElementById('chat-input');
+        const sendMessage = document.getElementById('send-message');
+        const chatMessages = document.getElementById('chat-messages');
+
+        aiToggle.addEventListener('click', () => {
+            chatContainer.classList.toggle('hidden');
+            if (!chatContainer.classList.contains('hidden')) {
+                chatInput.focus();
+            }
+        });
+
+        closeChat.addEventListener('click', () => {
+            chatContainer.classList.add('hidden');
+        });
+
+        // Enviar mensagem do chat
+        function sendChatMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Adicionar mensagem do usuário
+            const userMessage = document.createElement('div');
+            userMessage.className = 'flex justify-end';
+            userMessage.innerHTML = `
+                <div class="chat-bubble bg-purple-600 text-white rounded-xl p-3">
+                    <p class="text-sm">${message}</p>
+                </div>
+            `;
+            chatMessages.appendChild(userMessage);
+
+            chatInput.value = '';
+        };
+
+
+    </script>
+</body>

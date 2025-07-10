@@ -44,17 +44,37 @@
         </div>
     </div>
 
-
-    <!-- Contagens rápidas -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl text-white flex flex-col items-center">
-            <i class="fas fa-shield-alt text-3xl mb-2"></i>
-            <span class="text-lg">Medidas Protetivas</span>
-            <span class="text-2xl font-bold">{{ medidas_protetivas_solicitadas_ocorrencias }}</span>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-blue-500">
+            <h3 class="text-sm font-medium text-gray-600">
+                <i class="fas fa-shield-alt text-1xl mb-2"></i>
+                Medidas Protetivas
+            </h3>
+            <p class="text-2xl font-bold text-gray-900">{{ medidas_protetivas_solicitadas_ocorrencias }}</p>
+            <p class="text-sm text-green-600">+12% este mês</p>
         </div>
-        <!-- Adicione mais cards se desejar outras contagens rápidas -->
+        <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-red-500">
+            <h3 class="text-sm font-medium text-gray-600">Parentesco</h3>
+            <p class="text-2xl font-bold text-gray-900">Cônjuge</p>
+            <p class="text-sm text-red-600">Atenção necessária</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-green-500">
+            <h3 class="text-sm font-medium text-gray-600">Maior incidência</h3>
+            <p class="text-2xl font-bold text-gray-900">Maravilha</p>
+            <p class="text-sm text-yellow-600">Iraceminha</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-purple-500">
+            <h3 class="text-sm font-medium text-gray-600">Tipo de violência</h3>
+            <p class="text-2xl font-bold text-gray-900">Moral</p>
+            <p class="text-sm text-purple-600">20%</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-purple-500">
+            <h3 class="text-sm font-medium text-gray-600">Reincidência</h3>
+            <p class="text-2xl font-bold text-gray-900">10%</p>
+            <p class="text-sm text-purple-600">Moderado</p>
+        </div>
     </div>
-
+    <br>
     <!-- Filtros -->
     <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 flex flex-col md:flex-row gap-4 items-center">
         <h2 class="text-lg font-semibold text-primary mb-2 md:mb-0"> Selecione o(s) Filtro(s):</h2>
