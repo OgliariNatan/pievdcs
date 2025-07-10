@@ -19,7 +19,7 @@ def poder_judiciario(request):
         'user': request.user,
 
     }
-    return render(request, "poder_judiciario.html", contexto)
+    return render(request, "judiciario_IA.html", contexto)
 
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_vitima_form(request):
