@@ -7,62 +7,129 @@
 <!-- Toast/Popup container -->
 <div id="popup-sucesso-container" class="fixed top-6 right-6 z-[9999]"></div>
 
-<!-- Cabeçalho -->
-<header class="bg-white shadow-lg border-b-4 border-purple-600">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-4">
-            <div
-                class="w-10 h-10 bg-gradient-to-r from-purple-600 to-purple-800 rounded-xl flex items-center justify-center">
-                <i class="fas fa-balance-scale text-white"></i>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold text-gray-900">{{ title }}</h1>
-                <p class="text-sm text-gray-600">Sistema Integrado de Proteção à Mulher</p>
-            </div>
-        </div>
-    </div>
-</header>
-
-<!-- Conteúdo principal -->
 <div class="flex min-h-screen bg-gray-50">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-gradient-to-b from-purple-900 to-purple-800 text-white p-6 space-y-6">
-        <nav class="space-y-2">
-            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/10">
-                <i class="fas fa-home"></i><span>Início</span>
-            </a>
+    <!-- Sidebar responsiva com efeito hover aprimorado -->
+    <aside class="group/sidebar relative z-10 h-full
+        bg-gradient-to-b from-purple-900 to-purple-800 text-white shadow-xl py-6 px-2
+        flex flex-col gap-3
+        w-16 hover:w-72 transition-all duration-300 ease-in-out rounded-r-3xl
+        overflow-hidden" style="min-width: 4rem;">
+
+        <!-- Header do sidebar -->
+        <div class="flex items-center gap-3 px-2 py-2 mb-2">
+            <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <i class="fas fa-balance-scale text-sm"></i>
+            </div>
+            <span
+                class="sidebar-label opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-300 delay-100 whitespace-nowrap font-semibold text-sm">
+                Sistema Judiciário
+            </span>
+        </div>
+
+        <!-- Divisor -->
+        <div class="h-px bg-white/20 mx-2 mb-2"></div>
+
+        <!-- Busca -->
+        <div class="px-2 mb-2">
             <div class="relative">
                 <input type="text" placeholder="Buscar vítimas, CPFs..."
-                    class="w-full py-3 pl-12 pr-4 rounded-xl border-2 border-purple-700 bg-purple-800/50 placeholder-purple-300 text-white focus:outline-none focus:ring-2 focus:ring-purple-400">
-                <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-300"></i>
+                    class="w-full py-2 pl-8 pr-3 rounded-lg border-2 border-purple-700 bg-purple-800/50 placeholder-purple-300 text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 sidebar-label opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-300 delay-100">
+                <i class="fas fa-search absolute left-2 top-1/2 transform -translate-y-1/2 text-purple-300 text-sm"></i>
             </div>
+        </div>
+
+        <!-- Menu items -->
+        <nav class="flex flex-col gap-2 flex-1">
+
+
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i
+                        class="fas fa-folder-open text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span
+                    class="sidebar-label opacity-0 group-hover/sidebar:opacity-100 transition-all duration-300 delay-100 whitespace-nowrap font-medium">
+                    Casos Ativos
+                </span>
+            </a>
+
             <a href="{% url 'notificacoes' notificacoes %}"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10">
-                <i class="fas fa-bell"></i>
-                <span>Notificações</span>
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item relative">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="fas fa-bell text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span
+                    class="sidebar-label opacity-0 group-hover/sidebar:opacity-100 transition-all duration-300 delay-100 whitespace-nowrap font-medium">
+                    Notificações
+                </span>
                 {% if notificacoes %}
                 <span
-                    class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">{{ notificacoes }}</span>
+                    class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full sidebar-label opacity-0 group-hover/sidebar:opacity-100 transition-all duration-300 delay-150 min-w-[1.5rem] text-center">
+                    {{ notificacoes }}
+                </span>
+                <!-- Badge para sidebar collapsed -->
+                <span
+                    class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center group-hover/sidebar:opacity-0 transition-opacity duration-200"
+                    style="font-size: 10px;">{{ notificacoes }}</span>
                 {% endif %}
             </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10">
-                <i class="fas fa-clipboard-list"></i>
-                <span>Encaminhamentos</span>
+
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item relative">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i
+                        class="fas fa-clipboard-list text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span
+                    class="sidebar-label opacity-0 group-hover/sidebar:opacity-100 transition-all duration-300 delay-100 whitespace-nowrap font-medium">
+                    Encaminhamentos
+                </span>
                 {% if encaminhamentos %}
                 <span
-                    class="ml-auto bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded-full">{{ encaminhamentos }}</span>
+                    class="ml-auto bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded-full sidebar-label opacity-0 group-hover/sidebar:opacity-100 transition-all duration-300 delay-150 min-w-[1.5rem] text-center">
+                    {{ encaminhamentos }}
+                </span>
+                <!-- Badge para sidebar collapsed -->
+                <span
+                    class="absolute -top-1 -right-1 bg-amber-400 text-amber-900 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center group-hover/sidebar:opacity-0 transition-opacity duration-200"
+                    style="font-size: 10px;">{{ encaminhamentos }}</span>
                 {% endif %}
             </a>
-            <a href="{% url 'relatorios' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10">
-                <i class="fas fa-chart-bar"></i><span>Relatórios</span>
+
+            <a href="{% url 'relatorios' %}"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i
+                        class="fas fa-chart-bar text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span
+                    class="sidebar-label opacity-0 group-hover/sidebar:opacity-100 transition-all duration-300 delay-100 whitespace-nowrap font-medium">
+                    Relatórios
+                </span>
             </a>
         </nav>
+
+        <!-- Footer do sidebar -->
+        <div class="mt-auto pt-4 border-t border-white/20">
+            <div class="flex items-center gap-3 px-3 py-2">
+                <div class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user text-sm"></i>
+                </div>
+                <span
+                    class="sidebar-label opacity-0 group-hover/sidebar:opacity-100 transition-all duration-300 delay-100 whitespace-nowrap font-medium text-sm">
+                    {{ user.first_name }}
+                </span>
+            </div>
+        </div>
     </aside>
 
-    <!-- Conteúdo -->
-    <main class="flex-1 p-8 space-y-8">
+    <!-- Conteúdo principal -->
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 transition-all duration-300">
+        <!-- Cabeçalho removido pois agora está integrado no conteúdo -->
+
         <!-- Métricas de Violência Doméstica -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-purple-500">
                 <div class="flex items-center justify-between">
                     <div>
@@ -173,6 +240,10 @@
         <div id="modal-agressor"></div>
     </main>
 </div>
+
+<!-- Overlay para mobile quando sidebar estiver expandido -->
+<div class="fixed inset-0 bg-black/50 z-5 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"
+    id="sidebar-overlay"></div>
 
 <!-- Chat IA Especializado em Violência Doméstica -->
 <div class="fixed bottom-6 right-6 z-50">
@@ -359,7 +430,41 @@
                 chatInput.focus();
             }
         });
+
+        // Sidebar overlay click
+        document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar);
+
+        // Melhor comportamento em mobile
+        const sidebar = document.querySelector('.group\\/sidebar');
+        if (window.innerWidth < 1024) {
+            sidebar.addEventListener('mouseenter', () => {
+                document.getElementById('sidebar-overlay').classList.remove('opacity-0', 'pointer-events-none');
+            });
+
+            sidebar.addEventListener('mouseleave', () => {
+                document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none');
+            });
+        }
     });
+
+    // Função para fechar popup
+    function fecharPopup(button) {
+        const popup = button.closest('.animate-fade-in-up');
+        popup.style.animation = 'fadeOutUp 0.4s ease-in-out forwards';
+        setTimeout(() => popup.remove(), 400);
+    }
+
+    // Controle do sidebar em mobile
+    function toggleSidebar() {
+        const sidebar = document.querySelector('.group\\/sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        if (window.innerWidth < 1024) {
+            sidebar.classList.toggle('w-72');
+            overlay.classList.toggle('opacity-0');
+            overlay.classList.toggle('pointer-events-none');
+        }
+    }
 
     // Função para exibir popup
     function exibirPopupSucesso(mensagem, tipo = 'sucesso') {
@@ -389,17 +494,75 @@
         setTimeout(() => popup.remove(), 5000);
     }
 
-    // Animações CSS
+    // Adicionar animações CSS e estilos customizados
     const style = document.createElement('style');
     style.textContent = `
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fade-in-up {
-        animation: fadeInUp 0.3s ease-out;
-    }
-`;
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px) scale(0.95);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes fadeOutUp {
+            from { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+            to { 
+                opacity: 0; 
+                transform: translateY(-20px) scale(0.95);
+            }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+        
+        /* Scrollbar customizada */
+        .group\\/sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .group\\/sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .group\\/sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+        
+        .group\\/sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Efeito glass para o sidebar */
+        .group\\/sidebar {
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Melhores transições para labels */
+        .sidebar-label {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transform: translateX(-10px);
+            visibility: hidden;
+        }
+        
+        .group\\/sidebar:hover .sidebar-label {
+            transform: translateX(0);
+            visibility: visible;
+        }
+        
+        /* Garantir que labels apareçam no hover */
+        .group\\/sidebar:hover .sidebar-label {
+            opacity: 1 !important;
+        }
+    `;
     document.head.appendChild(style);
 </script>
 {% endblock %}
