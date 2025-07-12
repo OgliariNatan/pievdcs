@@ -124,9 +124,6 @@
             </div>
 
 
-            <!-- Formulário de pesquisa -->
-
-
             <!-- Seção de Botões de Ação Rápida -->
             <div class="mb-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
@@ -149,8 +146,52 @@
                         </div>
                     </button>
 
+                    <!-- Botão Grupos de Agressores -->
+                    <div
+                        class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                        <div class="flex flex-col h-full">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-users text-xl"></i>
+                                </div>
+                                <span class="font-semibold">Grupos de Agressores</span>
+                            </div>
+
+                            <!-- Lista de grupos com contagem -->
+                            <div
+                                class="overflow-auto max-h-40 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent">
+                                {% for grupo in grupos %}
+                                <div class="flex flex-col border-b border-white/10 last:border-0 py-2 px-2">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-semibold">Atendimento #{{ grupo.id }}</span>
+                                        <span
+                                            class="bg-white/20 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[1.5rem] text-center">
+                                            {{ grupo.qtd_agressores }}
+                                        </span>
+                                    </div>
+                                    <div class="text-xs text-white/80 mt-1">
+                                        {% for participante in grupo.participantes %}
+                                        <span
+                                            class="inline-block bg-white/10 rounded px-2 py-1 mr-1 mb-1">{{ participante.nome }}</span>
+                                        {% empty %}
+                                        <span class="text-white/50">Sem participantes</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <div class="text-center text-sm text-white/70 py-2">
+                                    <p>Nenhum atendimento cadastrado</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <a href="#"
+                                class="mt-auto text-center text-xs bg-white/10 hover:bg-white/20 transition-colors rounded-lg py-2 px-3 mt-3">
+                                Ver todos os grupos
+                            </a>
+                        </div>
+                    </div>
                     <!-- Botão Cadastrar Tipo -->
-                    <button
+                    <!-- <button
                         class="bg-gradient-to-r from-green-600 to-green-700 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 group"
                         hx-get="{% url 'seguranca_publica:cadastro_tipo_atendimento_form' %}"
                         hx-target="#modal-tipo-atendimento" hx-swap="innerHTML">
@@ -162,26 +203,52 @@
                             <span class="font-semibold">Tipo de Atendimento</span>
                             <span class="text-sm text-green-200">Criar novo tipo</span>
                         </div>
-                    </button>
+                    </button> -->
 
-                    <!-- Botão Ver Relatórios -->
-                    <a href="{% url 'relatorios' %}"
-                        class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 group block">
-                        <div class="flex flex-col items-center gap-3">
-                            <div
-                                class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <i class="fas fa-chart-line text-2xl"></i>
-                            </div>
-                            <span class="font-semibold">Relatórios</span>
-                            <span class="text-sm text-blue-200">Visualizar dados</span>
-                        </div>
-                    </a>
+
                 </div>
             </div>
-
+            <!-- Indicadores rápidos -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Total de Atendimentos -->
+                <div
+                    class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-purple-500 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-600">Atendimentos Realizados (mês atual)</h3>
+                        <p class="text-2xl font-bold text-gray-900 mt-1">{{ qtd_atendimentos }}</p>
+                        <p class="text-sm mt-1 flex items-center gap-1">
+                            {% if variacao_atendimentos > 0 %}
+                            <span class="text-green-600 font-semibold">
+                                <i class="fas fa-arrow-up"></i> +{{ variacao_atendimentos|floatformat:1 }}%
+                            </span>
+                            {% elif variacao_atendimentos < 0 %} <span class="text-red-600 font-semibold">
+                                <i class="fas fa-arrow-down"></i> {{ variacao_atendimentos|floatformat:1 }}%
+                                </span>
+                                {% else %}
+                                <span class="text-gray-500">Sem variação</span>
+                                {% endif %}
+                                <span class="text-xs text-gray-400">(vs mês anterior)</span>
+                        </p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-hand-holding-heart text-purple-600 text-xl"></i>
+                    </div>
+                </div>
+                <!-- Total de Tipos de Atendimento -->
+                <div
+                    class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-green-500 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-600">Tipos de Atendimento Cadastrados</h3>
+                        <p class="text-2xl font-bold text-gray-900 mt-1">{{ tipo_atendimentos }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-clipboard-list text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
             <!-- Modais -->
             <div id="modal-atendimento-penal"></div>
-            <div id="modal-tipo-atendimento"></div>
+            <!-- <div id="modal-tipo-atendimento"></div> -->
 
 
 

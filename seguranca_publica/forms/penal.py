@@ -30,7 +30,7 @@ class ModeloPenalForm(ModelForm):
                 'class': 'w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200',
             }),
             'tempo_atendimento': forms.TextInput(attrs={
-                'placeholder': 'Ex: 01:30:00 (1h 30min)',
+                'placeholder': 'Ex: 01:30',
                 'class': 'w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200',
             }),
             'setor_atendimento': forms.Select(attrs={
@@ -43,9 +43,12 @@ class ModeloPenalForm(ModelForm):
                 'class': 'w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200',
                 'size': '5',
             }),
+            'teste': forms.CheckboxInput(attrs={
+                'class': 'form-checkbox h-5 w-5 text-purple-600',
+            }),
             'avaliacao': forms.Textarea(attrs={
                 'rows': 4,
-                'placeholder': 'Digite a avaliação do atendimento...',
+                'placeholder': 'Digite a descrição do atendimento...',
                 'class': 'w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200',
             }),
         }

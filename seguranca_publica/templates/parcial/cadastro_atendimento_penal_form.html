@@ -66,7 +66,13 @@
                             </button>
                         </div>
                     </div>
-
+                    <!-- Campo Teste -->
+                    <div class="md:col-span-2 flex items-center gap-2 mt-2">
+                        {{ form.teste }}
+                        <label for="{{ form.teste.id_for_label }}" class="text-sm font-medium text-purple-700">
+                            Marcar como Teste
+                        </label>
+                    </div>
                     <!-- Agressores Atendidos -->
                     <div class="md:col-span-2">
                         <label for="{{ form.agressores_atendidos.id_for_label }}"
