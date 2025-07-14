@@ -23,13 +23,15 @@ class ModeloPenalForm(ModelForm):
     class Meta:
         model = ModeloPenal
         fields = ['data_atendimento', 'tempo_atendimento', 'setor_atendimento', 
-                  'atendimento', 'agressores_atendidos', 'avaliacao']
+                  'atendimento', 'agressores_atendidos', 'avaliacao', 'teste']
         widgets = {
             'data_atendimento': forms.DateTimeInput(attrs={
                 'type': 'datetime-local',
                 'class': 'w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200',
             }),
             'tempo_atendimento': forms.TextInput(attrs={
+                'type': 'time',
+                'pattern': '[0-9]{2}:[0-9]{2}',
                 'placeholder': 'Ex: 01:30',
                 'class': 'w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200',
             }),

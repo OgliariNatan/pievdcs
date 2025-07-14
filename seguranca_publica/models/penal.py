@@ -98,6 +98,7 @@ class ModeloPenal(models.Model):
         verbose_name='Participantes do Grupo',
         related_name='agressores_atendidos',
         blank=True,
+        
     )
     # agressores_atendidos = ChainedManyToManyField(
     #     Agressor_dados,

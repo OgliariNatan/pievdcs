@@ -461,6 +461,11 @@
     }
 </style>
 
+
+
+{% endblock %}
+
+{% block script %}
 <script>
     // Função para exibir popup de sucesso
     function exibirPopupSucesso(mensagem, tipo = 'sucesso') {
@@ -528,10 +533,13 @@
             overlay.classList.add('opacity-0', 'pointer-events-none');
         });
     });
+
+    // Fechar popup com ESC
+    document.addEventListener('keydown', function (e) {
+        if (e.key === "Escape") {
+            const modal = document.querySelector('.fixed.inset-0');
+            if (modal) modal.remove();
+        }
+    });
 </script>
-
-{% endblock %}
-
-{% block script %}
-<!-- Scripts adicionais podem ser colocados aqui -->
 {% endblock %}
