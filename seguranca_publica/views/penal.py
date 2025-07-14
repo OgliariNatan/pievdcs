@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .permission_group import grupos_permitidos
+from django.db.models import Func, F, Value, CharField
 from ..forms.penal import TipoAtendimentoForm, ModeloPenalForm
 from ..models.penal import tipo_atendimento, ModeloPenal
+from sistema_justica.models.base import Agressor_dados
 from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
@@ -62,6 +64,33 @@ def penal(request):
         'user': request.user,
     }
     return render(request, "penal.html", contexto)
+
+@login_required(login_url=reverse_lazy('login'))
+def buscar_atendimentos_por_cpf(request):
+    cpf = request.GET.get('cpf', '').replace('.', '').replace('-', '').strip()
+    if not cpf:
+        return JsonResponse({'sucesso': False, 'erro': 'CPF não informado.'})
+    try:
+        # Remove pontos e traço do CPF no banco para comparar
+        agressor = Agressor_dados.objects.annotate(
+            cpf_limpo=Func(
+                Func(
+                    F('cpf'),
+                    Value('.'),
+                    Value(''),
+                    function='replace'
+                ),
+                Value('-'),
+                Value(''),
+                function='replace',
+                output_field=CharField()
+            )
+        ).get(cpf_limpo=cpf)
+        qtd = agressor.modelopenal_set.count()
+        return JsonResponse({'sucesso': True, 'qtd': qtd})
+    except Agressor_dados.DoesNotExist:
+        return JsonResponse({'sucesso': False, 'erro': 'CPF não encontrado.'})
+
 
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_tipo_atendimento_form(request):
