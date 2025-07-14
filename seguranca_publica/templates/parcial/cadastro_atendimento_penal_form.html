@@ -80,8 +80,10 @@
                             <i class="fas fa-user-friends mr-1"></i>
                             Participantes do Atendimento
                         </label>
-                        {{ form.agressores_atendidos }}
-                        <p class="text-xs text-gray-600 mt-1">Segure Ctrl para selecionar múltiplos participantes</p>
+                        <div class="border border-gray-300 rounded-xl p-4 max-h-48 overflow-y-auto bg-white">
+                            {{ form.agressores_atendidos }}
+                        </div>
+                        <p class="text-xs text-gray-600 mt-1">Marque os participantes do atendimento</p>
                     </div>
 
                     <!-- Avaliação -->
@@ -91,7 +93,15 @@
                             <i class="fas fa-comment-dots mr-1"></i>
                             Descrição do Atendimento
                         </label>
-                        {{ form.avaliacao }}
+                        <div class="flex gap-2 items-start">
+                            {{ form.avaliacao }}
+                            <button type="button" id="btn-gravar-audio"
+                                class="flex items-center px-3 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition"
+                                title="Gravar áudio para transcrever">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                        </div>
+                        <small id="audio-status" class="block text-xs text-gray-500 mt-1"></small>
                     </div>
                 </div>
             </div>
@@ -129,3 +139,133 @@
         animation: fadeInUp 0.4s cubic-bezier(.4, 2, .6, 1) both;
     }
 </style>
+
+
+<script>
+    // Função para criar uma interface de seleção melhorada
+    function melhorarSelectMultiplo() {
+        const select = document.querySelector('select[name="agressores_atendidos"]');
+        if (!select) return;
+
+        // Container personalizado
+        const container = document.createElement('div');
+        container.className = 'space-y-2';
+
+        // Barra de pesquisa
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.placeholder = 'Pesquisar participantes...';
+        searchInput.className = 'w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500';
+
+        // Lista de opções
+        const optionsList = document.createElement('div');
+        optionsList.className = 'max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-2 space-y-1';
+
+        // Criar checkboxes para cada opção
+        Array.from(select.options).forEach(option => {
+            const label = document.createElement('label');
+            label.className = 'flex items-center gap-2 p-2 hover:bg-purple-50 rounded cursor-pointer';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = option.value;
+            checkbox.checked = option.selected;
+            checkbox.className = 'form-checkbox h-4 w-4 text-purple-600';
+
+            const text = document.createElement('span');
+            text.textContent = option.text;
+            text.className = 'text-sm text-gray-700';
+
+            label.appendChild(checkbox);
+            label.appendChild(text);
+            optionsList.appendChild(label);
+
+            // Sincronizar com o select original
+            checkbox.addEventListener('change', function () {
+                option.selected = this.checked;
+            });
+        });
+
+        // Função de pesquisa
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+            const labels = optionsList.querySelectorAll('label');
+
+            labels.forEach(label => {
+                const text = label.textContent.toLowerCase();
+                label.style.display = text.includes(searchTerm) ? 'flex' : 'none';
+            });
+        });
+
+        // Montar interface
+        container.appendChild(searchInput);
+        container.appendChild(optionsList);
+
+        // Substituir o select original
+        select.style.display = 'none';
+        select.parentNode.insertBefore(container, select);
+    }
+
+    // Aplicar quando o modal for carregado
+    document.body.addEventListener('htmx:afterSwap', function (evt) {
+        if (evt.target.id === 'modal-atendimento-penal') {
+            melhorarSelectMultiplo();
+        }
+    });
+
+    // Aplicar no carregamento inicial
+    document.addEventListener('DOMContentLoaded', melhorarSelectMultiplo);
+
+
+    // Reconhecimento de voz para transcrição de áudio
+    document.addEventListener('DOMContentLoaded', function () {
+        const btnGravar = document.getElementById('btn-gravar-audio');
+        const textarea = document.getElementById('id_avaliacao');
+        const status = document.getElementById('audio-status');
+        let recognition;
+        let gravando = false;
+
+        if (btnGravar && textarea && 'webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = 'pt-BR';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onstart = function () {
+                gravando = true;
+                status.textContent = 'Gravando... Fale agora.';
+                btnGravar.classList.add('bg-red-600');
+            };
+
+            recognition.onend = function () {
+                gravando = false;
+                status.textContent = '';
+                btnGravar.classList.remove('bg-red-600');
+            };
+
+            recognition.onerror = function (event) {
+                gravando = false;
+                status.textContent = 'Erro ao capturar áudio.';
+                btnGravar.classList.remove('bg-red-600');
+            };
+
+            recognition.onresult = function (event) {
+                if (event.results.length > 0) {
+                    const texto = event.results[0][0].transcript;
+                    textarea.value += (textarea.value ? ' ' : '') + texto;
+                }
+            };
+
+            btnGravar.addEventListener('click', function () {
+                if (!gravando) {
+                    recognition.start();
+                } else {
+                    recognition.stop();
+                }
+            });
+        } else if (btnGravar) {
+            btnGravar.disabled = true;
+            status.textContent = 'Seu navegador não suporta gravação de voz.';
+        }
+    });
+</script>

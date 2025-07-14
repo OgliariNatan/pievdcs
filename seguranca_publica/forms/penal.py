@@ -41,9 +41,12 @@ class ModeloPenalForm(ModelForm):
             'atendimento': forms.Select(attrs={
                 'class': 'w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200',
             }),
-            'agressores_atendidos': forms.SelectMultiple(attrs={
-                'class': 'w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200',
-                'size': '5',
+            # 'agressores_atendidos': forms.SelectMultiple(attrs={
+            #     'class': 'w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200',
+            #     'size': '5',
+            # }),
+            'agressores_atendidos': forms.CheckboxSelectMultiple(attrs={
+                'class': 'grid grid-cols-2 gap-2 mt-2 ',
             }),
             'teste': forms.CheckboxInput(attrs={
                 'class': 'form-checkbox h-5 w-5 text-purple-600',
