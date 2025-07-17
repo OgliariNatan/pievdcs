@@ -1,15 +1,35 @@
 from django.db import models
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from django.contrib.auth.models import User
 from sistema_justica.models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
 from seguranca_publica.models.base import grau_parentesco_agressor_choices, status_MP_choices, tipo_de_violencia_choices
 from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
+
+
+def default_periodo_mp():
+    '''
+    Função para definir o período padrão da medida protetiva
+    que será de 120 dias a partir da data atual
+    '''
+    return datetime.now() + timedelta(days=120)
+
+
 
 class FormularioMedidaProtetiva(models.Model):
     '''
     Formulario para preencimento da Defensoria Pública
     solicitando a Medida Protetiva
     '''
+    ID = models.AutoField(
+        primary_key=True,
+        #auto_created=True,
+    )
+
+    data_solicitacao = models.DateTimeField(
+        default=datetime.now, 
+        verbose_name='Data de Solicitação'
+    )
+        
     vitima = models.ForeignKey(
         Vitima_dados,
         on_delete=models.CASCADE,
@@ -24,7 +44,12 @@ class FormularioMedidaProtetiva(models.Model):
         verbose_name='Agressor'
     )
 
-    mpu = models.BooleanField(
+    periodo_mp = models.TimeField(
+        default=default_periodo_mp,
+        verbose_name='Período da Medida Protetiva'
+    )
+
+    solicitada_mpu = models.BooleanField(
         default=True,
         verbose_name='Medida Protetiva de Urgência'
     )

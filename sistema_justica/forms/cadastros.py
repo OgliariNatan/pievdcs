@@ -7,15 +7,15 @@ class CadastroVitimaForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
-            #'estado': forms.Select(attrs={'id': 'id_estado'}),
-            #'municipio': forms.Select(attrs={'id': 'id_municipio'}),
         }
     def __init__(self, *args, **kwargs):
         super(CadastroVitimaForm, self).__init__(*args, **kwargs)
-        self.fields['estado'].widget.attrs.update({'class': 'form-control, form-control-sm', 'type': 'text'})
-        self.fields['municipio'].widget.attrs.update({'class': 'form-control, form-control-sm', 'type': 'text', 'placeholder': 'Selecione o estado antes'})
-        self.fields['data_nascimento'].widget.attrs.update({'class': 'form-control, form-control-sm', 'type': 'date'})
-    
+        fields = '__all__'
+
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control form-control-sm border border-gray-400 rounded-xl'})
+
+       
 class CadastroAgressorForm(forms.ModelForm):
     class Meta:
         model = Agressor_dados
@@ -23,11 +23,19 @@ class CadastroAgressorForm(forms.ModelForm):
         widgets = {
             'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
         }
-        def __init__(self, *args, **kwargs):
-            super(CadastroAgressorForm, self).__init__(*args, **kwargs)
-            self.fields['estado'].widget.attrs.update({'class': 'form-control, form-control-sm', 'type': 'text'})
-            self.fields['municipio'].widget.attrs.update({'class': 'form-control, form-control-sm', 'type': 'text'})
-            self.fields['data_nascimento'].widget.attrs.update({'class': 'form-control, form-control-sm', 'type': 'date'})
+
+
+    def __init__(self, *args, **kwargs):
+        super(CadastroAgressorForm, self).__init__(*args, **kwargs)
+        fields = '__all__'
+            # self.fields['estado'].widget.attrs.update({'class': 'form-control, form-control-sm', 'type': 'text'})
+            # self.fields['municipio'].widget.attrs.update({'class': 'form-control, form-control-sm', 'type': 'text'})
+            # self.fields['data_nascimento'].widget.attrs.update({'class': 'form-control, form-control-sm', 'type': 'date'})
+
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control form-control-sm border border-gray-400 rounded-xl'})
+
+
 class CadastroMunicipioForm(forms.ModelForm):
     class Meta:
         model = Municipio

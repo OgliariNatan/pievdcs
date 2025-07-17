@@ -100,18 +100,7 @@ class ModeloPenal(models.Model):
         blank=True,
         
     )
-    # agressores_atendidos = ChainedManyToManyField(
-    #     Agressor_dados,
-    #     chained_field="agressor_dados",
-    #     chained_model_field="agressor_dados",
-    #     verbose_name='Participantes do Grupo',
-    #     related_name='agressores_atendidos',
-    #     blank=True,
-    #     auto_choose=True,
-    #     horizontal=True,
-    # )
-
-
+    
     avaliacao = models.TextField(
         verbose_name="Avaliação do Atendimento", 
         blank=True, null=True
