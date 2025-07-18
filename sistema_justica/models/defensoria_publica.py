@@ -5,13 +5,14 @@ from sistema_justica.models.base import Vitima_dados, Agressor_dados, Filhos_dad
 from seguranca_publica.models.base import grau_parentesco_agressor_choices, status_MP_choices, tipo_de_violencia_choices
 from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
 
-
+# Função para definir o período padrão da medida protetiva
+# que será de 120 dias a partir da data atual
 def default_periodo_mp():
     '''
     Função para definir o período padrão da medida protetiva
     que será de 120 dias a partir da data atual
     '''
-    return datetime.now() + timedelta(days=120)
+    return datetime.now().date()  + timedelta(days=120)
 
 
 
@@ -44,7 +45,7 @@ class FormularioMedidaProtetiva(models.Model):
         verbose_name='Agressor'
     )
 
-    periodo_mp = models.TimeField(
+    periodo_mp = models.DateField(
         default=default_periodo_mp,
         verbose_name='Período da Medida Protetiva'
     )
