@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from sistema_justica.models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
 from seguranca_publica.models.base import grau_parentesco_agressor_choices, status_MP_choices, tipo_de_violencia_choices
 from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
+from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
 
 
 def default_periodo_mp():
@@ -11,7 +12,7 @@ def default_periodo_mp():
     Função para definir o período padrão da medida protetiva
     que será de 120 dias a partir da data atual
     '''
-    return datetime.now() + timedelta(days=120)
+    return datetime.now().date()  + timedelta(days=120)
 
 
 
@@ -44,7 +45,7 @@ class FormularioMedidaProtetiva(models.Model):
         verbose_name='Agressor'
     )
 
-    periodo_mp = models.TimeField(
+    periodo_mp = models.DateField(
         default=default_periodo_mp,
         verbose_name='Período da Medida Protetiva'
     )
@@ -59,6 +60,15 @@ class FormularioMedidaProtetiva(models.Model):
         choices= tipo_de_violencia_choices, 
         verbose_name= "Tipo de Violência",
     )
+
+    comarca_competente = models.ForeignKey(
+        ComarcasPoderJudiciario,
+        on_delete=models.CASCADE,
+        verbose_name='Comarca',
+        null=True, 
+        blank=True
+    )
+
     grau_parentesco_agressor = models.CharField(
         max_length= 15,
         choices= grau_parentesco_agressor_choices,

@@ -41,6 +41,7 @@ tematica_choices = (
     ('Assistência Social', 'Assistência Social'),
     ('Direitos Humanos', 'Direitos Humanos'),
     ('Segurança Pública', 'Segurança Pública'),
+    ('Psicologia', 'Psicologia'),
     ('Outros', 'Outros'),
 )
 
