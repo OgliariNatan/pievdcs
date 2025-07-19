@@ -140,7 +140,7 @@ def relatorios(request):
         "periodo": ['Todos', 'Semanal', 'Mensal', 'Anual'],
 
         "comarcas": ComarcasPoderJudiciario.objects.values_list('nome', flat=True).order_by('nome'),  
-        #"comarcas": ["Todas", "Abelardo Luz", "Anchieta", "Anita Garibaldi", "Araquari", "Araranguá", "Armazém", "Ascurra", "Balneário Camboriú", "Balneário Piçarras", "Barra Velha", "Biguaçu", "Blumenau - Foro Central", "Blumenau - Fórum Universitário", "Bom Retiro", "Braço do Norte", "Brusque", "Caçador", "Camboriú", "Campo Belo do Sul", "Campo Erê", "Campos Novos", "Canoinhas", "Capinzal", "Capital", "Capital - Estadual Bancário", "Capital - Continente", "Capital - Eduardo Luz", "Capital - Norte da Ilha", "Capivari de Baixo", "Catanduvas", "Chapecó", "Concórdia", "Coronel Freitas", "Correia Pinto", "Criciúma", "Cunha Porã", "Curitibanos", "Descanso", "Dionísio Cerqueira", "Forquilhinha", "Fraiburgo", "Garopaba", "Garuva", "Gaspar", "Guaramirim", "Herval D'Oeste", "Ibirama", "Içara", "Imaruí", "Imbituba", "Indaial", "Ipumirim", "Itá", "Itaiópolis", "Itajaí", "Itapema", "Itapiranga", "Itapoá", "Ituporanga", "Jaguaruna", "Jaraguá do Sul", "Joaçaba", "Joinville", "Joinville - Fórum Fazendário", "Lages", "Laguna", "Lauro Müller", "Lebon Régis", "Mafra", "Maravilha", "Meleiro", "Modelo", "Mondaí", "Navegantes", "Orleans", "Otacílio Costa", "Palhoça", "Palmitos", "Papanduva", "Penha", "Pinhalzinho", "Pomerode", "Ponte Serrada", "Porto Belo", "Porto União", "Presidente Getúlio", "Quilombo", "Rio do Campo", "Rio do Oeste", "Rio do Sul", "Rio Negrinho", "Santa Cecília", "Santa Rosa do Sul", "Santo Amaro da Imperatriz", "São Bento do Sul", "São Carlos", "São Domingos", "São Francisco do Sul", "São João Batista", "São Joaquim", "São José", "São José do Cedro", "São Lourenço do Oeste", "São Miguel do Oeste", "Seara", "Sombrio", "Taió", "Tangará", "Tijucas", "Timbó", "Trombudo Central", "Tubarão", "Turvo", "Urubici", "Urussanga", "Videira", "Xanxerê", "Xaxim"],
+        
 
         "medidas_protetivas_solicitadas_ocorrencias": 
             OcorrenciaMilitar.objects.filter(status_MP='SO').count() + OcorrenciaCivil.objects.filter(status_MP='SO').count(),
@@ -154,9 +154,13 @@ def relatorios(request):
             "labels": ["0-13", "14-18", "19-30", "31-50", "51+"],
             "data": [
                 OcorrenciaMilitar.objects.filter(vitima__idade__range=(0, 13)).count() + OcorrenciaCivil.objects.filter(vitima__idade__range=(0, 13)).count(),
+
                 OcorrenciaMilitar.objects.filter(vitima__idade__range=(14, 18)).count() + OcorrenciaCivil.objects.filter(vitima__idade__range=(14, 18)).count(),
+
                 OcorrenciaMilitar.objects.filter(vitima__idade__range=(19, 30)).count() + OcorrenciaCivil.objects.filter(vitima__idade__range=(19, 30)).count(),
+
                 OcorrenciaMilitar.objects.filter(vitima__idade__range=(31, 50)).count() + OcorrenciaCivil.objects.filter(vitima__idade__range=(31, 50)).count(),
+                
                 OcorrenciaMilitar.objects.filter(vitima__idade__gte=51).count() + OcorrenciaCivil.objects.filter(vitima__idade__gte=51).count(),
             ]
             #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
