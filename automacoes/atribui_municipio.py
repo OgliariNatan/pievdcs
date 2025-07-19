@@ -743,7 +743,10 @@ municipios_por_estado = {
         "São Félix do Tocantins", "São Miguel do Tocantins", "São Salvador do Tocantins", "São Sebastião do Tocantins", "São Valério",
         "Silvanópolis", "Sítio Novo do Tocantins", "Sucupira", "Taguatinga", "Taipas do Tocantins", "Talismã", "Tocantínia", "Tocantinópolis",
         "Tonantins", "Tupirama", "Tupiratins", "Wanderlândia", "Xambioá"
-    ]
+    ],
+    "EX" : [
+        "Extrangeiros",
+    ],
 }
 
 

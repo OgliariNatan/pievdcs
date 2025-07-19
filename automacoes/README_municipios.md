@@ -35,27 +35,12 @@ Função original mantida para compatibilidade com versões anteriores.
 
 ## Estados e Municípios Disponíveis
 
-O script atualmente inclui municípios para os seguintes estados:
-- **AC** (Acre): 22 municípios principais
-- **AL** (Alagoas): 20 municípios principais  
-- **AP** (Amapá): 16 municípios
-- **AM** (Amazonas): 20 municípios principais
+Agora o script inclui **todos os estados brasileiros** e **todos os municípios oficiais** conforme a lista do IBGE. Não é necessário expandir manualmente o dicionário, pois a base já está completa.
 
-### Expandindo a Lista de Municípios
+- **Cobertura:** 26 estados + Distrito Federal
+- **Municípios:** Todos os municípios do Brasil cadastrados automaticamente
 
-Para adicionar mais estados ou municípios, edite o dicionário `municipios_por_estado` no arquivo:
-
-```python
-municipios_por_estado = {
-    "BA": {  # Bahia
-        "Salvador",
-        "Feira de Santana", 
-        "Vitória da Conquista",
-        # ... mais municípios
-    },
-    # Adicionar mais estados...
-}
-```
+> Caso novos municípios sejam criados oficialmente, basta atualizar a fonte de dados utilizada no script.
 
 ## Como Usar
 
