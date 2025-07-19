@@ -32,13 +32,21 @@
     }
 
     /* Animação sutil para os marcadores */
-    .custom-div-icon div {
+    .custom-div-icon>div {
         transition: all 0.3s ease;
     }
 
-    .custom-div-icon:hover div {
-        transform: scale(1.1);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4) !important;
+    .custom-div-icon:hover>div {
+        transform: rotate(-45deg) scale(1.15);
+    }
+
+    .custom-div-icon:hover>div>div:first-child {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    /* Estilo adicional para marcadores em formato clássico */
+    .custom-div-icon {
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
     }
 </style>
 <script>
@@ -192,29 +200,135 @@
         <!-- Legenda do Mapa -->
         <div class="mt-4 p-4 bg-gray-50 rounded-lg">
             <h3 class="text-sm font-semibold text-gray-700 mb-2">Legenda - Tipos de Violência:</h3>
-            <div class="flex flex-wrap gap-4">
+            <div class="flex flex-wrap gap-6">
                 <div class="flex items-center">
-                    <div class="w-4 h-4 rounded-full bg-red-500 border-2 border-white shadow-sm mr-2"></div>
+                    <div style="position: relative; width: 20px; height: 20px; margin-right: 8px;">
+                        <div style="
+                            width: 16px;
+                            height: 16px;
+                            background-color: #FF4444;
+                            border-radius: 50% 50% 50% 0;
+                            transform: rotate(-45deg);
+                            border: 1px solid white;
+                            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+                            position: relative;
+                        ">
+                            <div style="
+                                width: 4px;
+                                height: 4px;
+                                background-color: #333;
+                                border-radius: 50%;
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%) rotate(45deg);
+                            "></div>
+                        </div>
+                    </div>
                     <span class="text-sm text-gray-600">Física</span>
                 </div>
                 <div class="flex items-center">
-                    <div class="w-4 h-4 rounded-full border-2 border-white shadow-sm mr-2"
-                        style="background-color: #FF8800;"></div>
+                    <div style="position: relative; width: 20px; height: 20px; margin-right: 8px;">
+                        <div style="
+                            width: 16px;
+                            height: 16px;
+                            background-color: #FF8800;
+                            border-radius: 50% 50% 50% 0;
+                            transform: rotate(-45deg);
+                            border: 1px solid white;
+                            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+                            position: relative;
+                        ">
+                            <div style="
+                                width: 4px;
+                                height: 4px;
+                                background-color: #333;
+                                border-radius: 50%;
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%) rotate(45deg);
+                            "></div>
+                        </div>
+                    </div>
                     <span class="text-sm text-gray-600">Psicológica</span>
                 </div>
                 <div class="flex items-center">
-                    <div class="w-4 h-4 rounded-full border-2 border-white shadow-sm mr-2"
-                        style="background-color: #8B00FF;"></div>
+                    <div style="position: relative; width: 20px; height: 20px; margin-right: 8px;">
+                        <div style="
+                            width: 16px;
+                            height: 16px;
+                            background-color: #8B00FF;
+                            border-radius: 50% 50% 50% 0;
+                            transform: rotate(-45deg);
+                            border: 1px solid white;
+                            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+                            position: relative;
+                        ">
+                            <div style="
+                                width: 4px;
+                                height: 4px;
+                                background-color: #333;
+                                border-radius: 50%;
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%) rotate(45deg);
+                            "></div>
+                        </div>
+                    </div>
                     <span class="text-sm text-gray-600">Sexual</span>
                 </div>
                 <div class="flex items-center">
-                    <div class="w-4 h-4 rounded-full border-2 border-white shadow-sm mr-2"
-                        style="background-color: #0088FF;"></div>
+                    <div style="position: relative; width: 20px; height: 20px; margin-right: 8px;">
+                        <div style="
+                            width: 16px;
+                            height: 16px;
+                            background-color: #0088FF;
+                            border-radius: 50% 50% 50% 0;
+                            transform: rotate(-45deg);
+                            border: 1px solid white;
+                            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+                            position: relative;
+                        ">
+                            <div style="
+                                width: 4px;
+                                height: 4px;
+                                background-color: #333;
+                                border-radius: 50%;
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%) rotate(45deg);
+                            "></div>
+                        </div>
+                    </div>
                     <span class="text-sm text-gray-600">Patrimonial</span>
                 </div>
                 <div class="flex items-center">
-                    <div class="w-4 h-4 rounded-full border-2 border-white shadow-sm mr-2"
-                        style="background-color: #00AA44;"></div>
+                    <div style="position: relative; width: 20px; height: 20px; margin-right: 8px;">
+                        <div style="
+                            width: 16px;
+                            height: 16px;
+                            background-color: #00AA44;
+                            border-radius: 50% 50% 50% 0;
+                            transform: rotate(-45deg);
+                            border: 1px solid white;
+                            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+                            position: relative;
+                        ">
+                            <div style="
+                                width: 4px;
+                                height: 4px;
+                                background-color: #333;
+                                border-radius: 50%;
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%) rotate(45deg);
+                            "></div>
+                        </div>
+                    </div>
                     <span class="text-sm text-gray-600">Moral</span>
                 </div>
             </div>
@@ -523,21 +637,41 @@
         return cores[tipo] || '#666666'; // Cor padrão (cinza)
     }
 
-    // Função para criar ícone colorido
+    // Função para criar ícone colorido no formato clássico de marcador do Google Maps
     function criarIconeColorido(cor) {
         return L.divIcon({
             className: 'custom-div-icon',
-            html: `<div style="
-                background-color: ${cor};
-                width: 20px;
-                height: 20px;
-                border-radius: 50%;
-                border: 3px solid white;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-                position: relative;
-            "></div>`,
-            iconSize: [20, 20],
-            iconAnchor: [10, 10]
+            html: `
+                <div style="position: relative;">
+                    <!-- Corpo principal do marcador (formato gota/balão) -->
+                    <div style="
+                        width: 32px;
+                        height: 32px;
+                        background-color: ${cor};
+                        border-radius: 50% 50% 50% 0;
+                        transform: rotate(-45deg);
+                        border: 2px solid white;
+                        box-shadow: 0 3px 8px rgba(0,0,0,0.35);
+                        position: relative;
+                        z-index: 2;
+                    ">
+                        <!-- Bolinha central -->
+                        <div style="
+                            width: 8px;
+                            height: 8px;
+                            background-color: #333;
+                            border-radius: 50%;
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%) rotate(45deg);
+                            z-index: 3;
+                        "></div>
+                    </div>
+                </div>
+            `,
+            iconSize: [32, 32],
+            iconAnchor: [16, 32]
         });
     }
 
