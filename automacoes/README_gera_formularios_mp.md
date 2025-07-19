@@ -39,7 +39,7 @@ python automacoes/gera_formularios_mp.py
 - **periodo_mp**: Data de validade (120-720 dias após solicitação)
 - **solicitada_mpu**: 90% são medidas de urgência
 - **tipo_de_violencia**: Distribuição baseada em estatísticas reais
-- **comarca_competente**: 70% têm comarca definida
+- **comarca_competente**: 100% têm comarca definida
 - **grau_parentesco_agressor**: Distribuição realista por parentesco
 
 ## 📊 Distribuições Estatísticas

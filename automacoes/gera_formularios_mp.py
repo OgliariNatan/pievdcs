@@ -103,7 +103,7 @@ def criar_formularios_mp_aleatorios(quantidade=500):
             vitima_selecionada = random.choice(vitimas_disponiveis)
             agressor_selecionado = random.choice(agressores_disponiveis)
             
-            # Verificar se já existe um formulário com essa combinação vítima-agressor
+            # Verificar se já existe um formulário com essa combinação vítima-agressor (Poderia pular esta verificação)
             if FormularioMedidaProtetiva.objects.filter(
                 vitima=vitima_selecionada, 
                 agressor=agressor_selecionado
@@ -142,6 +142,11 @@ def criar_formularios_mp_aleatorios(quantidade=500):
             # Comarca (100% dos casos têm comarca definida)
             comarca = random.choice(comarcas_disponiveis)
             
+            
+            # Seleciona município entre os municípios da comarca
+            municipios_comarca = comarca.municipios_abrangentes.all()
+            municipio_mp = random.choice(municipios_comarca) if municipios_comarca else None
+            
             # Criar o formulário
             formulario = FormularioMedidaProtetiva.objects.create(
                 data_solicitacao=data_aleatoria,
@@ -151,14 +156,12 @@ def criar_formularios_mp_aleatorios(quantidade=500):
                 solicitada_mpu=solicitada_mpu,
                 tipo_de_violencia=tipo_violencia,
                 comarca_competente=comarca,
-                grau_parentesco_agressor=grau_parentesco
+                grau_parentesco_agressor=grau_parentesco,
+                municipio_mp=municipio_mp
             )
             
             formularios_criados += 1
             
-            # Progresso a cada 50 registros
-            if (i + 1) % 50 == 0:
-                print(f"📋 Progresso: {i + 1}/{quantidade} formulários processados...")
                 
         except Exception as e:
             erros.append(f"Erro no registro {i + 1}: {str(e)}")
