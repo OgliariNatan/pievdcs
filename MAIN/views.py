@@ -188,16 +188,16 @@ def relatorios(request):
         },
 
         "bairros": [ #Implementar na localidade da ocorrencia e local neutro, não no local exato da ocorrencia
-            {"nome": "Novo Bairro", "lat": -26.771567, "lng": -53.190010, "casos": 10},
-            {"nome": "Centro", "lat": -26.7670, "lng": -53.1850, "casos": 20},
-            {"nome": "Morada do Sol", "lat": -26.7690, "lng": -53.1700, "casos": 15},
-            {"nome": "Padre Antonio", "lat": -26.7630, "lng": -53.1870, "casos": 25},
-            {"nome": "Linha Sanga Silva", "lat": -26.73157, "lng": -53.19992, "casos": 1},
-            {"nome": "Iraceminha", "lat": -26.823437, "lng": -53.273439, "casos": 5},
-            {"nome": "Flor do Sertão", "lat": -26.777475, "lng": -53.349358, "casos": 2},
-            {"nome": "São Miguel da Boa Vista", "lat": -26.692041, "lng": -53.257654, "casos": 3},
-            {"nome": "Tigrinhos", "lat": -26.686780, "lng": -53.157091, "casos": 8},
-            {"nome": "Santa Terezinha do Progresso", "lat": -26.618440, "lng": -53.198218, "casos": 4},
+            {"nome": "Novo Bairro", "lat": -26.771567, "lng": -53.190010, "casos": 10, "tipo_violencia": "Física"},
+            {"nome": "Centro", "lat": -26.7670, "lng": -53.1850, "casos": 20, "tipo_violencia": "Psicológica"},
+            {"nome": "Morada do Sol", "lat": -26.7690, "lng": -53.1700, "casos": 15, "tipo_violencia": "Sexual"},
+            {"nome": "Padre Antonio", "lat": -26.7630, "lng": -53.1870, "casos": 25, "tipo_violencia": "Patrimonial"},
+            {"nome": "Linha Sanga Silva", "lat": -26.73157, "lng": -53.19992, "casos": 1, "tipo_violencia": "Moral"},
+            {"nome": "Iraceminha", "lat": -26.823437, "lng": -53.273439, "casos": 5, "tipo_violencia": "Física"},
+            {"nome": "Flor do Sertão", "lat": -26.777475, "lng": -53.349358, "casos": 2, "tipo_violencia": "Patrimonial"}      ,
+            {"nome": "São Miguel da Boa Vista", "lat": -26.692041, "lng": -53.257654, "casos": 3, "tipo_violencia": "Moral"},
+            {"nome": "Tigrinhos", "lat": -26.686780, "lng": -53.157091, "casos": 8, "tipo_violencia": "Física"},
+            {"nome": "Santa Terezinha do Progresso", "lat": -26.618440, "lng": -53.198218, "casos": 4, "tipo_violencia": "Psicológica"},
         ],
         
         "Tipos_de_Violência": {
