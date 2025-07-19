@@ -4,7 +4,7 @@ from django.utils import timezone
 from sistema_justica.models.base import Vitima_dados, Agressor_dados, Municipio, Estado
 from MAIN.cadastros_padrao import agressor_padrao
 from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
-
+from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
 
 
 tipo_de_violencia_choices = (
@@ -63,6 +63,14 @@ class OcorrenciaBase(models.Model):
         max_length= 15,
         choices= grau_parentesco_agressor_choices,
         default='Conjuge',
+    )
+    
+    comarca_competente = models.ForeignKey(
+        ComarcasPoderJudiciario,
+        on_delete=models.CASCADE,
+        verbose_name='Comarca',
+        null=True, 
+        blank=True
     )
 
     #Municipio da ocorrencia
