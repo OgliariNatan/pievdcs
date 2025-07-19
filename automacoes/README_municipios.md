@@ -120,3 +120,6 @@ Para manter o script atualizado:
 
 **Problemas de encoding**:
 - O arquivo usa UTF-8, certificar que o terminal/IDE suporte caracteres especiais
+
+
+**Autor:** [@OgliariNatan](https://github.com/OgliariNatan)
