@@ -77,4 +77,4 @@ python manage.py shell -c "from automacoes.cria_estados import criar_estados; cr
 
 ---
 
-**Autor:** @OgliariNatan
+**Autor:** [@OgliariNatan](https://github.com/OgliariNatan)
