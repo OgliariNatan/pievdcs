@@ -118,6 +118,15 @@ DATABASES = {
     }
 }
 
+# Configuração do Cassandra para encaminhamentos e notificações
+CASSANDRA_CONFIG = {
+    'hosts': [config('CASSANDRA_HOST', default='127.0.0.1')],
+    'port': config('CASSANDRA_PORT', default=9042, cast=int),
+    'keyspace': config('CASSANDRA_KEYSPACE', default='pievdcs'),
+    'username': config('CASSANDRA_USER', default=''),
+    'password': config('CASSANDRA_PASSWORD', default=''),
+}
+
 
 # Password validation
 
