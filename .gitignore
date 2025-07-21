@@ -193,7 +193,7 @@ img_home/
 #Ignora pasta migrations
 migrations/
 
-
+Relatorio/
 
 codigo.txt
 *.png
