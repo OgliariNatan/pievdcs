@@ -91,5 +91,6 @@ class FormularioMedidaProtetiva(models.Model):
     class Meta:
         verbose_name = 'Formulario MP'
         verbose_name_plural = 'Formularios MP'
+        ordering = ['data_solicitacao']
     def __str__(self):
-        return f'Solicitação: {self.vitima}'
+        return f'Solicitação: {self.vitima} - ID: {self.ID}'

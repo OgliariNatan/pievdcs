@@ -4,8 +4,6 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-
-
 secao_choices = (
     ('seguranca_publica', 'Segurança Pública'),
     ('sistema_justica', 'Sistema de Justiça'),
@@ -44,18 +42,17 @@ class ConteudoHome(models.Model):
         on_delete=models.SET_NULL,
         null=True, blank=True,
         verbose_name="Autor",
-        related_name='conteudos_home',  # Adiciona um nome de relacionamento para o autor
+        related_name='conteudos_home', 
     )
     data_publicacao = models.DateTimeField(
-        #auto_now_add=True,
         default= timezone.now,
         verbose_name="Data de Publicação",
     )
 
     link = models.URLField(
         max_length=150,
-        null=True, blank= True,
-        verbose_name= "Link",
+        null=True, blank=True,
+        verbose_name="Link",
     )
     
     data_expiracao = models.DateTimeField(

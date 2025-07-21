@@ -31,6 +31,7 @@ class ComarcasPoderJudiciario(models.Model):
     class Meta:
         verbose_name = 'Comarca do Poder Judiciário'
         verbose_name_plural = 'Comarcas do Poder Judiciário'
+        ordering = ['nome']
 
     def __str__(self):
         return self.nome
