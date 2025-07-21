@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from sistema_justica.models.base import Agressor_dados, Municipio, Estado
 from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
-#from .penal import *
+
 
 
 

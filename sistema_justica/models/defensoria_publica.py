@@ -68,15 +68,29 @@ class FormularioMedidaProtetiva(models.Model):
         null=True, 
         blank=True
     )
-
+    municipio_mp = ChainedForeignKey(
+        Municipio,
+        chained_field="comarca_competente",
+        chained_model_field="comarca",
+        show_all=True,  # Altere para True para garantir que todos os municípios sejam exibidos
+        auto_choose=False,  # Altere para False para evitar seleção automática
+        sort=True,
+        verbose_name="Município do Fato",
+        null=True,
+        blank=True,  # Permita campo em branco para evitar erro de validação
+        help_text="Selecione apenas os municípios elegíveis para a comarca selecionada."
+    )
+    
     grau_parentesco_agressor = models.CharField(
-        max_length= 15,
-        choices= grau_parentesco_agressor_choices,
+        max_length=15,
+        choices=grau_parentesco_agressor_choices,
         default='Conjuge',
+        verbose_name="Grau de Parentesco com o Agressor"
     )
 
     class Meta:
         verbose_name = 'Formulario MP'
         verbose_name_plural = 'Formularios MP'
+        ordering = ['data_solicitacao']
     def __str__(self):
-        return f'Solicitação: {self.vitima}'
+        return f'Solicitação: {self.vitima} - ID: {self.ID}'
