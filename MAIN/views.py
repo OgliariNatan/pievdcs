@@ -8,6 +8,7 @@ from collections import defaultdict
 from sistema_justica.models.base import Vitima_dados
 from seguranca_publica.models.militar import OcorrenciaMilitar
 from seguranca_publica.models.civil import OcorrenciaCivil
+from seguranca_publica.models.penal import ModeloPenal
 from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
 from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
 from django.db import models, connection
@@ -24,18 +25,23 @@ def index_tailwind(request):
         Renderiza a página inicial com os conteúdos da página inicial.
     """
     itens  = ConteudoHome.objects.filter(publicado=True).order_by('secao','-data_publicacao')
-    #itens = ConteudoHome.objects.all().order_by('-data_publicacao')
+    
     conteudos = defaultdict(list)
-
-    medidas_protetivas_solicitadas_ocorrencias = (
-        OcorrenciaMilitar.objects.filter(status_MP='SO').count() + 
-        OcorrenciaCivil.objects.filter(status_MP='SO').count()
-    )
-
+    
     for item in itens:
         conteudos[item.secao].append(item)
 
     conteudos = dict(conteudos) 
+
+    medidas_protetivas_solicitadas_ocorrencias = (
+        OcorrenciaMilitar.objects.filter(status_MP='SO').count() + 
+        OcorrenciaCivil.objects.filter(status_MP='SO').count() + 
+        FormularioMedidaProtetiva.objects.filter(solicitada_mpu=True).count()
+    )
+
+    grupos_atendidos = ModeloPenal.objects.all().count()
+
+
     context = {
         "conteudos": conteudos,
         "title": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais",
@@ -43,7 +49,7 @@ def index_tailwind(request):
         'medidas_protetivas_solicitadas_ocorrencias': medidas_protetivas_solicitadas_ocorrencias,
         'encaminhamentos': random.randint(1,100),  # Criar variaveis para encaminhamentos
         'casos_mediados': random.randint(1,100),  # Criar variavel para casos mediados
-        'atendimentos': random.randint(1,1000),  # Criar variavel para atendimentos
+        'atendimentos': grupos_atendidos
     }
     return render(request, "index_tailwind.html", context)
 
