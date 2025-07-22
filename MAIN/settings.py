@@ -114,17 +114,9 @@ DATABASES = {
             "application_name": "pievdcs",
             "connect_timeout": 30,
             "client_encoding": "utf8",
+            #'timezone': 'America/Sao_Paulo',
         }
     }
-}
-
-# Configuração do Cassandra para encaminhamentos e notificações
-CASSANDRA_CONFIG = {
-    'hosts': [config('CASSANDRA_HOST', default='127.0.0.1')],
-    'port': config('CASSANDRA_PORT', default=9042, cast=int),
-    'keyspace': config('CASSANDRA_KEYSPACE', default='pievdcs'),
-    'username': config('CASSANDRA_USER', default=''),
-    'password': config('CASSANDRA_PASSWORD', default=''),
 }
 
 
@@ -197,7 +189,7 @@ SESSION_COOKIE_AGE = 9000  # x minutos em segundos
 SESSION_SAVE_EVERY_REQUEST = False  # Só renova se houver atividade
 
 CSRF_COOKIE_HTTPONLY = True       # Impede acesso via JavaScript (aumenta a segurança)
-SESSION_COOKIE_SAMESITE = 'Lax' # não aceita cookie deterceiros
+SESSION_COOKIE_SAMESITE = 'Lax' # não aceita cookie de terceiros
 #SESSION_COOKIE_SECURE = True #Só transmite informação se for seguro 'https'
 
 

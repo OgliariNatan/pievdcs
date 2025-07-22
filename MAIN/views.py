@@ -12,6 +12,7 @@ from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
 from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
 from django.db import models, connection
 from .models import ConteudoHome
+from .calculo_variaveis import *
 import random
 
 
@@ -132,7 +133,16 @@ def relatorios(request):
         Renderiza a página de relatórios com dados estatísticos.
     """
     
-    
+
+
+    resultado_verifica = tipoviolencia.verifica_maior_violencia_por_mes()
+    tipo_violencia_1 = resultado_verifica['mes_atual']['tipo']
+    tipo_violencia_1_total = resultado_verifica['mes_atual']['total']
+    tipo_violencia_1_porcentagem = resultado_verifica['mes_anterior']['porcentagem']
+
+    medidas_protetivas_calculo = medidasprotetivas.porcentagem_mes_anterior()
+    medidas_protetivas_solicitadas_ocorrencias = medidas_protetivas_calculo['total']
+    medidas_protetivas_solicitadas_ocorrencias_porcentagem = medidas_protetivas_calculo['porcentagem']
 
     context = {
         "title": "Painel Informativo",
@@ -142,9 +152,8 @@ def relatorios(request):
 
         "comarcas": ComarcasPoderJudiciario.objects.values_list('nome', flat=True).order_by('nome'),  
         
-
-        "medidas_protetivas_solicitadas_ocorrencias": 
-            OcorrenciaMilitar.objects.filter(status_MP='SO').count() + OcorrenciaCivil.objects.filter(status_MP='SO').count() + FormularioMedidaProtetiva.objects.filter(solicitada_mpu=True).count(),
+        "medidas_protetivas_solicitadas_ocorrencias_porcentagem": medidas_protetivas_solicitadas_ocorrencias_porcentagem,
+        "medidas_protetivas_solicitadas_ocorrencias": medidas_protetivas_solicitadas_ocorrencias,
         
         "cidades": {
             "labels": ["Maravilha", "Tigrinhos", "Iraceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
@@ -169,7 +178,6 @@ def relatorios(request):
         
         "etnias": {
             "labels": ["Branca", "Parda", "Preta", "Amarela", "Indígena"],
-            #"data": [random.randint(1,10), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,10)]
             "data": [
                 OcorrenciaMilitar.objects.filter(vitima__etnia='BR').count() + OcorrenciaCivil.objects.filter(vitima__etnia='BR').count() + FormularioMedidaProtetiva.objects.filter(vitima__etnia='BR').count(),
                 OcorrenciaMilitar.objects.filter(vitima__etnia='PA').count() + OcorrenciaCivil.objects.filter(vitima__etnia='PA').count() + FormularioMedidaProtetiva.objects.filter(vitima__etnia='PA').count(),
@@ -181,7 +189,6 @@ def relatorios(request):
 
         "classeEconomica": { #classeEconomicaChart
             "labels": ["Sem Renda", "Abaixo de R$1.518,00", "De R$3.636,00 a R$1.518,00", "De R$3.636,01 a R$7.017,63", "De R$7.017,64 a R$28.239,99", "Acima de R$28.240,00"],
-            #"data": [random.randint(1,90), random.randint(1,110), random.randint(1,50), random.randint(1,5), random.randint(1,5)]
             "data": [
                 OcorrenciaMilitar.objects.filter(vitima__classeEconomica='SR').count() + OcorrenciaCivil.objects.filter(vitima__classeEconomica='SR').count() + FormularioMedidaProtetiva.objects.filter(vitima__classeEconomica='SR').count(),
                 OcorrenciaMilitar.objects.filter(vitima__classeEconomica='AB').count() + OcorrenciaCivil.objects.filter(vitima__classeEconomica='AB').count() + FormularioMedidaProtetiva.objects.filter(vitima__classeEconomica='AB').count(),
@@ -216,6 +223,9 @@ def relatorios(request):
             ]
             #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
         },
+        "tipo_violencia_1" : tipo_violencia_1,
+        "tipo_violencia_1_total" : tipo_violencia_1_total,
+        "tipo_violencia_1_porcentagem" : tipo_violencia_1_porcentagem,
 
         "parentesco_do_agressor": { #parentescoChart
             "labels": ["Pai", "Tio", "Cônjuge", "Filho", "Cunhado", "Padrastro", "Outros"],
