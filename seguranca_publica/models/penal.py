@@ -2,6 +2,7 @@
 
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.exceptions import ValidationError
@@ -53,6 +54,8 @@ class tipo_atendimento(models.Model):
         choices=instituicao_choices, 
         default='Policia Penal'
     )
+    #busca_instituicao_responsavel = Q(filter=instituicao_responsavel)
+    
     tematica = models.CharField(
         max_length=100, 
         verbose_name="Temática", 

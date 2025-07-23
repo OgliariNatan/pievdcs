@@ -8,10 +8,12 @@ from collections import defaultdict
 from sistema_justica.models.base import Vitima_dados
 from seguranca_publica.models.militar import OcorrenciaMilitar
 from seguranca_publica.models.civil import OcorrenciaCivil
+from seguranca_publica.models.penal import ModeloPenal
 from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
 from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
 from django.db import models, connection
 from .models import ConteudoHome
+from .calculo_variaveis import *
 import random
 
 
@@ -23,18 +25,23 @@ def index_tailwind(request):
         Renderiza a página inicial com os conteúdos da página inicial.
     """
     itens  = ConteudoHome.objects.filter(publicado=True).order_by('secao','-data_publicacao')
-    #itens = ConteudoHome.objects.all().order_by('-data_publicacao')
+    
     conteudos = defaultdict(list)
-
-    medidas_protetivas_solicitadas_ocorrencias = (
-        OcorrenciaMilitar.objects.filter(status_MP='SO').count() + 
-        OcorrenciaCivil.objects.filter(status_MP='SO').count()
-    )
-
+    
     for item in itens:
         conteudos[item.secao].append(item)
 
     conteudos = dict(conteudos) 
+
+    medidas_protetivas_solicitadas_ocorrencias = (
+        OcorrenciaMilitar.objects.filter(status_MP='SO').count() + 
+        OcorrenciaCivil.objects.filter(status_MP='SO').count() + 
+        FormularioMedidaProtetiva.objects.filter(solicitada_mpu=True).count()
+    )
+
+    grupos_atendidos = ModeloPenal.objects.all().count()
+
+
     context = {
         "conteudos": conteudos,
         "title": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais",
@@ -42,7 +49,7 @@ def index_tailwind(request):
         'medidas_protetivas_solicitadas_ocorrencias': medidas_protetivas_solicitadas_ocorrencias,
         'encaminhamentos': random.randint(1,100),  # Criar variaveis para encaminhamentos
         'casos_mediados': random.randint(1,100),  # Criar variavel para casos mediados
-        'atendimentos': random.randint(1,1000),  # Criar variavel para atendimentos
+        'atendimentos': grupos_atendidos
     }
     return render(request, "index_tailwind.html", context)
 
@@ -132,7 +139,21 @@ def relatorios(request):
         Renderiza a página de relatórios com dados estatísticos.
     """
     
-    
+    dois_municipio = municipiosviolentos.municipios_mais_violentos(2)
+    municipio_primeiro=dois_municipio[0][0]
+    municipio_segundo=dois_municipio[1][0]
+
+
+    resultado_verifica = tipoviolencia.verifica_maior_violencia_por_mes()
+    tipo_violencia_1 = resultado_verifica['mes_atual']['tipo']
+    tipo_violencia_1_total = resultado_verifica['mes_atual']['total']
+    tipo_violencia_1_porcentagem = resultado_verifica['mes_anterior']['porcentagem']
+
+    medidas_protetivas_calculo = medidasprotetivas.porcentagem_mes_anterior()
+    medidas_protetivas_solicitadas_ocorrencias = medidas_protetivas_calculo['total']
+    medidas_protetivas_solicitadas_ocorrencias_porcentagem = medidas_protetivas_calculo['porcentagem']
+
+    grau_parentesco_comum = grauparentesco.parentesco_mais_comum()['grau_parentesco']
 
     context = {
         "title": "Painel Informativo",
@@ -142,9 +163,12 @@ def relatorios(request):
 
         "comarcas": ComarcasPoderJudiciario.objects.values_list('nome', flat=True).order_by('nome'),  
         
+        "medidas_protetivas_solicitadas_ocorrencias_porcentagem": medidas_protetivas_solicitadas_ocorrencias_porcentagem,
+        "medidas_protetivas_solicitadas_ocorrencias": medidas_protetivas_solicitadas_ocorrencias,
+        "municipio_primeiro": municipio_primeiro,
+        "municipio_segundo": municipio_segundo,
+        "grau_parentesco_comum": grau_parentesco_comum,
 
-        "medidas_protetivas_solicitadas_ocorrencias": 
-            OcorrenciaMilitar.objects.filter(status_MP='SO').count() + OcorrenciaCivil.objects.filter(status_MP='SO').count() + FormularioMedidaProtetiva.objects.filter(solicitada_mpu=True).count(),
         
         "cidades": {
             "labels": ["Maravilha", "Tigrinhos", "Iraceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
@@ -169,7 +193,6 @@ def relatorios(request):
         
         "etnias": {
             "labels": ["Branca", "Parda", "Preta", "Amarela", "Indígena"],
-            #"data": [random.randint(1,10), random.randint(1,100), random.randint(1,100), random.randint(1,10), random.randint(1,10)]
             "data": [
                 OcorrenciaMilitar.objects.filter(vitima__etnia='BR').count() + OcorrenciaCivil.objects.filter(vitima__etnia='BR').count() + FormularioMedidaProtetiva.objects.filter(vitima__etnia='BR').count(),
                 OcorrenciaMilitar.objects.filter(vitima__etnia='PA').count() + OcorrenciaCivil.objects.filter(vitima__etnia='PA').count() + FormularioMedidaProtetiva.objects.filter(vitima__etnia='PA').count(),
@@ -181,7 +204,6 @@ def relatorios(request):
 
         "classeEconomica": { #classeEconomicaChart
             "labels": ["Sem Renda", "Abaixo de R$1.518,00", "De R$3.636,00 a R$1.518,00", "De R$3.636,01 a R$7.017,63", "De R$7.017,64 a R$28.239,99", "Acima de R$28.240,00"],
-            #"data": [random.randint(1,90), random.randint(1,110), random.randint(1,50), random.randint(1,5), random.randint(1,5)]
             "data": [
                 OcorrenciaMilitar.objects.filter(vitima__classeEconomica='SR').count() + OcorrenciaCivil.objects.filter(vitima__classeEconomica='SR').count() + FormularioMedidaProtetiva.objects.filter(vitima__classeEconomica='SR').count(),
                 OcorrenciaMilitar.objects.filter(vitima__classeEconomica='AB').count() + OcorrenciaCivil.objects.filter(vitima__classeEconomica='AB').count() + FormularioMedidaProtetiva.objects.filter(vitima__classeEconomica='AB').count(),
@@ -216,6 +238,9 @@ def relatorios(request):
             ]
             #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
         },
+        "tipo_violencia_1" : tipo_violencia_1,
+        "tipo_violencia_1_total" : tipo_violencia_1_total,
+        "tipo_violencia_1_porcentagem" : tipo_violencia_1_porcentagem,
 
         "parentesco_do_agressor": { #parentescoChart
             "labels": ["Pai", "Tio", "Cônjuge", "Filho", "Cunhado", "Padrastro", "Outros"],

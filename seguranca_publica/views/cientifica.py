@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from .permission_group import grupos_permitidos
 
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['Polícia Cientifica'])       
+@grupos_permitidos(['Polícia Científica'])       
 def cientifica(request):
     contexto = {
         'title': 'Polícia Cientifica',
