@@ -4,10 +4,11 @@ from django.db.models import Q, Count
 from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
 from seguranca_publica.models.militar import OcorrenciaMilitar
 from seguranca_publica.models.civil import OcorrenciaCivil
-from seguranca_publica.models.base import tipo_de_violencia_choices
+from seguranca_publica.models.base import tipo_de_violencia_choices, grau_parentesco_agressor_choices
 
 TIPOS_VIOLENCIA = [tipo[0] for tipo in tipo_de_violencia_choices]
 LABELS_TIPO_VIOLENCIA = dict(tipo_de_violencia_choices)
+LABELS_TIPO_PARENTESCO = dict(grau_parentesco_agressor_choices)
 
 class TipoViolencia:
     def conta_violencias_por_mes(self, mes, ano):
@@ -135,8 +136,31 @@ class MunicipiosViolentos:
         ranking = sorted(contagem.items(), key=lambda x: x[1], reverse=True)
         return ranking[:top]
 
+class GrauPrarentesco:
+    """
+    Classe para calcular o grau de parentesco mais comum entre vítimas e agressores
+    """
+    def parentesco_mais_comum(self):
+        # Consulta para obter o grau de parentesco mais comum
+        parentescos = (
+            FormularioMedidaProtetiva.objects.values('grau_parentesco_agressor')
+            .annotate(total=Count('ID'))
+            .order_by('-total')
+        )
+        if parentescos:
+            tipo_mais_comum = parentescos[0]['grau_parentesco_agressor']
+            tipo_mais_comum_label = LABELS_TIPO_PARENTESCO.get(tipo_mais_comum, tipo_mais_comum)
+            return {
+            "grau_parentesco": tipo_mais_comum_label,
+            "total": parentescos[0]['total']
+            }
+        return None
+
+
+
 
 tipoviolencia = TipoViolencia()
 medidasprotetivas = MedidasProtetivas()
 municipiosviolentos = MunicipiosViolentos()
+grauparentesco = GrauPrarentesco()
 

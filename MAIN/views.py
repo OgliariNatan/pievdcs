@@ -153,6 +153,8 @@ def relatorios(request):
     medidas_protetivas_solicitadas_ocorrencias = medidas_protetivas_calculo['total']
     medidas_protetivas_solicitadas_ocorrencias_porcentagem = medidas_protetivas_calculo['porcentagem']
 
+    grau_parentesco_comum = grauparentesco.parentesco_mais_comum()['grau_parentesco']
+
     context = {
         "title": "Painel Informativo",
         "description": "Visualize o painel informativo estatístico gerados na plataforma.",
@@ -165,7 +167,9 @@ def relatorios(request):
         "medidas_protetivas_solicitadas_ocorrencias": medidas_protetivas_solicitadas_ocorrencias,
         "municipio_primeiro": municipio_primeiro,
         "municipio_segundo": municipio_segundo,
+        "grau_parentesco_comum": grau_parentesco_comum,
 
+        
         "cidades": {
             "labels": ["Maravilha", "Tigrinhos", "Iraceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
