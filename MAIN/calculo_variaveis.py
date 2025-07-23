@@ -1,6 +1,6 @@
 from datetime import date, timedelta
 from collections import Counter
-from django.db.models import Q
+from django.db.models import Q, Count
 from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
 from seguranca_publica.models.militar import OcorrenciaMilitar
 from seguranca_publica.models.civil import OcorrenciaCivil
@@ -101,9 +101,42 @@ class MedidasProtetivas:
             "total": solicitadas,
         }
 
+class MunicipiosViolentos:
+    """
+    Classe para calcular os municípios mais violentos
+    """
+    def municipios_mais_violentos(self, top=2):
+        # Ocorrências militares
+        militares = (
+            OcorrenciaMilitar.objects.values('municipio_ocorrencia__nome').annotate(total=Count('id'))
+        )
+        # Ocorrências civis
+        civis = (
+            OcorrenciaCivil.objects.values('municipio_ocorrencia__nome').annotate(total=Count('id'))
+        )
+        # Formulários de medida protetiva
+        formularios = (
+            FormularioMedidaProtetiva.objects.values('municipio_mp__nome').annotate(total=Count('ID'))
+        )
+
+        # Junta todos em um dicionário somando os totais
+        contagem = {}
+        for qs in [militares, civis]:
+            for item in qs:
+                nome = item['municipio_ocorrencia__nome']
+                if nome:
+                    contagem[nome] = contagem.get(nome, 0) + item['total']
+        for item in formularios:
+            nome = item['municipio_mp__nome']
+            if nome:
+                contagem[nome] = contagem.get(nome, 0) + item['total']
+
+        # Ordena do maior para o menor
+        ranking = sorted(contagem.items(), key=lambda x: x[1], reverse=True)
+        return ranking[:top]
 
 
 tipoviolencia = TipoViolencia()
 medidasprotetivas = MedidasProtetivas()
-
+municipiosviolentos = MunicipiosViolentos()
 

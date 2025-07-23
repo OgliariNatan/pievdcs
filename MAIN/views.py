@@ -139,6 +139,9 @@ def relatorios(request):
         Renderiza a página de relatórios com dados estatísticos.
     """
     
+    dois_municipio = municipiosviolentos.municipios_mais_violentos(2)
+    municipio_primeiro=dois_municipio[0][0]
+    municipio_segundo=dois_municipio[1][0]
 
 
     resultado_verifica = tipoviolencia.verifica_maior_violencia_por_mes()
@@ -160,7 +163,9 @@ def relatorios(request):
         
         "medidas_protetivas_solicitadas_ocorrencias_porcentagem": medidas_protetivas_solicitadas_ocorrencias_porcentagem,
         "medidas_protetivas_solicitadas_ocorrencias": medidas_protetivas_solicitadas_ocorrencias,
-        
+        "municipio_primeiro": municipio_primeiro,
+        "municipio_segundo": municipio_segundo,
+
         "cidades": {
             "labels": ["Maravilha", "Tigrinhos", "Iraceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]

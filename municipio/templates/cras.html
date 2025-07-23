@@ -3,56 +3,218 @@
 
 {% block titulo %}{{ title }}{% endblock %}
 {% block head %}
-<link rel="stylesheet" href="{% static 'css/cras.css' %}">
+<link rel="stylesheet" href="{% static 'css/creas.css' %}">
 {% endblock %}
-
-
-{% block nav %}
-<!-- <button class="btn button-sm" onclick="location.href='{% url 'index' %}'">Início</button> -->
-<!-- <button class="btn btn-sm" onclick="history.back()">Voltar</button> -->
-{% endblock %}
-
-
-
 
 {% block main_content %}
+<!-- Toast/Popup container -->
+<div id="popup-sucesso-container" class="fixed top-6 right-6 z-[9999]"></div>
 
-<div class="main-layout nav">
-    <!-- Barra lateral -->
-    <div class="sidebar button_link nav">
-        <button>
-            <a href="#">Atendimentos Realizados</a>
-        </button>
-        <button>
-            <a href="{% url 'encaminhamentos' %}">Encaminhamentos <span class="badge badge-warning"
-                    id="span_encaminhamentos">
-                    {{ encaminhamentos }}</span></a>
-        </button>
-        <button>
-            <a href="{% url 'notificacoes' notificacao %}">Notificações <span class="badge badge-danger"
-                    id="span_alert">{{ notificacao }}</span></a>
-        </button>
-        <button>
-            <a href="{% url 'relatorios' %}">Relatórios</a>
-        </button>
-    </div>
+<div class="flex min-h-[80vh] bg-gray-50">
+    <!-- Sidebar responsiva com efeito hover -->
+    <aside class="sidebar-container relative z-10 h-full
+        bg-gradient-to-b from-purple-600 to-purple-800 text-white shadow-xl py-6 px-2
+        flex flex-col gap-3
+        w-16 transition-all duration-300 ease-in-out rounded-r-3xl
+        overflow-hidden" style="min-width: 4rem;">
+
+        <!-- Header do sidebar -->
+        <div class="flex items-center gap-3 px-2 py-2 mb-2">
+            <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <i class="fas fa-solid fa-house-user text-purple-300"></i>
+            </div>
+            <span class="sidebar-label whitespace-nowrap font-semibold text-sm">
+                {{ title }}
+            </span>
+        </div>
+
+        <div class="h-px bg-white/20 mx-2 mb-2"></div>
+
+        <!-- Menu items -->
+        <nav class="flex flex-col gap-2 flex-1">
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i
+                        class="fas fa-hand-holding-heart text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span class="sidebar-label whitespace-nowrap font-medium">
+                    Atendimentos Realizados
+                </span>
+            </a>
+
+            <a href="{% url 'encaminhamentos' %}"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item relative">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i
+                        class="fas fa-share-square text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span class="sidebar-label whitespace-nowrap font-medium">
+                    Encaminhamentos
+                </span>
+                <span
+                    class="sidebar-badge bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded-full min-w-[1.5rem] text-center"
+                    id="span_encaminhamentos">{{ encaminhamentos }}</span>
+                <span
+                    class="collapsed-badge absolute -top-1 -right-1 bg-amber-400 text-amber-900 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
+                    style="font-size: 10px;">{{ encaminhamentos }}</span>
+            </a>
+
+            <a href="{% url 'notificacoes' notificacao %}"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item relative">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="fas fa-bell text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span class="sidebar-label whitespace-nowrap font-medium">
+                    Notificações
+                </span>
+                <span
+                    class="sidebar-badge bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[1.5rem] text-center"
+                    id="span_alert">{{ notificacao }}</span>
+                <span
+                    class="collapsed-badge absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
+                    style="font-size: 10px;">{{ notificacao }}</span>
+            </a>
+
+            <a href="{% url 'relatorios' %}"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i
+                        class="fas fa-chart-line text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span class="sidebar-label whitespace-nowrap font-medium">
+                    Relatórios
+                </span>
+            </a>
+        </nav>
+
+        <!-- Footer do sidebar -->
+        <div class="mt-auto pt-4 border-t border-white/20">
+            <div class="flex items-center gap-3 px-3 py-2">
+                <div class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user text-sm"></i>
+                </div>
+                <span class="sidebar-label whitespace-nowrap font-medium text-sm">
+                    {{ user.first_name }}
+                </span>
+            </div>
+        </div>
+    </aside>
 
     <!-- Conteúdo principal -->
-    <div id="root-content">
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 transition-all duration-300">
+        <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8 mb-6 border border-gray-100">
+            <div class="mb-6">
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-purple-600 mb-3 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-solid fa-house-user text-purple-300"></i>
+                    </div>
+                    {{ title }}
+                </h1>
+                <div class="space-y-1 text-sm sm:text-base">
+                    <p class="text-gray-700">
+                        <span class="font-medium">Usuário:</span>
+                        <span class="text-purple-600 font-semibold">{{ user.first_name }} {{ user.last_name }}</span>
+                    </p>
+                    <p class="text-gray-600">
+                        Bem-vindo à página do <span class="font-semibold text-purple-600">{{ title }}</span>
+                    </p>
+                </div>
+            </div>
 
-        <h1>{{ title }} &#x2014; Usuário: {{ user.first_name }} {{ user.last_name }}</h1>
-        <p>Bem-vindo a página da {{ title }}.</p>
-        <p>Esta página contém informações relevantes sobre a {{ title }} e seus serviços.</p>
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form.search }}
-        </form>
+            <!-- Seção de busca e ações -->
+            <div class="mb-6 flex flex-col md:flex-row gap-4 items-center">
+                <form action="" method="post" class="flex gap-2 w-full md:w-auto">
+                    {% csrf_token %}
+                    {{ form.search }}
+                    <input type="text"
+                        class="form-control-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200"
+                        placeholder="Nome ou CPF">
+                    <button
+                        class="btn btn-primary btn-sm bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition">Pesquisar</button>
+                    <button
+                        class="btn btn-secondary btn-sm bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition">Cadastrar</button>
+                </form>
+            </div>
 
-        <input type="text" class="form-control-sm" placeholder="Nome ou CPF">
-        <button class="btn btn-primary btn-sm">Pesquisar</button>
-        <button class="btn btn-secondary btn-sm">Cadastrar</button>
-        <p>Esta página contém informações relevantes sobre a {{ title }} e seus serviços.</p>
-        <p>{% lorem 10 p %}</p>
-    </div>
+            <div class="prose max-w-none text-gray-700 leading-relaxed">
+                <p>Esta página contém informações relevantes sobre a {{ title }} e seus serviços.</p>
+                <p>{% lorem 10 p %}</p>
+            </div>
+        </div>
+    </main>
 </div>
+
+<!-- Overlay para mobile quando sidebar estiver expandido -->
+<div class="fixed inset-0 bg-black/50 z-5 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"
+    id="sidebar-overlay"></div>
+
+<style>
+    .sidebar-container {
+        width: 4rem;
+        transition: width 0.3s ease-in-out;
+    }
+
+    .sidebar-container:hover {
+        width: 18rem;
+    }
+
+    .sidebar-label {
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .sidebar-container:hover .sidebar-label {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .sidebar-badge {
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        margin-left: auto;
+    }
+
+    .sidebar-container:hover .sidebar-badge {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .collapsed-badge {
+        opacity: 1;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .sidebar-container:hover .collapsed-badge {
+        opacity: 0;
+    }
+
+    @media (max-width: 1024px) {
+        .sidebar-container {
+            width: 4rem;
+        }
+
+        .sidebar-container.mobile-expanded {
+            width: 18rem;
+        }
+
+        .sidebar-container.mobile-expanded .sidebar-label {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .sidebar-container.mobile-expanded .sidebar-badge {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .sidebar-container.mobile-expanded .collapsed-badge {
+            opacity: 0;
+        }
+    }
+</style>
 {% endblock %}
