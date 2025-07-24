@@ -155,6 +155,19 @@ class GrauPrarentesco:
             "total": parentescos[0]['total']
             }
         return None
+    
+class BuscaReincidencia:
+    """
+    Classe para calcular a reincidência de ocorrências
+    """
+    def ocorrencias_reincidentes(self):
+        # Consulta para obter as ocorrências com mais de uma ocorrência do mesmo agressor
+        reincidentes = (
+            OcorrenciaMilitar.objects.values('agressor__nome')
+            .annotate(total=Count('id'))
+            .filter(total__gt=1)
+        )
+        return reincidentes
 
 
 
@@ -163,4 +176,4 @@ tipoviolencia = TipoViolencia()
 medidasprotetivas = MedidasProtetivas()
 municipiosviolentos = MunicipiosViolentos()
 grauparentesco = GrauPrarentesco()
-
+reincidencia = BuscaReincidencia()
