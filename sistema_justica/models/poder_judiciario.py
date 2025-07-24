@@ -26,7 +26,7 @@ class ComarcasPoderJudiciario(models.Model):
         horizontal=True,
         verbose_name='Municípios Abrangentes',
     )
-    
+    #Comentario para teste de commit
 
     class Meta:
         verbose_name = 'Comarca do Poder Judiciário'

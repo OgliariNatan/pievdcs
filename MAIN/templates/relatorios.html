@@ -119,9 +119,16 @@
             </p> -->
         </div>
         <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-purple-500">
-            <h3 class="text-sm font-medium text-gray-600">Reincidência</h3>
-            <p class="text-2xl font-bold text-gray-900">10% <span class="text-xs text-gray-400">(total)</span></p>
-            <p class="text-sm text-purple-600">Moderado -estático-</p>
+            <h3 class="text-sm font-medium text-gray-600">Reincidência Agressor</h3>
+            <p class="text-2xl font-bold text-gray-900">{{ reincidencia }}% <span
+                    class="text-xs text-gray-400">(total)</span></p>
+            <p class="text-sm text-purple-600">Moderado</p>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-pink-300">
+            <h3 class="text-sm font-medium text-gray-600">Reincidência Vitíma</h3>
+            <p class="text-2xl font-bold text-gray-900">{{ reincidencia }}% <span
+                    class="text-xs text-gray-400">(total)</span></p>
+            <p class="text-sm text-pink-100">Moderado</p>
         </div>
     </div>
     <br>
@@ -152,34 +159,38 @@
         </div>
         <!-- Gráfico de Rosca: Cidades -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Cidades (Mostrar nome da comarca) <p
-                    class="text-sm text-red-300">Estatístico</p>
+            <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Cidades (Mostrar nome da comarca)
+                <p class="text-sm text-red-300">Estatístico</p>
             </h2>
             <canvas id="cidadeChart"></canvas>
         </div>
 
         <!-- Gráfico de Barras: Idade -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-birthday-cake mr-2"></i> Distribuição
+            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-birthday-cake mr-2"></i>
+                Distribuição
                 por Idade</h2>
             <canvas id="idadeChart"></canvas>
             <div id="idade-legend" class="chart-legend mt-2"></div>
         </div>
         <!-- Gráfico de Barras: Tipo de violência -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-exclamation-circle mr-2"></i> Tipo de
+            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-exclamation-circle mr-2"></i> Tipo
+                de
                 Violência</h2>
             <canvas id="violenciaChart"></canvas>
         </div>
         <!-- Gráfico de Barras: Etnia -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-users mr-2"></i> Distribuição por Etnia
+            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-users mr-2"></i> Distribuição por
+                Etnia
             </h2>
             <canvas id="etniaChart"></canvas>
         </div>
         <!-- Gráfico de Barras: Classe Econômica -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-dollar-sign mr-2"></i> Classe Econômica
+            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-dollar-sign mr-2"></i> Classe
+                Econômica
             </h2>
             <canvas id="classeEconomicaChart"></canvas>
             <div id="classe-legend" class="chart-legend mt-2"></div>
@@ -193,7 +204,8 @@
         </div>
         <!-- Gráfico de Barras: Parentesco -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-home mr-2"></i> Grau de Parentesco do
+            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-home mr-2"></i> Grau de Parentesco
+                do
                 Agressor</h2>
             <canvas id="parentescoChart"></canvas>
         </div>

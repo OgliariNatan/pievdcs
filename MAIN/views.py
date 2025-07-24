@@ -154,7 +154,9 @@ def relatorios(request):
     medidas_protetivas_solicitadas_ocorrencias_porcentagem = medidas_protetivas_calculo['porcentagem']
 
     grau_parentesco_comum = grauparentesco.parentesco_mais_comum()['grau_parentesco']
-
+    #reincidencia = reincidencia.ocorrencias_reincidentes()
+    reincidencia = 5
+    #print(reincidencia)
     context = {
         "title": "Painel Informativo",
         "description": "Visualize o painel informativo estatístico gerados na plataforma.",
@@ -169,7 +171,9 @@ def relatorios(request):
         "municipio_segundo": municipio_segundo,
         "grau_parentesco_comum": grau_parentesco_comum,
 
-        
+        "reincidencia": reincidencia,
+
+
         "cidades": {
             "labels": ["Maravilha", "Tigrinhos", "Iraceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
             "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100)]
