@@ -101,8 +101,8 @@ class ModeloPenal(models.Model):
         Agressor_dados,
         verbose_name='Participantes do Grupo',
         related_name='agressores_atendidos',
-        blank=True,
-        
+        #horizontal=True,
+        blank=True
     )
     
     avaliacao = models.TextField(

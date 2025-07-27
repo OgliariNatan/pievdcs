@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
 from .permission_group import grupos_permitidos
+from django.template.loader import render_to_string
 from django.db.models import Func, F, Value, CharField
 from ..forms.penal import TipoAtendimentoForm, ModeloPenalForm
 from ..models.penal import tipo_atendimento, ModeloPenal
@@ -140,3 +141,39 @@ def cadastro_atendimento_penal_submit(request):
         else:
             return render(request, 'parcial/cadastro_atendimento_penal_form.html', {'form': form})
     return HttpResponse(status=405)
+
+
+@login_required(login_url=reverse_lazy('login'))
+def modal_busca_cpf(request):
+    html = render_to_string('parcial/modal_busca_cpf.html', {'resultado': None}, request)
+    return HttpResponse(html)
+
+@login_required(login_url=reverse_lazy('login'))
+def buscar_atendimentos_por_cpf(request):
+    resultado = ""
+    if request.method == "POST":
+        cpf = request.POST.get('cpf', '').replace('.', '').replace('-', '').strip()
+        if not cpf:
+            resultado = '<span class="text-red-600">CPF não informado.</span>'
+        else:
+            try:
+                agressor = Agressor_dados.objects.annotate(
+                    cpf_limpo=Func(
+                        Func(
+                            F('cpf'),
+                            Value('.'),
+                            Value(''),
+                            function='replace'
+                        ),
+                        Value('-'),
+                        Value(''),
+                        function='replace',
+                        output_field=CharField()
+                    )
+                ).get(cpf_limpo=cpf)
+                qtd = agressor.agressores_atendidos.count()
+                resultado = f'<span class="text-green-700 font-semibold">Total de atendimentos: {qtd}</span>'
+            except Agressor_dados.DoesNotExist:
+                resultado = '<span class="text-red-600">CPF não encontrado.</span>'
+    html = render_to_string('parcial/modal_busca_cpf.html', {'resultado': resultado}, request)
+    return HttpResponse(html)

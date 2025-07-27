@@ -142,6 +142,9 @@ class Vitima_dados(models.Model):
         unique=False, null=False, blank=False,
         #help_text="Data de nascimento da vítima",
     )
+    ativa = models.BooleanField(
+        default=True,
+    )
     sexo = models.CharField(
         max_length=1,
         choices=sexo_choices,
@@ -317,6 +320,9 @@ class Agressor_dados(models.Model):
         verbose_name="Sexo*",
         default="M",
         null=False, blank=False,
+    )
+    ativa = models.BooleanField(
+        default=True,
     )
     etnia = models.CharField(
         max_length=2,

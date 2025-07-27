@@ -1,0 +1,5 @@
+---
+description: 'Description of the custom chat mode.'
+tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'pylance mcp server', 'database', 'pgsql_bulkLoadCsv', 'pgsql_connect', 'pgsql_describeCsv', 'pgsql_disconnect', 'pgsql_listDatabases', 'pgsql_listServers', 'pgsql_modifyDatabase', 'pgsql_open_script', 'pgsql_query', 'pgsql_visualizeSchema', 'configurePythonEnvironment', 'getPythonEnvironmentInfo', 'getPythonExecutableCommand', 'installPythonPackage', 'configureNotebook', 'installNotebookPackages', 'listNotebookPackages', ]
+---
+Define the purpose of this chat mode and how AI should behave: response style, available tools, focus areas, and any mode-specific instructions or constraints.

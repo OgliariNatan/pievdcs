@@ -9,9 +9,11 @@ class OcorrenciaMilitarAdmin(admin.ModelAdmin):
     pass
 
     #list_display = all
-
-admin.site.register(tipo_atendimento)
 admin.site.register(ModeloPenal)
+class ModeloPenalAdmin(admin.ModelAdmin):
+    filter_horizontal = ('agressores_atendidos',)
+    
+admin.site.register(tipo_atendimento)
 admin.site.register(OcorrenciaMilitar, OcorrenciaMilitarAdmin)
 admin.site.register(Patrulhamento)
 admin.site.register(OcorrenciaCivil)
