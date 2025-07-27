@@ -67,7 +67,6 @@ class EstadoAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).order_by('nome')
     
-
     
 @admin.register(ComarcasPoderJudiciario)
 class ComarcasPoderJudiciarioAdmin(admin.ModelAdmin):

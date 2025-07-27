@@ -163,11 +163,23 @@ class BuscaReincidencia:
     def ocorrencias_reincidentes(self):
         # Consulta para obter as ocorrências com mais de uma ocorrência do mesmo agressor
         reincidentes = (
-            OcorrenciaMilitar.objects.values('agressor__nome')
-            .annotate(total=Count('id'))
-            .filter(total__gt=1)
+            FormularioMedidaProtetiva.objects.values('agressor__id', 'agressor__nome', 'agressor__cpf').annotate(total_mp=Count('ID')).filter(total_mp__gt=1).order_by('-total_mp')
         )
-        return reincidentes
+        
+        total_agressores = (
+            FormularioMedidaProtetiva.objects.values('agressor__id').distinct().count()
+        )
+        qtd_reincidentes_agressor = reincidentes.count()
+        
+        porcentagem_agressor_reincidente = round((qtd_reincidentes_agressor / total_agressores) * 100, 2) if total_agressores > 0 else 0
+        print(porcentagem_agressor_reincidente)
+        
+        
+        return {
+            "lista" : list(reincidentes),
+            "reincidencia_agressor" : porcentagem_agressor_reincidente,
+            "reincidencia_vitima" : 6
+        }
 
 
 
@@ -177,3 +189,6 @@ medidasprotetivas = MedidasProtetivas()
 municipiosviolentos = MunicipiosViolentos()
 grauparentesco = GrauPrarentesco()
 reincidencia = BuscaReincidencia()
+
+
+
