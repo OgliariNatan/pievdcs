@@ -77,4 +77,5 @@ class ComarcasPoderJudiciarioAdmin(admin.ModelAdmin):
 
 @admin.register(FormularioMedidaProtetiva)
 class DefensiriaPublicaFormulario(admin.ModelAdmin):
-    list_display = ('vitima', 'agressor')
+    list_display = ('ID', 'vitima', 'agressor')
+    ordering = ('-ID',)

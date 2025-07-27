@@ -69,3 +69,6 @@ class OcorrenciaMilitar(OcorrenciaBase):
     class Meta:
         verbose_name = "Inserção da Polícia Militar"
         verbose_name_plural = "Inserções da Polícia Militar"
+
+
+

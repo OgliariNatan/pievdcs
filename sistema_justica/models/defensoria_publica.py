@@ -71,14 +71,14 @@ class FormularioMedidaProtetiva(models.Model):
     municipio_mp = ChainedForeignKey(
         Municipio,
         chained_field="comarca_competente",
-        chained_model_field="comarca",
+        chained_model_field="municipios_abrangentes",
         show_all=True,  # Altere para True para garantir que todos os municípios sejam exibidos
         auto_choose=False,  # Altere para False para evitar seleção automática
         sort=True,
         verbose_name="Município do Fato",
         null=True,
         blank=True,  # Permita campo em branco para evitar erro de validação
-        help_text="Selecione apenas os municípios elegíveis para a comarca selecionada."
+        #help_text="Selecione apenas os municípios elegíveis para a comarca selecionada."
     )
     
     grau_parentesco_agressor = models.CharField(
