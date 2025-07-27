@@ -101,8 +101,8 @@ class ModeloPenal(models.Model):
         Agressor_dados,
         verbose_name='Participantes do Grupo',
         related_name='agressores_atendidos',
+        limit_choices_to={'ativo': True},
         blank=True,
-        
     )
     
     avaliacao = models.TextField(
