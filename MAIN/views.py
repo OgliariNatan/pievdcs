@@ -157,12 +157,14 @@ def relatorios(request):
 
     #reincidencias
     reincidencias = reincidencia.ocorrencias_reincidentes()
-    for item in reincidencias["lista"]:
-            print(f"Agressor: {item['agressor__nome']} (CPF: {item['agressor__cpf']}) - MPs: {item['total_mp']}")
+    # x= 1
+    # for item in reincidencias["lista"]:
+    #         print(f"Agressor{x}: {item['agressor__nome']} (CPF: {item['agressor__cpf']}) - MPs: {item['total_mp']}")
+    #         x+=1
     val_count_porcentagem = reincidencias["reincidencia_agressor"]
     val_count = len(reincidencias["lista"])
     
-    print(val_count)
+    #print(val_count)
     context = {
         "title": "Painel Informativo",
         "description": "Visualize o painel informativo estatístico gerados na plataforma.",
@@ -178,7 +180,7 @@ def relatorios(request):
         "grau_parentesco_comum": grau_parentesco_comum,
 
         "reincidencia": val_count_porcentagem,
-
+        "total_reincidencias": val_count,
 
         "cidades": {
             "labels": ["Maravilha", "Tigrinhos", "Iraceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],

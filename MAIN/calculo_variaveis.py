@@ -172,7 +172,7 @@ class BuscaReincidencia:
         qtd_reincidentes_agressor = reincidentes.count()
         
         porcentagem_agressor_reincidente = round((qtd_reincidentes_agressor / total_agressores) * 100, 2) if total_agressores > 0 else 0
-        print(porcentagem_agressor_reincidente)
+        #print(porcentagem_agressor_reincidente)
         
         
         return {
