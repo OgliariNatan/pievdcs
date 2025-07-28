@@ -64,7 +64,7 @@ class FormularioMedidaProtetiva(models.Model):
     comarca_competente = models.ForeignKey(
         ComarcasPoderJudiciario,
         on_delete=models.CASCADE,
-        verbose_name='Comarca',
+        verbose_name='Comarca Competente',
         null=True, 
         blank=True
     )
@@ -72,7 +72,7 @@ class FormularioMedidaProtetiva(models.Model):
         Municipio,
         chained_field="comarca_competente",
         chained_model_field="municipios_abrangentes",
-        show_all=True,  # Altere para True para garantir que todos os municípios sejam exibidos
+        show_all=False,  # Altere para True para garantir que todos os municípios sejam exibidos
         auto_choose=False,  # Altere para False para evitar seleção automática
         sort=True,
         verbose_name="Município do Fato",
