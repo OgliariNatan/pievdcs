@@ -81,6 +81,13 @@ class FormularioMedidaProtetiva(models.Model):
         #help_text="Selecione apenas os municípios elegíveis para a comarca selecionada."
     )
     
+    bairro_mp = models.CharField(
+        max_length=100,
+        verbose_name='Bairro:',
+        null=True, 
+        blank=False
+    )
+
     grau_parentesco_agressor = models.CharField(
         max_length=15,
         choices=grau_parentesco_agressor_choices,
@@ -88,6 +95,14 @@ class FormularioMedidaProtetiva(models.Model):
         verbose_name="Grau de Parentesco com o Agressor"
     )
 
+    filhos = ChainedManyToManyField(
+        Filhos_dados,
+        chained_field="agressor",
+        chained_model_field="agressor",
+        verbose_name='Filhos',
+        blank=True,
+        null=True
+    )
     class Meta:
         verbose_name = 'Formulario MP'
         verbose_name_plural = 'Formularios MP'
