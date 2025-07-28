@@ -22,3 +22,5 @@ class CadastroMedidaProtetiva(forms.ModelForm):
         self.fields['data_solicitacao'].widget.attrs.update({'type': 'datetime-local'})
         self.fields['periodo_mp'].widget.attrs.update({'class': 'form-control form-control-sm border border-gray-400 rounded-xl'})
         self.fields['solicitada_mpu'].widget.attrs.update({'class': 'form-check-input'})
+        self.fields['comarca_competente'].widget_attrs.update({'id' : 'id_comarca_competente'})
+        self.fields['municipio_mp'].widget_attrs.update({'id' : 'id_municipio_mp'})

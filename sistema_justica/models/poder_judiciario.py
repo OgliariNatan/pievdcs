@@ -19,6 +19,7 @@ class ComarcasPoderJudiciario(models.Model):
         Municipio,
         chained_field="estado",
         chained_model_field="estado",
+        related_name='comarcas_abrangentes',
         auto_choose=True,
         #sort=True,
         blank=True,
