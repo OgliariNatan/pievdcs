@@ -100,23 +100,7 @@ def cadastro_municipio_submit(request):
     return HttpResponse(status=405)
 
 
-# @csrf_exempt
-# def chat_ia(request):
-#     if request.method == "POST":
-#         msg = request.POST.get("mensagem", "")
-#         resposta = f"Simulação de resposta jurídica para: '{msg}'"
-#         html = f"""
-#         <div class='flex justify-end'>
-#             <div class='bg-purple-600 text-white rounded-xl p-3 max-w-xs'>{msg}</div>
-#         </div>
-#         <div class='flex items-start gap-2'>
-#             <div class='w-7 h-7 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center'>
-#                 <i class='fas fa-robot text-xs'></i>
-#             </div>
-#             <div class='bg-gray-100 rounded-xl p-3 max-w-xs'>{resposta}</div>
-#         </div>
-#         """
-#         return HttpResponse(html)
+
     
 @csrf_exempt
 @login_required(login_url=reverse_lazy('login'))

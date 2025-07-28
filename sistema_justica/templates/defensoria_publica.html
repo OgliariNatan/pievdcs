@@ -145,7 +145,7 @@
                 <button
                     class="group bg-pink-500 hover:bg-pink-400 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
                     hx-get="{% url 'sistema_justica:cadastro_vitima_form' %}" hx-target="#modal-vitima"
-                    hx-swap="innerHTML">
+                    hx-swap="innerHTML" hx-indicator="#spinner">
                     <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                         <i class="fas fa-female text-sm"></i>
                     </div>
@@ -154,8 +154,8 @@
 
                 <button
                     class="group bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
-                    hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-content"
-                    hx-swap="innerHTML">
+                    hx-get="{% url 'sistema_justica:cadastro_mpu' %}" hx-target="#modal-mpu" hx-swap="innerHTML"
+                    hx-indicator="#spinner">
                     <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                         <i class="fas fa-thin fa-hands-holding-child"></i>
                     </div>
@@ -164,7 +164,7 @@
 
                 <button
                     class="group bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
-                    hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-content"
+                    hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-content1"
                     hx-swap="innerHTML">
                     <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                         <i class="fas fa-thin fa-circle-info"></i>
@@ -192,6 +192,8 @@
                 </div>
 
                 <div id="modal-vitima"> </div>
+                <div id="modal-mpu"> </div>
+                <div id="modal-content1"> </div>
 
                 <!-- Conteúdo lorem ipsum -->
                 <div class="bg-gray-50 rounded-xl p-6">

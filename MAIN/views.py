@@ -154,9 +154,17 @@ def relatorios(request):
     medidas_protetivas_solicitadas_ocorrencias_porcentagem = medidas_protetivas_calculo['porcentagem']
 
     grau_parentesco_comum = grauparentesco.parentesco_mais_comum()['grau_parentesco']
-    #reincidencia = reincidencia.ocorrencias_reincidentes()
-    reincidencia = 5
-    #print(reincidencia)
+
+    #reincidencias
+    reincidencias = reincidencia.ocorrencias_reincidentes()
+    # x= 1
+    # for item in reincidencias["lista"]:
+    #         print(f"Agressor{x}: {item['agressor__nome']} (CPF: {item['agressor__cpf']}) - MPs: {item['total_mp']}")
+    #         x+=1
+    val_count_porcentagem = reincidencias["reincidencia_agressor"]
+    val_count = len(reincidencias["lista"])
+    
+    #print(val_count)
     context = {
         "title": "Painel Informativo",
         "description": "Visualize o painel informativo estatístico gerados na plataforma.",
@@ -171,8 +179,8 @@ def relatorios(request):
         "municipio_segundo": municipio_segundo,
         "grau_parentesco_comum": grau_parentesco_comum,
 
-        "reincidencia": reincidencia,
-
+        "reincidencia": val_count_porcentagem,
+        "total_reincidencias": val_count,
 
         "cidades": {
             "labels": ["Maravilha", "Tigrinhos", "Iraceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
