@@ -16,10 +16,13 @@ from .models import ConteudoHome
 from .calculo_variaveis import *
 import random
 
+from MAIN.decoradores.calcula_tempo import calcula_tempo
+
 
 
 print(f'\n\nBanco em uso: {connection.vendor}\n\n--------------------------------------------')
 
+@calcula_tempo
 def index_tailwind(request):
     """
         Renderiza a página inicial com os conteúdos da página inicial.
@@ -134,6 +137,7 @@ def notificacoes(request, notificacoes=0):
     }
     return render(request, "notificacoes.html", context)
 
+@calcula_tempo
 def relatorios(request):
     """
         Renderiza a página de relatórios com dados estatísticos.
