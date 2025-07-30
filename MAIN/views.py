@@ -30,11 +30,14 @@ def index_tailwind(request):
     itens  = ConteudoHome.objects.filter(publicado=True).order_by('secao','-data_publicacao')
     
     conteudos = defaultdict(list)
-    
+
     for item in itens:
         conteudos[item.secao].append(item)
 
     conteudos = dict(conteudos) 
+
+    
+
 
     medidas_protetivas_solicitadas_ocorrencias = (
         OcorrenciaMilitar.objects.filter(status_MP='SO').count() + 
