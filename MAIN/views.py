@@ -16,10 +16,13 @@ from .models import ConteudoHome
 from .calculo_variaveis import *
 import random
 
+from MAIN.decoradores.calcula_tempo import calcula_tempo
+
 
 
 print(f'\n\nBanco em uso: {connection.vendor}\n\n--------------------------------------------')
 
+@calcula_tempo
 def index_tailwind(request):
     """
         Renderiza a página inicial com os conteúdos da página inicial.
@@ -27,11 +30,14 @@ def index_tailwind(request):
     itens  = ConteudoHome.objects.filter(publicado=True).order_by('secao','-data_publicacao')
     
     conteudos = defaultdict(list)
-    
+
     for item in itens:
         conteudos[item.secao].append(item)
 
     conteudos = dict(conteudos) 
+
+    
+
 
     medidas_protetivas_solicitadas_ocorrencias = (
         OcorrenciaMilitar.objects.filter(status_MP='SO').count() + 
@@ -103,7 +109,7 @@ def pre_visualizacao_conteudo(request, pk):
     }
     return render(request, "pre_visualizacao_conteudo.html", context)
 
-
+@calcula_tempo
 @login_required
 def home(request):
     context = {
@@ -134,6 +140,7 @@ def notificacoes(request, notificacoes=0):
     }
     return render(request, "notificacoes.html", context)
 
+@calcula_tempo
 def relatorios(request):
     """
         Renderiza a página de relatórios com dados estatísticos.

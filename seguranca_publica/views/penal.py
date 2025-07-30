@@ -11,8 +11,10 @@ from sistema_justica.models.base import Agressor_dados
 from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
-# -*- coding: utf-8 -*-
 
+from MAIN.decoradores.calcula_tempo import calcula_tempo
+
+@calcula_tempo
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Polícia Penal'])
 def penal(request):

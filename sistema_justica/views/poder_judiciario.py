@@ -13,8 +13,9 @@ from ..models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio,
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 
+from MAIN.decoradores.calcula_tempo import calcula_tempo
 
-
+@calcula_tempo
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Poder Judiciário',])
 def poder_judiciario(request):
@@ -28,6 +29,7 @@ def poder_judiciario(request):
     }
     return render(request, "judiciario_IA.html", contexto)
 
+@calcula_tempo
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_vitima_form(request):
     form = CadastroVitimaForm()
@@ -51,6 +53,7 @@ def cadastro_vitima_submit(request):
         return render(request, "parcial/cadastro_vitima_form.html", {"form": form})
     return HttpResponse(status=405)
 
+@calcula_tempo
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_agressor_form(request):
     form = CadastroAgressorForm()
@@ -101,7 +104,7 @@ def cadastro_municipio_submit(request):
 
 
 
-    
+@calcula_tempo
 @csrf_exempt
 @login_required(login_url=reverse_lazy('login'))
 def chat_ia(request):
