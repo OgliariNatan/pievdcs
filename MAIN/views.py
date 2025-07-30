@@ -106,7 +106,7 @@ def pre_visualizacao_conteudo(request, pk):
     }
     return render(request, "pre_visualizacao_conteudo.html", context)
 
-
+@calcula_tempo
 @login_required
 def home(request):
     context = {
