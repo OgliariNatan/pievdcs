@@ -7,7 +7,7 @@
 
     @comando:
       python manage.py shell
-      >>> from automacoes.cria_comarcas_judiciario import cadastrar_comarcas_judiciario_sc
+      >>> from automacoes.cria_comarcas import cadastrar_comarcas_judiciario_sc
       >>> cadastrar_comarcas_judiciario_sc()
 """
 
@@ -41,7 +41,7 @@ comarcas_sc = {
     "Capinzal": ["Capinzal", "Lacerdópolis", "Ouro", "Piratuba", "Lacerdópolis"],
     "Capivari de Baixo": ["Capivari de Baixo"],
     "Catanduvas": ["Catanduvas", "Jaborá", "Vargem Bonita"],
-    "Chapecó": ["Chapecó", "Caxambu do Sul", "Nova Itaberaba", "Cordilheira Alta", "Guatambu", "Paial", "Planalto Alegre"], 
+    "Chapecó": ["Chapecó", "Caxambu do Sul", "Nova Itaberaba", "Cordilheira Alta", "Guatambú", "Paial", "Planalto Alegre"], 
     "Concórdia": ["Concórdia", "Irani", "Alto Bela Vista", "Peritiba", "Presidente Castelo Branco"],
     "Coronel Freitas": ["Coronel Freitas", "União do Oeste", "Águas Frias", "Jardinópolis"],
     "Correia Pinto": ["Correia Pinto", "Ponte Alta"],
@@ -65,7 +65,7 @@ comarcas_sc = {
     "Indaial": ["Indaial"],
     "Ipumirim": ["Ipumirim", "Arabutã", "Lindóia do Sul"],
     "Itá": ["Itá"],
-    "Itaiópolis": ["Itaiópolis"],
+    "Itaiópolis": ["Itaiopolis"],
     "Itajaí": ["Itajaí"],
     "Itapema": ["Itapema"],
     "Itapiranga": ["Itapiranga", "São João do Oeste", "Tunápolis"],
@@ -77,14 +77,14 @@ comarcas_sc = {
     "Joinville": ["Joinville"],
     "Lages": ["Lages", "Bocaina do Sul", "São José do Cerrito", "Painel"], 
     "Laguna": ["Laguna", "Pescaria Brava"],
-    "Lauro Müller": ["Lauro Müller"],
+    "Lauro Müller": ["Lauro Muller"],
     "Lebon Régis": ["Lebon Régis"],
     "Mafra": ["Mafra"],
     "Maravilha": ["Maravilha", "Flor do Sertão", "Iraceminha", "São Miguel da Boa Vista", "Tigrinhos"],
     "Meleiro": ["Meleiro", "Morro Grande"],
     "Modelo": ["Modelo", "Serra Alta", "Sul Brasil", "Bom Jesus do Oeste"],
     "Mondaí": ["Mondaí", "Iporã do Oeste", "Riqueza"],
-    "Navegantes": ["Navegantes", "Luis Alves"],
+    "Navegantes": ["Navegantes", "Luiz Alves"],
     "Orleans": ["Orleans"],
     "Otacílio Costa": ["Otacílio Costa", "Palmeira"],
     "Palhoça": ["Palhoça"],
@@ -103,7 +103,7 @@ comarcas_sc = {
     "Rio do Sul": ["Rio do Sul", "Agronômica", "Aurora", "Lontras", "Presidente Nereu"],
     "Rio Negrinho": ["Rio Negrinho"],
     "Santa Cecília": ["Santa Cecília", "Timbó Grande"],
-    "Santa Rosa do Sul": ["Santa Rosa do Sul", "São João do Sul", "Praia Grande", "Passos de Torres"],
+    "Santa Rosa do Sul": ["Santa Rosa do Sul", "São João do Sul", "Praia Grande", "Passo de Torres"],
     "Santo Amaro da Imperatriz": ["Santo Amaro da Imperatriz", "Angelina", "Rancho Queimado", "Águas Mornas", "Anitápolis", "São Bonifácio"],
     "São Bento do Sul": ["São Bento do Sul", "Campo Alegre"],
     "São Carlos": ["São Carlos", "Águas de Chapecó", "Cunhataí"],
