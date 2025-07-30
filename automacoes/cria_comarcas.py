@@ -72,10 +72,10 @@ comarcas_sc = {
     "Itapoá": ["Itapoá"],
     "Ituporanga": ["Ituporanga", "Leoberto Leal", "Atalanta", "Chapadão do Lageado", "Imbuia", "Petrolândia", "Vidal Ramos"],
     "Jaguaruna": ["Jaguaruna", "Treze de Maio", "Sangão"],
-    "Jaraguá do Sul": ["Jaraguá do Sul", "Corupá", "Schroeder"],
+    "Jaraguá do Sul": ["Jaraguá do Sul", "Corupá"],
     "Joaçaba": ["Joaçaba", "Água Doce", "Ibicaré", "Luzerna", "Treze Tílias"],
     "Joinville": ["Joinville"],
-    "Lages": ["Lages", "Bocaina do Sul", "Capão Alto", "Painel", "Palmeira"],
+    "Lages": ["Lages", "Bocaina do Sul", "São José do Cerrito", "Painel"], #Falta para Baixo
     "Laguna": ["Laguna"],
     "Lauro Müller": ["Lauro Müller", "Treviso"],
     "Lebon Régis": ["Lebon Régis"],
