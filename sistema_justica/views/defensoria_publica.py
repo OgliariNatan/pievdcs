@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from .permission_group import grupos_permitidos
 from sistema_justica.forms.cadastro_mpu import CadastroMedidaProtetiva
-
+from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 
 
@@ -21,6 +21,7 @@ def defensoria_publica(request):
     }
     return render(request, "defensoria_publica.html", contexto)
 
+@calcula_tempo
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Defensoria Pública', 'Ministério Público',])
 def cadastro_mpu(request):
