@@ -150,6 +150,10 @@ def relatorios(request):
     municipio_primeiro=dois_municipio[0][0]
     municipio_segundo=dois_municipio[1][0]
 
+    
+    comarcas_com_mp = pegarcomarcascommp.pegar_comarcas_com_mp()
+    #print(f"Comarcas com Medidas Protetivas: {comarcas_com_mp}")
+
 
     resultado_verifica = tipoviolencia.verifica_maior_violencia_por_mes()
     tipo_violencia_1 = resultado_verifica['mes_atual']['tipo']
@@ -188,6 +192,12 @@ def relatorios(request):
 
         "reincidencia": val_count_porcentagem,
         "total_reincidencias": val_count,
+
+        "comarcas_com_mp": {
+            "labels": [comarca['comarca_competente__nome'] for comarca in comarcas_com_mp],
+            "data": [comarca['total'] for comarca in comarcas_com_mp]
+        },
+
 
         "cidades": {
             "labels": ["Maravilha", "Tigrinhos", "Iraceminha", "Santa Terezinha do Progresso", "São Miguel da Boa Vista", "Flor do Sertão"],
