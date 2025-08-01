@@ -4,15 +4,34 @@
 import time
 import socket
 import uuid
+from functools import wraps
 
 def calcula_tempo(funcao):
-    def wrapper(*args, **kwargs):
+    @wraps(funcao)
+    def wrapper(request, *args, **kwargs):
         inicio = time.time()
-        resultado = funcao(*args, **kwargs)
+        
+        # Captura o IP real do cliente considerando proxies reversos
+        ip_cliente = request.META.get('HTTP_X_FORWARDED_FOR')
+        if ip_cliente:
+            # Em caso de múltiplos proxies, pega o primeiro IP
+            ip_cliente = ip_cliente.split(',')[0].strip()
+        else:
+            # Fallback para REMOTE_ADDR se não houver proxy
+            ip_cliente = request.META.get('REMOTE_ADDR', 'IP não disponível')
+        
+        # Captura informações do servidor (para debug)
+        ip_servidor = socket.gethostbyname(socket.gethostname())
+        hostname_servidor = socket.gethostname()
+        
+        resultado = funcao(request, *args, **kwargs)
         fim = time.time()
+        
         print('----------------------------------------')
-        print(f'IP do acesso: {socket.gethostbyname(socket.gethostname())}\t{socket.gethostname()}\tMAC: {uuid.getnode()}')
+        print(f'IP do cliente: {ip_cliente}')
+        #print(f'IP do servidor: {ip_servidor}\tHostname: {hostname_servidor}\tMAC: {uuid.getnode()}')
         print(f"Tempo de execução do {funcao.__name__}: {fim - inicio:.4f} segundos")
-        #print(f'Endereço MAC: {uuid.getnode()}')
+        print('----------------------------------------')
+        
         return resultado
-    return wrapper 
+    return wrapper
