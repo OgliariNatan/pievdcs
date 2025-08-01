@@ -9,7 +9,7 @@ Para uso em ambiente de desenvolvimento para popular o banco com dados fictício
     >>> from automacoes.gera_agressores import criar_agressores_aleatorios
     >>> criar_agressores_aleatorios()
 
-@autor: GitHub Copilot
+@autor: OgliariNatan
 @data: 19/07/2025
 """
 
