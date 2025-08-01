@@ -9,7 +9,7 @@ Para uso em ambiente de desenvolvimento para popular o banco com dados fictício
     >>> from automacoes.gera_vitimas import criar_vitimas_aleatorias
     >>> criar_vitimas_aleatorias()
 
-@autor: GitHub Copilot
+@autor: ogliarinatan
 @data: 19/07/2025
 """
 
@@ -39,9 +39,9 @@ def gerar_cpf_ficticio():
 
 
 def gerar_data_nascimento():
-    """Gera uma data de nascimento aleatória entre 18 e 80 anos."""
+    """Gera uma data de nascimento aleatória entre 15 e 80 anos."""
     hoje = date.today()
-    idade_min = 18
+    idade_min = 15
     idade_max = 80
     
     # Calcula as datas limites
@@ -130,7 +130,7 @@ RUAS = [
 
 def criar_vitimas_aleatorias(quantidade=1000):
     """
-    Cria vítimas com dados aleatórios realísticos para o sistema PIEVDCS.
+    Cria vítimas com dados aleatórios para o sistema PIEVDCS.
     
     Args:
         quantidade (int): Número de vítimas a serem criadas (padrão: 1000)
@@ -281,47 +281,6 @@ def limpar_vitimas_teste():
         print(f"🗑️  {count} vítimas foram removidas do banco de dados.")
     else:
         print("❌ Operação cancelada.")
-
-
-def estatisticas_vitimas():
-    """Mostra estatísticas detalhadas das vítimas cadastradas."""
-    total = Vitima_dados.objects.count()
-    
-    if total == 0:
-        print("📊 Nenhuma vítima encontrada no banco de dados.")
-        return
-    
-    print(f"\n📊 ESTATÍSTICAS DAS VÍTIMAS CADASTRADAS")
-    print("="*50)
-    print(f"Total de vítimas: {total}")
-    
-    # Por estado
-    print(f"\n📍 Por Estado:")
-    vitimas_estado = Vitima_dados.objects.values('estado__sigla', 'estado__nome').distinct()
-    for item in vitimas_estado:
-        count = Vitima_dados.objects.filter(estado__sigla=item['estado__sigla']).count()
-        print(f"   {item['estado__sigla']} - {item['estado__nome']}: {count}")
-    
-    # Por sexo
-    print(f"\n👥 Por Sexo:")
-    sexos = dict(sexo_choices)
-    for sexo_key, sexo_nome in sexos.items():
-        count = Vitima_dados.objects.filter(sexo=sexo_key).count()
-        print(f"   {sexo_nome}: {count}")
-    
-    # Por faixa etária
-    print(f"\n🎂 Por Faixa Etária:")
-    idades = [v.idade for v in Vitima_dados.objects.all() if v.idade]
-    if idades:
-        faixas = {
-            "18-25 anos": len([i for i in idades if 18 <= i <= 25]),
-            "26-35 anos": len([i for i in idades if 26 <= i <= 35]),
-            "36-45 anos": len([i for i in idades if 36 <= i <= 45]),
-            "46-55 anos": len([i for i in idades if 46 <= i <= 55]),
-            "56+ anos": len([i for i in idades if i > 55]),
-        }
-        for faixa, count in faixas.items():
-            print(f"   {faixa}: {count}")
 
 
 if __name__ == "__main__":

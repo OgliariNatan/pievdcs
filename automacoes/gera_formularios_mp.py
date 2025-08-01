@@ -62,6 +62,17 @@ def criar_formularios_mp_aleatorios(quantidade=500):
     # Choices para seleção aleatória
     tipos_violencia = [choice[0] for choice in tipo_de_violencia_choices]
     graus_parentesco = [choice[0] for choice in grau_parentesco_agressor_choices]
+
+    # Lista de ruas fictícias comuns (reutilizando)
+    RUAS = [
+        "Rua das Flores", "Rua São João", "Rua Santa Maria", "Rua XV de Novembro",
+        "Rua Tiradentes", "Rua Dom Pedro II", "Rua Getúlio Vargas", "Rua Presidente Vargas",
+        "Rua José de Alencar", "Rua Santos Dumont", "Rua Castro Alves", "Rua Rui Barbosa",
+        "Rua Marechal Deodoro", "Rua Benjamin Constant", "Rua Sete de Setembro",
+        "Rua Coronel Oliveira", "Rua Major Silva", "Rua Capitão Santos", "Rua Doutor Lima",
+        "Rua Professor Almeida", "Avenida Brasil", "Avenida Independência", "Avenida Liberdade",
+        "Travessa das Palmeiras", "Travessa São José", "Alameda dos Ipês"
+    ]
     
     # Distribuição de períodos de medida protetiva (em dias)
     periodos_mp_dias = [120, 180, 240, 300, 360]  # Mais comum: 120 dias
@@ -78,13 +89,13 @@ def criar_formularios_mp_aleatorios(quantidade=500):
     
     # Distribuição de graus de parentesco (baseada em estatísticas reais)
     pesos_parentesco = {
-        'Conjuge': 45,
+        'Conjuge': 35,
         'Irmao': 12,
         'Pai': 10,
         'Filho': 8,
         'Tio': 7,
         'Cunhado': 6,
-        'Padasto': 5,
+        'Padasto': 15,
         'Primo': 4,
         'Outros': 3
     }
@@ -157,6 +168,7 @@ def criar_formularios_mp_aleatorios(quantidade=500):
                 tipo_de_violencia=tipo_violencia,
                 comarca_competente=comarca,
                 grau_parentesco_agressor=grau_parentesco,
+                bairro_mp=random.choice(RUAS),
                 municipio_mp=municipio_mp
             )
             

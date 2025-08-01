@@ -10,6 +10,26 @@ TIPOS_VIOLENCIA = [tipo[0] for tipo in tipo_de_violencia_choices]
 LABELS_TIPO_VIOLENCIA = dict(tipo_de_violencia_choices)
 LABELS_TIPO_PARENTESCO = dict(grau_parentesco_agressor_choices)
 
+
+class PegarComarcasComMP:
+    """
+    Classe responsavel por classificar todas as comarcas que possuem Medidas Protetivas e seus respectivos numeros de ocorrências. 
+    """
+    def pegar_comarcas_com_mp(self):
+        # Consulta para obter as comarcas com medidas protetivas
+        queryset = (
+            FormularioMedidaProtetiva.objects
+            .values('comarca_competente__nome')
+            .annotate(total=Count('ID'))
+            .order_by('-total')
+        )
+        #print(f"Comarcas com Medidas Protetivas: {queryset}")
+        return queryset
+
+
+
+
+
 class TipoViolencia:
     def conta_violencias_por_mes(self, mes, ano):
         contagem = Counter()
@@ -207,6 +227,6 @@ medidasprotetivas = MedidasProtetivas()
 municipiosviolentos = MunicipiosViolentos()
 grauparentesco = GrauPrarentesco()
 reincidencia = BuscaReincidencia()
-
+pegarcomarcascommp = PegarComarcasComMP()
 
 
