@@ -8,7 +8,7 @@ from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 
 
-
+@calcula_tempo
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Defensoria Pública',])
 def defensoria_publica(request):

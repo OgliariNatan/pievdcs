@@ -28,6 +28,7 @@ def calcula_tempo(funcao):
         fim = time.time()
         
         print('----------------------------------------')
+        print(f'Tempo: {time.strftime("%d-%m-%Y %H:%M:%S")}')
         print(f'IP do cliente: {ip_cliente}')
         #print(f'IP do servidor: {ip_servidor}\tHostname: {hostname_servidor}\tMAC: {uuid.getnode()}')
         print(f"Tempo de execução do {funcao.__name__}: {fim - inicio:.4f} segundos")
