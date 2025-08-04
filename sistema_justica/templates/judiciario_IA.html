@@ -129,7 +129,7 @@
         <!-- Cabeçalho removido pois agora está integrado no conteúdo -->
 
         <!-- Métricas de Violência Doméstica -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6 gap-6 mb-8">
             <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-purple-500">
                 <div class="flex items-center justify-between">
                     <div>
@@ -186,9 +186,9 @@
                 <i class="fas fa-rocket text-purple-600"></i>
                 Ações Rápidas
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
                 <button
-                    class="group p-6 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
+                    class="group p-6 bg-gradient-to-r from-pink-600 to-pink-300 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
                     hx-get="{% url 'sistema_justica:cadastro_vitima_form' %}" hx-target="#modal-vitima"
                     hx-swap="innerHTML">
                     <div class="flex items-center gap-4">
@@ -204,7 +204,7 @@
                 </button>
 
                 <button
-                    class="group p-6 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
+                    class="group p-6 bg-gradient-to-r from-purple-600 to-purple-600 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
                     hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-agressor"
                     hx-swap="innerHTML">
                     <div class="flex items-center gap-4">
@@ -220,7 +220,7 @@
                 </button>
 
                 <button
-                    class="group p-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg">
+                    class="group p-6 bg-gradient-to-r from-blue-300 to-blue-600 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg">
                     <div class="flex items-center gap-4">
                         <div
                             class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 transition">
@@ -229,6 +229,21 @@
                         <div class="text-left">
                             <h3 class="font-semibold">Medidas Protetivas</h3>
                             <p class="text-sm text-blue-100">Consultas</p>
+                        </div>
+                    </div>
+                </button>
+
+                <button
+                    class="group p-6 bg-gradient-to-r from-yellow-700 to-orange-300 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
+                    hx-get="#" hx-target="#modal" hx-swap="innerHTML">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 transition">
+                            <i class="fas fa-gavel  text-2xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <h3 class="font-semibold">Acompanhar MP</h3>
+                            <p class="text-sm text-pink-100">Acompanha Medidas Protetivas</p>
                         </div>
                     </div>
                 </button>

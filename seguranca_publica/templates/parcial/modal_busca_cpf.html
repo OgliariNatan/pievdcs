@@ -1,30 +1,60 @@
-<div id="modal-busca-cpf" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-    hx-on="click: if(event.target.id==='modal-busca-cpf'){this.remove()}">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 animate-fade-in-up" hx-target="#modal-busca-cpf"
-        hx-swap="outerHTML">
-        <form id="form-busca-cpf" class="p-6" hx-post="{% url 'seguranca_publica:buscar_atendimentos_por_cpf' %}"
-            hx-target="#modal-busca-cpf" hx-swap="outerHTML">
-            <h2 class="text-xl font-bold text-purple-700 mb-4 flex items-center gap-2">
-                <i class="fas fa-search"></i> Consultar Atendimentos por CPF
-            </h2>
-            <label for="input-cpf" class="block text-sm font-medium text-purple-700 mb-2">CPF</label>
-            <input type="text" id="input-cpf" name="cpf" maxlength="14" placeholder="Digite o CPF"
-                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 mb-4"
-                required>
-            <div class="flex justify-end gap-2">
-                <button type="button"
-                    class="px-4 py-2 rounded-lg bg-purple-100 text-purple-700 font-semibold hover:bg-purple-200 transition"
-                    onclick="document.getElementById('modal-busca-cpf').remove()">Cancelar</button>
-                <button type="submit"
-                    class="px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition">
-                    Consultar
+{% load static %}
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 animate-fade-in-up max-h-[90vh] overflow-y-auto">
+        <form hx-post="{% url 'seguranca_publica:buscar_atendimentos_por_cpf_modal' %}" hx-target="#modal-consulta-cpf"
+            hx-swap="innerHTML">
+            {% csrf_token %}
+
+            <!-- Cabeçalho -->
+            <div
+                class="flex items-center justify-between px-6 py-4 rounded-t-2xl bg-gradient-to-r from-green-600 to-green-400">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fas fa-search"></i> Buscar por CPF
+                </h2>
+                <button type="button" class="text-white hover:text-green-200 text-2xl font-bold transition"
+                    onclick="document.getElementById('modal-consulta-cpf').innerHTML = ''" aria-label="Fechar">
+                    &times;
                 </button>
             </div>
-            {% if resultado is not None %}
-            <div class="mt-4 text-sm">
-                {{ resultado|safe }}
+
+            <!-- Corpo -->
+            <div class="px-6 py-6 bg-green-50">
+                <div class="mb-4">
+                    <label for="cpf" class="block text-sm font-medium text-green-700 mb-2">
+                        <i class="fas fa-id-card mr-1"></i> CPF do Agressor
+                    </label>
+                    <input type="text" name="cpf" id="cpf" placeholder="000.000.000-00" maxlength="14"
+                        class="w-full px-4 py-3 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                        required>
+                </div>
+
+                <!-- Resultado da busca -->
+                <div id="resultado-busca" class="mb-4">
+                    {{ resultado|safe }}
+                </div>
             </div>
-            {% endif %}
+
+            <!-- Rodapé -->
+            <div class="flex justify-end gap-2 px-6 py-4 rounded-b-2xl bg-gradient-to-r from-green-600 to-green-400">
+                <button type="button"
+                    class="px-4 py-2 rounded-lg bg-green-100 text-green-700 font-semibold hover:bg-green-200 transition"
+                    onclick="document.getElementById('modal-consulta-cpf').innerHTML = ''">Cancelar</button>
+                <button type="submit"
+                    class="px-4 py-2 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition">
+                    <i class="fas fa-search mr-1"></i> Buscar
+                </button>
+            </div>
         </form>
     </div>
 </div>
+
+<script>
+    // Máscara para CPF
+    document.getElementById('cpf').addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        e.target.value = value;
+    });
+</script>

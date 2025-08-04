@@ -117,9 +117,7 @@
                         <span class="font-medium">Usuário:</span>
                         <span class="text-purple-600 font-semibold">{{ user.first_name }} {{ user.last_name }}</span>
                     </p>
-                    <p class="text-gray-600">
-                        Bem-vindo à página do <span class="font-semibold text-purple-600">{{ title }}</span>
-                    </p>
+
                 </div>
             </div>
 
@@ -134,7 +132,7 @@
                     <i class="fas fa-rocket text-purple-600"></i>
                     Ações Rápidas
                 </h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     <!-- Botão Novo Atendimento -->
                     <button
                         class="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 group"
@@ -152,7 +150,7 @@
 
                     <!-- Botão Grupos de Agressores -->
                     <div
-                        class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                        class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 md:col-span-2">
                         <div class="flex flex-col h-full">
                             <div class="flex items-center gap-3 mb-4">
                                 <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
@@ -167,7 +165,7 @@
                                 {% for grupo in grupos %}
                                 <div class="flex flex-col border-b border-white/10 last:border-0 py-2 px-2">
                                     <div class="flex items-center justify-between">
-                                        <span class="text-sm font-semibold">Atendimento #{{ grupo.id }}</span>
+                                        <span class="text-sm font-semibold">Atendimento n.{{ grupo.id }}</span>
                                         <span
                                             class="bg-white/20 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[1.5rem] text-center">
                                             {{ grupo.qtd_agressores }}
@@ -198,8 +196,8 @@
                     <!-- Modal de busca por CPF -->
                     <button
                         class="bg-gradient-to-r from-green-600 to-green-700 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 group"
-                        hx-get="{% url 'seguranca_publica:modal_busca_cpf' %}" hx-target="#modal-consulta-cpf"
-                        hx-swap="innerHTML">
+                        hx-get="{% url 'seguranca_publica:buscar_atendimentos_por_cpf_modal' %}"
+                        hx-target="#modal-consulta-cpf" hx-swap="innerHTML">
                         <div class="flex flex-col items-center gap-3">
                             <div
                                 class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -269,59 +267,60 @@
                         informações no sistema.
                     </p>
                 </div>
-
-                <!-- Cards informativos -->
-                <div class="grid md:grid-cols-2 gap-6 mb-6">
-                    <div
-                        class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
-                        <h4 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                            <i class="fas fa-users text-purple-600"></i>
-                            Gestão de Atendimentos
-                        </h4>
-                        <p class="text-gray-600 text-sm leading-relaxed">
-                            Sistema completo para registro e acompanhamento de atendimentos,
-                            garantindo controle especializado e organizado dos casos.
-                        </p>
+                <!-- Métricas de Violência Doméstica -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6 gap-6 mb-8">
+                    <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-purple-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-600">Casos Ativos</h3>
+                                <p class="text-2xl font-bold text-gray-900 mt-1">156</p>
+                                <p class="text-sm text-green-600 mt-1">+12% este mês</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-folder-open text-purple-600 text-xl"></i>
+                            </div>
+                        </div>
                     </div>
-
-                    <div
-                        class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
-                        <h4 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                            <i class="fas fa-chart-bar text-green-600"></i>
-                            Relatórios e Análises
-                        </h4>
-                        <p class="text-gray-600 text-sm leading-relaxed">
-                            Geração de relatórios detalhados e análises estatísticas
-                            para acompanhamento e tomada de decisões estratégicas.
-                        </p>
+                    <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-red-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-600">Acompanhados</h3>
+                                <p class="text-2xl font-bold text-gray-900 mt-1">23</p>
+                                <p class="text-sm text-red-600 mt-1">pela PP</p>
+                            </div>
+                            <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-                <!-- Seção de conteúdo adicional -->
-                <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                    <h4 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                        <i class="fas fa-book text-blue-600"></i>
-                        Informações Adicionais
-                    </h4>
-                    <div class="space-y-3 text-gray-600 text-sm leading-relaxed">
-                        <p>
-                            O sistema oferece funcionalidades completas para gerenciamento eficiente de processos
-                            judiciais,
-                            incluindo controle de encaminhamentos, notificações automáticas e geração de relatórios
-                            personalizados.
-                        </p>
-                        <p>
-                            Todos os dados são tratados com máxima segurança e confidencialidade, seguindo as melhores
-                            práticas
-                            de proteção de informações sensíveis e cumprindo as normas vigentes de privacidade.
-                        </p>
-                        <p>
-                            Para dúvidas ou suporte técnico, entre em contato com a equipe de TI através dos canais
-                            oficiais
-                            disponíveis no menu de configurações do sistema.
-                        </p>
+                    <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-green-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-600">Medidas Protetivas</h3>
+                                <p class="text-2xl font-bold text-gray-900 mt-1">89</p>
+                                <p class="text-sm text-green-600 mt-1">Em vigência</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-shield-alt text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-amber-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-600">Atendimentos Hoje</h3>
+                                <p class="text-2xl font-bold text-gray-900 mt-1">1</p>
+                                <!-- <p class="text-sm text-amber-600 mt-1">Última: 14:23</p> -->
+                            </div>
+                            <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-clock text-amber-600 text-xl"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+
+
             </div>
         </div>
     </main>
@@ -550,7 +549,7 @@
                 const resultado = document.getElementById('resultado-busca-cpf');
                 resultado.innerHTML = 'Consultando...';
 
-                fetch("{% url 'seguranca_publica:buscar_atendimentos_por_cpf' %}?cpf=" + encodeURIComponent(cpf))
+                fetch("{% url 'seguranca_publica:buscar_atendimentos_por_cpf_ajax' %}?cpf=" + encodeURIComponent(cpf))
                     .then(resp => resp.json())
                     .then(data => {
                         if (data.sucesso) {
