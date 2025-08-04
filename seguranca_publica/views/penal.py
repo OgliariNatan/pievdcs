@@ -55,7 +55,7 @@ def penal(request):
         })
 
     contexto = {
-        'title': 'Policia Penal',
+        'title': 'Polícia Penal',
         'description': 'This page provides information about the penal system.',
         'encaminhamentos': 5,
         'alert': 2,
