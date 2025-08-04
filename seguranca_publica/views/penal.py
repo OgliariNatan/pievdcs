@@ -128,7 +128,7 @@ def cadastro_atendimento_penal_submit(request):
 @login_required(login_url=reverse_lazy('login'))
 def buscar_atendimentos_por_cpf_ajax(request):
     """Busca quantidade de atendimentos por CPF via AJAX"""
-    print("Buscando atendimentos por CPF via AJAX...")
+    #print("Buscando atendimentos por CPF via AJAX...")
     cpf = request.GET.get('cpf', '').replace('.', '').replace('-', '').strip()
     if not cpf:
         return JsonResponse({'sucesso': False, 'erro': 'CPF não informado.'})
