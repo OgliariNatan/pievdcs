@@ -44,12 +44,12 @@ def penal(request):
         variacao = 100 if atendimentos_mes > 0 else 0
     
     # Lista de atendimentos com participantes
-    atendimentos = ModeloPenal.objects.filter(usuario=request.user).order_by('-data_atendimento')
+    atendimentos = ModeloPenal.objects.filter(usuario=request.user).order_by('-id')
     grupos = []
     for atendimento in atendimentos:
         grupos.append({
             'id': atendimento.id,
-            'nome': f'Atendimento #{atendimento.id} - {atendimento.data_atendimento:%d/%m/%Y %H:%M}',
+            'nome': f'Atendimento {atendimento.id} - {atendimento.data_atendimento:%d/%m/%Y %H:%M}',
             'qtd_agressores': atendimento.agressores_atendidos.count(),
             'participantes': atendimento.agressores_atendidos.all(),
         })
@@ -68,38 +68,15 @@ def penal(request):
     }
     return render(request, "penal.html", contexto)
 
-@login_required(login_url=reverse_lazy('login'))
-def buscar_atendimentos_por_cpf(request):
-    cpf = request.GET.get('cpf', '').replace('.', '').replace('-', '').strip()
-    if not cpf:
-        return JsonResponse({'sucesso': False, 'erro': 'CPF não informado.'})
-    try:
-        # Remove pontos e traço do CPF no banco para comparar
-        agressor = Agressor_dados.objects.annotate(
-            cpf_limpo=Func(
-                Func(
-                    F('cpf'),
-                    Value('.'),
-                    Value(''),
-                    function='replace'
-                ),
-                Value('-'),
-                Value(''),
-                function='replace',
-                output_field=CharField()
-            )
-        ).get(cpf_limpo=cpf)
-        qtd = agressor.modelopenal_set.count()
-        return JsonResponse({'sucesso': True, 'qtd': qtd})
-    except Agressor_dados.DoesNotExist:
-        return JsonResponse({'sucesso': False, 'erro': 'CPF não encontrado.'})
 
 
+@calcula_tempo
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_tipo_atendimento_form(request):
     form = TipoAtendimentoForm()
     return render(request, 'parcial/cadastro_tipo_atendimento_form.html', {'form': form})
 
+@calcula_tempo
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_tipo_atendimento_submit(request):
     if request.method == 'POST':
@@ -118,11 +95,13 @@ def cadastro_tipo_atendimento_submit(request):
             return render(request, 'parcial/cadastro_tipo_atendimento_form.html', {'form': form})
     return HttpResponse(status=405)
 
+@calcula_tempo
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_atendimento_penal_form(request):
     form = ModeloPenalForm()
     return render(request, 'parcial/cadastro_atendimento_penal_form.html', {'form': form})
 
+@calcula_tempo
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_atendimento_penal_submit(request):
     if request.method == 'POST':
@@ -145,14 +124,52 @@ def cadastro_atendimento_penal_submit(request):
     return HttpResponse(status=405)
 
 
+@calcula_tempo
 @login_required(login_url=reverse_lazy('login'))
-def modal_busca_cpf(request):
-    html = render_to_string('parcial/modal_busca_cpf.html', {'resultado': None}, request)
-    return HttpResponse(html)
+def buscar_atendimentos_por_cpf_ajax(request):
+    """Busca quantidade de atendimentos por CPF via AJAX"""
+    print("Buscando atendimentos por CPF via AJAX...")
+    cpf = request.GET.get('cpf', '').replace('.', '').replace('-', '').strip()
+    if not cpf:
+        return JsonResponse({'sucesso': False, 'erro': 'CPF não informado.'})
+    
+    try:
+        # Remove pontos e traço do CPF no banco para comparar
+        agressor = Agressor_dados.objects.annotate(
+            cpf_limpo=Func(
+                Func(
+                    F('cpf'),
+                    Value('.'),
+                    Value(''),
+                    function='replace'
+                ),
+                Value('-'),
+                Value(''),
+                function='replace',
+                output_field=CharField()
+            )
+        ).get(cpf_limpo=cpf)
+        
+        # CORREÇÃO: Usar o relacionamento correto
+        qtd = agressor.agressores_atendidos.count()
+        
+        return JsonResponse({
+            'sucesso': True, 
+            'qtd': qtd,
+            'nome': agressor.nome,
+            'cpf': agressor.cpf
+        })
+    except Agressor_dados.DoesNotExist:
+        return JsonResponse({'sucesso': False, 'erro': 'CPF não encontrado.'})
 
+
+@calcula_tempo
 @login_required(login_url=reverse_lazy('login'))
-def buscar_atendimentos_por_cpf(request):
+def buscar_atendimentos_por_cpf_modal(request):
+    """Busca atendimentos por CPF no modal"""
+    print("Buscando atendimentos por CPF no modal...")
     resultado = ""
+    
     if request.method == "POST":
         cpf = request.POST.get('cpf', '').replace('.', '').replace('-', '').strip()
         if not cpf:
@@ -173,9 +190,37 @@ def buscar_atendimentos_por_cpf(request):
                         output_field=CharField()
                     )
                 ).get(cpf_limpo=cpf)
-                qtd = agressor.agressores_atendidos.count()
-                resultado = f'<span class="text-green-700 font-semibold">Total de atendimentos: {qtd}</span>'
+                
+                # CORREÇÃO: Usar o relacionamento correto
+                atendimentos = agressor.agressores_atendidos.all().order_by('-data_atendimento')
+                qtd = atendimentos.count()
+                
+                if qtd > 0:
+                    resultado = f'''
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <span class="text-green-700 font-semibold">
+                            Agressor: {agressor.nome}<br>
+                            CPF: {agressor.cpf}<br>
+                            Total de atendimentos: {qtd}
+                        </span>
+                        <div class="mt-2 text-sm text-green-600">
+                            Último atendimento: {atendimentos.first().data_atendimento.strftime("%d/%m/%Y %H:%M")}
+                        </div>
+                    </div>
+                    '''
+                else:
+                    resultado = f'''
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <span class="text-yellow-700">
+                            Agressor encontrado: {agressor.nome}<br>
+                            CPF: {agressor.cpf}<br>
+                            Nenhum atendimento registrado.
+                        </span>
+                    </div>
+                    '''
+                    
             except Agressor_dados.DoesNotExist:
-                resultado = '<span class="text-red-600">CPF não encontrado.</span>'
+                resultado = '<span class="text-red-600">CPF não encontrado na base de dados.</span>'
+    
     html = render_to_string('parcial/modal_busca_cpf.html', {'resultado': resultado}, request)
     return HttpResponse(html)
