@@ -44,4 +44,8 @@ def criar_estados():
     ]
 
     for sigla, nome in estados:
-        Estado.objects.get_or_create(sigla=sigla, nome=nome)
+        estado, created = Estado.objects.get_or_create(sigla=sigla, nome=nome)
+        if created:
+            print(f"Estado Criado: {nome} ({sigla})")
+        else:
+            print(f"Estado Já Existente: {nome} ({sigla})")
