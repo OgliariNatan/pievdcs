@@ -174,7 +174,8 @@
                                     <div class="text-xs text-white/80 mt-1">
                                         {% for participante in grupo.participantes %}
                                         <span
-                                            class="inline-block bg-white/10 rounded px-2 py-1 mr-1 mb-1">{{ participante.nome }}</span>
+                                            class="inline-block bg-white/10 rounded px-2 py-1 mr-1 mb-1">{{ participante.nome }}
+                                            {{ participante.cpf }}</span>
                                         {% empty %}
                                         <span class="text-white/50">Sem participantes</span>
                                         {% endfor %}
