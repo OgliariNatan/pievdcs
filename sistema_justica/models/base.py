@@ -171,6 +171,8 @@ class Vitima_dados(models.Model):
             ("O", "Outros"),
         ],
         verbose_name="Estado Civil*",
+        default="S",
+        null=True, blank=False,
     )
 
     idade = models.PositiveIntegerField(null=True, blank=True, editable=False)
@@ -342,6 +344,8 @@ class Agressor_dados(models.Model):
             ("O", "Outros"),
         ],
         verbose_name="Estado Civil*",
+        default="S",
+        null=True, blank=False,
     )
     idade = models.PositiveIntegerField(
         null=True, blank=True, 
