@@ -156,6 +156,7 @@
             <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Comarcas</h2>
             <p class="text-sm text-gray-500 mb-2">Implementar comparação por período.</p>
             <canvas id="comarcaChart"></canvas>
+
         </div>
 
 
@@ -447,11 +448,38 @@
                 backgroundColor: gerarCoresHSL(comarcas_mp.data.length)
             }]
         },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Casos de Violência'
+                    }
+                },
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Comarcas'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            },
+            responsive: true
+        }
     });
-
-
-
-
 
 
     // Gráfico de rosca: Cidades
