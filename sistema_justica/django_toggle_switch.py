@@ -32,7 +32,7 @@ class ToggleSwitchWidget(CheckboxInput):
         'xl': (64, 32),
     }
     
-    def __init__(self, size='md', active_color="#B910B9", inactive_color='#9CA3AF',
+    def __init__(self, size='md', active_color="#9333ea", inactive_color="#0A0A0A",
                  active_text='Active', inactive_text='Inactive', show_label=True,
                  animation_speed=0.3, attrs=None):
         super().__init__(attrs)
