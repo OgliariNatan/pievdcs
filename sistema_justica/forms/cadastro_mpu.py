@@ -1,6 +1,7 @@
 from django import forms
 from sistema_justica.models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
 from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
+from sistema_justica.widgets import ToggleSwitchWidget
 
 class CadastroMedidaProtetiva(forms.ModelForm):
     class Meta:
@@ -12,6 +13,7 @@ class CadastroMedidaProtetiva(forms.ModelForm):
                 'type': 'date',
                 'class': 'form-control form-control-sm border border-gray-400 rounded-xl'
             }),
+            'solicitada_mpu': ToggleSwitchWidget(),  #Ajustada para uso do ToggleSwitchWidget
         }
     
     def __init__(self, *args, **kwargs):
