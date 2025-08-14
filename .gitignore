@@ -136,6 +136,7 @@ ENV/
 env.bak/
 venv.bak/
 MAIN/.env
+MAIN/.env
 
 # Spyder project settings
 .spyderproject
@@ -177,6 +178,7 @@ cython_debug/
 
 #Remove o ambiente virtual
 /virtual_pievdcs/
+/virtual_ambiente/
 
 #Remove os arquivos estaticos
 /staticfiles/
