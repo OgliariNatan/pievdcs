@@ -1,7 +1,7 @@
 from django import forms
 from sistema_justica.models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
 from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
-from sistema_justica.widgets import ToggleSwitchWidget
+
 from sistema_justica.django_toggle_switch import ToggleSwitchWidget
 from django.forms.widgets import DateTimeInput, DateInput, SelectDateWidget, CheckboxInput
 
@@ -17,7 +17,7 @@ class CadastroMedidaProtetiva(forms.ModelForm):
             }),
             'solicitada_mpu': ToggleSwitchWidget(size='xs',
                 active_color='#9333ea',
-                inactive_color='#ccc',
+                inactive_color='#4a4343',
                 active_text='Solicitada',
                 inactive_text='Não Solicitada'
             ),  # Widget personalizado

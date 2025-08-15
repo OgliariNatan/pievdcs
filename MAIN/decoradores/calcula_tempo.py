@@ -9,7 +9,7 @@ from functools import wraps
 def calcula_tempo(funcao):
     @wraps(funcao)
     def wrapper(request, *args, **kwargs):
-        inicio = time.time()
+        
         
         # Captura o IP real do cliente considerando proxies reversos
         ip_cliente = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -23,7 +23,7 @@ def calcula_tempo(funcao):
         # Captura informações do servidor (para debug)
         ip_servidor = socket.gethostbyname(socket.gethostname())
         hostname_servidor = socket.gethostname()
-        
+        inicio = time.time()
         resultado = funcao(request, *args, **kwargs)
         fim = time.time()
         

@@ -148,8 +148,8 @@
 
                 <button
                     class="group bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
-                    hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-content"
-                    hx-swap="innerHTML">
+                    hx-get="{% url 'sistema_justica:cadastro_mpu' %}" hx-target="#modal-mpu" hx-swap="innerHTML"
+                    hx-indicator="#spinner">
                     <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                         <i class="fas fa-thin fa-hands-holding-child"></i>
                     </div>
@@ -211,7 +211,7 @@
         </div>
     </main>
 </div>
-
+<div id="modal-mpu"> </div>
 <!-- Overlay para mobile quando sidebar estiver expandido -->
 <div class="fixed inset-0 bg-black/50 z-5 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"
     id="sidebar-overlay"></div>
