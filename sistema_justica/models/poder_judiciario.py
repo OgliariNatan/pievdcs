@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import datetime
-from django.contrib.auth.models import User
+from usuarios.models import CustomUser
 from sistema_justica.models.base import Municipio, Estado
 from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
 

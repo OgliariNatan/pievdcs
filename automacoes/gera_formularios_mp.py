@@ -81,22 +81,22 @@ def criar_formularios_mp_aleatorios(quantidade=500):
     # Distribuição de tipos de violência (baseada em estatísticas reais)
     pesos_violencia = {
         'Fisica': 35,
-        'Psicologica': 30,
+        'Psicologica': 25,
         'Sexual': 15,
         'Patrimonial': 12,
-        'Moral': 8
+        'Moral': 13
     }
     
     # Distribuição de graus de parentesco (baseada em estatísticas reais)
     pesos_parentesco = {
-        'Conjuge': 35,
+        'Conjuge': 30,
         'Irmao': 12,
         'Pai': 10,
         'Filho': 8,
         'Tio': 7,
         'Cunhado': 6,
         'Padasto': 15,
-        'Primo': 4,
+        'Primo': 9,
         'Outros': 3
     }
     

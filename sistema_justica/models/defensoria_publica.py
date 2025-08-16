@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import datetime, timedelta, timezone
-from django.contrib.auth.models import User
+from usuarios.models import CustomUser
 from sistema_justica.models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
 from seguranca_publica.models.base import grau_parentesco_agressor_choices, status_MP_choices, tipo_de_violencia_choices
 from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey

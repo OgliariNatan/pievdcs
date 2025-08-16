@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils import timezone
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
+from usuarios.models import CustomUser
 
 secao_choices = (
     ('seguranca_publica', 'Segurança Pública'),
@@ -38,7 +38,7 @@ class ConteudoHome(models.Model):
         verbose_name="Publicar na página Inicial?",
     )
     autor = models.ForeignKey(
-        User,
+        CustomUser,
         on_delete=models.SET_NULL,
         null=True, blank=True,
         verbose_name="Autor",

@@ -39,9 +39,9 @@ def gerar_cpf_ficticio():
 
 
 def gerar_data_nascimento():
-    """Gera uma data de nascimento aleatória entre 15 e 80 anos."""
+    """Gera uma data de nascimento aleatória entre 10 e 80 anos."""
     hoje = date.today()
-    idade_min = 15
+    idade_min = 10
     idade_max = 80
     
     # Calcula as datas limites

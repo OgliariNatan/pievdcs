@@ -5,6 +5,7 @@
 
     @comando:
       python manage.py shell
+      from automacoes.cria_estados import *
       >>> criar_estados()
 """
 
