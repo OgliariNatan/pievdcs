@@ -3,7 +3,8 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.db.models import Q
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
+from usuarios.models import CustomUser
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from sistema_justica.models.base import Agressor_dados, Municipio, Estado
@@ -110,7 +111,7 @@ class ModeloPenal(models.Model):
         blank=True, null=True
     )
     usuario = models.ForeignKey(
-        User, on_delete=models.CASCADE, 
+        CustomUser, on_delete=models.CASCADE, 
         verbose_name="Usuário", 
         null=True, blank=True
     )

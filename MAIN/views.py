@@ -13,6 +13,7 @@ from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
 from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
 from django.db import models, connection
 from .models import ConteudoHome
+from usuarios.models import CustomUser
 from .calculo_variaveis import *
 import random
 

@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from .permission_group import grupos_permitidos
 from sistema_justica.forms.cadastro_mpu import CadastroMedidaProtetiva
+from usuarios.models import CustomUser
 from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 

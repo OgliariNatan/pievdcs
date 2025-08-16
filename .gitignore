@@ -194,7 +194,7 @@ cython_debug/
 img_home/
 
 #Ignora pasta migrations
-migrations/
+migrations/*
 
 Relatorio/
 

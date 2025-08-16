@@ -5,6 +5,7 @@
 
     @comando:
       python manage.py shell
+      from automacoes.atibui_municipio import *
       >>> cadastrar_municipios_por_estado()
 """
 
