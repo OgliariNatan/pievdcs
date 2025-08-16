@@ -42,6 +42,13 @@ class CustomUser(AbstractUser):
         help_text='Foto do usuário'
     )
 
+    # departamento = models.CharField(
+    #     'Departamento',
+    #     max_length=100,
+    #     null=True,
+    #     blank=True,
+    #     #help_text='Departamento do usuário'
+    # )
 
     # Sobrescrever os relacionamentos para usar grupos personalizados
     groups = models.ManyToManyField(
