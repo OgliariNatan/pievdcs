@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'rest_framework', #Para criação de API
     'MAIN',  # Aplicação principal
     'seguranca_publica', #Segurança pública
-    'usuarios', #Usuarios autorizados
+    'usuarios.apps.UsuariosConfig', #Usuarios autorizados
     'sistema_justica', #Sistemas de justica
     'municipio', #sistema municipal
     
@@ -191,6 +191,9 @@ SESSION_SAVE_EVERY_REQUEST = False  # Só renova se houver atividade
 CSRF_COOKIE_HTTPONLY = True       # Impede acesso via JavaScript (aumenta a segurança)
 SESSION_COOKIE_SAMESITE = 'Lax' # não aceita cookie de terceiros
 #SESSION_COOKIE_SECURE = True #Só transmite informação se for seguro 'https'
+
+
+AUTH_USER_MODEL = 'usuarios.CustomUser'
 
 
 #configurar logging
