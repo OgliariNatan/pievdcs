@@ -1,6 +1,10 @@
+import os
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser, Group as DjangoGroup
 from django.db import models
 from django.core.validators import RegexValidator
+
+
 
 class CustomUser(AbstractUser):
     # Seus campos personalizados aqui
@@ -15,6 +19,12 @@ class CustomUser(AbstractUser):
         message='Telefone deve estar no formato: (00) 00000-0000 ou (00) 0000-0000'
     )
 
+    # Valida arquivo .pdf
+    def validate_pdf_file(value):
+        ext = os.path.splitext(value.name)[1]
+        if ext.lower() != '.pdf':
+            raise ValidationError('Apenas arquivos .pdf são permitidos.')
+
     cpf = models.CharField(
         'CPF',
         max_length=14,
@@ -24,9 +34,24 @@ class CustomUser(AbstractUser):
         null=True,
         blank=True
     )
-    
+    data_nascimento = models.DateField(
+        verbose_name='Data de Nascimento',
+        null=True,
+        blank=True
+    )
+    genero = models.CharField(
+        verbose_name='Gênero',
+        max_length=10,
+        choices=[
+            ('M', 'Masculino'),
+            ('F', 'Feminino'),
+            ('N', 'Prefiro não informar'),
+        ],
+        null=True,
+        blank=True
+    )
     telefone = models.CharField(
-        'Telefone',
+        verbose_name='Telefone',
         max_length=15,
         validators=[phone_validator],
         help_text='Formato: (00) 00000-0000',
@@ -35,20 +60,40 @@ class CustomUser(AbstractUser):
     )
     
     foto = models.ImageField(
-        'Foto do Perfil',
+        verbose_name='Foto do Perfil',
         upload_to='usuarios/fotos/%Y/%m/',
         null=True,
         blank=True,
-        help_text='Foto do usuário'
     )
 
-    # departamento = models.CharField(
-    #     'Departamento',
-    #     max_length=100,
-    #     null=True,
-    #     blank=True,
-    #     #help_text='Departamento do usuário'
-    # )
+    departamento = models.CharField(
+        verbose_name='Departamento',
+        max_length=100,
+        null=True,
+        blank=True,
+        choices=[
+            ('Poder Judiciário', 'Poder Judiciário'),
+            ('Ministério Público', 'Ministério Público'),
+            ('Defensoria Pública', 'Defensoria Pública'),
+            ('Polícia Civil', 'Polícia Civil'),
+            ('Polícia Militar', 'Polícia Militar'),
+            ('Polícia Penal', 'Polícia Penal'),
+            ('Polícia Científica', 'Polícia Científica'),
+            ('CAPS', 'CAPS'),
+            ('Conselho Tutelar', 'Conselho Tutelar'),
+            ('CRAS', 'CRAS'),
+            ('CREAS', 'CREAS'),
+            ('Secretaria da Saúde', 'Secretaria da Saúde')
+        ]
+    )
+
+    comprovante_vinculo = models.FileField(
+        verbose_name='Comprovante de Vínculo',
+        upload_to='usuarios/comprovantes/%Y/%m/',
+        validators=[validate_pdf_file],
+        null=True,
+        blank=True,
+    )
 
     # Sobrescrever os relacionamentos para usar grupos personalizados
     groups = models.ManyToManyField(

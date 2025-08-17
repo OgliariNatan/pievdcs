@@ -4,7 +4,7 @@ from .models import CustomUser, CustomGroup
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_groups', 'cpf', 'telefone')
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_groups', 'cpf', 'telefone', 'foto', 'departamento', 'data_nascimento', 'genero', 'comprovante_vinculo')
 
     def get_groups(self, obj):
         return ", ".join([g.name for g in obj.groups.all()])
@@ -13,7 +13,7 @@ class CustomUserAdmin(UserAdmin):
     # Sobrescrever completamente os fieldsets para evitar duplicação
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Informações Pessoais', {'fields': ('first_name', 'last_name', 'email', 'cpf', 'telefone')}),
+        ('Informações Pessoais', {'fields': ('first_name', 'last_name', 'email', 'cpf', 'telefone', 'foto', 'departamento', 'data_nascimento', 'genero', 'comprovante_vinculo')}),
         ('Permissões', {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),
