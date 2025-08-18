@@ -21,7 +21,120 @@ class CadastroMedidaProtetiva(forms.ModelForm):
                 active_text='Solicitada',
                 inactive_text='Não Solicitada'
             ),  # Widget personalizado
-            #'agressor':
+            #Relacionado a parte 1: Condutas de violência psicológica
+            'critica_aparencia': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'proibia_make_roupas': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'obrigava_pedir_desculpas': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'fazer_nao_gosta': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'comentario_situacao': forms.Textarea(attrs={
+                'class': 'form-control form-control-sm border border-gray-400 rounded-xl',
+                'rows': 2
+            }),
+            # relacionado a parte 1: Condutas de humiliação e ridicularizaçÃO
+            'ridicularizava_sozinha': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'ridicularizava_terceiros': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'humiliava_frente_filhos' : ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'piadas_familia': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'xingava_louca_burra': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'apelidos_tristes': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'relato_constrangida': forms.Textarea(attrs={
+                'class': 'form-control form-control-sm border border-gray-400 rounded-xl',
+                'rows': 2
+            }),
+
+            # Condutas de Manipulação
+            'perdia_cabeca_culpava': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'culpava_ruim_voce': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ), 
+            'insegurancas_capza': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'boa_dona_casa': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'ameacava_se_matar': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'invertia_fatos': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+
+            'detalhes_coisas': forms.Textarea(attrs={
+                'class': 'form-control form-control-sm border border-gray-400 rounded-xl',
+                'rows': 2
+            }),
+            # Condutas de isolamento ou limitacao
         }
     
     def __init__(self, *args, **kwargs):
