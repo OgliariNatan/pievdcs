@@ -34,6 +34,8 @@ grau_parentesco_agressor_choices = (
     ('Padasto', 'Padastro'),
     ('Primo', 'Primo/Prima'),
     ('Irmao', 'Irmão'),
+    ('ex-Conjuge', 'Ex-Cônjuge'),
+    ('amigo', 'Amigo da família'),
     ('Outros', 'Outros'),
 )
 

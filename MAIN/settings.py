@@ -1,8 +1,12 @@
 
 from pathlib import Path
 import os
-from decouple import config
 import locale
+
+from dotenv import load_dotenv
+
+# Carrega o arquivo .env
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -12,14 +16,14 @@ locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')  # Configura o locale para portug
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False)  # Updated to use config
+DEBUG = os.getenv('DEBUG', "False")  # Updated to use config
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
 
 # Application definition
@@ -47,11 +51,11 @@ INSTALLED_APPS = [
 
 #E-mail
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
-EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # E-mail do remetente
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Senha ou token do remetente
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = os.getenv('EMAIL_PORT', 587)
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', True).lower() in ['true', '1', 't']
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # E-mail do remetente
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # Senha ou token do remetente
 
 
 MIDDLEWARE = [
@@ -105,11 +109,11 @@ WSGI_APPLICATION = "MAIN.wsgi.application"
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME'),
-        'USER': config('DATABASE_USER'),
-        'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': config('DATABASE_HOST', default='localhost'),  # Updated to use config
-        'PORT': config('DATABASE_PORT', default='5432'),  # Updated to use config
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        'HOST': os.getenv('DATABASE_HOST', default='localhost'),  # Updated to use config
+        'PORT': os.getenv('DATABASE_PORT', default='5432'),  # Updated to use config
         'OPTIONS' : {
             "application_name": "pievdcs",
             "connect_timeout": 30,

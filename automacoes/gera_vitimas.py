@@ -15,7 +15,7 @@ Para uso em ambiente de desenvolvimento para popular o banco com dados fictício
 
 import random
 from datetime import date, timedelta
-from sistema_justica.models.base import Vitima_dados, Estado, Municipio
+from sistema_justica.models.base import Vitima_dados, Estado, Municipio, classeEconomica_choices
 
 
 def gerar_cpf_ficticio():
