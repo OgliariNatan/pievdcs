@@ -192,7 +192,7 @@ class FormularioMedidaProtetiva(models.Model):
         verbose_name='Ameaçava que ia se matar ou matar seus filhos quando você tentava terminar a relação?',
         default=False
     ),
-
+    
     invertia_fatos = models.BooleanField(
         verbose_name='Escondia, coisas invertia fatos e dizia que você estava louca?',
         default=False,
@@ -205,6 +205,109 @@ class FormularioMedidaProtetiva(models.Model):
     )
 
     # Condutas de isolamento ou limitacao
+    dificula_contato_familia = models.BooleanField(
+        verbose_name='Dificultava seu contato com familiares?',
+        default=False,
+    )
+    telefone_familia_viva_voz = models.BooleanField(
+        verbose_name='Quando seus familiares ligavam, obrigava você a colocar em viva voz?',
+        default=False,
+    )
+
+    reclama_saia_sozinha = models.BooleanField(
+        verbose_name='Reclamava quando você saía sozinha?',
+        default=False
+    )
+
+    reclama_sozinha_estudar_trabalhar = models.BooleanField(
+        verbose_name='Reclamava quando você saía para estudar ou trabalhar?',
+        default=False,
+    )
+
+    bravo_conversa_homem = models.BooleanField(
+        verbose_name='Ficava aborrecido ou bravo se você conversava com homens que não eram da família?',
+        default=False
+    )
+
+    escolhia_amizade = models.BooleanField(
+        verbose_name='Escolhia suas amizades?',
+        default=False
+    )
+
+    controlava_distancia = models.BooleanField(
+        verbose_name='Controlava você por mensagens, ligações ou de outro modo?',
+        default=False
+    )
+
+    senhas_redes_sociais = models.BooleanField(
+        verbose_name='Exigia que você lhe desse suas senhas em redes sociais?',
+        default=False
+    )
+
+    ciumes_atencao_proximidade = models.BooleanField(
+        verbose_name='Tinha ciúmes se alguma pessoa lhe desse atenção ou se aproximasse de você?',
+        default=False
+    )
+
+    info_situa_isola = models.TextField(
+        verbose_name='Você gostaria de contar mais detalhes ou outra situação de isolamento?',
+        null=True,
+        blank=True
+    )
+
+    # CONDUTAS AMEAÇADORAS Q27
+    gritava_qualquer_coisa = models.BooleanField(
+        verbose_name='Gritava ou explodia por qualquer coisa?',
+        default=False
+    )
+
+    amante_paquera = models.BooleanField(
+        verbose_name='Explodia por ciúmes, dizia que você tinha amantes ou estava paquerando?',
+        default=False
+    )
+
+    escondia_coisas_pessoais = models.BooleanField(
+        verbose_name='Destruía ou escondia suas coisas pessoais?',
+        default=False
+    )
+    destruia_moveis_casa = models.BooleanField(
+        verbose_name='Destruía móveis ou utensílios da casa?',
+        default=False,
+    )
+
+    maltratava_animal_estimacao = models.BooleanField(
+        verbose_name='Maltratava ou ameaçava seus animais de estimação?',
+        default=False
+    )
+
+    contar_segredo = models.BooleanField(
+        verbose_name='Ameaçava contar seus segredos pessoais ou divulgar fotos suas para outras pessoas?',
+        default=False
+    )
+
+    deixar_sem_nada = models.BooleanField(
+        verbose_name='Dizia que, se o deixasse, entraria com vários processos e ficaria sem nada?',
+        default=False
+    )
+
+    exibia_armas = models.BooleanField(
+        verbose_name='Exibia armas de fogo, facas ou objetos como forma de intimação?',
+        default=False
+    )
+
+    detalhes_medo = models.TextField(
+        verbose_name='Você gostaria de contar mais detalhes ou outra situação que lhe causava medo?',
+        null=True,
+        blank=True
+    )
+
+    # VIOLÊNCIA PSICOLÓGICA DIGITAL Q35
+
+
+
+
+
+
     class Meta:
         verbose_name = 'Formulario MP'
         verbose_name_plural = 'Formularios MP'

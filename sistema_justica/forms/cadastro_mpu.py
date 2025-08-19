@@ -135,6 +135,121 @@ class CadastroMedidaProtetiva(forms.ModelForm):
                 'rows': 2
             }),
             # Condutas de isolamento ou limitacao
+            'dificula_contato_familia': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'telefone_familia_viva_voz': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'reclama_saia_sozinha': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'reclama_sozinha_estudar_trabalhar': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'bravo_conversa_homem': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'escolhia_amizade': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'controlava_distancia': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'senhas_redes_sociais': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'ciumes_atencao_proximidade': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'info_situa_isola': forms.Textarea(attrs={
+                'class': 'form-control form-control-sm border border-gray-400 rounded-xl',
+                'rows': 2
+            }),
+
+            # CONDUTAS AMEAÇADORAS
+            'gritava_qualquer_coisa' : ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'amante_paquera': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'escondia_coisas_pessoais': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'destruia_moveis_casa': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'maltratava_animal_estimacao': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'contar_segredo': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'deixar_sem_nada': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'exibia_armas': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'detalhes_medo': forms.Textarea(attrs={
+                'class': 'form-control form-control-sm border border-gray-400 rounded-xl',
+                'rows': 2
+            }),
+
+            # VIOLÊNCIA PSICOLÓGICA DIGITAL Q35
+
         }
     
     def __init__(self, *args, **kwargs):
