@@ -369,6 +369,27 @@ class FormularioMedidaProtetiva(models.Model):
     )
 
     #Parte 2: DANO EMOCIONAL
+    # Inserir texto fixo com instruções
+    evita_pessoas_locais = models.BooleanField(
+        verbose_name='42. Passou a evitar pessoas ou lugares que relembram os fatos?',
+        default=False
+    )
+    medo_sozinha_casa = models.BooleanField(
+        verbose_name='43. Medo de ficar sozinha em casa ou sair desacompanhada?',
+        default=False
+    )
+    pesadelo_dormir = models.BooleanField(
+        verbose_name='44. Pesadelos ou dificuldade para dormir?',
+        default=False
+    )
+    tristeza_profunda = models.BooleanField(
+        verbose_name='45. Tristeza profunda ou crises de choro?',
+        default=False
+    )
+    constante_estado_alerta = models.BooleanField(
+        verbose_name='46. Constante estado de alerta (atenção e medo)?',
+        default=False
+    )
 
     class Meta:
         verbose_name = 'Formulario MP'
