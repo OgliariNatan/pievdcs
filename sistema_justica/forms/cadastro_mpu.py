@@ -34,6 +34,12 @@ class CadastroMedidaProtetiva(forms.ModelForm):
                 active_text='Sim',
                 inactive_text='Não'
             ),
+            'constrangia_frente_outras_pessoas': ToggleSwitchWidget(size='xs',
+                                                                    active_color='#9333ea',
+                                                                    inactive_color='#4a4343',
+                                                                    active_text='Sim',
+                                                                    inactive_text='Não'
+            ),
             'obrigava_pedir_desculpas': ToggleSwitchWidget(size='xs',
                 active_color='#9333ea',
                 inactive_color='#4a4343',
@@ -249,6 +255,38 @@ class CadastroMedidaProtetiva(forms.ModelForm):
             }),
 
             # VIOLÊNCIA PSICOLÓGICA DIGITAL Q35
+            'manipulado_IA_BOOL': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+
+            # (violência vicária) Q36
+            'guarda_filhos' : ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'ameaca_filho_desiste_proc': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'agia_agre_filhos_punir' : ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'deixava_remedio_filhos': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
 
         }
     

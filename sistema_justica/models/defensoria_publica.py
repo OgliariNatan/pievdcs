@@ -107,22 +107,25 @@ class FormularioMedidaProtetiva(models.Model):
     #Relacionado a parte 1: Condutas de violência psicológica
     critica_aparencia = models.BooleanField(
         default=False,
-        verbose_name='Criticava sua aparência (corpo, cabelo, roupas)?'
+        verbose_name='1. Criticava sua aparência (corpo, cabelo, roupas)?'
     )
 
     proibia_make_roupas = models.BooleanField(
         default=False,
-        verbose_name='Proibia você de usar roupas ou maquiagem?'
+        verbose_name='2. Proibia você de usar roupas ou maquiagem?'
     )
-
+    constrangia_frente_outras_pessoas = models.BooleanField(
+        default=False,
+        verbose_name='3. Constrangia você na frente de outras pessoas?'
+    )
     obrigava_pedir_desculpas = models.BooleanField(
         default=False,
-        verbose_name='Obrigava você a pedir desculpas, mesmo quando não era sua culpa?'
+        verbose_name='4. Obrigava você a pedir desculpas, mesmo quando não era sua culpa?'
     )
 
     fazer_nao_gosta = models.BooleanField(
         default=False,
-        verbose_name='Constrangia você a fazer coisas que não gostava?'
+        verbose_name='5. Constrangia você a fazer coisas que não gostava?'
     )
 
     comentario_situacao = models.TextField(
@@ -133,31 +136,31 @@ class FormularioMedidaProtetiva(models.Model):
 
     # relacionado a parte 1: Condutas de humiliação e ridicularizaçÃO
     ridicularizava_sozinha = models.BooleanField(
-        verbose_name='Ofendia, envergonhava ou ridicularizava você quando estavam sozinhos?',
+        verbose_name='6. Ofendia, envergonhava ou ridicularizava você quando estavam sozinhos?',
         default=False
     )
     ridicularizava_terceiros = models.BooleanField(
-        verbose_name='Ofendia, envergonhava ou ridicularizava você quando estavam na frente de outras pessoas?',
+        verbose_name='7. Ofendia, envergonhava ou ridicularizava você quando estavam na frente de outras pessoas?',
         default=False
     )
 
     humiliava_frente_filhos = models.BooleanField(
-        verbose_name='Humilhava você na frente de seus filhos?',
+        verbose_name='8. Humilhava você na frente de seus filhos?',
         default=False
     )
 
     piadas_familia = models.BooleanField(
-        verbose_name='Fazia piadas sobre ou você sua familia?',
+        verbose_name='9. Fazia piadas sobre ou você sua familia?',
         default=False
     )
 
     xingava_louca_burra = models.BooleanField(
-        verbose_name='Xingava você de louca, burra, incapaz ou que não fazia nada direito?',
+        verbose_name='10. Xingava você de louca, burra, incapaz ou que não fazia nada direito?',
         default=False
     )
 
     apelidos_tristes= models.BooleanField(
-        verbose_name='Criava apelidos para você, que a deixavam constrangida ou triste?',
+        verbose_name='11. Criava apelidos para você, que a deixavam constrangida ou triste?',
         default=False
     )
 
@@ -169,22 +172,22 @@ class FormularioMedidaProtetiva(models.Model):
 
     # Condutas de Manipulação
     perdia_cabeca_culpava = models.BooleanField(
-        verbose_name='Alegava que "perdia a cabeça" e culpava você?',
+        verbose_name='12. Alegava que "perdia a cabeça" e culpava você?',
         default=False
     )
 
     culpava_ruim_voce = models.BooleanField(
-        verbose_name='Culpava você por tudo de ruim que acontecia (desempego, dívidas e outros)?',
+        verbose_name='13. Culpava você por tudo de ruim que acontecia (desempego, dívidas e outros)?',
         default=False
     )
 
     insegurancas_capza = models.BooleanField(
-        verbose_name='Usava seus medos e inseguranças dizendo que você não era capaz?',
+        verbose_name='14. Usava seus medos e inseguranças dizendo que você não era capaz?',
         default=False
     )
 
     boa_dona_casa = models.BooleanField(
-        verbose_name='Afirmava que você era uma boa "dona de casa", "boa mãe" e "esposa" para justificar o comportamento abusivo?',
+        verbose_name='15. Afirmava que você era uma boa "dona de casa", "boa mãe" e "esposa" para justificar o comportamento abusivo?',
         default=False
     ),
     
@@ -303,10 +306,48 @@ class FormularioMedidaProtetiva(models.Model):
 
     # VIOLÊNCIA PSICOLÓGICA DIGITAL Q35
 
+    manipulado_IA_BOOL = models.BooleanField(
+        verbose_name='Para alguma das condutas anteriores, foi utilizada Inteligência Artificial (como programas ou aplicativos) ou outro recurso tecnológico para alterar imagem pessoal ou voz (fotos ou vídeos montados com sua imagem ou voz)?',
+        default=False
+    )
 
+    # (violência vicária) Q36
+    guarda_filhos = models.BooleanField(
+        verbose_name='Ameaçava pedir a guarda dos filhos?',
+        default=False
+    ),
 
+    ameaca_filho_desiste_proc = models.BooleanField(
+        verbose_name='Ameaçava seus filhos para você desistir de algum processo?',
+        default=False
+    ),
 
+    agia_agre_filhos_punir = models.BooleanField(
+        verbose_name='Agia com agressividade com os filhos como forma de puni-la?',
+        default=False
+    ),
 
+    deixava_remedio_filhos = models.BooleanField(
+        verbose_name='Deixava de dar remédios para filhos doentes ou que necessitavam de cuidados especiais como forma de puni-la?',
+        default=False
+    ),
+
+    filhos_riscos = models.BooleanField(
+        verbose_name='Colocava seus filhos em situações de riscos como forma de punila?',
+        default=False
+    ),
+
+    recusava_pagar_pensao = models.BooleanField(
+        verbose_name='Recusava a pagar pensão para os filhos como forma de chantagem ou punição?',
+        default=False
+    ),
+
+    outras_condutas_vicaria = models.TextField(
+        verbose_name='Outras situações',
+        null=True,
+        blank=True
+    ),
+    # FREQUENCIAS_DAS_CONDUTAS
 
     class Meta:
         verbose_name = 'Formulario MP'

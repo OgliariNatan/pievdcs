@@ -19,7 +19,7 @@ from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 # Configuração do Ollama
 OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://localhost:11434')
-OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'llama3')  # ou 'mistral', 'codellama', etc.
+OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'llama3:70b')  # ou 'mixtral', 'codellama', 'llama3', 'llama3:70b', 'llama3:70b-text', etc.
 
 
 @calcula_tempo
@@ -117,6 +117,7 @@ def verificar_ollama_disponivel():
         client = ollama.Client(host=OLLAMA_HOST)
         # Tenta listar modelos para verificar conexão
         models = client.list()
+        #print(f"Ollama está disponível. Modelos: {models}")
         return True
     except Exception as e:
         print(f"Ollama não está disponível: {e}")
@@ -126,9 +127,9 @@ def obter_resposta_ollama(pergunta):
     """Obtém resposta do modelo Ollama"""
     try:
         client = ollama.Client(host=OLLAMA_HOST)
-        
+        #print(f'cliente {client.list()}')
         # System prompt especializado para violência doméstica
-        system_prompt = """Você é um assistente jurídico especializado em casos de violência doméstica contra a mulher no Brasil.
+        system_prompt = """Você é uma assistente especializada em casos de violência doméstica contra a mulher no Brasil.
         
         Suas responsabilidades incluem:
         - Fornecer informações sobre a Lei Maria da Penha (Lei 11.340/2006)
@@ -141,9 +142,13 @@ def obter_resposta_ollama(pergunta):
         Responda de forma clara, empática e acolhedora. Use linguagem simples e evite jargões jurídicos complexos.
         Sempre priorize a segurança da vítima e indique buscar ajuda profissional quando necessário.
         
-        NÃO forneça conselhos médicos ou psicológicos específicos.
+        Não forneça conselhos médicos ou psicológicos específicos.
         Em casos urgentes, sempre recomende ligar para 180 (Central de Atendimento à Mulher) ou 190 (Polícia).
-        
+
+        Denúncias on-line no site da [Delegacia Virtual (Registro de BO)](https://delegaciavirtual.sc.gov.br/nova-ocorrencia).
+
+        Quando solicitar uma conversa oriente a entrar em contato através do whatsapp para o número [554832872635](https://api.whatsapp.com/send?phone=554832872635), serviço do Tribunal de Justiça de Santa Catarina.
+
         Formate suas respostas usando HTML básico:
         - Use <strong> para destacar informações importantes
         - Use <br> para quebras de linha
@@ -158,9 +163,9 @@ def obter_resposta_ollama(pergunta):
             model=OLLAMA_MODEL,
             prompt=prompt_completo,
             options={
-                'temperature': 0.4,
-                'num_predict': 600,  # Equivalente ao max_tokens
-                'top_p': 0.9,
+                'temperature': 0.5,
+                'num_predict': 400,  # tamanho da resposta
+                'top_p': 0.8, # Inicial 0.9
                 'top_k': 40,
             }
         )
@@ -193,7 +198,8 @@ def obter_resposta_demo(pergunta):
     if "medida protetiva" in pergunta_lower or "medidas protetivas" in pergunta_lower:
         return """A medida protetiva é um instrumento jurídico previsto na Lei Maria da Penha (Lei 11.340/2006) para proteger mulheres em situação de violência.
         <br><br><strong>Como solicitar:</strong>
-        <br>• Procure uma Delegacia da Mulher ou delegacia comum
+        <br>• Procure a Defensoria Pública ou;
+        <br>• Procure uma Delegacia da Mulher, Delegacia comum ou [Delegacia Virtual](https://delegaciavirtual.sc.gov.br/nova-ocorrencia).
         <br>• Relate os fatos e peça a medida protetiva
         <br>• Não é necessário advogado
         <br>• O juiz tem 48h para decidir
@@ -236,6 +242,8 @@ def obter_resposta_demo(pergunta):
         <br>• <strong>Central da Mulher:</strong> Ligue 180 (24h, gratuito)
         <br>• <strong>Delegacia da Mulher:</strong> Atendimento especializado
         <br>• <strong>Delegacia comum:</strong> Na ausência de delegacia especializada
+        <br>• <strong>Delegacia Virtual:</strong> Registro de BO online
+        <br>• <strong>Defensoria Pública:</strong> Assistência jurídica gratuita
         <br>• <strong>Ministério Público:</strong> Denúncias diretas
         <br>• <strong>Online:</strong> Alguns estados têm delegacia virtual
         <br><br><strong>Importante:</strong>
