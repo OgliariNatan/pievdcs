@@ -123,7 +123,7 @@ class CadastroMedidaProtetiva(forms.ModelForm):
                 active_text='Sim',
                 inactive_text='Não'
             ),
-            'ameacava_se_matar': ToggleSwitchWidget(size='xs',
+            'ameaca_se_matar': ToggleSwitchWidget(size='xs',
                 active_color='#9333ea',
                 inactive_color='#4a4343',
                 active_text='Sim',
@@ -261,7 +261,10 @@ class CadastroMedidaProtetiva(forms.ModelForm):
                 active_text='Sim',
                 inactive_text='Não'
             ),
-
+            'manipula_IA': forms.Textarea(attrs={
+                'class': 'form-control form-control-sm border border-gray-400 rounded-xl',
+                'rows': 2
+            }), 
             # (violência vicária) Q36
             'guarda_filhos' : ToggleSwitchWidget(size='xs',
                 active_color='#9333ea',
@@ -287,6 +290,22 @@ class CadastroMedidaProtetiva(forms.ModelForm):
                 active_text='Sim',
                 inactive_text='Não'
             ),
+            'filhos_riscos': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'recusava_pagar_pensao': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'outras_condutas_vicaria': forms.Textarea(attrs={
+                'class': 'form-control form-control-sm border border-gray-400 rounded-xl',
+                'rows': 2
+            })
 
         }
     

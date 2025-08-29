@@ -189,17 +189,17 @@ class FormularioMedidaProtetiva(models.Model):
     boa_dona_casa = models.BooleanField(
         verbose_name='15. Afirmava que você era uma boa "dona de casa", "boa mãe" e "esposa" para justificar o comportamento abusivo?',
         default=False
-    ),
+    )
     
     ameaca_se_matar = models.BooleanField(
-        verbose_name='Ameaçava que ia se matar ou matar seus filhos quando você tentava terminar a relação?',
+        verbose_name='16. Ameaçava que ia se matar ou matar seus filhos quando você tentava terminar a relação?',
         default=False
-    ),
+    )
     
     invertia_fatos = models.BooleanField(
-        verbose_name='Escondia, coisas invertia fatos e dizia que você estava louca?',
+        verbose_name='17. Escondia, coisas invertia fatos e dizia que você estava louca?',
         default=False,
-    ),
+    )
 
     detalhes_coisas = models.TextField(
         verbose_name='Você gostaria de contar mais detalhes ou alguma situação específica?',
@@ -209,46 +209,46 @@ class FormularioMedidaProtetiva(models.Model):
 
     # Condutas de isolamento ou limitacao
     dificula_contato_familia = models.BooleanField(
-        verbose_name='Dificultava seu contato com familiares?',
+        verbose_name='18. Dificultava seu contato com familiares?',
         default=False,
     )
     telefone_familia_viva_voz = models.BooleanField(
-        verbose_name='Quando seus familiares ligavam, obrigava você a colocar em viva voz?',
+        verbose_name='19. Quando seus familiares ligavam, obrigava você a colocar em viva voz?',
         default=False,
     )
 
     reclama_saia_sozinha = models.BooleanField(
-        verbose_name='Reclamava quando você saía sozinha?',
+        verbose_name='20. Reclamava quando você saía sozinha?',
         default=False
     )
 
     reclama_sozinha_estudar_trabalhar = models.BooleanField(
-        verbose_name='Reclamava quando você saía para estudar ou trabalhar?',
+        verbose_name='21. Reclamava quando você saía para estudar ou trabalhar?',
         default=False,
     )
 
     bravo_conversa_homem = models.BooleanField(
-        verbose_name='Ficava aborrecido ou bravo se você conversava com homens que não eram da família?',
+        verbose_name='22. Ficava aborrecido ou bravo se você conversava com homens que não eram da família?',
         default=False
     )
 
     escolhia_amizade = models.BooleanField(
-        verbose_name='Escolhia suas amizades?',
+        verbose_name='23. Escolhia suas amizades?',
         default=False
     )
 
     controlava_distancia = models.BooleanField(
-        verbose_name='Controlava você por mensagens, ligações ou de outro modo?',
+        verbose_name='24. Controlava você por mensagens, ligações ou de outro modo?',
         default=False
     )
 
     senhas_redes_sociais = models.BooleanField(
-        verbose_name='Exigia que você lhe desse suas senhas em redes sociais?',
+        verbose_name='25. Exigia que você lhe desse suas senhas em redes sociais?',
         default=False
     )
 
     ciumes_atencao_proximidade = models.BooleanField(
-        verbose_name='Tinha ciúmes se alguma pessoa lhe desse atenção ou se aproximasse de você?',
+        verbose_name='26. Tinha ciúmes se alguma pessoa lhe desse atenção ou se aproximasse de você?',
         default=False
     )
 
@@ -260,41 +260,41 @@ class FormularioMedidaProtetiva(models.Model):
 
     # CONDUTAS AMEAÇADORAS Q27
     gritava_qualquer_coisa = models.BooleanField(
-        verbose_name='Gritava ou explodia por qualquer coisa?',
+        verbose_name='27. Gritava ou explodia por qualquer coisa?',
         default=False
     )
 
     amante_paquera = models.BooleanField(
-        verbose_name='Explodia por ciúmes, dizia que você tinha amantes ou estava paquerando?',
+        verbose_name='28. Explodia por ciúmes, dizia que você tinha amantes ou estava paquerando?',
         default=False
     )
 
     escondia_coisas_pessoais = models.BooleanField(
-        verbose_name='Destruía ou escondia suas coisas pessoais?',
+        verbose_name='29. Destruía ou escondia suas coisas pessoais?',
         default=False
     )
     destruia_moveis_casa = models.BooleanField(
-        verbose_name='Destruía móveis ou utensílios da casa?',
+        verbose_name='30. Destruía móveis ou utensílios da casa?',
         default=False,
     )
 
     maltratava_animal_estimacao = models.BooleanField(
-        verbose_name='Maltratava ou ameaçava seus animais de estimação?',
+        verbose_name='31. Maltratava ou ameaçava seus animais de estimação?',
         default=False
     )
 
     contar_segredo = models.BooleanField(
-        verbose_name='Ameaçava contar seus segredos pessoais ou divulgar fotos suas para outras pessoas?',
+        verbose_name='32. Ameaçava contar seus segredos pessoais ou divulgar fotos suas para outras pessoas?',
         default=False
     )
 
     deixar_sem_nada = models.BooleanField(
-        verbose_name='Dizia que, se o deixasse, entraria com vários processos e ficaria sem nada?',
+        verbose_name='33.   Dizia que, se o deixasse, entraria com vários processos e ficaria sem nada?',
         default=False
     )
 
     exibia_armas = models.BooleanField(
-        verbose_name='Exibia armas de fogo, facas ou objetos como forma de intimação?',
+        verbose_name='34. Exibia armas de fogo, facas ou objetos como forma de intimação?',
         default=False
     )
 
@@ -307,47 +307,68 @@ class FormularioMedidaProtetiva(models.Model):
     # VIOLÊNCIA PSICOLÓGICA DIGITAL Q35
 
     manipulado_IA_BOOL = models.BooleanField(
-        verbose_name='Para alguma das condutas anteriores, foi utilizada Inteligência Artificial (como programas ou aplicativos) ou outro recurso tecnológico para alterar imagem pessoal ou voz (fotos ou vídeos montados com sua imagem ou voz)?',
+        verbose_name='35. Para alguma das condutas anteriores, foi utilizada Inteligência Artificial (como programas ou aplicativos) ou outro recurso tecnológico para alterar imagem pessoal ou voz (fotos ou vídeos montados com sua imagem ou voz)?',
         default=False
+    )
+    manipula_IA = models.TextField(
+        verbose_name='',
+        null=True,
+        blank=True
     )
 
     # (violência vicária) Q36
     guarda_filhos = models.BooleanField(
-        verbose_name='Ameaçava pedir a guarda dos filhos?',
+        verbose_name='36. Ameaçava pedir a guarda dos filhos?',
         default=False
-    ),
+    )
 
     ameaca_filho_desiste_proc = models.BooleanField(
-        verbose_name='Ameaçava seus filhos para você desistir de algum processo?',
+        verbose_name='37. Ameaçava seus filhos para você desistir de algum processo?',
         default=False
-    ),
+    )
 
     agia_agre_filhos_punir = models.BooleanField(
-        verbose_name='Agia com agressividade com os filhos como forma de puni-la?',
+        verbose_name='38. Agia com agressividade com os filhos como forma de puni-la?',
         default=False
-    ),
+    )
 
     deixava_remedio_filhos = models.BooleanField(
-        verbose_name='Deixava de dar remédios para filhos doentes ou que necessitavam de cuidados especiais como forma de puni-la?',
+        verbose_name='39. Deixava de dar remédios para filhos doentes ou que necessitavam de cuidados especiais como forma de puni-la?',
         default=False
-    ),
+    )
 
     filhos_riscos = models.BooleanField(
-        verbose_name='Colocava seus filhos em situações de riscos como forma de punila?',
+        verbose_name='40. Colocava seus filhos em situações de riscos como forma de punila?',
         default=False
-    ),
+    )
 
     recusava_pagar_pensao = models.BooleanField(
-        verbose_name='Recusava a pagar pensão para os filhos como forma de chantagem ou punição?',
+        verbose_name='41. Recusava-se a pegar pensão para os filhos como forma de chantagem ou punição?',
         default=False
-    ),
+    )
 
     outras_condutas_vicaria = models.TextField(
         verbose_name='Outras situações',
         null=True,
         blank=True
-    ),
+    )
     # FREQUENCIAS_DAS_CONDUTAS
+
+    frequencia_condutas = models.CharField(
+        verbose_name='As condutas de constrangimento, humilhação, manipulação, de isolamento ou ameaçadoras que você descreveu aconteciam com que frequência',
+        max_length=15,
+        null=True,
+        blank=True,
+        choices=[
+            ('no_descreveu', 'Não Descreveu'),
+            ('pou_vezes', 'Poucas Vezes'),
+            ('as_vezes', 'Muitas Vezes'),
+            ('sempre', 'Sempre'),
+        ],
+        #default='no_descreveu'
+    )
+
+    #Parte 2: DANO EMOCIONAL
 
     class Meta:
         verbose_name = 'Formulario MP'
