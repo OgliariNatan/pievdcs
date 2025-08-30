@@ -29,6 +29,7 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 # Application definition
 
 INSTALLED_APPS = [
+    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'usuarios.apps.UsuariosConfig', #Usuarios autorizados
     'sistema_justica', #Sistemas de justica
     'municipio', #sistema municipal
+    # Mensageiro CRIAR
     
     
 ]
@@ -70,13 +72,20 @@ MIDDLEWARE = [
     'MAIN.middleware.logs_pers.APILogMiddleware',  # Middleware personalizado para logs
 ]
 
+# define aonde sera armagenado as mensagens
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 
+ASGI_APPLICATION = 'pievdcs.MAIN.asgi.application' 
 ROOT_URLCONF = "MAIN.urls"
 USE_DJANGO_JQUERY = True
 SMART_SELECTS_INCLUDE_JQUERY = True
 
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://www.redecontraaviolencia.org',
+    'https://redecontraaviolencia.org',
+    'http://62.72.9.77'
+]
 
 
 
