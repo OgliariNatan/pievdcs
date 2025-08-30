@@ -305,7 +305,136 @@ class CadastroMedidaProtetiva(forms.ModelForm):
             'outras_condutas_vicaria': forms.Textarea(attrs={
                 'class': 'form-control form-control-sm border border-gray-400 rounded-xl',
                 'rows': 2
-            })
+            }),
+            # Parte 2: Dano Emocional
+            'evita_pessoas_locais': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'medo_sozinha_casa': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'pesadelo_dormir': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'tristeza_profunda': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'constante_estado_alerta': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'dificuldade_fazer_atividades': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'afastamento_trabalho': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'afastamento_fami_ami': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'deixou_relacionar_afetiva_sexu': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'deixou_relacionar_afetiva_sexu_mesAgressor': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'desenvolveu_fobia': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'alteracao_apetite': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'doente_frequente': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ), 
+            'tremores_lembras': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'coracao_ace_sexo_oposto': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'estado_desanimo': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'sentir_incapaz': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'olha_mundo_perigoso': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'irritabilidade_constante': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'perdeu_vontade_viver_suicida': ToggleSwitchWidget(size='xs',
+                active_color='#9333ea',
+                inactive_color='#4a4343',
+                active_text='Sim',
+                inactive_text='Não'
+            ),
+            'sintomas_persistem': forms.Textarea(attrs={
+                'class': 'form-control form-control-sm border border-gray-400 rounded-xl',
+                'rows': 3
+            }),
+            'observacoes_profissional': forms.Textarea(attrs={
+                'class': 'form-control form-control-sm border border-gray-400 rounded-xl',
+                'rows': 4
+            }),
 
         }
     

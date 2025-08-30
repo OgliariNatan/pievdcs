@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'usuarios.apps.UsuariosConfig', #Usuarios autorizados
     'sistema_justica', #Sistemas de justica
     'municipio', #sistema municipal
+    # Mensageiro CRIAR
     
     
 ]

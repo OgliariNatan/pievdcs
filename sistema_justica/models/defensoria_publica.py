@@ -390,6 +390,78 @@ class FormularioMedidaProtetiva(models.Model):
         verbose_name='46. Constante estado de alerta (atenção e medo)?',
         default=False
     )
+    dificuldade_fazer_atividades = models.BooleanField(
+        verbose_name='47. Dificuldade para realizar as atividades do dia a dia, que antes você fazia normalmente?',
+        default=False
+    )
+    afastamento_trabalho = models.BooleanField(
+        verbose_name='48. Afastamento do trabalho ou estudos?',
+        default=False
+    )
+    afastamento_fami_ami = models.BooleanField(
+        verbose_name='49. Afastamento de familiares ou amigos/as?',
+        default=False
+    )
+    deixou_relacionar_afetiva_sexu = models.BooleanField(
+        verbose_name='50. Deixou de se relacionar sexualmente ou afetivamente com outras pessoas (por medo ou desconfiança)?',
+        default=False
+    )
+    deixou_relacionar_afetiva_sexu_mesAgressor = models.BooleanField(
+        verbose_name='51. Deixou de se relacionar com pessoas do mesmo sexo do agressor (por medo ou desconfiança)?',
+        default=False
+    )
+    desenvolveu_fobia = models.BooleanField(
+        verbose_name='52. Desenvolveu alguma fobia ou medo específico (altura, animais, pessoas, sangue)?',
+        default=False
+    )
+    alteracao_apetite = models.BooleanField(
+        verbose_name='53. Teve alterações do apetite com aumento ou perda de peso?',
+        default=False
+    )
+    doente_frequente = models.BooleanField(
+        verbose_name='54. Passou a ficar doente com frequência (dores crônicas, lesões ou doenças de pele, alterações hormonais, pressão alta, queda de cabelo, alterações da visão, ou outro sintoma físico)?',
+        default=False
+    )
+    tremores_lembras = models.BooleanField(
+        verbose_name='55. Tremores ao relembrar dos fatos?',
+        default=False
+    )
+    coracao_ace_sexo_oposto = models.BooleanField(
+        verbose_name='56. Coração acelerado (taquicardia) ou falta de ar quando alguém do sexo oposto chega próximo?',
+        default=False
+    )
+    estado_desanimo = models.BooleanField(
+        verbose_name='57. Estado de desânimo, apatia ou indiferença em ambientes de lazer?',
+        default=False
+    )
+    sentir_incapaz = models.BooleanField(
+        verbose_name='58. Passou a se sentir incapaz, fracassada ou sem valor?',
+        default=False
+    )
+    olha_mundo_perigoso = models.BooleanField(
+        verbose_name='59. Passou a ver o mundo como um lugar perigoso e não consegue confiar nas pessoas?',
+        default=False
+    )
+    irritabilidade_constante = models.BooleanField(
+        verbose_name='60. Passou a ter irritabilidade constante?',
+        default=False
+    )
+    perdeu_vontade_viver_suicida = models.BooleanField(
+        verbose_name='61. Perdeu a vontade de viver ou teve ideação suicida?',
+        default=False
+    )
+
+    # Persistencia dos sintomas
+    sintomas_persistem = models.TextField(
+        verbose_name='Os sintomas ainda persistem? Descreva, apontando se há necessidade de atendimento ou encaminhamento da vítima.',
+        null=True,
+        blank=True,        
+    )
+    observacoes_profissional = models.TextField(
+        verbose_name='Observações profissionais',
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = 'Formulario MP'
