@@ -29,7 +29,6 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 # Application definition
 
 INSTALLED_APPS = [
-    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,6 +44,7 @@ INSTALLED_APPS = [
     'usuarios.apps.UsuariosConfig', #Usuarios autorizados
     'sistema_justica', #Sistemas de justica
     'municipio', #sistema municipal
+    
     # Mensageiro CRIAR
     
     

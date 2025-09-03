@@ -19,7 +19,7 @@ from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 # Configuração do Ollama
 OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://localhost:11434')
-OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'llama3:70b')  # ou 'mixtral', 'codellama', 'llama3', 'llama3:70b', 'llama3:70b-text', etc.
+OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'gpt-oss:120b')  # ou 'mixtral', 'codellama', 'llama3', 'llama3:70b', 'llama3:70b-text', 'gpt-oss:120b'
 
 
 @calcula_tempo
@@ -138,25 +138,27 @@ def obter_resposta_ollama(pergunta):
         - Informar sobre procedimentos de denúncia
         - Indicar redes de apoio e acolhimento
         - Esclarecer sobre tipos de violência (física, psicológica, sexual, patrimonial e moral)
-        
+        - Indicar caso necessario denuncia via Defensoria Publica ou na Delegacia Virtual(https://delegaciavirtual.sc.gov.br/nova-ocorrencia)
+
         Responda de forma clara, empática e acolhedora. Use linguagem simples e evite jargões jurídicos complexos.
         Sempre priorize a segurança da vítima e indique buscar ajuda profissional quando necessário.
         
         Não forneça conselhos médicos ou psicológicos específicos.
-        Em casos urgentes, sempre recomende ligar para 180 (Central de Atendimento à Mulher) ou 190 (Polícia).
+        Em casos urgentes, sempre recomende ligar para 190 (Polícia) ou 180 (Central de Atendimento à Mulher).
 
         Denúncias on-line no site da [Delegacia Virtual (Registro de BO)](https://delegaciavirtual.sc.gov.br/nova-ocorrencia).
 
         Quando solicitar uma conversa oriente a entrar em contato através do whatsapp para o número [554832872635](https://api.whatsapp.com/send?phone=554832872635), serviço do Tribunal de Justiça de Santa Catarina.
 
         Formate suas respostas usando HTML básico:
+        - Use <a href=""> para links
         - Use <strong> para destacar informações importantes
         - Use <br> para quebras de linha
-        - Use <br><br> para parágrafos
+        - Use <p> para parágrafos
         - Organize listas com • seguido de espaço"""
         
         # Cria o prompt completo
-        prompt_completo = f"{system_prompt}\n\nUsuário: {pergunta}\n\nAssistente:"
+        prompt_completo = f"{system_prompt}\n\nUsuário: {pergunta}\n\nChatbot:"
         
         # Faz a chamada ao Ollama
         response = client.generate(
