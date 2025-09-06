@@ -83,7 +83,8 @@ class CustomUser(AbstractUser):
             ('Conselho Tutelar', 'Conselho Tutelar'),
             ('CRAS', 'CRAS'),
             ('CREAS', 'CREAS'),
-            ('Secretaria da Saúde', 'Secretaria da Saúde')
+            ('Secretaria da Saúde', 'Secretaria da Saúde'),
+            ('Administração', 'Administração')
         ]
     )
 
@@ -121,9 +122,18 @@ class CustomGroup(models.Model):
         verbose_name='permissões',
         blank=True,
     )
-    description = models.TextField('descrição', blank=True)
-    created_at = models.DateTimeField('criado em', auto_now_add=True)
-    updated_at = models.DateTimeField('atualizado em', auto_now=True)
+    description = models.TextField(
+        verbose_name='descrição',
+        blank=True
+    )
+    created_at = models.DateTimeField(
+        verbose_name='criado em', 
+        auto_now_add=True
+    )
+    updated_at = models.DateTimeField(
+        verbose_name='atualizado em',
+        auto_now=True
+    )
     
     class Meta:
         verbose_name = 'Grupo'
