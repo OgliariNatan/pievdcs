@@ -29,6 +29,8 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",  # Adicione no início da lista INSTALLED_APPS
+    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -46,7 +48,7 @@ INSTALLED_APPS = [
     'sistema_justica', #Sistemas de justica
     'municipio', #sistema municipal
     
-    # Mensageiro CRIAR
+    "mensageria" # Mensageiro CRIAR
     
     
 ]
@@ -77,7 +79,7 @@ MIDDLEWARE = [
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 
-ASGI_APPLICATION = 'pievdcs.MAIN.asgi.application' 
+ASGI_APPLICATION = 'MAIN.asgi.application' 
 ROOT_URLCONF = "MAIN.urls"
 USE_DJANGO_JQUERY = True
 SMART_SELECTS_INCLUDE_JQUERY = True
@@ -90,7 +92,20 @@ CSRF_TRUSTED_ORIGINS = [
     'http://redecontraaviolencia.org'
 ]
 
+# Channel Layers - Redis como backend
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+            "capacity": 1500,
+            "expiry": 10,
+        },
+    },
+}
 
+# WebSocket configuration
+WEBSOCKET_sURL = '/ws/'
 
 TEMPLATES = [
     {

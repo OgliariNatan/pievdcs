@@ -51,7 +51,7 @@ urlpatterns = [
     path('justica/', include('sistema_justica.urls')),  #Destinado aos sistemas de justiças
     path('municipio/', include('municipio.urls')), #Destinado ao municipio
     path('chaining/', include('smart_selects.urls')),# Para selecionar os municipios
-    #path('inbox/notifications/', include('notifications.urls', namespace='notifications')),
+    path('mensageria/', include('mensageria.urls')), #Para o sistema de mensagens
 
 
 
