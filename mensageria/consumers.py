@@ -2,8 +2,7 @@ import json
 from django.utils import timezone
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-from django.contrib.auth.models import User
-from .models import Notificacao, StatusNotificacaoUsuario, StatusNotificacao
+from .models import Notificacao, StatusNotificacao
 
 class NotificacaoConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -22,7 +21,7 @@ class NotificacaoConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         
-        # Adicionar aos grupos do usuário
+        # Adicionar aos grupos institucionais do usuário
         user_groups = await self.get_user_groups()
         for group in user_groups:
             group_name = f'notificacoes_grupo_{group.id}'
@@ -33,8 +32,8 @@ class NotificacaoConsumer(AsyncWebsocketConsumer):
         
         await self.accept()
         
-        # Enviar notificações não lidas ao conectar
-        await self.send_unread_notifications()
+        # Enviar contagem de notificações não lidas ao conectar
+        await self.send_notification_count()
     
     async def disconnect(self, close_code):
         if hasattr(self, 'user_group_name'):
@@ -43,7 +42,7 @@ class NotificacaoConsumer(AsyncWebsocketConsumer):
                 self.channel_name
             )
         
-        # Remover dos grupos
+        # Remover dos grupos institucionais
         user_groups = await self.get_user_groups()
         for group in user_groups:
             group_name = f'notificacoes_grupo_{group.id}'
@@ -64,6 +63,8 @@ class NotificacaoConsumer(AsyncWebsocketConsumer):
             await self.arquivar_notificacao(data.get('notificacao_id'))
         elif action == 'obter_nao_lidas':
             await self.send_unread_notifications()
+        elif action == 'obter_contador':
+            await self.send_notification_count()
     
     async def nova_notificacao(self, event):
         """Recebe notificação do grupo e envia ao WebSocket"""
@@ -84,15 +85,15 @@ class NotificacaoConsumer(AsyncWebsocketConsumer):
         return list(self.user.groups.all())
     
     @database_sync_to_async
-    def send_unread_notifications(self):
-        notificacoes = StatusNotificacaoUsuario.objects.filter(
-            usuario=self.user,
-            status=StatusNotificacao.NAO_LIDA
-        ).select_related('notificacao')
+    def get_unread_notifications(self):
+        """Obtém notificações não lidas do usuário"""
+        notificacoes = Notificacao.get_nao_lidas_usuario(self.user)[:10]  # Últimas 10 não lidas
         
         notificacoes_data = []
-        for status in notificacoes:
-            notif = status.notificacao
+        for notif in notificacoes:
+            # Determinar o status para este usuário
+            status = notif.get_status_para_usuario(self.user)
+            
             notificacoes_data.append({
                 'id': notif.id,
                 'titulo': notif.titulo,
@@ -100,58 +101,131 @@ class NotificacaoConsumer(AsyncWebsocketConsumer):
                 'tipo': notif.tipo,
                 'prioridade': notif.prioridade,
                 'data_criacao': notif.data_criacao.isoformat(),
-                'url_acao': notif.url_acao,
-                'status': status.status
+                'url_acao': notif.get_url_acao(),
+                'status': status,
+                'importante': notif.importante,
+                'icone': notif.get_icone_tipo(),
+                'cor': notif.get_cor_prioridade(),
+                'remetente': notif.remetente.get_full_name() if notif.remetente else 'Sistema'
             })
         
-        self.send(text_data=json.dumps({
+        return notificacoes_data
+    
+    async def send_unread_notifications(self):
+        """Envia notificações não lidas para o WebSocket"""
+        notificacoes_data = await self.get_unread_notifications()
+        
+        await self.send(text_data=json.dumps({
             'type': 'notificacoes_nao_lidas',
             'notificacoes': notificacoes_data,
             'total': len(notificacoes_data)
         }))
     
     @database_sync_to_async
-    def marcar_notificacao_lida(self, notificacao_id):
-        try:
-            status = StatusNotificacaoUsuario.objects.get(
-                notificacao_id=notificacao_id,
-                usuario=self.user
-            )
-            status.marcar_como_lida()
-            
-            self.send(text_data=json.dumps({
-                'type': 'notificacao_marcada_lida',
-                'notificacao_id': notificacao_id
-            }))
-        except StatusNotificacaoUsuario.DoesNotExist:
-            pass
+    def get_notification_count(self):
+        """Obtém contagem de notificações não lidas"""
+        return Notificacao.contar_nao_lidas_usuario(self.user)
     
-    @database_sync_to_async
-    def marcar_todas_lidas(self):
-        StatusNotificacaoUsuario.objects.filter(
-            usuario=self.user,
-            status=StatusNotificacao.NAO_LIDA
-        ).update(
-            status=StatusNotificacao.LIDA,
-            data_leitura=timezone.now()
-        )
+    async def send_notification_count(self):
+        """Envia contagem de notificações não lidas"""
+        count = await self.get_notification_count()
         
-        self.send(text_data=json.dumps({
-            'type': 'todas_marcadas_lidas'
+        await self.send(text_data=json.dumps({
+            'type': 'contador_atualizado',
+            'count': count
         }))
     
     @database_sync_to_async
-    def arquivar_notificacao(self, notificacao_id):
+    def marcar_notificacao_lida(self, notificacao_id):
+        """Marca uma notificação como lida"""
         try:
-            status = StatusNotificacaoUsuario.objects.get(
-                notificacao_id=notificacao_id,
-                usuario=self.user
-            )
-            status.arquivar()
+            notificacao = Notificacao.objects.get(id=notificacao_id)
             
-            self.send(text_data=json.dumps({
+            # Verificar tipo de notificação e marcar como lida apropriadamente
+            if notificacao.destinatario_usuario == self.user:
+                success = notificacao.marcar_como_lida()
+            elif notificacao.destinatario_grupo and self.user.groups.filter(id=notificacao.destinatario_grupo.id).exists():
+                success = notificacao.marcar_lida_por_usuario(self.user)
+            else:
+                success = False
+            
+            if success:
+                return {'success': True, 'notificacao_id': notificacao_id}
+            else:
+                return {'success': False, 'message': 'Não foi possível marcar como lida'}
+                
+        except Notificacao.DoesNotExist:
+            return {'success': False, 'message': 'Notificação não encontrada'}
+    
+    async def marcar_notificacao_lida_response(self, notificacao_id):
+        """Marca notificação como lida e envia resposta"""
+        result = await self.marcar_notificacao_lida(notificacao_id)
+        
+        if result['success']:
+            await self.send(text_data=json.dumps({
+                'type': 'notificacao_marcada_lida',
+                'notificacao_id': notificacao_id
+            }))
+            # Atualizar contador
+            await self.send_notification_count()
+        else:
+            await self.send(text_data=json.dumps({
+                'type': 'erro',
+                'message': result.get('message', 'Erro ao marcar como lida')
+            }))
+    
+    @database_sync_to_async
+    def marcar_todas_lidas(self):
+        """Marca todas as notificações como lidas"""
+        from .utils import marcar_todas_como_lidas
+        marcar_todas_como_lidas(self.user)
+        return True
+    
+    async def marcar_todas_lidas_response(self):
+        """Marca todas como lidas e envia resposta"""
+        await self.marcar_todas_lidas()
+        
+        await self.send(text_data=json.dumps({
+            'type': 'todas_marcadas_lidas'
+        }))
+        # Atualizar contador
+        await self.send_notification_count()
+    
+    @database_sync_to_async
+    def arquivar_notificacao(self, notificacao_id):
+        """Arquiva uma notificação"""
+        try:
+            notificacao = Notificacao.objects.get(id=notificacao_id)
+            
+            # Verificar tipo de notificação e arquivar apropriadamente
+            if notificacao.destinatario_usuario == self.user:
+                success = notificacao.arquivar()
+            elif notificacao.destinatario_grupo and self.user.groups.filter(id=notificacao.destinatario_grupo.id).exists():
+                success = notificacao.arquivar_por_usuario(self.user)
+            else:
+                success = False
+            
+            if success:
+                return {'success': True, 'notificacao_id': notificacao_id}
+            else:
+                return {'success': False, 'message': 'Não foi possível arquivar'}
+                
+        except Notificacao.DoesNotExist:
+            return {'success': False, 'message': 'Notificação não encontrada'}
+    
+    async def arquivar_notificacao_response(self, notificacao_id):
+        """Arquiva notificação e envia resposta"""
+        result = await self.arquivar_notificacao(notificacao_id)
+        
+        if result['success']:
+            await self.send(text_data=json.dumps({
                 'type': 'notificacao_arquivada',
                 'notificacao_id': notificacao_id
             }))
-        except StatusNotificacaoUsuario.DoesNotExist:
-            pass
+            # Atualizar contador
+            await self.send_notification_count()
+        else:
+            await self.send(text_data=json.dumps({
+                'type': 'erro',
+                'message': result.get('message', 'Erro ao arquivar')
+            }))

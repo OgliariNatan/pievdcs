@@ -5,7 +5,9 @@ app_name = 'mensageria'
 
 urlpatterns = [
     path('notificacoes/', views.listar_notificacoes, name='listar_notificacoes'),
-    path('marcar-lida/<int:notificacao_id>/', views.marcar_como_lida, name='marcar_como_lida'),
+    path('marcar-lida/<int:notificacao_id>/', views.marcar_notificacao_lida, name='marcar_notificacao_lida'),
+    path('arquivar/<int:notificacao_id>/', views.arquivar_notificacao, name='arquivar_notificacao'),
     path('marcar-todas-lidas/', views.marcar_todas_lidas, name='marcar_todas_lidas'),
-    path('contador-nao-lidas/', views.contador_nao_lidas, name='contador_nao_lidas'),
+    path('api/contador/', views.api_contador_notificacoes, name='api_contador_notificacoes'),
+    path('api/recentes/', views.api_notificacoes_recentes, name='api_notificacoes_recentes'),
 ]

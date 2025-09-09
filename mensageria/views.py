@@ -4,78 +4,102 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
 from django.db.models import Q
-from .models import Notificacao, StatusNotificacaoUsuario, StatusNotificacao
-from .utils import enviar_notificacao_usuario, enviar_notificacao_grupo
+from .models import Notificacao, StatusNotificacao
+from django.utils import timezone
 
 @login_required
 def listar_notificacoes(request):
     """Lista todas as notificações do usuário"""
-    filtro = request.GET.get('filtro', 'todas')
     
-    query = StatusNotificacaoUsuario.objects.filter(
-        usuario=request.user
-    ).select_related('notificacao')
+    # Buscar todas as notificações do usuário (individuais e de grupo)
+    notificacoes = Notificacao.get_todas_usuario(request.user)
     
-    if filtro == 'nao_lidas':
-        query = query.filter(status=StatusNotificacao.NAO_LIDA)
-    elif filtro == 'prioritarias':
-        query = query.filter(
-            notificacao__prioridade__in=['ALTA', 'URGENTE']
-        )
-    
-    query = query.order_by('-notificacao__prioridade', '-notificacao__data_criacao')
-    
-    paginator = Paginator(query, 20)
+    # Paginação
+    paginator = Paginator(notificacoes, 20)  # 20 notificações por página
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
     context = {
-        'page_obj': page_obj,
-        'filtro': filtro,
-        'total_nao_lidas': StatusNotificacaoUsuario.objects.filter(
-            usuario=request.user,
-            status=StatusNotificacao.NAO_LIDA
-        ).count()
+        'title': 'Notificações',
+        'notificacoes': page_obj,
+        'total_nao_lidas': Notificacao.contar_nao_lidas_usuario(request.user)
     }
-    
-    return render(request, 'mensageria/listar_notificacoes.html', context)
+    return render(request, 'mensageria/notificacoes.html', context)
 
 @login_required
 @require_POST
-def marcar_como_lida(request, notificacao_id):
+def marcar_notificacao_lida(request, notificacao_id):
     """Marca uma notificação como lida"""
     try:
-        status = StatusNotificacaoUsuario.objects.get(
-            notificacao_id=notificacao_id,
-            usuario=request.user
-        )
-        status.marcar_como_lida()
-        return JsonResponse({'success': True})
-    except StatusNotificacaoUsuario.DoesNotExist:
-        return JsonResponse({'success': False, 'error': 'Notificação não encontrada'})
+        notificacao = Notificacao.objects.get(id=notificacao_id)
+        
+        # Verificar se o usuário tem acesso a esta notificação
+        if notificacao.destinatario_usuario == request.user:
+            # Notificação individual
+            notificacao.marcar_como_lida()
+        elif notificacao.destinatario_grupo and request.user.groups.filter(id=notificacao.destinatario_grupo.id).exists():
+            # Notificação de grupo
+            notificacao.marcar_lida_por_usuario(request.user)
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Sem permissão'}, status=403)
+            
+        return JsonResponse({'status': 'success'})
+    except Notificacao.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Notificação não encontrada'}, status=404)
+
+@login_required
+@require_POST
+def arquivar_notificacao(request, notificacao_id):
+    """Arquiva uma notificação"""
+    try:
+        notificacao = Notificacao.objects.get(id=notificacao_id)
+        
+        # Verificar se o usuário tem acesso a esta notificação
+        if notificacao.destinatario_usuario == request.user:
+            # Notificação individual
+            notificacao.arquivar()
+        elif notificacao.destinatario_grupo and request.user.groups.filter(id=notificacao.destinatario_grupo.id).exists():
+            # Notificação de grupo
+            notificacao.arquivar_por_usuario(request.user)
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Sem permissão'}, status=403)
+            
+        return JsonResponse({'status': 'success'})
+    except Notificacao.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Notificação não encontrada'}, status=404)
 
 @login_required
 @require_POST
 def marcar_todas_lidas(request):
-    """Marca todas as notificações como lidas"""
-    from django.utils import timezone
+    """Marca todas as notificações do usuário como lidas"""
+    from .utils import marcar_todas_como_lidas
     
-    StatusNotificacaoUsuario.objects.filter(
-        usuario=request.user,
-        status=StatusNotificacao.NAO_LIDA
-    ).update(
-        status=StatusNotificacao.LIDA,
-        data_leitura=timezone.now()
-    )
-    
-    return JsonResponse({'success': True})
+    marcar_todas_como_lidas(request.user)
+    return JsonResponse({'status': 'success', 'message': 'Todas as notificações foram marcadas como lidas'})
 
 @login_required
-def contador_nao_lidas(request):
-    """API endpoint para obter contagem de notificações não lidas"""
-    total = StatusNotificacaoUsuario.objects.filter(
-        usuario=request.user,
-        status=StatusNotificacao.NAO_LIDA
-    ).count()
+def api_contador_notificacoes(request):
+    """API para obter o contador de notificações não lidas"""
+    count = Notificacao.contar_nao_lidas_usuario(request.user)
+    return JsonResponse({'count': count})
+
+@login_required
+def api_notificacoes_recentes(request):
+    """API para obter notificações recentes"""
+    notificacoes = Notificacao.get_nao_lidas_usuario(request.user)[:5]
     
-    return JsonResponse({'total': total})
+    data = []
+    for notif in notificacoes:
+        data.append({
+            'id': notif.id,
+            'titulo': notif.titulo,
+            'mensagem': notif.mensagem[:100] + '...' if len(notif.mensagem) > 100 else notif.mensagem,
+            'tipo': notif.tipo,
+            'prioridade': notif.prioridade,
+            'icone': notif.get_icone_tipo(),
+            'cor': notif.get_cor_prioridade(),
+            'data_criacao': notif.data_criacao.isoformat(),
+            'remetente': notif.remetente.get_full_name() if notif.remetente else 'Sistema'
+        })
+    
+    return JsonResponse({'notificacoes': data})
