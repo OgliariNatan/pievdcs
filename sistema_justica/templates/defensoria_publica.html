@@ -48,7 +48,7 @@
                 </span>
             </a>
 
-            <a href="{% url 'encaminhamentos' %}"
+            <a href="{% url 'sistema_justica:encaminhamentos' %}"
                 class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item relative">
                 <div class="w-6 h-6 flex items-center justify-center">
                     <i
@@ -390,5 +390,9 @@
             }
         }
     }
+
+
+    //const ws = new WebSocket('ws://10.40.22.46:8000/ws/notifications/');
+    
 </script>
 {% endblock %}

@@ -117,7 +117,7 @@ class Vitima_dados(models.Model):
         unique=False,
         verbose_name="CPF*",
         null=False, blank=False,
-        help_text="000.000.000-00",
+        #help_text="000.000.000-00",
     )
     nome_social = models.CharField(
         max_length=250,
