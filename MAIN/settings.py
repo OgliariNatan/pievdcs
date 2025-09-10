@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",# Arquivos estáticos
     'corsheaders', # Para acesso cruzado
     'dbbackup', #Para realizar backup
-    #'notifications', #Para sistema de notificação
     'smart_selects',#Para selecionar os municipios
     'rest_framework', #Para criação de API
     'MAIN',  # Aplicação principal

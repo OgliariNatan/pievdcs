@@ -8,7 +8,6 @@ class TipoNotificacao(models.TextChoices):
     ALERTA = 'ALERTA', 'Alerta'
     MENSAGEM = 'MENSAGEM', 'Mensagem'
     VIOLENCIA_DOMESTICA = 'VIOLENCIA_DOMESTICA', 'Violência Doméstica'
-    CRIME_SEXUAL = 'CRIME_SEXUAL', 'Crime Sexual'
     MEDIDA_PROTETIVA = 'MEDIDA_PROTETIVA', 'Medida Protetiva'
 
 class PrioridadeNotificacao(models.TextChoices):
@@ -16,6 +15,7 @@ class PrioridadeNotificacao(models.TextChoices):
     NORMAL = 'NORMAL', 'Normal'
     ALTA = 'ALTA', 'Alta'
     URGENTE = 'URGENTE', 'Urgente'
+
 
 class StatusNotificacao(models.TextChoices):
     NAO_LIDA = 'NAO_LIDA', 'Não Lida'

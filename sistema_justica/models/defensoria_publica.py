@@ -87,12 +87,28 @@ class FormularioMedidaProtetiva(models.Model):
         null=True, 
         blank=False
     )
-
+    rua_mp = models.CharField(
+        max_length=100,
+        verbose_name='Rua:',
+        null=True, 
+        blank=False
+    )
+    n_casa_mp = models.CharField(
+        max_length=5,
+        verbose_name='Nº:',
+        null=True, 
+        blank=False
+    )
     grau_parentesco_agressor = models.CharField(
         max_length=15,
         choices=grau_parentesco_agressor_choices,
         default='Conjuge',
         verbose_name="Grau de Parentesco com o Agressor"
+    )
+
+    possivel_causa = models.CharField(
+        max_length=250,
+        verbose_name='Possível Causa da Violência:',
     )
 
     filhos = ChainedManyToManyField(
