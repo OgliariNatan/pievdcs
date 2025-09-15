@@ -21,3 +21,4 @@ def militar(request):
         'user' : request.user,
     }
     return render(request, "militar.html", contexto)
+#ajuste
