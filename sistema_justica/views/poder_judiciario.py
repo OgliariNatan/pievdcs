@@ -13,24 +13,28 @@ from ..forms.cadastros import CadastroVitimaForm, CadastroAgressorForm, Cadastro
 from ..models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
-
-
+from mensageria.models import Notificacao, StatusNotificacao
+from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
+from usuarios.models import CustomUser, CustomGroup
 from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 # Configuração do Ollama
 OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://localhost:11434')
-OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'gpt-oss:120b')  # ou 'mixtral', 'codellama', 'llama3', 'llama3:70b', 'llama3:70b-text', 'gpt-oss:120b'
+OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'llama3:70b-text')  # ou 'mixtral', 'codellama', 'llama3', 'llama3:70b', 'llama3:70b-text', 'gpt-oss:120b'
 
 
 @calcula_tempo
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Poder Judiciário',])
 def poder_judiciario(request):
+
+    notificacoes_nao_lidas = Notificacao.contar_nao_lidas_usuario(request.user)
+    #print(f'Notificações não lidas: {notificacoes_nao_lidas}')
     contexto = {
         'title': 'Poder Judiciário',
         'description': 'This page provides information about the judicial power.',
         'encaminhamentos': 5,
-        'notificacoes': 4,
+        'notificacoes': notificacoes_nao_lidas,
         'user': request.user,
 
     }
