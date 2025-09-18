@@ -32,7 +32,7 @@ def poder_judiciario(request):
     #print(f'Notificações não lidas: {notificacoes_nao_lidas}')
     contexto = {
         'title': 'Poder Judiciário',
-        'description': 'This page provides information about the judicial power.',
+        'description': 'Informações e ações pertinentes ao poder Judiciário.',
         'encaminhamentos': 5,
         'notificacoes': notificacoes_nao_lidas,
         'user': request.user,
