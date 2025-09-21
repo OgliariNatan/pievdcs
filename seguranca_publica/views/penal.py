@@ -8,7 +8,9 @@ from django.db.models import Func, F, Value, CharField
 from ..forms.penal import TipoAtendimentoForm, ModeloPenalForm
 from ..models.penal import tipo_atendimento, ModeloPenal
 from sistema_justica.models.base import Agressor_dados
-from django.contrib import messages
+from mensageria.models import Notificacao, StatusNotificacao
+from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
+from usuarios.models import CustomUser, CustomGroup
 from django.utils import timezone
 from datetime import timedelta
 
@@ -18,6 +20,10 @@ from MAIN.decoradores.calcula_tempo import calcula_tempo
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Polícia Penal'])
 def penal(request):
+
+    notificacao_nao_lida = Notificacao.contar_nao_lidas_usuario(request.user)
+
+
     now = timezone.now()
     first_day_this_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     first_day_last_month = (first_day_this_month - timedelta(days=1)).replace(day=1)
@@ -58,7 +64,7 @@ def penal(request):
         'title': 'Polícia Penal',
         'description': 'This page provides information about the penal system.',
         'encaminhamentos': 5,
-        'alert': 2,
+        'alert': notificacao_nao_lida,
         'qtd_atendimentos': atendimentos_mes,
         'qtd_atendimentos_anterior': atendimentos_mes_anterior,
         'variacao_atendimentos': variacao,
