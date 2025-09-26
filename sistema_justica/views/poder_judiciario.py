@@ -20,7 +20,7 @@ from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 # Configuração do Ollama
 OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://localhost:11434')
-OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'llama3:70b-text')  # ou 'mixtral', 'codellama', 'llama3', 'llama3:70b', 'llama3:70b-text', 'gpt-oss:120b'
+OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'gpt-oss:120b')  # ou 'mixtral', 'codellama', 'llama3', 'llama3:70b', 'llama3:70b-text', 'gpt-oss:120b'
 
 
 @calcula_tempo
