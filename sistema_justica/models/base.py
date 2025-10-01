@@ -271,6 +271,7 @@ class Vitima_dados(models.Model):
     class Meta:
         verbose_name = "Dados da Vítima"
         verbose_name_plural = "Dados das Vítimas"
+        ordering = ['nome', '-id']
        
 
 class Agressor_dados(models.Model):
@@ -439,6 +440,7 @@ class Agressor_dados(models.Model):
     class Meta:
         verbose_name = "Dados do Agressor"
         verbose_name_plural = "Dados dos Agressores"
+        ordering = ['nome', '-id']
 
     def __str__(self):
         return f"{self.nome} ({self.cpf})"
