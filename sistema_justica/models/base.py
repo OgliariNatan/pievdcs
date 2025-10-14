@@ -114,7 +114,7 @@ class Vitima_dados(models.Model):
     )
     cpf = models.CharField(
         max_length=14,  # 000.000.000-00
-        unique=False,
+        unique=True,
         verbose_name="CPF*",
         null=False, blank=False,
         #help_text="000.000.000-00",
@@ -255,7 +255,7 @@ class Vitima_dados(models.Model):
             )
         else:
             self.idade = None
-        super().save(*args, **kwargs)
+        #super().save(*args, **kwargs)
 
         # Remove qualquer caractere não numérico do CPF
         cpf_digits = ''.join(filter(str.isdigit, self.cpf))
@@ -427,7 +427,7 @@ class Agressor_dados(models.Model):
             )
         else:
             self.idade = None
-        super().save(*args, **kwargs)
+        #super().save(*args, **kwargs)
 
         # Remove qualquer caractere não numérico do CPF
         cpf_digits = ''.join(filter(str.isdigit, self.cpf))
@@ -534,3 +534,5 @@ class Filhos_dados(models.Model):
     class Meta:
         verbose_name = "Dados dos Filhos"
         verbose_name_plural = "Dados dos Filhos"
+        ordering = ['nome', '-id']
+    

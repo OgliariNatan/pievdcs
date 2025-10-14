@@ -121,7 +121,7 @@ def cadastro_mpu(request):
                     importante=True
                 )
             except CustomGroup.DoesNotExist:
-                pass
+                pass 
             
             form = CadastroMedidaProtetiva()  # Limpa o formulário após sucesso
     else:

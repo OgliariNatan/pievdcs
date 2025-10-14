@@ -77,8 +77,7 @@ class FormularioMedidaProtetiva(models.Model):
         sort=True,
         verbose_name="Município do Fato",
         null=True,
-        blank=True,  # Permita campo em branco para evitar erro de validação
-        
+        blank=True  # Permita campo em branco para evitar erro de validação
     )
     
     bairro_mp = models.CharField(
@@ -117,7 +116,7 @@ class FormularioMedidaProtetiva(models.Model):
         chained_model_field="agressor",
         verbose_name='Filhos',
         blank=True,
-        null=True
+        #null=True
     )
 
     #Relacionado a parte 1: Condutas de violência psicológica
