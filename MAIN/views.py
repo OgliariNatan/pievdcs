@@ -16,7 +16,8 @@ from .models import ConteudoHome
 from usuarios.models import CustomUser
 from .calculo_variaveis import *
 import random
-
+import time
+from datetime import datetime
 from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 
@@ -36,8 +37,6 @@ def index_tailwind(request):
         conteudos[item.secao].append(item)
 
     conteudos = dict(conteudos) 
-
-    
 
 
     medidas_protetivas_solicitadas_ocorrencias = (
@@ -169,18 +168,19 @@ def relatorios(request):
 
     #reincidencias
     reincidencias = reincidencia.ocorrencias_reincidentes()
-    # x= 1
-    # for item in reincidencias["lista"]:
-    #         print(f"Agressor{x}: {item['agressor__nome']} (CPF: {item['agressor__cpf']}) - MPs: {item['total_mp']}")
-    #         x+=1
     val_count_porcentagem = reincidencias["reincidencia_agressor"]
     val_count = len(reincidencias["lista"])
-    
-    #print(val_count)
+
+    # Calcular incidências por mês do ano atual (dados reais)
+    qtd_incidencias_meses = incidenciaspormes.calcular_incidencias_ano_atual()
+
+    ano_atual = time.localtime().tm_year
+    print(ano_atual)
     context = {
+        
         "title": "Painel Informativo",
         "description": "Visualize o painel informativo estatístico gerados na plataforma.",
-
+        "ano_atual": ano_atual, #Ano atual
         "periodo": ['Todos', 'Semanal', 'Mensal', 'Anual'],
 
         "comarcas": ComarcasPoderJudiciario.objects.values_list('nome', flat=True).order_by('nome'),  
@@ -243,6 +243,7 @@ def relatorios(request):
                 OcorrenciaMilitar.objects.filter(vitima__classeEconomica='AC').count() + OcorrenciaCivil.objects.filter(vitima__classeEconomica='AC').count() + FormularioMedidaProtetiva.objects.filter(vitima__classeEconomica='AC').count(),
             ]
         },
+        "qtd_incidencias_meses": qtd_incidencias_meses, # exibe a incidencia dos meses do ano atual
 
         "bairros": [ #Implementar na localidade da ocorrencia e local neutro, não no local exato da ocorrencia
             {"nome": "Novo Bairro", "lat": -26.771567, "lng": -53.190010, "casos": 10, "tipo_violencia": "Física"},
