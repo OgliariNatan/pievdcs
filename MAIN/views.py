@@ -175,7 +175,7 @@ def relatorios(request):
     qtd_incidencias_meses = incidenciaspormes.calcular_incidencias_ano_atual()
 
     ano_atual = time.localtime().tm_year
-    print(ano_atual)
+    #print(ano_atual)
     context = {
         
         "title": "Painel Informativo",

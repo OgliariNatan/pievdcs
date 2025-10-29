@@ -145,14 +145,26 @@
             <option value="{{ comarca }}">{{ comarca }}</option>
             {% endfor %}
         </select>
+        <button type="submit" id="aplicar-filtros" class="submit bg-blue-400  text-white houver:bg-blue-600 px-2 rounded-lg">
+            aplicar
+        </button>
     </div>
 
     <!-- Gráficos em grid responsivo -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         <!-- Gráfico de Rosca: Comarcas -->
         <div class="bg-white rounded-2xl shadow-2xl p-6 md:col-span-2">
-            <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Comarcas</h2>
-            <p class="text-sm text-gray-500 mb-2">*Implementar comparação por período.</p>
+            <div class="grid grid-cols-3 gap-4">
+                <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Comarcas</h2>
+                <p class="text-sm text-gray-500 mb-2">*Implementar comparação por período.</p>
+                <select id="comarca-select" class="form-select-sm border-gray-300 rounded-lg w-full text-center">
+                    <option value="todos">Selecione o Periodo</option>
+                    <option value="ano">ano</option>
+                    <option value="mensal">mensal</option>
+                    
+                </select>
+            </div>
+            
             <canvas id="comarcaChart"></canvas>
 
         </div>
@@ -169,16 +181,14 @@
         <!-- Gráfico de Barras: Idade -->
         <div class="bg-white rounded-2xl shadow-lg plugins-6">
             <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-birthday-cake mr-2"></i>
-                Distribuição
-                por Idade</h2>
+                Distribuição por Idade</h2>
             <canvas id="idadeChart"></canvas>
             <div id="idade-legend" class="chart-legend mt-2"></div>
         </div>
         <!-- Gráfico de Barras: Tipo de violência -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
             <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-exclamation-circle mr-2"></i> Tipo
-                de
-                Violência</h2>
+                de  Violência</h2>
             <canvas id="violenciaChart"></canvas>
         </div>
 
