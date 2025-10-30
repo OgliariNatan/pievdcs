@@ -70,19 +70,19 @@
 
     <!-- Frases -->
     <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border-primary">
-        <h2 class="text-xl font-semibold mb-4 text-primary">Frases</h2>
+        {% comment %} <h2 class="text-xl font-semibold mb-4 text-gray-600">Frases</h2> {% endcomment %}
         <blockquote id="frase-block" class="space-y-4 text-gray-700">
             <!-- Frase será inserida via JS -->
         </blockquote>
         <div class="flex justify-end mt-4 space-x-2">
             <button id="prev-frase"
-                class="px-3 py-1 rounded bg-primary text-white hover:bg-secondary transition">Anterior</button>
+                class="px-3 py-1 rounded bg-purple-400 text-white hover:bg-purple-600 transition">Anterior</button>
             <button id="next-frase"
-                class="px-3 py-1 rounded bg-primary text-white hover:bg-secondary transition">Próxima</button>
+                class="px-3 py-1 rounded bg-purple-400 text-white hover:bg-purple-600 transition">Próxima</button>
         </div>
     </div>
 
-    <h1 class="text-3xl font-bold text-center text-primary mb-10"><i class="fas fa-chart-line mr-3"></i> Painel
+    <h1 class="text-3xl font-bold text-center text-[#8B5A9F] mb-10"><i class="fas fa-chart-line mr-3"></i> Painel
         Informativo Estatístico</h1>
         
 
@@ -132,7 +132,7 @@
     <br>
     <!-- Filtros -->
     <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 flex flex-col md:flex-row gap-4 items-center">
-        <h2 class="text-lg font-semibold text-primary mb-2 md:mb-0">Filtro(s):</h2>
+        <h2 class="text-lg font-semibold text-purple-400 mb-2 md:mb-0">Filtro(s):</h2>
         <select name="periodo" id="periodo" class="form-select border-gray-300 rounded-lg">
             <option value="">Período</option>
             {% for periodos in periodo %}
@@ -155,7 +155,7 @@
         <!-- Gráfico de Rosca: Comarcas -->
         <div class="bg-white rounded-2xl shadow-2xl p-6 md:col-span-2">
             <div class="grid grid-cols-3 gap-4">
-                <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Comarcas</h2>
+                <h2 class="text-lg font-semibold mb-4 text-purple-400">Distribuição por Comarcas</h2>
                 <p class="text-sm text-gray-500 mb-2">*Implementar comparação por período.</p>
                 <select id="comarca-select" class="form-select-sm border-gray-300 rounded-lg w-full text-center">
                     <option value="todos">Selecione o Periodo</option>
@@ -172,7 +172,7 @@
 
         <!-- Gráfico de Rosca: Cidades -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-primary">Distribuição por Cidades (Mostrar nome da comarca)
+            <h2 class="text-lg font-semibold mb-4 text-purple-400">Distribuição por Cidades (Mostrar nome da comarca)
                 <p class="text-sm text-red-300">Estático</p>
             </h2>
             <canvas id="cidadeChart"></canvas>
@@ -180,21 +180,21 @@
 
         <!-- Gráfico de Barras: Idade -->
         <div class="bg-white rounded-2xl shadow-lg plugins-6">
-            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-birthday-cake mr-2"></i>
+            <h2 class="text-lg font-semibold mb-4 text-purple-400"><i class="fas fa-birthday-cake mr-2"></i>
                 Distribuição por Idade</h2>
             <canvas id="idadeChart"></canvas>
             <div id="idade-legend" class="chart-legend mt-2"></div>
         </div>
         <!-- Gráfico de Barras: Tipo de violência -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-exclamation-circle mr-2"></i> Tipo
+            <h2 class="text-lg font-semibold mb-4 text-purple-400"><i class="fas fa-exclamation-circle mr-2"></i> Tipo
                 de  Violência</h2>
             <canvas id="violenciaChart"></canvas>
         </div>
 
         <!-- Gráfico de Barras: Classe Econômica -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-dollar-sign mr-2"></i> Classe
+            <h2 class="text-lg font-semibold mb-4 text-purple-400"><i class="fas fa-dollar-sign mr-2"></i> Classe
                 Econômica
             </h2>
             <canvas id="classeEconomicaChart"></canvas>
@@ -202,7 +202,7 @@
         </div>
         <!-- Gráfico de Barras: Grau de instrução -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-graduation-cap mr-2"></i> Grau de
+            <h2 class="text-lg font-semibold mb-4 text-purple-400"><i class="fas fa-graduation-cap mr-2"></i> Grau de
                 Instrução</h2>
             <canvas id="grauInstrucaoChart"></canvas>
             <div id="grau-legend" class="chart-legend mt-2"></div>
@@ -210,22 +210,21 @@
 
         <!-- Gráfico de Barras: Etnia -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-users mr-2"></i> Distribuição por
+            <h2 class="text-lg font-semibold mb-4 text-purple-400"><i class="fas fa-users mr-2"></i> Distribuição por
                 Etnia
             </h2>
             <canvas id="etniaChart"></canvas>
         </div>
         <!-- Gráfico de Barras: Parentesco -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-home mr-2"></i> Grau de Parentesco
-                do
-                Agressor</h2>
+            <h2 class="text-lg font-semibold mb-4 text-purple-400"><i class="fas fa-home mr-2"></i> Grau de Parentesco
+                do Agressor</h2>
             <canvas id="parentescoChart"></canvas>
         </div>
 
         <!-- Gráfico de Incidências Mensais -->
         <div class="bg-white rounded-2xl shadow-lg p-6 md:col-span-2">
-            <h2 class="text-lg font-semibold mb-4 text-primary">
+            <h2 class="text-lg font-semibold mb-4 text-purple-400">
                 <i class="fas fa-calendar-alt mr-2"></i>
                 Incidências nos meses do ano de {{ ano_atual }}
             </h2>
@@ -235,7 +234,7 @@
 
     <!-- Mapa Interativo -->
     <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
-        <h2 class="text-lg font-semibold mb-4 text-primary"><i class="fas fa-search mr-2"></i> Comarca: <span
+        <h2 class="text-lg font-semibold mb-4 text-purple-400"><i class="fas fa-search mr-2"></i> Comarca: <span
                 id="comarca">{% if comarca %}{{ comarca }}{%
                 else %}Todas{% endif %}</span></h2>
         <div id="map" class="w-full h-96 rounded-lg"></div>
