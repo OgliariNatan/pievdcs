@@ -70,7 +70,9 @@
 
     <!-- Frases -->
     <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border-primary">
-        <h2 class="text-xl font-semibold mb-4 text-[#8B5A9F]">Cuidados que importam</h2>
+        <h2 class="text-xl font-semibold mb-4 text-[#8B5A9F]">
+            <i class="fas fa-solid fa-brain"></i>
+            Cuidados que importam</h2>
         <blockquote id="frase-block" class="space-y-4 text-gray-700">
             <!-- Frase será inserida via JS -->
         </blockquote>
@@ -385,6 +387,7 @@
 {% block script %}
 <script src="{% static 'js/relatorios.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
 {{ cidades|json_script:"cidades-data" }}
 {{ comarcas_com_mp|json_script:"comarcas_com_mp-data" }}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -429,105 +432,59 @@
         incidenciasMesesData[mes.toLowerCase()] || 0
     );
 
-    // Encontrar o mês com maior incidência para destacar
-    const maxValue = Math.max(...incidenciasValues);
-    const incidenciasBackgroundColors = incidenciasValues.map(value => 
-        value === maxValue ? 'rgba(197, 13, 13, 0.8)' : 'rgba(139, 90, 159, 0.6)'
-    );
-    const incidenciasBorderColors = incidenciasValues.map(value => 
-        value === maxValue ? 'rgba(17, 2, 2, 0.8)' : 'rgba(139, 90, 159, 1)'
-    );
+    // Gerar cores dinâmicas usando a função padrão do PIEVDCS
+const incidenciasCores = gerarCoresHSL(mesesLabels.length);
 
-    const incidenciasMensaisCtx = document.getElementById('incidenciasMensaisChart').getContext('2d');
-    new Chart(incidenciasMensaisCtx, {
-        type: 'bar',
-        data: {
-            labels: mesesLabels,
-            datasets: [{
-                label: 'Casos de Violência',
-                data: incidenciasValues,
-                backgroundColor: incidenciasBackgroundColors,
-                borderColor: incidenciasBorderColors,
-                borderWidth: 2,
-                borderRadius: 8,
-                borderSkipped: false,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    display: false,
-                    position: 'top',
-                    labels: {
-                        font: {
-                            size: 12,
-                            family: "'Inter', sans-serif"
-                        },
-                        color: '#6B7280'
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return `Casos: ${context.parsed.y}`;
-                        },
-                        title: function(context) {
-                            return `${context[0].label} de ${new Date().getFullYear()}`;
-                        }
-                    },
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    padding: 12,
-                    titleFont: {
-                        size: 14,
-                        weight: 'bold'
-                    },
-                    bodyFont: {
-                        size: 13
-                    },
-                    borderColor: 'rgba(139, 90, 159, 0.5)',
-                    borderWidth: 1
-                }
+const incidenciasMensaisCtx = document.getElementById('incidenciasMensaisChart').getContext('2d');
+new Chart(incidenciasMensaisCtx, {
+    type: 'bar',
+    data: {
+        labels: mesesLabels,
+        datasets: [{
+            label: 'Casos de Violência',
+            data: incidenciasValues,
+            backgroundColor: incidenciasCores,
+            borderColor: incidenciasCores.map(cor => cor.replace('50%', '40%')), // Bordas mais escuras
+            borderWidth: 1,
+            borderRadius: 4,
+            borderSkipped: false,
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false // Seguindo padrão dos outros gráficos de barras
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1,
-                        font: {
-                            size: 11
-                        },
-                        color: '#6B7280'
-                    },
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)',
-                        drawBorder: false
-                    },
-                    title: {
-                        display: true,
-                        text: 'Número de Casos',
-                        font: {
-                            size: 12,
-                            weight: 'bold'
-                        },
-                        color: '#374151'
-                    }
-                },
-                x: {
-                    ticks: {
-                        font: {
-                            size: 11
-                        },
-                        color: '#6B7280'
-                    },
-                    grid: {
-                        display: false
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return `${context.dataset.label}: ${context.parsed.y}`;
                     }
                 }
             }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Casos de Violência'
+                },
+                ticks: {
+                    stepSize: 1
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Meses do Ano'
+                }
+            }
         }
-    });
+    }
+});
 
 
     // Inicializar o mapa com foco no Brasil

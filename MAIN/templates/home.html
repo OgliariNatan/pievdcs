@@ -3,8 +3,6 @@
 {% block titulo %}{{ title }}{% endblock %}
 
 {% block nav %}
-
-
 <style>
     /* Custom Tailwind config colors */
     :root {
@@ -188,7 +186,7 @@
                                 <span class="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full"><a
                                         href="{% url 'municipio:caps' %}">CAPS</a></span>
                                 <span class="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full"><a
-                                        href="{% url 'municipio:secretaria_saude' %}">Secretária da Saúde</a></span>
+                                        href="{% url 'municipio:secretaria_saude' %}">Secretária da Saúde </a></span>
                             </div>
                         </div>
                     </div>
@@ -200,21 +198,21 @@
                         <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
                             <i class="fas fa-lightbulb text-yellow-600 text-xl"></i>
                         </div>
-                        <h2 class="text-2xl font-bold text-gray-800">Informações Importantes</h2>
+                        <h2 class="text-2xl font-bold text-gray-400">Informações Importantes</h2>
                     </div>
 
                     <div class="prose max-w-none text-gray-600">
                         <!-- Frases -->
                         <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border-primary">
-                            <h2 class="text-xl font-semibold mb-4 text-primary">Cuidados que importam</h2>
+                            <h2 class="text-xl font-semibold mb-4 text-[#8B5A9F]">Cuidados que importam</h2>
                             <blockquote id="frase-block" class="space-y-4 text-gray-700">
                                 <!-- Frase será inserida via JS -->
                             </blockquote>
                             <div class="flex justify-end mt-4 space-x-2">
                                 <button id="prev-frase"
-                                    class="px-3 py-1 rounded bg-primary text-white hover:bg-secondary transition">Anterior</button>
+                                    class="px-3 py-1 rounded bg-pink-400 text-white hover:bg-pink-600 transition">Anterior</button>
                                 <button id="next-frase"
-                                    class="px-3 py-1 rounded bg-primary text-white hover:bg-secondary transition">Próxima</button>
+                                    class="px-3 py-1 rounded bg-pink-400 text-white hover:bg-pink-600 transition">Próxima</button>
                             </div>
                         </div>
 
@@ -222,13 +220,13 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                    {% comment %} <div class="flex flex-col sm:flex-row gap-4 mt-8">
                         <a href="{% url 'relatorios' %}"
                             class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 transform hover:scale-105 flex items-center justify-center">
                             <i class="fas fa-chart-line mr-2"></i>
                             Ver Estatísticas
                         </a>
-                    </div>
+                    </div> {% endcomment %}
                 </div>
             </main>
         </div>
@@ -240,7 +238,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         const cards = document.querySelectorAll('.group');
         cards.forEach((card, index) => {
-            card.style.animationDelay = `${index * 0.1}s`;
+            card.style.animationDelay = `${index * 0.3}s`;
             card.classList.add('animate-fade-in-up');
         });
     });
@@ -292,7 +290,8 @@
             autor: `Mestre <cite>Ariévlis</cite>`
         },
         {
-            texto: `“Cada informação preenchida com atenção pode representar proteção e acolhimento para alguém.”`
+            texto: `“Cada informação preenchida com atenção pode representar proteção e acolhimento para alguém.”`,
+            autor: ` `
         },
         {
             texto: `“Uma ficha bem preenchida não é apenas um dado — pode ser um pedido de socorro escutado a tempo.”`
