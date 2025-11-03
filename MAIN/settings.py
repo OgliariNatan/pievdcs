@@ -88,7 +88,8 @@ CSRF_TRUSTED_ORIGINS = [
     'https://redecontraaviolencia.org',
     'http://62.72.9.77',
     'http://www.redecontraaviolencia.org',
-    'http://redecontraaviolencia.org'
+    'http://redecontraaviolencia.org',
+    'http://10.40.22.46',
 ]
 
 # Channel Layers - Redis como backend

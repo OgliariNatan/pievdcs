@@ -18,6 +18,7 @@ class CadastroMedidaProtetiva(forms.ModelForm):
                 'type': 'date',
                 'class': 'form-control form-control-sm border border-gray-400 rounded-xl'
             }),
+            #'po',
             'solicitada_mpu': ToggleSwitchWidget(size='xs',
                 active_color=cor_ativa_toggle,
                 inactive_color=cor_inativa_toggle,

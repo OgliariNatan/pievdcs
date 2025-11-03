@@ -20,7 +20,7 @@ from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 # Configuração do Ollama
 OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://localhost:11434')
-OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'llama3:70b-text')  # ou 'mixtral', 'codellama', 'llama3', 'llama3:70b', 'llama3:70b-text', 'gpt-oss:120b'
+OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'gpt-oss:120b')  # ou 'mixtral', 'codellama', 'llama3', 'llama3:70b', 'llama3:70b-text', 'gpt-oss:120b'
 
 
 @calcula_tempo
@@ -149,7 +149,7 @@ def obter_resposta_ollama(pergunta):
         
         Não forneça conselhos médicos ou psicológicos específicos.
         Em casos urgentes, sempre recomende ligar para 190 (Polícia) ou 180 (Central de Atendimento à Mulher).
-
+        Se tiver lesionada informe assistencia medica, atraves do SAMU 192 ou no hospital mais próximo.
         Denúncias on-line no site da [Delegacia Virtual (Registro de BO)](https://delegaciavirtual.sc.gov.br/nova-ocorrencia).
 
         Quando solicitar uma conversa oriente a entrar em contato através do whatsapp para o número [554832872635](https://api.whatsapp.com/send?phone=554832872635), serviço do Tribunal de Justiça de Santa Catarina.
@@ -169,8 +169,8 @@ def obter_resposta_ollama(pergunta):
             model=OLLAMA_MODEL,
             prompt=prompt_completo,
             options={
-                'temperature': 0.5,
-                'num_predict': 400,  # tamanho da resposta
+                'temperature': 0.4,
+                'num_predict': 600,  # tamanho da resposta
                 'top_p': 0.8, # Inicial 0.9
                 'top_k': 40,
             }

@@ -5,11 +5,7 @@ Cria grupos com permissões específicas para cada instituição participante da
 
 Para executar:
 1. Abra o Django shell: python manage.py shell
-<<<<<<< HEAD
 2. Execute: from automacoes.cria_grupos_usuarios import criar_grupos_institucionais
-=======
-2. Execute: from automacoes.cria_grupos_usuarios import *
->>>>>>> ed41264 (ajustando para pull)
 3. Execute: criar_grupos_institucionais()
 
 @autor: Ogliarinatan
@@ -203,11 +199,7 @@ def adicionar_permissoes_grupo(grupo, categoria, sigla):
         # Adicionar permissões específicas por categoria
         if categoria == 'sistema_justica':
             # Sistema de Justiça tem mais permissões
-<<<<<<< HEAD
             if sigla == 'Defensoria Pública':  # Defensoria Pública
-=======
-            if sigla == 'DP':  # Defensoria Pública
->>>>>>> ed41264 (ajustando para pull)
                 content_types = ContentType.objects.filter(
                     app_label='sistema_justica',
                     model__in=['formulariomedidaprotetiva', 'vitima_dados', 'agressor_dados']
@@ -216,11 +208,7 @@ def adicionar_permissoes_grupo(grupo, categoria, sigla):
                     perms = Permission.objects.filter(content_type=ct)
                     grupo.permissions.add(*perms)
                     
-<<<<<<< HEAD
             elif sigla == 'Ministério Público':  # Ministério Público
-=======
-            elif sigla == 'MP':  # Ministério Público
->>>>>>> ed41264 (ajustando para pull)
                 content_types = ContentType.objects.filter(
                     app_label='sistema_justica',
                     model__in=['vitima_dados', 'agressor_dados']
@@ -233,11 +221,7 @@ def adicionar_permissoes_grupo(grupo, categoria, sigla):
                     )
                     grupo.permissions.add(*perms)
                     
-<<<<<<< HEAD
             elif sigla == 'Poder Judiciário':  # Poder Judiciário
-=======
-            elif sigla == 'PJ':  # Poder Judiciário
->>>>>>> ed41264 (ajustando para pull)
                 content_types = ContentType.objects.filter(
                     app_label='sistema_justica'
                 )
@@ -253,11 +237,7 @@ def adicionar_permissoes_grupo(grupo, categoria, sigla):
             )
             
             for ct in content_types_seg:
-<<<<<<< HEAD
                 if sigla in ['Polícia Civil', 'Polícia Militar']:  # Polícias Civil e Militar têm acesso total
-=======
-                if sigla in ['PC', 'PM']:  # Polícias Civil e Militar têm acesso total
->>>>>>> ed41264 (ajustando para pull)
                     perms = Permission.objects.filter(content_type=ct)
                 else:  # Outras polícias têm acesso mais restrito
                     perms = Permission.objects.filter(
@@ -272,11 +252,7 @@ def adicionar_permissoes_grupo(grupo, categoria, sigla):
                 # Apenas visualização de dados básicos já adicionados acima
                 pass
                 
-<<<<<<< HEAD
             elif sigla == 'Conselho Tutelar':  # Conselho Tutelar
-=======
-            elif sigla == 'CT':  # Conselho Tutelar
->>>>>>> ed41264 (ajustando para pull)
                 # Conselho Tutelar pode adicionar casos envolvendo menores
                 try:
                     ct_vitima = ContentType.objects.get(
@@ -471,8 +447,4 @@ if __name__ == "__main__":
     print(">>> atribuir_usuario_ao_grupo('nome_usuario', 'PM')  # Atribui usuário a um grupo")
     print(">>> remover_usuario_do_grupo('nome_usuario', 'PM')  # Remove usuário de um grupo")
     print(">>> estatisticas_grupos()  # Mostra estatísticas detalhadas dos grupos")
-<<<<<<< HEAD
     print(">>> limpar_grupos_institucionais()  # Remove os grupos (use com cuidado!)")
-=======
-    print(">>> limpar_grupos_institucionais()  # Remove os grupos (use com cuidado!)")
->>>>>>> ed41264 (ajustando para pull)

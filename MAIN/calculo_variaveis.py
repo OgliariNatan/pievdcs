@@ -27,9 +27,6 @@ class PegarComarcasComMP:
         return queryset
 
 
-
-
-
 class TipoViolencia:
     def conta_violencias_por_mes(self, mes, ano):
         contagem = Counter()
@@ -218,7 +215,130 @@ class BuscaReincidencia:
             "reincidencia_vitima": 6  # Esse número está fixo — podemos revisar se quiser
         }
 
-
+class IncidenciasPorMes:
+    """
+    Classe responsável por calcular a quantidade de incidências de violência doméstica por mês.
+    Agrega dados de OcorrenciaMilitar, OcorrenciaCivil e FormularioMedidaProtetiva.
+    """
+    
+    def calcular_incidencias_ano_atual(self):
+        """
+        Calcula a quantidade de incidências por mês do ano atual.
+        
+        Returns:
+            dict: Dicionário com meses em português (lowercase) como chaves e totais como valores.
+                 Exemplo: {'janeiro': 15, 'fevereiro': 20, ...}
+        """
+        hoje = date.today()
+        ano_atual = hoje.year
+        
+        # Mapeamento de número do mês para nome em português
+        meses_map = {
+            1: 'janeiro', 2: 'fevereiro', 3: 'março', 4: 'abril',
+            5: 'maio', 6: 'junho', 7: 'julho', 8: 'agosto',
+            9: 'setembro', 10: 'outubro', 11: 'novembro', 12: 'dezembro'
+        }
+        
+        # Inicializar todos os meses com zero
+        incidencias = {mes: 0 for mes in meses_map.values()}
+        
+        # Iterar pelos 12 meses
+        for mes_num in range(1, 13):
+            filtro_ocorrencias = Q(data__month=mes_num, data__year=ano_atual)
+            filtro_formulario = Q(data_solicitacao__month=mes_num, data_solicitacao__year=ano_atual)
+            
+            # Contar ocorrências de cada fonte
+            total_militar = OcorrenciaMilitar.objects.filter(filtro_ocorrencias).count()
+            total_civil = OcorrenciaCivil.objects.filter(filtro_ocorrencias).count()
+            total_mp = FormularioMedidaProtetiva.objects.filter(filtro_formulario).count()
+            
+            # Somar total do mês
+            total_mes = total_militar + total_civil + total_mp
+            
+            # Atribuir ao mês correspondente
+            mes_nome = meses_map[mes_num]
+            incidencias[mes_nome] = total_mes
+        
+        return incidencias
+    
+    def calcular_incidencias_por_periodo(self, ano=None, mes_inicio=1, mes_fim=12):
+        """
+        Calcula incidências para um período específico.
+        
+        Args:
+            ano (int, optional): Ano para cálculo. Se None, usa ano atual.
+            mes_inicio (int): Mês inicial (1-12). Padrão: 1 (janeiro)
+            mes_fim (int): Mês final (1-12). Padrão: 12 (dezembro)
+            
+        Returns:
+            dict: Dicionário com meses e totais do período especificado.
+        """
+        if ano is None:
+            ano = date.today().year
+        
+        meses_map = {
+            1: 'janeiro', 2: 'fevereiro', 3: 'março', 4: 'abril',
+            5: 'maio', 6: 'junho', 7: 'julho', 8: 'agosto',
+            9: 'setembro', 10: 'outubro', 11: 'novembro', 12: 'dezembro'
+        }
+        
+        incidencias = {}
+        
+        for mes_num in range(mes_inicio, mes_fim + 1):
+            filtro_ocorrencias = Q(data__month=mes_num, data__year=ano)
+            filtro_formulario = Q(data_solicitacao__month=mes_num, data_solicitacao__year=ano)
+            
+            total_mes = (
+                OcorrenciaMilitar.objects.filter(filtro_ocorrencias).count() +
+                OcorrenciaCivil.objects.filter(filtro_ocorrencias).count() +
+                FormularioMedidaProtetiva.objects.filter(filtro_formulario).count()
+            )
+            
+            mes_nome = meses_map[mes_num]
+            incidencias[mes_nome] = total_mes
+        
+        return incidencias
+    
+    def comparar_com_ano_anterior(self):
+        """
+        Compara incidências do ano atual com o ano anterior.
+        
+        Returns:
+            dict: Contém dados do ano atual, ano anterior e variação percentual.
+        """
+        hoje = date.today()
+        ano_atual = hoje.year
+        ano_anterior = ano_atual - 1
+        
+        atual = self.calcular_incidencias_por_periodo(ano=ano_atual)
+        anterior = self.calcular_incidencias_por_periodo(ano=ano_anterior)
+        
+        # Calcular variação percentual por mês
+        variacao = {}
+        for mes in atual.keys():
+            total_atual = atual[mes]
+            total_anterior = anterior.get(mes, 0)
+            
+            if total_anterior > 0:
+                var_perc = round(((total_atual - total_anterior) / total_anterior) * 100, 2)
+            else:
+                var_perc = 100 if total_atual > 0 else 0
+            
+            variacao[mes] = var_perc
+        
+        return {
+            'ano_atual': {
+                'ano': ano_atual,
+                'dados': atual,
+                'total': sum(atual.values())
+            },
+            'ano_anterior': {
+                'ano': ano_anterior,
+                'dados': anterior,
+                'total': sum(anterior.values())
+            },
+            'variacao_percentual': variacao
+        }
 
 
 
@@ -228,5 +348,5 @@ municipiosviolentos = MunicipiosViolentos()
 grauparentesco = GrauPrarentesco()
 reincidencia = BuscaReincidencia()
 pegarcomarcascommp = PegarComarcasComMP()
-
+incidenciaspormes = IncidenciasPorMes()
 
