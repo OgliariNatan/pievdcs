@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Natan"
+  given-names: "Ogliari"
+  orcid: "https://orcid.org/0009-0000-2586-248"
+
+title: "PIEVDCS"
+version: 1.5
+
+date-released: 2025-10-26
+url: "https://github.com/OgliariNatan/relatorio-pievdcs"
