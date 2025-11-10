@@ -20,7 +20,7 @@ from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 # Configuração do Ollama
 OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://localhost:11434')
-OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'gpt-oss:120b')  # ou 'mixtral', 'codellama', 'llama3', 'llama3:70b', 'llama3:70b-text', 'gpt-oss:120b'
+OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'llama3.1:latest')  # ou 'mixtral', 'codellama', 'llama3', 'llama3:70b', 'llama3:70b-text', 'gpt-oss:120b'
 
 
 @calcula_tempo
@@ -162,18 +162,30 @@ def obter_resposta_ollama(pergunta):
         - Organize listas com • seguido de espaço"""
         
         # Cria o prompt completo
-        prompt_completo = f"{system_prompt}\n\nUsuário: {pergunta}\n\nChatbot:"
+        prompt_completo = f"{system_prompt}\n\nUsuário: {pergunta}\n\Laelia:"
         
         # Faz a chamada ao Ollama
         response = client.generate(
             model=OLLAMA_MODEL,
             prompt=prompt_completo,
+            system='Seu nome é Laelia, uma assistente virtual especializada em violência doméstica contra a mulher no Brasil.',
+            context=[1, 2, 3],  # Mantém o contexto das últimas interações
+            stream=False,# Se True, recebe a resposta em partes (streaming)
+
             options={
                 'temperature': 0.4,
-                'num_predict': 600,  # tamanho da resposta
-                'top_p': 0.8, # Inicial 0.9
-                'top_k': 40,
-            }
+                'num_predict': 800,  # tamanho da resposta
+                'seed': None,
+                'top_p': 0.7, # Inicial 0.9
+                'top_k': 20,
+                'repeat_penalty': 1.2,
+                'num_ctx': 4096,
+                'stop': ['\n\nUsuário:', '\n\Laelia:', 'FIM'],
+                'num_gpu':1,
+                'mirostat': 2,
+                'mirostat_tau': 5.0,
+            },
+            keep_alive='5m',
         )
         
         # Extrai a resposta
