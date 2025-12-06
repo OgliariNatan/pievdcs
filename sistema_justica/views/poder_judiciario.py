@@ -20,7 +20,7 @@ from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 # Configuração do Ollama
 OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://localhost:11434')
-OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'llama3.1:latest')  # ou 'mixtral', 'codellama', 'llama3', 'llama3:70b', 'llama3:70b-text', 'gpt-oss:120b'
+OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'gpt-oss:120b')  # ou 'mixtral:latest', 'gemma3:27b', 'llama3.1:70b', 'llama3.1:latest', 'qwen3-vl:latest', 'gpt-oss:120b'
 
 
 @calcula_tempo
@@ -154,12 +154,24 @@ def obter_resposta_ollama(pergunta):
 
         Quando solicitar uma conversa oriente a entrar em contato através do whatsapp para o número [554832872635](https://api.whatsapp.com/send?phone=554832872635), serviço do Tribunal de Justiça de Santa Catarina.
 
+        [
+        Quando citado o corte da pensão alimentícia, informe que se encaixa na violência vicária.
+        Conceito de Violência Vicária
+        A violência vicária (ou violência por procuração) é uma forma grave de violência doméstica e de gênero, na qual o agressor (geralmente o ex-parceiro) utiliza uma terceira pessoa — predominantemente os filhos, mas também outros entes queridos ou animais de estimação — como "instrumento" ou "arma" para causar sofrimento e dano psicológico à vítima principal (a mulher).
+        Pontos-chave a considerar:
+        Objetivo Principal: O objetivo central não é a agressão direta à vítima principal, mas sim infligir a dor mais profunda e duradoura possível, atingindo o que ela mais ama ou valoriza.
+        Instrumentalização: A vítima secundária (ex: o filho) é vista como um objeto ou meio para atingir a vítima principal.
+        Contexto: Frequentemente ocorre em processos de separação litigiosa, disputas de guarda e após o término do relacionamento, quando o agressor perde o controle direto sobre a vítima.
+        ]
+
         Formate suas respostas usando HTML básico:
         - Use <a href=""> para links
         - Use <strong> para destacar informações importantes
         - Use <br> para quebras de linha
         - Use <p> para parágrafos
-        - Organize listas com • seguido de espaço"""
+        - Organize listas com • seguido de espaço
+        - Evite usar listas numeradas
+        """
         
         # Cria o prompt completo
         prompt_completo = f"{system_prompt}\n\nUsuário: {pergunta}\n\Laelia:"
@@ -180,7 +192,7 @@ def obter_resposta_ollama(pergunta):
                 'top_k': 20,
                 'repeat_penalty': 1.2,
                 'num_ctx': 4096,
-                'stop': ['\n\nUsuário:', '\n\Laelia:', 'FIM'],
+                #'stop': ['\n\nUsuário:', '\n\Laelia:', 'FIM'],
                 'num_gpu':1,
                 'mirostat': 2,
                 'mirostat_tau': 5.0,
