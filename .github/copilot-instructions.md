@@ -52,7 +52,7 @@ python manage.py shell
 
 ### Servidor de Desenvolvimento*
 ```bash
-python manage.py runserver 10.40.22.110:8000 # Padrão: http://127.0.0.1:8000
+python manage.py runserver 10.40.22.46:8000 # Padrão: http://127.0.0.1:8000
 ```
 
 ## Convenções Específicas do Projeto
