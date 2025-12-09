@@ -29,7 +29,7 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 # Application definition
 
 INSTALLED_APPS = [
-    "daphne",  # Adicione no início da lista INSTALLED_APPS
+    "daphne",  
     "channels",
     "django.contrib.admin",
     "django.contrib.auth",
