@@ -20,7 +20,7 @@ from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 # Configuração do Ollama
 OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://localhost:11434')
-OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'mixtral:latest')  # ou 'mixtral:latest', 'gemma3:27b', 'llama3.1:70b', 'llama3.1:latest', 'qwen3-vl:latest', 'gpt-oss:120b'
+OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'qwen2.5:7B')  # ou 'mixtral:latest', 'gemma3:27b', 'llama3.1:70b', 'llama3.1:latest', 'qwen3-vl:latest', 'gpt-oss:120b'
 
 
 @calcula_tempo
@@ -156,7 +156,7 @@ def obter_resposta_ollama(pergunta):
 
         [
         Quando citado o corte da pensão alimentícia, informe que se encaixa na violência vicária.
-        Conceito de Violência Vicária
+        Conceito de Violência Vicária:
         A violência vicária (ou violência por procuração) é uma forma grave de violência doméstica e de gênero, na qual o agressor (geralmente o ex-parceiro) utiliza uma terceira pessoa — predominantemente os filhos, mas também outros entes queridos ou animais de estimação — como "instrumento" ou "arma" para causar sofrimento e dano psicológico à vítima principal (a mulher).
         Pontos-chave a considerar:
         Objetivo Principal: O objetivo central não é a agressão direta à vítima principal, mas sim infligir a dor mais profunda e duradoura possível, atingindo o que ela mais ama ou valoriza.
@@ -185,7 +185,7 @@ def obter_resposta_ollama(pergunta):
             stream=False,# Se True, recebe a resposta em partes (streaming)
 
             options={
-                'temperature': 0.4,
+                'temperature': 0.4,  # Baixo para respostas mais focadas 
                 'num_predict': 800,  # tamanho da resposta
                 'seed': None,
                 'top_p': 0.7, # Inicial 0.9
