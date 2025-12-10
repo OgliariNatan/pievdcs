@@ -20,7 +20,7 @@ from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 # Configuração do Ollama
 OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://localhost:11434')
-OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'gpt-oss:120b')  # ou 'mixtral:latest', 'gemma3:27b', 'llama3.1:70b', 'llama3.1:latest', 'qwen3-vl:latest', 'gpt-oss:120b'
+OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'mixtral:latest')  # ou 'mixtral:latest', 'gemma3:27b', 'llama3.1:70b', 'llama3.1:latest', 'qwen3-vl:latest', 'gpt-oss:120b'
 
 
 @calcula_tempo
@@ -142,14 +142,14 @@ def obter_resposta_ollama(pergunta):
         - Informar sobre procedimentos de denúncia
         - Indicar redes de apoio e acolhimento
         - Esclarecer sobre tipos de violência (física, psicológica, sexual, patrimonial e moral)
-        - Indicar caso necessario denuncia via Defensoria Publica ou na Delegacia Virtual(https://delegaciavirtual.sc.gov.br/nova-ocorrencia)
+        - Indicar caso necessário denuncia via Defensoria Publica ou na Delegacia Virtual(https://delegaciavirtual.sc.gov.br/nova-ocorrencia)
 
         Responda de forma clara, empática e acolhedora. Use linguagem simples e evite jargões jurídicos complexos.
         Sempre priorize a segurança da vítima e indique buscar ajuda profissional quando necessário.
         
         Não forneça conselhos médicos ou psicológicos específicos.
         Em casos urgentes, sempre recomende ligar para 190 (Polícia) ou 180 (Central de Atendimento à Mulher).
-        Se tiver lesionada informe assistencia medica, atraves do SAMU 192 ou no hospital mais próximo.
+        Se tiver lesionada informe assistência médica, através do SAMU 192 ou no hospital mais próximo.
         Denúncias on-line no site da [Delegacia Virtual (Registro de BO)](https://delegaciavirtual.sc.gov.br/nova-ocorrencia).
 
         Quando solicitar uma conversa oriente a entrar em contato através do whatsapp para o número [554832872635](https://api.whatsapp.com/send?phone=554832872635), serviço do Tribunal de Justiça de Santa Catarina.

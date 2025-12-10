@@ -12,7 +12,7 @@
 </div>
 
 <div class="flex min-h-[80vh] bg-gray-50">
-  <!-- Sidebar responsiva com as mesmas cores da defensoria -->
+  <!-- Sidebar responsiva com eefeito hover -->
   <aside class="group/sidebar relative z-10 h-full
         bg-gradient-to-b from-primary to-secondary text-white shadow-xl py-6 px-2
         flex flex-col gap-3
@@ -123,15 +123,7 @@
           </div>
           {{ title }}
         </h1>
-        <div class="space-y-1 text-sm sm:text-base">
-          <p class="text-gray-700">
-            <span class="font-medium">Usuário:</span>
-            <span class="text-primary font-semibold">{{ user.first_name }} {{ user.last_name }}</span>
-          </p>
-          <p class="text-gray-600">
-            Bem-vindo à página da <span class="font-semibold text-primary">{{ title }}</span>
-          </p>
-        </div>
+        
       </div>
 
       <!-- Botões de ação - mesmos da defensoria -->
@@ -147,7 +139,8 @@
 
         <button
           class="group bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
-          hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-content" hx-swap="innerHTML">
+          hx-get="{% url 'sistema_justica:cadastro_mpu' %}" hx-target="#modal-mpu" hx-swap="innerHTML"
+          hx-indicator="#spinner">
           <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
             <i class="fas fa-thin fa-hands-holding-child"></i>
           </div>
@@ -181,6 +174,8 @@
         </div>
 
         <div id="modal-vitima"> </div>
+        <div id="modal-mpu"> </div>
+        <div id="modal-content1"> </div>
 
         <!-- Conteúdo lorem ipsum -->
         <div class="bg-gray-50 rounded-xl p-6">
