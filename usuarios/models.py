@@ -80,7 +80,7 @@ class CustomUser(AbstractUser):
             ('Polícia Penal', 'Polícia Penal'),
             ('Polícia Científica', 'Polícia Científica'),
             ('CAPS', 'CAPS'),
-            ('Conselho Tutelar', 'Conselho Tutelar'),
+            #('Conselho Tutelar', 'Conselho Tutelar'),
             ('CRAS', 'CRAS'),
             ('CREAS', 'CREAS'),
             ('Secretaria da Saúde', 'Secretaria da Saúde'),
@@ -101,7 +101,7 @@ class CustomUser(AbstractUser):
         'CustomGroup',
         verbose_name='grupos',
         blank=True,
-        help_text='Os grupos aos quais este usuário pertence.',
+        #help_text='Os grupos aos quais este usuário pertence.',
         related_name='user_set',
         related_query_name='user',
     )
@@ -110,7 +110,7 @@ class CustomUser(AbstractUser):
         'auth.Permission',
         verbose_name='permissões do usuário',
         blank=True,
-        help_text='Permissões específicas para este usuário.',
+        #help_text='Permissões específicas para este usuário.',
         related_name='customuser_set',
         related_query_name='customuser',
     )

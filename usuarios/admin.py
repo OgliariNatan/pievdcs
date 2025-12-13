@@ -2,6 +2,9 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser, CustomGroup
 
+from django.contrib.auth.models import Group
+admin.site.unregister(Group)
+
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_groups', 'cpf', 'telefone', 'foto', 'departamento', 'data_nascimento', 'genero', 'comprovante_vinculo')

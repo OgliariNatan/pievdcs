@@ -25,6 +25,8 @@ nacionalidade_choices = [
     ("CN", "Chinês"),
     ("JP", "Japonês"),
     ("IN", "Indiano"),
+    #Inserir todas as nacionalidades
+    ("OT", "Outro"),
 ]
 
 escolaridade_choices = [
