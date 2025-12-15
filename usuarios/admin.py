@@ -52,3 +52,11 @@ class CustomGroupAdmin(admin.ModelAdmin):
     def get_permissions_count(self, obj):
         return obj.permissions.count()
     get_permissions_count.short_description = 'Nº de Permissões'
+
+# ============================================================================
+# CUSTOMIZAÇÃO DO SITE ADMIN
+# ============================================================================
+admin.site.site_header = "PIEVDCS - Administração"
+admin.site.site_title = "PIEVDCS Admin"
+admin.site.index_title = "Painel de Controle - Plataforma Integrada de Enfrentamento à Violência"
+admin.site.empty_value_display = "-vazio-"
