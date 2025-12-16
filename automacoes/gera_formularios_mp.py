@@ -71,14 +71,14 @@ def criar_formularios_mp_aleatorios(quantidade=500):
         "Rua Marechal Deodoro", "Rua Benjamin Constant", "Rua Sete de Setembro",
         "Rua Coronel Oliveira", "Rua Major Silva", "Rua Capitão Santos", "Rua Doutor Lima",
         "Rua Professor Almeida", "Avenida Brasil", "Avenida Independência", "Avenida Liberdade",
-        "Travessa das Palmeiras", "Travessa São José", "Alameda dos Ipês"
+        "Travessa das Palmeiras", "Travessa São José", "Alameda dos Ipês", "Avenida Sul Brasil"
     ]
     
     # Distribuição de períodos de medida protetiva (em dias)
     periodos_mp_dias = [120, 180, 240, 300, 360]  # Mais comum: 120 dias
     pesos_periodos = [40, 20, 15, 10, 8]  # 120 dias é mais provável
     
-    # Distribuição de tipos de violência (baseada em estatísticas reais)
+    # Distribuição de tipos de violência
     pesos_violencia = {
         'Fisica': 35,
         'Psicologica': 25,
@@ -87,7 +87,7 @@ def criar_formularios_mp_aleatorios(quantidade=500):
         'Moral': 13
     }
     
-    # Distribuição de graus de parentesco (baseada em estatísticas reais)
+    # Distribuição de graus de parentesco
     pesos_parentesco = {
         'Conjuge': 30,
         'Irmao': 12,
@@ -134,16 +134,16 @@ def criar_formularios_mp_aleatorios(quantidade=500):
             periodo_mp = data_aleatoria.date() + timedelta(days=dias_mp)
             
             # Medida Protetiva de Urgência (90% são de urgência)
-            solicitada_mpu = random.choices([True, False], weights=[90, 10], k=1)[0]
+            solicitada_mpu = random.choices([True, False], weights=[80, 20], k=1)[0]
             
-            # Tipo de violência com distribuição realista
+            # Tipo de violência
             tipo_violencia = random.choices(
                 list(pesos_violencia.keys()), 
                 weights=list(pesos_violencia.values()), 
                 k=1
             )[0]
             
-            # Grau de parentesco com distribuição realista
+            # Grau de parentesco
             grau_parentesco = random.choices(
                 list(pesos_parentesco.keys()),
                 weights=list(pesos_parentesco.values()),
