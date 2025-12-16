@@ -4,6 +4,33 @@ from django.contrib.auth.models import AbstractUser, Group as DjangoGroup
 from django.db import models
 from django.core.validators import RegexValidator
 
+class CustomGroup(models.Model):
+    name = models.CharField('nome', max_length=150, unique=True)
+    permissions = models.ManyToManyField(
+        'auth.Permission',
+        verbose_name='permissões',
+        blank=True,
+    )
+    description = models.TextField(
+        verbose_name='descrição',
+        blank=True
+    )
+    created_at = models.DateTimeField(
+        verbose_name='criado em', 
+        auto_now_add=True
+    )
+    updated_at = models.DateTimeField(
+        verbose_name='atualizado em',
+        auto_now=True
+    )
+    
+    class Meta:
+        verbose_name = 'Grupo'
+        verbose_name_plural = 'Grupos'
+        ordering = ['name']
+    
+    def __str__(self):
+        return self.name
 
 
 class CustomUser(AbstractUser):
@@ -66,27 +93,27 @@ class CustomUser(AbstractUser):
         blank=True,
     )
 
-    departamento = models.CharField(
-        verbose_name='Departamento',
-        max_length=100,
-        null=True,
-        blank=True,
-        choices=[
-            ('Poder Judiciário', 'Poder Judiciário'),
-            ('Ministério Público', 'Ministério Público'),
-            ('Defensoria Pública', 'Defensoria Pública'),
-            ('Polícia Civil', 'Polícia Civil'),
-            ('Polícia Militar', 'Polícia Militar'),
-            ('Polícia Penal', 'Polícia Penal'),
-            ('Polícia Científica', 'Polícia Científica'),
-            ('CAPS', 'CAPS'),
-            #('Conselho Tutelar', 'Conselho Tutelar'),
-            ('CRAS', 'CRAS'),
-            ('CREAS', 'CREAS'),
-            ('Secretaria da Saúde', 'Secretaria da Saúde'),
-            ('Administração', 'Administração')
-        ]
-    )
+    # departamento = models.CharField(
+    #     verbose_name='Departamento',
+    #     max_length=100,
+    #     null=True,
+    #     blank=True,
+    #     choices=[
+    #         ('Poder Judiciário', 'Poder Judiciário'),
+    #         ('Ministério Público', 'Ministério Público'),
+    #         ('Defensoria Pública', 'Defensoria Pública'),
+    #         ('Polícia Civil', 'Polícia Civil'),
+    #         ('Polícia Militar', 'Polícia Militar'),
+    #         ('Polícia Penal', 'Polícia Penal'),
+    #         ('Polícia Científica', 'Polícia Científica'),
+    #         ('CAPS', 'CAPS'),
+    #         #('Conselho Tutelar', 'Conselho Tutelar'),
+    #         ('CRAS', 'CRAS'),
+    #         ('CREAS', 'CREAS'),
+    #         ('Secretaria da Saúde', 'Secretaria da Saúde'),
+    #         ('Administração', 'Administração')
+    #     ]
+    # )
 
     comprovante_vinculo = models.FileField(
         verbose_name='Comprovante de Vínculo',
@@ -115,30 +142,3 @@ class CustomUser(AbstractUser):
         related_query_name='customuser',
     )
 
-class CustomGroup(models.Model):
-    name = models.CharField('nome', max_length=150, unique=True)
-    permissions = models.ManyToManyField(
-        'auth.Permission',
-        verbose_name='permissões',
-        blank=True,
-    )
-    description = models.TextField(
-        verbose_name='descrição',
-        blank=True
-    )
-    created_at = models.DateTimeField(
-        verbose_name='criado em', 
-        auto_now_add=True
-    )
-    updated_at = models.DateTimeField(
-        verbose_name='atualizado em',
-        auto_now=True
-    )
-    
-    class Meta:
-        verbose_name = 'Grupo'
-        verbose_name_plural = 'Grupos'
-        ordering = ['name']
-    
-    def __str__(self):
-        return self.name

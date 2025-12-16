@@ -7,7 +7,8 @@ admin.site.unregister(Group)
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_groups', 'cpf', 'telefone', 'foto', 'departamento', 'data_nascimento', 'genero', 'comprovante_vinculo')
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_groups', 'cpf', 'telefone', 'foto','data_nascimento', 'genero', 'comprovante_vinculo')
+    #empty_value_display = "-vazio-"
 
     def get_groups(self, obj):
         return ", ".join([g.name for g in obj.groups.all()])
@@ -16,7 +17,7 @@ class CustomUserAdmin(UserAdmin):
     # Sobrescrever completamente os fieldsets para evitar duplicação
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Informações Pessoais', {'fields': ('first_name', 'last_name', 'email', 'cpf', 'telefone', 'foto', 'departamento', 'data_nascimento', 'genero', 'comprovante_vinculo')}),
+        ('Informações Pessoais', {'fields': ('first_name', 'last_name', 'email', 'cpf', 'telefone', 'foto', 'data_nascimento', 'genero', 'comprovante_vinculo')}),
         ('Permissões', {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),
