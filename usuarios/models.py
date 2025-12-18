@@ -93,28 +93,6 @@ class CustomUser(AbstractUser):
         blank=True,
     )
 
-    # departamento = models.CharField(
-    #     verbose_name='Departamento',
-    #     max_length=100,
-    #     null=True,
-    #     blank=True,
-    #     choices=[
-    #         ('Poder Judiciário', 'Poder Judiciário'),
-    #         ('Ministério Público', 'Ministério Público'),
-    #         ('Defensoria Pública', 'Defensoria Pública'),
-    #         ('Polícia Civil', 'Polícia Civil'),
-    #         ('Polícia Militar', 'Polícia Militar'),
-    #         ('Polícia Penal', 'Polícia Penal'),
-    #         ('Polícia Científica', 'Polícia Científica'),
-    #         ('CAPS', 'CAPS'),
-    #         #('Conselho Tutelar', 'Conselho Tutelar'),
-    #         ('CRAS', 'CRAS'),
-    #         ('CREAS', 'CREAS'),
-    #         ('Secretaria da Saúde', 'Secretaria da Saúde'),
-    #         ('Administração', 'Administração')
-    #     ]
-    # )
-
     comprovante_vinculo = models.FileField(
         verbose_name='Comprovante de Vínculo',
         upload_to='usuarios/comprovantes/%Y/%m/',
@@ -125,12 +103,12 @@ class CustomUser(AbstractUser):
 
     # Sobrescrever os relacionamentos para usar grupos personalizados
     groups = models.ManyToManyField(
-        'CustomGroup',
+        'auth.Group',
         verbose_name='grupos',
         blank=True,
         #help_text='Os grupos aos quais este usuário pertence.',
-        related_name='user_set',
-        related_query_name='user',
+        related_name='customuser_set',
+        related_query_name='customuser',
     )
     
     user_permissions = models.ManyToManyField(
@@ -142,3 +120,6 @@ class CustomUser(AbstractUser):
         related_query_name='customuser',
     )
 
+    class Meta:
+        verbose_name = 'Usuários'
+        #ordering = ['name', 'cpf']
