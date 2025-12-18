@@ -3,9 +3,9 @@ Script para gerar dados fictícios de FormularioMedidaProtetiva (Defensoria Púb
 Gera 500 registros de solicitações de medida protetiva com dados realistas brasileiros.
 
 Para executar:
-1. Abra o Django shell: python manage.py shell
-2. Execute: from automacoes.gera_formularios_mp import criar_formularios_mp_aleatorios
-3. Execute: criar_formularios_mp_aleatorios()
+ python manage.py shell
+    >>> from automacoes.gera_formularios_mp import criar_formularios_mp_aleatorios
+    >>> criar_formularios_mp_aleatorios()
 """
 
 import random
