@@ -37,5 +37,7 @@ criar_agressores_aleatorios(2500)
 criar_formularios_mp_aleatorios(5000)
 
 print('\n'*5)
-print("="*20)
+print("="*40)
 print("Inserção de dados concluída!")
+print("="*50)
+print('\n'*5)

@@ -15,7 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from mensageria.models import Notificacao, StatusNotificacao
 from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
-from usuarios.models import CustomUser, CustomGroup
+# 
 from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 # Configuração do Ollama
