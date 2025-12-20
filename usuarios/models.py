@@ -20,7 +20,7 @@ from django.core.validators import RegexValidator
 def validate_pdf_file(value):
     """Valida se o arquivo enviado é PDF"""
     ext = os.path.splitext(value.name)[1]
-    if ext.lower() != '.pdf':
+    if ext.lower() != '*.pdf':
         raise ValidationError('Apenas arquivos .pdf são permitidos.')
 
 
@@ -31,7 +31,7 @@ class CustomUser(AbstractUser):
     """
     Modelo de usuário customizado para PIEVDCS
     
-    Características:
+    Características:43434
     - CPF único obrigatório (formato brasileiro 000.000.000-00)
     - Telefone com formato brasileiro ((00) 00000-0000)
     - Foto de perfil

@@ -171,16 +171,19 @@ def obter_resposta_ollama(pergunta):
         - Use <p> para parágrafos
         - Organize listas com • seguido de espaço
         - Evite usar listas numeradas
+
+        Porque o nome de LaelIA?
+        Laelia é um tipo de orquídea conhecida por sua beleza e resiliência, simbolizando a força e a delicadeza das mulheres que enfrentam a violência doméstica e simbolo oficial do estado de Santa Catarina. O nome LaelIA reflete a missão da assistente virtual de oferecer apoio, informação e empoderamento às vítimas, ajudando-as a florescer apesar das adversidades que enfrentam.
         """
         
         # Cria o prompt completo
-        prompt_completo = f"{system_prompt}\n\nUsuário: {pergunta}\n\Laelia:"
+        prompt_completo = f"{system_prompt}\n\nUsuário: {pergunta}\n\LaelIA:"
         
         # Faz a chamada ao Ollama
         response = client.generate(
             model=OLLAMA_MODEL,
             prompt=prompt_completo,
-            system='Seu nome é Laelia, uma assistente virtual especializada em violência doméstica contra a mulher no Brasil.',
+            system='Seu nome é Lael<b>IA</b>, uma assistente virtual especializada em violência doméstica contra a mulher no Brasil.',
             context=[1, 2, 3],  # Mantém o contexto das últimas interações
             stream=False,# Se True, recebe a resposta em partes (streaming)
 

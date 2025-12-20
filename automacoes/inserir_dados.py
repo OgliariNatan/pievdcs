@@ -16,6 +16,7 @@ from automacoes.cria_comarcas import cadastrar_comarcas_judiciario_sc
 from automacoes.gera_vitimas import criar_vitimas_aleatorias
 from automacoes.gera_agressores import criar_agressores_aleatorios
 from automacoes.gera_formularios_mp import criar_formularios_mp_aleatorios
+from automacoes.cria_grupos import criar_grupos_institucionais
 
 
 #Cria estados no db
@@ -26,6 +27,9 @@ cadastrar_municipios_por_estado()
 
 #Atribui todas as comarcas do judiciario de SC no db
 cadastrar_comarcas_judiciario_sc()
+
+#Cria grupos institucionais no db
+criar_grupos_institucionais()
 
 #Cria 3500 vitimas aleatorias no db
 criar_vitimas_aleatorias(3500)

@@ -323,3 +323,4 @@ admin.site.site_header = "PIEVDCS - Administração"
 admin.site.site_title = "PIEVDCS Admin"
 admin.site.index_title = "Painel de Controle - Plataforma Integrada de Enfrentamento à Violência"
 admin.site.empty_value_display = "-vazio-"
+
