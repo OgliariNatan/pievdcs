@@ -1,8 +1,8 @@
 from django.db import models
 from datetime import datetime, timedelta, timezone
 from usuarios.models import CustomUser
-from sistema_justica.models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
-from seguranca_publica.models.base import grau_parentesco_agressor_choices, status_MP_choices, tipo_de_violencia_choices
+from sistema_justica.models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado, TipoDeViolencia
+from seguranca_publica.models.base import grau_parentesco_agressor_choices
 from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
 from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
 
@@ -55,10 +55,12 @@ class FormularioMedidaProtetiva(models.Model):
         verbose_name='Medida Protetiva de Urgência'
     )
     
-    tipo_de_violencia = models.CharField(
-        max_length= 50, 
-        choices= tipo_de_violencia_choices, 
+    tipo_de_violencia = models.ManyToManyField(
+        TipoDeViolencia,
         verbose_name= "Tipo de Violência",
+        related_name="%(class)s_formulario_mp",
+        related_query_name="%(class)s_formulario_mp",
+        blank=True,
     )
 
     comarca_competente = models.ForeignKey(

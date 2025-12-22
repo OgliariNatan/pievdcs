@@ -58,6 +58,32 @@ classeEconomica_choices = [
     ("AC", "Acima de R$28.240,00"),
 ]
 
+class TipoDeViolencia(models.Model):
+    """
+    Modelo para armazenar os tipos de violência.
+    """
+    nome = models.CharField(
+        max_length=100,
+        verbose_name="Tipo de Violência",
+        unique=True,
+    )
+    descricao = models.TextField(
+        verbose_name="Descrição",
+        max_length=500,
+    )
+    ativo = models.BooleanField(
+        verbose_name="Ativo",
+        default=True,
+    )
+
+    class Meta:
+        verbose_name = "Tipo de Violência"
+        verbose_name_plural = "Tipos de Violência"
+        ordering = ['nome']
+
+    def __str__(self):
+        return f"{self.nome}"
+
 class Estado(models.Model):
     """
     Modelo para armazenar os estados brasileiros.

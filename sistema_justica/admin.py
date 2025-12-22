@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
+from .models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado, TipoDeViolencia
 from .models.poder_judiciario import ComarcasPoderJudiciario
 from .models.defensoria_publica import FormularioMedidaProtetiva
 # admin.py
@@ -78,3 +78,8 @@ class ComarcasPoderJudiciarioAdmin(admin.ModelAdmin):
 class DefensiriaPublicaFormulario(admin.ModelAdmin):
     list_display = ('ID', 'vitima', 'agressor')
     ordering = ('-ID',)
+
+@admin.register(TipoDeViolencia)
+class TipoDeViolenciaAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'descricao',)
+    search_fields = ('nome',)
