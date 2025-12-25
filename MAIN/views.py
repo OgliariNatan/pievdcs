@@ -36,6 +36,7 @@ if var_debug == 'True':
     print(30*'-')
     checked_debug_decorador = calcula_tempo
     checked_debug_decorador_fun = calcula_tempo_fun
+    #raise Exception("Debug ativado - interrompendo a execução para evitar lentidão.")
     
 else:
     checked_debug_decorador = None
@@ -48,7 +49,14 @@ def index_tailwind(request):
     """
         Renderiza a página inicial com os conteúdos da página inicial.
     """
-    itens  = ConteudoHome.objects.filter(publicado=True).order_by('secao','-data_publicacao')
+    
+    try:
+        itens  = ConteudoHome.objects.filter(publicado=True).order_by('secao','-data_publicacao')
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao buscar conteúdos da página inicial: {e}")
+        itens = []
     
     conteudos = defaultdict(list)
 
@@ -57,14 +65,26 @@ def index_tailwind(request):
 
     conteudos = dict(conteudos) 
 
+    try:
+        medidas_protetivas_solicitadas_ocorrencias = (
+            OcorrenciaMilitar.objects.filter(status_MP='SO').count() + 
+            OcorrenciaCivil.objects.filter(status_MP='SO').count() + 
+            FormularioMedidaProtetiva.objects.filter(solicitada_mpu=True).count()
+        )
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao calcular medidas protetivas: {e}")
+        medidas_protetivas_solicitadas_ocorrencias = 0
 
-    medidas_protetivas_solicitadas_ocorrencias = (
-         OcorrenciaMilitar.objects.filter(status_MP='SO').count() + 
-         OcorrenciaCivil.objects.filter(status_MP='SO').count() + 
-         FormularioMedidaProtetiva.objects.filter(solicitada_mpu=True).count()
-    )
-
-    grupos_atendidos = ModeloPenal.objects.all().count()
+    
+    try:
+        grupos_atendidos = ModeloPenal.objects.all().count()
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao contar grupos atendidos: {e}")
+        grupos_atendidos = 0
 
 
     context = {
@@ -99,17 +119,26 @@ def pre_visualizacao_conteudo(request, pk):
 @checked_debug_decorador
 @login_required
 def home(request):
+    usuario_conectado = request.user.is_authenticated
+    if usuario_conectado == False:
+        raise PermissionError("Usuário não autenticado tentando acessar a página home.")
+        
+        
     context = {
-        "title": "Página Inicial",
+        "title": "Página Inicial pós Login",
         "welcome_message": "Bem-vindo à Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais!",
-        'encaminhamentos': 0, #Criar variaveis para encaminhamentos
-        'alert': 0, #criar variavel para notificações
+        
     }
     return render(request, "home.html", context)
 
 
 @login_required
 def encaminhamentos(request):
+    
+    usuario_conectado = request.user.is_authenticated
+    if usuario_conectado == False:
+        raise PermissionError("Usuário não autenticado tentando acessar a página de encaminhamentos.")
+
     context = {
         "title": "Encaminhamentos",
         "description": "Visualize os encaminhamentos realizados na plataforma.",
@@ -119,6 +148,10 @@ def encaminhamentos(request):
 
 @login_required
 def notificacoes(request, notificacoes=0):
+    usuario_conectado = request.user.is_authenticated
+    if usuario_conectado == False:
+        raise PermissionError("Usuário não autenticado tentando acessar a página de notificações.")
+
     context = {
         "title": "Notificações",
         "description": "Visualize as notificações recebidas na plataforma.",
@@ -134,20 +167,39 @@ def relatorios(request):
         Renderiza a página de relatórios com dados estatísticos.
     """
     
-    dois_municipio = municipiosviolentos.municipios_mais_violentos(2)
-    municipio_primeiro=dois_municipio[0][0]
-    municipio_segundo=dois_municipio[1][0]
+    try:
+        dois_municipio = municipiosviolentos.municipios_mais_violentos(2)
+        municipio_primeiro=dois_municipio[0][0]
+        municipio_segundo=dois_municipio[1][0]
 
-    
-    comarcas_com_mp = pegarcomarcascommp.pegar_comarcas_com_mp()
-    if var_debug == 'True':
-        print(f"\nComarcas com Medidas Protetivas: {comarcas_com_mp}")
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao obter municípios mais violentos: {e}")
+        municipio_primeiro = "N/A"
+        municipio_segundo = "N/A"
 
+    try:
+        comarcas_com_mp = pegarcomarcascommp.pegar_comarcas_com_mp()
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao obter comarcas com medidas protetivas: {e}")
+        comarcas_com_mp = []
 
-    resultado_verifica = tipoviolencia.verifica_maior_violencia_por_mes()
-    tipo_violencia_1 = resultado_verifica['mes_atual']['tipo']
-    tipo_violencia_1_total = resultado_verifica['mes_atual']['total']
-    tipo_violencia_1_porcentagem = resultado_verifica['mes_anterior']['porcentagem']
+    try:
+        resultado_verifica = tipoviolencia.verifica_maior_violencia_por_mes()
+        tipo_violencia_1 = resultado_verifica['mes_atual']['tipo']
+        tipo_violencia_1_total = resultado_verifica['mes_atual']['total']
+        tipo_violencia_1_porcentagem = resultado_verifica['mes_anterior']['porcentagem']
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao verificar maior tipo de violência por mês: {e}")
+        tipo_violencia_1 = "N/A"
+        tipo_violencia_1_total = 0
+        tipo_violencia_1_porcentagem = 0
+
 
     medidas_protetivas_calculo = medidasprotetivas.porcentagem_mes_anterior()
     medidas_protetivas_solicitadas_ocorrencias = medidas_protetivas_calculo['total']
@@ -164,7 +216,15 @@ def relatorios(request):
     qtd_incidencias_meses = incidenciaspormes.calcular_incidencias_ano_atual()
 
     ano_atual = time.localtime().tm_year
-    #print(ano_atual)
+    
+    try:
+        comarcas_pj = ComarcasPoderJudiciario.objects.values_list('nome', flat=True).order_by('nome'), 
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao obter comarcas do poder judiciário: {e}")
+        comarcas_pj = []
+
     context = {
         
         "title": "Painel Informativo",
@@ -172,7 +232,7 @@ def relatorios(request):
         "ano_atual": ano_atual, #Ano atual
         "periodo": ['Todos', 'Semanal', 'Mensal', 'Anual'],
 
-        "comarcas": ComarcasPoderJudiciario.objects.values_list('nome', flat=True).order_by('nome'),  
+        "comarcas": comarcas_pj,  
         
         "medidas_protetivas_solicitadas_ocorrencias_porcentagem": medidas_protetivas_solicitadas_ocorrencias_porcentagem,
         "medidas_protetivas_solicitadas_ocorrencias": medidas_protetivas_solicitadas_ocorrencias,
