@@ -1,3 +1,9 @@
+#-- coding: utf-8 --
+"""
+    Modelos de visualizações do sistema Penal
+    dir: seguranca_publica/views/penal.py
+    @author: OgliariNatan
+"""
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
@@ -17,7 +23,6 @@ from datetime import timedelta
 
 """ Configuraçao de decoradores para debug """
 import os
-from dotenv import load_dotenv
 
 var_debug = os.getenv('DEBUG', False) #Carrega apenas a variavel de debug
 
@@ -36,9 +41,13 @@ else:
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Polícia Penal'])
 def penal(request):
-
-    notificacao_nao_lida = Notificacao.contar_nao_lidas_usuario(request.user)
-
+    try:
+        notificacao_nao_lida = Notificacao.contar_nao_lidas_usuario(request.user)
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao contar notificações não lidas: {e}")
+        notificacao_nao_lida = 0
 
     now = timezone.now()
     first_day_this_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -46,35 +55,46 @@ def penal(request):
     last_day_last_month = first_day_this_month - timedelta(seconds=1)
 
     # Atendimentos deste mês
-    atendimentos_mes = ModeloPenal.objects.filter(
-        usuario=request.user,
-        data_atendimento__gte=first_day_this_month,
-        data_atendimento__lte=now
-    ).count()
 
-    # Atendimentos do mês anterior
-    atendimentos_mes_anterior = ModeloPenal.objects.filter(
-        usuario=request.user,
-        data_atendimento__gte=first_day_last_month,
-        data_atendimento__lte=last_day_last_month
-    ).count()
+    try:
+        atendimentos_mes = ModeloPenal.objects.filter(
+            usuario=request.user,
+            data_atendimento__gte=first_day_this_month,
+            data_atendimento__lte=now
+        ).count()
 
-    # Cálculo da variação percentual
-    if atendimentos_mes_anterior > 0:
-        variacao = ((atendimentos_mes - atendimentos_mes_anterior) / atendimentos_mes_anterior) * 100
-    else:
-        variacao = 100 if atendimentos_mes > 0 else 0
-    
-    # Lista de atendimentos com participantes
-    atendimentos = ModeloPenal.objects.filter(usuario=request.user).order_by('-id')
-    grupos = []
-    for atendimento in atendimentos:
-        grupos.append({
-            'id': atendimento.id,
-            'nome': f'Atendimento {atendimento.id} - {atendimento.data_atendimento:%d/%m/%Y %H:%M}',
-            'qtd_agressores': atendimento.agressores_atendidos.count(),
-            'participantes': atendimento.agressores_atendidos.all(),
-        })
+        # Atendimentos do mês anterior
+        atendimentos_mes_anterior = ModeloPenal.objects.filter(
+            usuario=request.user,
+            data_atendimento__gte=first_day_last_month,
+            data_atendimento__lte=last_day_last_month
+        ).count()
+
+        # Cálculo da variação percentual
+        if atendimentos_mes_anterior > 0:
+            variacao = ((atendimentos_mes - atendimentos_mes_anterior) / atendimentos_mes_anterior) * 100
+        else:
+            variacao = 100 if atendimentos_mes > 0 else 0
+        
+        # Lista de atendimentos com participantes
+        atendimentos = ModeloPenal.objects.filter(usuario=request.user).order_by('-id')
+        grupos = []
+        for atendimento in atendimentos:
+            grupos.append({
+                'id': atendimento.id,
+                'nome': f'Atendimento {atendimento.id} - {atendimento.data_atendimento:%d/%m/%Y %H:%M}',
+                'qtd_agressores': atendimento.agressores_atendidos.count(),
+                'participantes': atendimento.agressores_atendidos.all(),
+            })
+            
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao buscar atendimentos: {e}")
+        atendimentos_mes = 0
+        atendimentos_mes_anterior = 0
+        variacao = 0
+        grupos = []
 
     contexto = {
         'title': 'Polícia Penal',

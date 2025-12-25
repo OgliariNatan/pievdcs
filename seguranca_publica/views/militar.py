@@ -5,12 +5,31 @@ from .permission_group import grupos_permitidos
 from mensageria.models import Notificacao, StatusNotificacao
 from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
 from usuarios.models import CustomUser
-from django.contrib.auth.models import Group as CustomGroup
-from MAIN.decoradores.calcula_tempo import calcula_tempo
+from django.contrib.auth.models import Group
+
+
+""" Configuraçao de decoradores para debug """
+import os
+from dotenv import load_dotenv
+
+var_debug = os.getenv('DEBUG', False) #Carrega apenas a variavel de debug
+
+if var_debug == 'True':
+    from MAIN.decoradores.calcula_tempo import calcula_tempo, calcula_tempo_fun
+    checked_debug_decorador = calcula_tempo
+    checked_debug_decorador_fun = calcula_tempo_fun
+    
+else:
+    checked_debug_decorador = None
+    checked_debug_decorador_fun = None
+
+""" Fim da configuraçao de decoradores para debug """
+
+
 
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Polícia Militar'])
-@calcula_tempo
+@checked_debug_decorador
 def militar(request):
     notificacoes_nao_lidas = Notificacao.contar_nao_lidas_usuario(request.user)
 
@@ -22,4 +41,3 @@ def militar(request):
         'user' : request.user,
     }
     return render(request, "militar.html", contexto)
-#ajuste

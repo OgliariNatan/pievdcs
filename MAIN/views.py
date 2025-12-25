@@ -26,7 +26,6 @@ from datetime import datetime
 
 """ Configuraçao de decoradores para debug """
 import os
-from dotenv import load_dotenv
 
 var_debug = os.getenv('DEBUG', False) #Carrega apenas a variavel de debug
 
