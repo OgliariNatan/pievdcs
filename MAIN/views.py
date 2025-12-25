@@ -122,7 +122,14 @@ def home(request):
     usuario_conectado = request.user.is_authenticated
     if usuario_conectado == False:
         raise PermissionError("Usuário não autenticado tentando acessar a página home.")
-        
+
+    usuario_ativo = request.user.is_active
+    if usuario_ativo == False:
+        if var_debug == 'True':
+            print(f"Usuário: {request.user}.") 
+            print(f"IP: {request.META.get('REMOTE_ADDR')}")
+        raise PermissionError("Usuário inativo tentando acessar a página home.")
+          
         
     context = {
         "title": "Página Inicial pós Login",
@@ -139,6 +146,13 @@ def encaminhamentos(request):
     if usuario_conectado == False:
         raise PermissionError("Usuário não autenticado tentando acessar a página de encaminhamentos.")
 
+    usuario_ativo = request.user.is_active
+    if usuario_ativo == False:
+        if var_debug == 'True':
+            print(f"Usuário: {request.user}.") 
+            print(f"IP: {request.META.get('REMOTE_ADDR')}")
+        raise PermissionError("Usuário inativo tentando acessar a página de encaminhamentos.")
+
     context = {
         "title": "Encaminhamentos",
         "description": "Visualize os encaminhamentos realizados na plataforma.",
@@ -151,6 +165,13 @@ def notificacoes(request, notificacoes=0):
     usuario_conectado = request.user.is_authenticated
     if usuario_conectado == False:
         raise PermissionError("Usuário não autenticado tentando acessar a página de notificações.")
+
+    usuario_ativo = request.user.is_active
+    if usuario_ativo == False:
+        if var_debug == 'True':
+            print(f"Usuário: {request.user}.") 
+            print(f"IP: {request.META.get('REMOTE_ADDR')}")
+        raise PermissionError("Usuário inativo tentando acessar a página de notificações.")
 
     context = {
         "title": "Notificações",
