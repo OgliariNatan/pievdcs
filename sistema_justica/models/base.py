@@ -272,7 +272,30 @@ class Vitima_dados(models.Model):
         verbose_name="Profissão*",
         null=False, blank=False,
     )
-    
+
+    #Auditorias
+    criado_em = models.DateTimeField(
+        verbose_name="Criado em",
+        auto_now_add=True,
+    )
+    criado_por = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name="vitimas_cadastradas",
+        verbose_name="Criado por",
+    )
+    atualizado_em = models.DateTimeField(
+        verbose_name="Atualizado em",
+        auto_now=True,   
+    )
+    atualizado_por = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name="vitimas_atualizadas",
+        verbose_name="Atualizado por",
+    )
 
     def save(self, *args, **kwargs):
         # Calcula a idade antes de salvar

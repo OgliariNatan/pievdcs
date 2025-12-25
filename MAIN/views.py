@@ -18,13 +18,25 @@ from .calculo_variaveis import *
 import random
 import time
 from datetime import datetime
-from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 
+import os
+from dotenv import load_dotenv
 
-print(f'\n\nBanco em uso: {connection.vendor}\n\n--------------------------------------------')
+var_debug = os.getenv('DEBUG', False) #Carrega apenas a variavel de debug
 
-@calcula_tempo
+if var_debug == 'True':
+    from MAIN.decoradores.calcula_tempo import calcula_tempo
+    print(30*'-')
+    print(f'\nBanco em uso: {connection.vendor}\n')
+    print(30*'-')
+    checked_debug_decorador = calcula_tempo
+    
+else:
+    checked_debug_decorador = None
+
+
+@checked_debug_decorador
 def index_tailwind(request):
     """
         Renderiza a página inicial com os conteúdos da página inicial.
@@ -40,9 +52,9 @@ def index_tailwind(request):
 
 
     medidas_protetivas_solicitadas_ocorrencias = (
-        OcorrenciaMilitar.objects.filter(status_MP='SO').count() + 
-        OcorrenciaCivil.objects.filter(status_MP='SO').count() + 
-        FormularioMedidaProtetiva.objects.filter(solicitada_mpu=True).count()
+         OcorrenciaMilitar.objects.filter(status_MP='SO').count() + 
+         OcorrenciaCivil.objects.filter(status_MP='SO').count() + 
+         FormularioMedidaProtetiva.objects.filter(solicitada_mpu=True).count()
     )
 
     grupos_atendidos = ModeloPenal.objects.all().count()
@@ -58,38 +70,6 @@ def index_tailwind(request):
         'atendimentos': grupos_atendidos
     }
     return render(request, "index_tailwind.html", context)
-
-
-
-def index(request):
-    """
-    Subistituido pelo index_controlador
-    """
-    context = {
-        "title": "Bem-vindo",
-        "description": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais"
-    }
-    return render(request, "index.html", context)
-
-
-def index_controlador(request):
-    """
-        Renderiza a página inicial com os conteúdos da página inicial.
-    """
-    itens  = ConteudoHome.objects.filter(publicado=True).order_by('secao','-data_publicacao')
-    #itens = ConteudoHome.objects.all().order_by('-data_publicacao')
-    conteudos = defaultdict(list)
-
-    for item in itens:
-        conteudos[item.secao].append(item)
-
-    conteudos = dict(conteudos) 
-    context = {
-        "conteudos": conteudos,
-        "title": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais",
-        "description": "Página Inicial",
-    }
-    return render(request, "index_controlador.html", context)
 
 
 
@@ -109,7 +89,7 @@ def pre_visualizacao_conteudo(request, pk):
     }
     return render(request, "pre_visualizacao_conteudo.html", context)
 
-@calcula_tempo
+@checked_debug_decorador
 @login_required
 def home(request):
     context = {
@@ -140,7 +120,8 @@ def notificacoes(request, notificacoes=0):
     }
     return render(request, "notificacoes.html", context)
 
-@calcula_tempo
+
+@checked_debug_decorador
 def relatorios(request):
     """
         Renderiza a página de relatórios com dados estatísticos.
@@ -260,14 +241,14 @@ def relatorios(request):
         
         "Tipos_de_Violência": {
             "labels": ["Física", "Psicológica", "Sexual", "Patrimonial", "Moral"],
-            "data": [
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Fisica').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Fisica').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Fisica').count(),
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Psicologica').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Psicologica').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Psicologica').count(),
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Sexual').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Sexual').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Sexual').count(),
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Patrimonial').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Patrimonial').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Patrimonial').count(),
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Moral').count()  + OcorrenciaCivil.objects.filter(tipo_de_violencia='Moral').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Moral').count(),
-            ]
-            #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
+            # "data": [
+            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Fisica').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Fisica').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Fisica').count(),
+            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Psicologica').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Psicologica').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Psicologica').count(),
+            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Sexual').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Sexual').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Sexual').count(),
+            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Patrimonial').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Patrimonial').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Patrimonial').count(),
+            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Moral').count()  + OcorrenciaCivil.objects.filter(tipo_de_violencia='Moral').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Moral').count(),
+            # ]
+            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
         },
         "tipo_violencia_1" : tipo_violencia_1,
         "tipo_violencia_1_total" : tipo_violencia_1_total,
