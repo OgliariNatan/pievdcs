@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""  
+    Modelo pertinente a defensoria publica
+    dir: sistema_justica/models/defensoria_publica.py
+    @author: OgliariNatan
+"""
+
 from django.db import models
 from datetime import datetime, timedelta, timezone
 from usuarios.models import CustomUser
@@ -5,6 +12,7 @@ from sistema_justica.models.base import Vitima_dados, Agressor_dados, Filhos_dad
 from seguranca_publica.models.base import grau_parentesco_agressor_choices
 from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
 from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
+
 
 
 def default_periodo_mp():

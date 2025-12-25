@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Módulo para cálculos de variáveis e estatísticas do PIEVDCS
-Conforme especificação em .github/copilot-instructions.md
+Path: MAIN/calculo_variaveis.py
 
 Funcionalidades:
 - Estatísticas de tipos de violência
@@ -10,7 +10,7 @@ Funcionalidades:
 - Cálculo de reincidência
 - Incidências mensais e anuais
 
-Autor: PIEVDCS Team
+Autor: OgliariNatan
 Data: 2025
 """
 
@@ -25,18 +25,37 @@ from seguranca_publica.models.militar import OcorrenciaMilitar
 from seguranca_publica.models.civil import OcorrenciaCivil
 from seguranca_publica.models.base import grau_parentesco_agressor_choices
 
+""" Configuraçao de decoradores para debug """
+import os
+from dotenv import load_dotenv
+
+var_debug = os.getenv('DEBUG', False) #Carrega apenas a variavel de debug
+
+if var_debug == 'True':
+    from MAIN.decoradores.calcula_tempo import calcula_tempo, calcula_tempo_fun
+    checked_debug_decorador = calcula_tempo
+    checked_debug_decorador_fun = calcula_tempo_fun
+    
+else:
+    checked_debug_decorador = None
+    checked_debug_decorador_fun = None
+
+""" Fim da configuraçao de decoradores para debug """
+
+
 
 # ========================================================================
 # FUNÇÕES AUXILIARES PARA TIPOS DE VIOLÊNCIA
 # ✅ Lazy loading: só executa quando chamada, não no import
 # ========================================================================
 
+@checked_debug_decorador_fun
 def obter_tipos_violencia_ativos():
     """
     Obtém lista de tipos de violência ativos do banco de dados.
     Usa cache Django para melhorar performance.
     
-    ⚠️ Adaptado para modelo simplificado (apenas id, nome, descricao, ativo)
+    Adaptado para modelo simplificado (apenas id, nome, descricao, ativo)
     
     Returns:
         list: Lista de dicionários com 'id' e 'nome'
@@ -574,6 +593,9 @@ class IncidenciasPorMes:
 # INSTÂNCIAS GLOBAIS DAS CLASSES
 # Conforme padrão PIEVDCS para uso em templates e views
 # ========================================================================
+
+if var_debug == 'True':
+    print("\nInicializando instâncias globais de cálculo de variáveis...\n")
 
 tipoviolencia = TipoViolenciaStats()
 medidasprotetivas = MedidasProtetivas()

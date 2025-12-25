@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+"""  
+    Modelo pertinente as visualizações  publicas
+    dir: MAIN/views.py
+    @author: OgliariNatan
+"""
 from django.http import HttpResponse
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
@@ -19,22 +24,25 @@ import random
 import time
 from datetime import datetime
 
-
+""" Configuraçao de decoradores para debug """
 import os
 from dotenv import load_dotenv
 
 var_debug = os.getenv('DEBUG', False) #Carrega apenas a variavel de debug
 
 if var_debug == 'True':
-    from MAIN.decoradores.calcula_tempo import calcula_tempo
+    from MAIN.decoradores.calcula_tempo import calcula_tempo, calcula_tempo_fun
     print(30*'-')
     print(f'\nBanco em uso: {connection.vendor}\n')
     print(30*'-')
     checked_debug_decorador = calcula_tempo
+    checked_debug_decorador_fun = calcula_tempo_fun
     
 else:
     checked_debug_decorador = None
+    checked_debug_decorador_fun = None
 
+""" Fim da configuraçao de decoradores para debug """
 
 @checked_debug_decorador
 def index_tailwind(request):
@@ -133,7 +141,8 @@ def relatorios(request):
 
     
     comarcas_com_mp = pegarcomarcascommp.pegar_comarcas_com_mp()
-    #print(f"Comarcas com Medidas Protetivas: {comarcas_com_mp}")
+    if var_debug == 'True':
+        print(f"\nComarcas com Medidas Protetivas: {comarcas_com_mp}")
 
 
     resultado_verifica = tipoviolencia.verifica_maior_violencia_por_mes()

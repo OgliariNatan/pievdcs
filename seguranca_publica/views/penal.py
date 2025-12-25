@@ -15,9 +15,24 @@ from django.contrib.auth.models import Group as CustomGroup
 from django.utils import timezone
 from datetime import timedelta
 
-from MAIN.decoradores.calcula_tempo import calcula_tempo
+""" Configuraçao de decoradores para debug """
+import os
+from dotenv import load_dotenv
 
-@calcula_tempo
+var_debug = os.getenv('DEBUG', False) #Carrega apenas a variavel de debug
+
+if var_debug == 'True':
+    from MAIN.decoradores.calcula_tempo import calcula_tempo, calcula_tempo_fun
+    checked_debug_decorador = calcula_tempo
+    checked_debug_decorador_fun = calcula_tempo_fun
+    
+else:
+    checked_debug_decorador = None
+    checked_debug_decorador_fun = None
+
+""" Fim da configuraçao de decoradores para debug """
+
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Polícia Penal'])
 def penal(request):
@@ -77,13 +92,13 @@ def penal(request):
 
 
 
-@calcula_tempo
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_tipo_atendimento_form(request):
     form = TipoAtendimentoForm()
     return render(request, 'parcial/cadastro_tipo_atendimento_form.html', {'form': form})
 
-@calcula_tempo
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_tipo_atendimento_submit(request):
     if request.method == 'POST':
@@ -102,13 +117,13 @@ def cadastro_tipo_atendimento_submit(request):
             return render(request, 'parcial/cadastro_tipo_atendimento_form.html', {'form': form})
     return HttpResponse(status=405)
 
-@calcula_tempo
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_atendimento_penal_form(request):
     form = ModeloPenalForm()
     return render(request, 'parcial/cadastro_atendimento_penal_form.html', {'form': form})
 
-@calcula_tempo
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_atendimento_penal_submit(request):
     if request.method == 'POST':
@@ -131,7 +146,7 @@ def cadastro_atendimento_penal_submit(request):
     return HttpResponse(status=405)
 
 
-@calcula_tempo
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 def buscar_atendimentos_por_cpf_ajax(request):
     """Busca quantidade de atendimentos por CPF via AJAX"""
@@ -170,7 +185,7 @@ def buscar_atendimentos_por_cpf_ajax(request):
         return JsonResponse({'sucesso': False, 'erro': 'CPF não encontrado.'})
 
 
-@calcula_tempo
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 def buscar_atendimentos_por_cpf_modal(request):
     """Busca atendimentos por CPF no modal"""
