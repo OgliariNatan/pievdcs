@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from .permission_group import grupos_permitidos
 from mensageria.models import Notificacao, StatusNotificacao
 from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
-from usuarios.models import CustomUser, CustomGroup
+from usuarios.models import CustomUser
 from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 #@permission_required('CAPS.view_caps', login_url=reverse_lazy('login'))

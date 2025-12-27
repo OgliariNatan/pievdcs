@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+"""  
+    Modelo pertinente as visualizações  publicas
+    dir: MAIN/views.py
+    @author: OgliariNatan
+"""
 from django.http import HttpResponse
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
@@ -18,18 +23,40 @@ from .calculo_variaveis import *
 import random
 import time
 from datetime import datetime
-from MAIN.decoradores.calcula_tempo import calcula_tempo
 
+""" Configuraçao de decoradores para debug """
+import os
 
+var_debug = os.getenv('DEBUG', False) #Carrega apenas a variavel de debug
 
-print(f'\n\nBanco em uso: {connection.vendor}\n\n--------------------------------------------')
+if var_debug == 'True':
+    from MAIN.decoradores.calcula_tempo import calcula_tempo, calcula_tempo_fun
+    print(30*'-')
+    print(f'\nBanco em uso: {connection.vendor}\n')
+    print(30*'-')
+    checked_debug_decorador = calcula_tempo
+    checked_debug_decorador_fun = calcula_tempo_fun
+    #raise Exception("Debug ativado - interrompendo a execução para evitar lentidão.")
+    
+else:
+    checked_debug_decorador = None
+    checked_debug_decorador_fun = None
 
-@calcula_tempo
+""" Fim da configuraçao de decoradores para debug """
+
+@checked_debug_decorador
 def index_tailwind(request):
     """
         Renderiza a página inicial com os conteúdos da página inicial.
     """
-    itens  = ConteudoHome.objects.filter(publicado=True).order_by('secao','-data_publicacao')
+    
+    try:
+        itens  = ConteudoHome.objects.filter(publicado=True).order_by('secao','-data_publicacao')
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao buscar conteúdos da página inicial: {e}")
+        itens = []
     
     conteudos = defaultdict(list)
 
@@ -38,14 +65,26 @@ def index_tailwind(request):
 
     conteudos = dict(conteudos) 
 
+    try:
+        medidas_protetivas_solicitadas_ocorrencias = (
+            OcorrenciaMilitar.objects.filter(status_MP='SO').count() + 
+            OcorrenciaCivil.objects.filter(status_MP='SO').count() + 
+            FormularioMedidaProtetiva.objects.filter(solicitada_mpu=True).count()
+        )
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao calcular medidas protetivas: {e}")
+        medidas_protetivas_solicitadas_ocorrencias = 0
 
-    medidas_protetivas_solicitadas_ocorrencias = (
-        OcorrenciaMilitar.objects.filter(status_MP='SO').count() + 
-        OcorrenciaCivil.objects.filter(status_MP='SO').count() + 
-        FormularioMedidaProtetiva.objects.filter(solicitada_mpu=True).count()
-    )
-
-    grupos_atendidos = ModeloPenal.objects.all().count()
+    
+    try:
+        grupos_atendidos = ModeloPenal.objects.all().count()
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao contar grupos atendidos: {e}")
+        grupos_atendidos = 0
 
 
     context = {
@@ -58,38 +97,6 @@ def index_tailwind(request):
         'atendimentos': grupos_atendidos
     }
     return render(request, "index_tailwind.html", context)
-
-
-
-def index(request):
-    """
-    Subistituido pelo index_controlador
-    """
-    context = {
-        "title": "Bem-vindo",
-        "description": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais"
-    }
-    return render(request, "index.html", context)
-
-
-def index_controlador(request):
-    """
-        Renderiza a página inicial com os conteúdos da página inicial.
-    """
-    itens  = ConteudoHome.objects.filter(publicado=True).order_by('secao','-data_publicacao')
-    #itens = ConteudoHome.objects.all().order_by('-data_publicacao')
-    conteudos = defaultdict(list)
-
-    for item in itens:
-        conteudos[item.secao].append(item)
-
-    conteudos = dict(conteudos) 
-    context = {
-        "conteudos": conteudos,
-        "title": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais",
-        "description": "Página Inicial",
-    }
-    return render(request, "index_controlador.html", context)
 
 
 
@@ -109,20 +116,43 @@ def pre_visualizacao_conteudo(request, pk):
     }
     return render(request, "pre_visualizacao_conteudo.html", context)
 
-@calcula_tempo
+@checked_debug_decorador
 @login_required
 def home(request):
+    usuario_conectado = request.user.is_authenticated
+    if usuario_conectado == False:
+        raise PermissionError("Usuário não autenticado tentando acessar a página home.")
+
+    usuario_ativo = request.user.is_active
+    if usuario_ativo == False:
+        if var_debug == 'True':
+            print(f"Usuário: {request.user}.") 
+            print(f"IP: {request.META.get('REMOTE_ADDR')}")
+        raise PermissionError("Usuário inativo tentando acessar a página home.")
+          
+        
     context = {
-        "title": "Página Inicial",
+        "title": "Página Inicial pós Login",
         "welcome_message": "Bem-vindo à Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais!",
-        'encaminhamentos': 0, #Criar variaveis para encaminhamentos
-        'alert': 0, #criar variavel para notificações
+        
     }
     return render(request, "home.html", context)
 
 
 @login_required
 def encaminhamentos(request):
+    
+    usuario_conectado = request.user.is_authenticated
+    if usuario_conectado == False:
+        raise PermissionError("Usuário não autenticado tentando acessar a página de encaminhamentos.")
+
+    usuario_ativo = request.user.is_active
+    if usuario_ativo == False:
+        if var_debug == 'True':
+            print(f"Usuário: {request.user}.") 
+            print(f"IP: {request.META.get('REMOTE_ADDR')}")
+        raise PermissionError("Usuário inativo tentando acessar a página de encaminhamentos.")
+
     context = {
         "title": "Encaminhamentos",
         "description": "Visualize os encaminhamentos realizados na plataforma.",
@@ -132,6 +162,17 @@ def encaminhamentos(request):
 
 @login_required
 def notificacoes(request, notificacoes=0):
+    usuario_conectado = request.user.is_authenticated
+    if usuario_conectado == False:
+        raise PermissionError("Usuário não autenticado tentando acessar a página de notificações.")
+
+    usuario_ativo = request.user.is_active
+    if usuario_ativo == False:
+        if var_debug == 'True':
+            print(f"Usuário: {request.user}.") 
+            print(f"IP: {request.META.get('REMOTE_ADDR')}")
+        raise PermissionError("Usuário inativo tentando acessar a página de notificações.")
+
     context = {
         "title": "Notificações",
         "description": "Visualize as notificações recebidas na plataforma.",
@@ -140,25 +181,46 @@ def notificacoes(request, notificacoes=0):
     }
     return render(request, "notificacoes.html", context)
 
-@calcula_tempo
+
+@checked_debug_decorador
 def relatorios(request):
     """
         Renderiza a página de relatórios com dados estatísticos.
     """
     
-    dois_municipio = municipiosviolentos.municipios_mais_violentos(2)
-    municipio_primeiro=dois_municipio[0][0]
-    municipio_segundo=dois_municipio[1][0]
+    try:
+        dois_municipio = municipiosviolentos.municipios_mais_violentos(2)
+        municipio_primeiro=dois_municipio[0][0]
+        municipio_segundo=dois_municipio[1][0]
 
-    
-    comarcas_com_mp = pegarcomarcascommp.pegar_comarcas_com_mp()
-    #print(f"Comarcas com Medidas Protetivas: {comarcas_com_mp}")
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao obter municípios mais violentos: {e}")
+        municipio_primeiro = "N/A"
+        municipio_segundo = "N/A"
 
+    try:
+        comarcas_com_mp = pegarcomarcascommp.pegar_comarcas_com_mp()
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao obter comarcas com medidas protetivas: {e}")
+        comarcas_com_mp = []
 
-    resultado_verifica = tipoviolencia.verifica_maior_violencia_por_mes()
-    tipo_violencia_1 = resultado_verifica['mes_atual']['tipo']
-    tipo_violencia_1_total = resultado_verifica['mes_atual']['total']
-    tipo_violencia_1_porcentagem = resultado_verifica['mes_anterior']['porcentagem']
+    try:
+        resultado_verifica = tipoviolencia.verifica_maior_violencia_por_mes()
+        tipo_violencia_1 = resultado_verifica['mes_atual']['tipo']
+        tipo_violencia_1_total = resultado_verifica['mes_atual']['total']
+        tipo_violencia_1_porcentagem = resultado_verifica['mes_anterior']['porcentagem']
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao verificar maior tipo de violência por mês: {e}")
+        tipo_violencia_1 = "N/A"
+        tipo_violencia_1_total = 0
+        tipo_violencia_1_porcentagem = 0
+
 
     medidas_protetivas_calculo = medidasprotetivas.porcentagem_mes_anterior()
     medidas_protetivas_solicitadas_ocorrencias = medidas_protetivas_calculo['total']
@@ -175,7 +237,15 @@ def relatorios(request):
     qtd_incidencias_meses = incidenciaspormes.calcular_incidencias_ano_atual()
 
     ano_atual = time.localtime().tm_year
-    #print(ano_atual)
+    
+    try:
+        comarcas_pj = ComarcasPoderJudiciario.objects.values_list('nome', flat=True).order_by('nome'), 
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao obter comarcas do poder judiciário: {e}")
+        comarcas_pj = []
+
     context = {
         
         "title": "Painel Informativo",
@@ -183,7 +253,7 @@ def relatorios(request):
         "ano_atual": ano_atual, #Ano atual
         "periodo": ['Todos', 'Semanal', 'Mensal', 'Anual'],
 
-        "comarcas": ComarcasPoderJudiciario.objects.values_list('nome', flat=True).order_by('nome'),  
+        "comarcas": comarcas_pj,  
         
         "medidas_protetivas_solicitadas_ocorrencias_porcentagem": medidas_protetivas_solicitadas_ocorrencias_porcentagem,
         "medidas_protetivas_solicitadas_ocorrencias": medidas_protetivas_solicitadas_ocorrencias,
@@ -260,14 +330,14 @@ def relatorios(request):
         
         "Tipos_de_Violência": {
             "labels": ["Física", "Psicológica", "Sexual", "Patrimonial", "Moral"],
-            "data": [
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Fisica').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Fisica').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Fisica').count(),
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Psicologica').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Psicologica').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Psicologica').count(),
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Sexual').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Sexual').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Sexual').count(),
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Patrimonial').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Patrimonial').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Patrimonial').count(),
-                OcorrenciaMilitar.objects.filter(tipo_de_violencia='Moral').count()  + OcorrenciaCivil.objects.filter(tipo_de_violencia='Moral').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Moral').count(),
-            ]
-            #"data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
+            # "data": [
+            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Fisica').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Fisica').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Fisica').count(),
+            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Psicologica').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Psicologica').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Psicologica').count(),
+            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Sexual').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Sexual').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Sexual').count(),
+            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Patrimonial').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Patrimonial').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Patrimonial').count(),
+            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Moral').count()  + OcorrenciaCivil.objects.filter(tipo_de_violencia='Moral').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Moral').count(),
+            # ]
+            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
         },
         "tipo_violencia_1" : tipo_violencia_1,
         "tipo_violencia_1_total" : tipo_violencia_1_total,

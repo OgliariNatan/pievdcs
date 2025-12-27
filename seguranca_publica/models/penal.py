@@ -7,7 +7,7 @@ from django.db.models import Q
 from usuarios.models import CustomUser
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from sistema_justica.models.base import Agressor_dados, Municipio, Estado
+from sistema_justica.models.base import Agressor_dados, Municipio, Estado, TipoDeViolencia
 from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
 
 
@@ -115,7 +115,10 @@ class ModeloPenal(models.Model):
         verbose_name="Usuário", 
         null=True, blank=True
     )
-    teste = models.BooleanField(default=False, verbose_name="Teste")
+    teste = models.BooleanField(
+        default=False, 
+        verbose_name="Campo para teste"
+    )
 
 
     def __str__(self):

@@ -25,6 +25,8 @@ nacionalidade_choices = [
     ("CN", "Chinês"),
     ("JP", "Japonês"),
     ("IN", "Indiano"),
+    #Inserir todas as nacionalidades
+    ("OT", "Outro"),
 ]
 
 escolaridade_choices = [
@@ -55,6 +57,32 @@ classeEconomica_choices = [
     ("BD", "De R$7.017,64 a R$28.239,99"),
     ("AC", "Acima de R$28.240,00"),
 ]
+
+class TipoDeViolencia(models.Model):
+    """
+    Modelo para armazenar os tipos de violência.
+    """
+    nome = models.CharField(
+        max_length=100,
+        verbose_name="Tipo de Violência",
+        unique=True,
+    )
+    descricao = models.TextField(
+        verbose_name="Descrição",
+        max_length=500,
+    )
+    ativo = models.BooleanField(
+        verbose_name="Ativo",
+        default=True,
+    )
+
+    class Meta:
+        verbose_name = "Tipo de Violência"
+        verbose_name_plural = "Tipos de Violência"
+        ordering = ['nome']
+
+    def __str__(self):
+        return f"{self.nome}"
 
 class Estado(models.Model):
     """
@@ -244,7 +272,30 @@ class Vitima_dados(models.Model):
         verbose_name="Profissão*",
         null=False, blank=False,
     )
-    
+
+    #Auditorias
+    criado_em = models.DateTimeField(
+        verbose_name="Criado em",
+        auto_now_add=True,
+    )
+    criado_por = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name="vitimas_cadastradas",
+        verbose_name="Criado por",
+    )
+    atualizado_em = models.DateTimeField(
+        verbose_name="Atualizado em",
+        auto_now=True,   
+    )
+    atualizado_por = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name="vitimas_atualizadas",
+        verbose_name="Atualizado por",
+    )
 
     def save(self, *args, **kwargs):
         # Calcula a idade antes de salvar

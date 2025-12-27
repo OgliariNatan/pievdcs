@@ -15,12 +15,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from mensageria.models import Notificacao, StatusNotificacao
 from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
-from usuarios.models import CustomUser, CustomGroup
+# 
 from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 # Configuração do Ollama
 OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://localhost:11434')
-OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'gpt-oss:120b')  # ou 'mixtral:latest', 'gemma3:27b', 'llama3.1:70b', 'llama3.1:latest', 'qwen3-vl:latest', 'gpt-oss:120b'
+OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'qwen2.5:7B')  # ou 'mixtral:latest', 'gemma3:27b', 'llama3.1:70b', 'llama3.1:latest', 'qwen3-vl:latest', 'gpt-oss:120b'
 
 
 @calcula_tempo
@@ -142,21 +142,21 @@ def obter_resposta_ollama(pergunta):
         - Informar sobre procedimentos de denúncia
         - Indicar redes de apoio e acolhimento
         - Esclarecer sobre tipos de violência (física, psicológica, sexual, patrimonial e moral)
-        - Indicar caso necessario denuncia via Defensoria Publica ou na Delegacia Virtual(https://delegaciavirtual.sc.gov.br/nova-ocorrencia)
+        - Indicar caso necessário denuncia via Defensoria Publica ou na Delegacia Virtual(https://delegaciavirtual.sc.gov.br/nova-ocorrencia)
 
         Responda de forma clara, empática e acolhedora. Use linguagem simples e evite jargões jurídicos complexos.
         Sempre priorize a segurança da vítima e indique buscar ajuda profissional quando necessário.
         
         Não forneça conselhos médicos ou psicológicos específicos.
         Em casos urgentes, sempre recomende ligar para 190 (Polícia) ou 180 (Central de Atendimento à Mulher).
-        Se tiver lesionada informe assistencia medica, atraves do SAMU 192 ou no hospital mais próximo.
+        Se tiver lesionada informe assistência médica, através do SAMU 192 ou no hospital mais próximo.
         Denúncias on-line no site da [Delegacia Virtual (Registro de BO)](https://delegaciavirtual.sc.gov.br/nova-ocorrencia).
 
         Quando solicitar uma conversa oriente a entrar em contato através do whatsapp para o número [554832872635](https://api.whatsapp.com/send?phone=554832872635), serviço do Tribunal de Justiça de Santa Catarina.
 
         [
         Quando citado o corte da pensão alimentícia, informe que se encaixa na violência vicária.
-        Conceito de Violência Vicária
+        Conceito de Violência Vicária:
         A violência vicária (ou violência por procuração) é uma forma grave de violência doméstica e de gênero, na qual o agressor (geralmente o ex-parceiro) utiliza uma terceira pessoa — predominantemente os filhos, mas também outros entes queridos ou animais de estimação — como "instrumento" ou "arma" para causar sofrimento e dano psicológico à vítima principal (a mulher).
         Pontos-chave a considerar:
         Objetivo Principal: O objetivo central não é a agressão direta à vítima principal, mas sim infligir a dor mais profunda e duradoura possível, atingindo o que ela mais ama ou valoriza.
@@ -171,21 +171,24 @@ def obter_resposta_ollama(pergunta):
         - Use <p> para parágrafos
         - Organize listas com • seguido de espaço
         - Evite usar listas numeradas
+
+        Porque o nome de LaelIA?
+        Laelia é um tipo de orquídea conhecida por sua beleza e resiliência, simbolizando a força e a delicadeza das mulheres que enfrentam a violência doméstica e simbolo oficial do estado de Santa Catarina. O nome LaelIA reflete a missão da assistente virtual de oferecer apoio, informação e empoderamento às vítimas, ajudando-as a florescer apesar das adversidades que enfrentam.
         """
         
         # Cria o prompt completo
-        prompt_completo = f"{system_prompt}\n\nUsuário: {pergunta}\n\Laelia:"
+        prompt_completo = f"{system_prompt}\n\nUsuário: {pergunta}\n\LaelIA:"
         
         # Faz a chamada ao Ollama
         response = client.generate(
             model=OLLAMA_MODEL,
             prompt=prompt_completo,
-            system='Seu nome é Laelia, uma assistente virtual especializada em violência doméstica contra a mulher no Brasil.',
+            system='Seu nome é Lael<b>IA</b>, uma assistente virtual especializada em violência doméstica contra a mulher no Brasil.',
             context=[1, 2, 3],  # Mantém o contexto das últimas interações
             stream=False,# Se True, recebe a resposta em partes (streaming)
 
             options={
-                'temperature': 0.4,
+                'temperature': 0.4,  # Baixo para respostas mais focadas 
                 'num_predict': 800,  # tamanho da resposta
                 'seed': None,
                 'top_p': 0.7, # Inicial 0.9

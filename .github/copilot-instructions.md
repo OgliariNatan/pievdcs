@@ -6,7 +6,7 @@
 ## Arquitetura e Organização
 
 ### Estrutura Principal dos Apps Django
-- `MAIN/` - App central com dashboard, relatórios, autenticação e modelos compartilhados
+- `MAIN/` - App central com dashboard, relatórios e modelos compartilhados
 - `sistema_justica/` - Sistema de justiça (Judiciário, Ministério Público, Defensoria Pública)
 - `seguranca_publica/` - Segurança pública (Polícia Militar, Polícia Civil, Polícia Penal)
 - `municipio/` - Serviços municipais (CRAS, CAPS, Conselhos Municipais)

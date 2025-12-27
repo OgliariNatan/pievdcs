@@ -36,3 +36,26 @@ def calcula_tempo(funcao):
         
         return resultado
     return wrapper
+
+def calcula_tempo_fun(funcao):
+    """
+    Decorador simplificado para calcular tempo de funções auxiliares
+    que NÃO recebem o objeto 'request'.
+    """
+    @wraps(funcao)
+    def wrapper(*args, **kwargs):
+        inicio = time.time()
+        
+        # Executa a função original
+        resultado = funcao(*args, **kwargs)
+        
+        fim = time.time()
+
+        print('\n'*4)
+        print('---------- FUNÇÃO AUXILIAR -----------')
+        print(f'Tempo: {time.strftime("%d-%m-%Y %H:%M:%S")}')
+        print(f"Execução de '{funcao.__name__}': {fim - inicio:.4f} segundos")
+        print('--------------------------------------')
+        
+        return resultado
+    return wrapper

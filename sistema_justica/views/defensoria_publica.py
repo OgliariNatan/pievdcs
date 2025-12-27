@@ -8,7 +8,8 @@ from django.views.decorators.http import require_POST
 from mensageria.models import Notificacao, StatusNotificacao
 from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
 from sistema_justica.forms.cadastro_mpu import CadastroMedidaProtetiva
-from usuarios.models import CustomUser, CustomGroup
+from usuarios.models import CustomUser
+from django.contrib.auth.models import Group as CustomGroup
 from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 

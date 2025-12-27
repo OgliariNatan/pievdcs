@@ -1,6 +1,7 @@
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from usuarios.models import CustomUser, CustomGroup
+from usuarios.models import CustomUser
+from django.contrib.auth.models import Group as CustomGroup
 from .models import Notificacao, PrioridadeNotificacao, TipoNotificacao
 from django.utils import timezone
 

@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 #from django.contrib.auth.models import User
 from usuarios.models import CustomUser
+from django.contrib.auth.models import Group as CustomGroup
 
 secao_choices = (
     ('seguranca_publica', 'Segurança Pública'),

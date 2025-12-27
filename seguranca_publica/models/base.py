@@ -1,19 +1,10 @@
 
 from django.db import models
 from django.utils import timezone
-from sistema_justica.models.base import Vitima_dados, Agressor_dados, Municipio, Estado
+from sistema_justica.models.base import Vitima_dados, Agressor_dados, Municipio, Estado, TipoDeViolencia
 from MAIN.cadastros_padrao import agressor_padrao
 from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
 from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
-
-
-tipo_de_violencia_choices = (
-    ('Fisica', 'Física'),
-    ('Psicologica', 'Psicológica'),
-    ('Sexual', 'Sexual'),
-    ('Patrimonial', 'Patrimonial'),
-    ('Moral', 'Moral'),
-)
 
 status_MP_choices = [
     ("SO", "Solicitada"),
@@ -56,10 +47,12 @@ class OcorrenciaBase(models.Model):
         default=agressor_padrao, 
         null=True, blank=True,
     )
-    tipo_de_violencia = models.CharField(
-        max_length= 50, 
-        choices= tipo_de_violencia_choices, 
-        verbose_name= "Tipo de Violência"
+    tipo_de_violencia = models.ManyToManyField(
+        TipoDeViolencia,
+        verbose_name= "Tipo de Violência",
+        related_name="%(class)s_formulario_ocorrencia",
+        related_query_name="%(class)s_formulario_ocorrencia",
+        blank=True,
     )
     grau_parentesco_agressor = models.CharField(
         max_length= 15,

@@ -1,6 +1,7 @@
 # Create your models here.
 from django.db import models
-from usuarios.models import CustomUser, CustomGroup
+from django.contrib.auth.models import Group as CustomGroup
+from usuarios.models import CustomUser
 from django.utils import timezone
 
 class TipoNotificacao(models.TextChoices):
