@@ -1,406 +1,436 @@
-
+{% extends "base/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body class="bg-gray-50">
-    <div class="container mx-auto px-4 py-8">
-        <!-- Cabeçalho -->
-        <div class="bg-gradient-to-r from-green-600 to-green-400 rounded-2xl shadow-xl p-6 mb-8">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-3xl font-bold text-white mb-2">
-                        <i class="fas fa-users mr-3"></i>{{ title }}
-                    </h1>
-                    <p class="text-green-50">{{ description }}</p>
-                </div>
-                <div class="text-right">
-                    <div class="text-white text-4xl font-bold">{{ grupos.count }}</div>
-                    <div class="text-green-50 text-sm">Total de Atendimentos</div>
-                </div>
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block main_content %}
+<style>
+    .grupo-card {
+        transition: all 0.3s ease;
+    }
+    
+    .grupo-card:hover {
+        transform: translateY(-2px);
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .grupo-card {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+</style>
+
+
+
+<div class="container mx-auto px-4 py-8">
+    <!-- Cabeçalho -->
+    <div class="bg-gradient-to-r from-green-600 to-green-400 rounded-2xl shadow-xl p-6 mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">
+                    <i class="fas fa-users mr-3"></i>{{ title }}
+                </h1>
+                <p class="text-green-50">{{ description }}</p>
             </div>
-        </div>
-
-        <!-- Filtros e Busca -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-search mr-1"></i>Buscar
-                    </label>
-                    <input type="text" 
-                           id="busca-grupos" 
-                           placeholder="Buscar por ID, data ou profissional..."
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-filter mr-1"></i>Filtrar por Setor
-                    </label>
-                    <select id="filtro-setor" 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                        <option value="">Todos os Setores</option>
-                        <option value="Assistente Social">Assistente Social</option>
-                        <option value="Psicóloga">Psicóloga</option>
-                        <option value="Enfermagem">Enfermagem</option>
-                        <option value="Grupo refletivo">Grupo Refletivo</option>
-                        <option value="Outros">Outros</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-calendar mr-1"></i>Ordenar por
-                    </label>
-                    <select id="ordenacao" 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                        <option value="recente">Mais Recentes</option>
-                        <option value="antigo">Mais Antigos</option>
-                        <option value="participantes-desc">Mais Participantes</option>
-                        <option value="participantes-asc">Menos Participantes</option>
-                    </select>
-                </div>
+            <div class="text-right">
+                <div class="text-white text-4xl font-bold">{{ grupos.count }}</div>
+                <div class="text-green-50 text-sm">Total de Atendimentos</div>
             </div>
-        </div>
-
-        <!-- Estatísticas Rápidas -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            {% with total_agressores=grupos|length %}
-            <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-blue-500">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-600">Total de Atendimentos</p>
-                        <p class="text-2xl font-bold text-gray-800">{{ grupos.count }}</p>
-                    </div>
-                    <div class="bg-blue-100 rounded-full p-3">
-                        <i class="fas fa-clipboard-list text-2xl text-blue-600"></i>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-green-500">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-600">Total de Agressores</p>
-                        <p class="text-2xl font-bold text-gray-800" id="total-agressores">0</p>
-                    </div>
-                    <div class="bg-green-100 rounded-full p-3">
-                        <i class="fas fa-user-shield text-2xl text-green-600"></i>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-purple-500">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-600">Este Mês</p>
-                        <p class="text-2xl font-bold text-gray-800" id="atendimentos-mes">0</p>
-                    </div>
-                    <div class="bg-purple-100 rounded-full p-3">
-                        <i class="fas fa-calendar-check text-2xl text-purple-600"></i>
-                    </div>
-                </div>
-            </div>
-            {% endwith %}
-        </div>
-
-        <!-- Lista de Grupos -->
-        <div id="lista-grupos" class="space-y-4">
-            {% for grupo in grupos %}
-            <div class="grupo-card bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
-                 data-setor="{{ grupo.setor_atendimento }}"
-                 data-data="{{ grupo.data_atendimento|date:'Y-m-d' }}"
-                 data-participantes="{{ grupo.agressores_atendidos.count }}">
-                
-                <!-- Cabeçalho do Card -->
-                <div class="bg-gradient-to-r from-green-600 to-green-400 px-6 py-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-white rounded-full p-3">
-                                <i class="fas fa-clipboard-list text-2xl text-green-600"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-white">
-                                    Atendimento #{{ grupo.id }}
-                                </h3>
-                                <p class="text-green-50 text-sm">
-                                    <i class="far fa-calendar-alt mr-1"></i>
-                                    {{ grupo.data_atendimento|date:"d/m/Y H:i" }}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
-                                <div class="text-white text-2xl font-bold">
-                                    {{ grupo.agressores_atendidos.count }}
-                                </div>
-                                <div class="text-green-50 text-xs">Participantes</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Corpo do Card -->
-                <div class="p-6">
-                    <!-- Informações do Atendimento -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <div class="flex items-start gap-3">
-                            <div class="bg-blue-100 rounded-lg p-2">
-                                <i class="fas fa-briefcase text-blue-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500 uppercase">Setor</p>
-                                <p class="font-semibold text-gray-800">{{ grupo.setor_atendimento }}</p>
-                            </div>
-                        </div>
-                        
-                        {% if grupo.atendimento %}
-                        <div class="flex items-start gap-3">
-                            <div class="bg-purple-100 rounded-lg p-2">
-                                <i class="fas fa-tags text-purple-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500 uppercase">Tipo</p>
-                                <p class="font-semibold text-gray-800">{{ grupo.atendimento }}</p>
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        {% if grupo.tempo_atendimento %}
-                        <div class="flex items-start gap-3">
-                            <div class="bg-yellow-100 rounded-lg p-2">
-                                <i class="fas fa-clock text-yellow-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500 uppercase">Duração</p>
-                                <p class="font-semibold text-gray-800">{{ grupo.tempo_atendimento }}</p>
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        {% if grupo.usuario %}
-                        <div class="flex items-start gap-3">
-                            <div class="bg-green-100 rounded-lg p-2">
-                                <i class="fas fa-user-md text-green-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500 uppercase">Profissional</p>
-                                <p class="font-semibold text-gray-800">
-                                    {{ grupo.usuario.get_full_name|default:grupo.usuario.username }}
-                                </p>
-                            </div>
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Avaliação -->
-                    {% if grupo.avaliacao %}
-                    <div class="mb-6 bg-gray-50 rounded-lg p-4">
-                        <p class="text-xs text-gray-500 uppercase mb-2 flex items-center gap-2">
-                            <i class="fas fa-comment-alt"></i>Avaliação do Atendimento
-                        </p>
-                        <p class="text-gray-700 text-sm leading-relaxed">{{ grupo.avaliacao }}</p>
-                    </div>
-                    {% endif %}
-
-                    <!-- Lista de Participantes -->
-                    <div class="border-t pt-4">
-                        <button onclick="toggleParticipantes({{ grupo.id }})" 
-                                class="w-full flex items-center justify-between text-left font-semibold text-gray-800 hover:text-green-600 transition-colors">
-                            <span class="flex items-center gap-2">
-                                <i class="fas fa-users"></i>
-                                Participantes ({{ grupo.agressores_atendidos.count }})
-                            </span>
-                            <i class="fas fa-chevron-down transition-transform" id="chevron-{{ grupo.id }}"></i>
-                        </button>
-                        
-                        <div id="participantes-{{ grupo.id }}" class="hidden mt-4 space-y-2">
-                            {% for agressor in grupo.agressores_atendidos.all %}
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <div class="bg-green-100 rounded-full p-2">
-                                        <i class="fas fa-user text-green-600"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold text-gray-800">{{ agressor.nome }}</p>
-                                        <p class="text-xs text-gray-500">CPF: {{ agressor.cpf }}</p>
-                                    </div>
-                                </div>
-                                <button onclick="visualizarAgressor('{{ agressor.cpf }}')"
-                                        class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition text-sm">
-                                    <i class="fas fa-eye mr-1"></i>Ver Histórico
-                                </button>
-                            </div>
-                            {% empty %}
-                            <p class="text-gray-500 text-center py-4">Nenhum participante registrado</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <!-- Ações -->
-                    <div class="flex gap-2 mt-6 pt-4 border-t">
-                        <button onclick="editarAtendimento({{ grupo.id }})"
-                                class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
-                            <i class="fas fa-edit mr-2"></i>Editar
-                        </button>
-                        
-                        <button onclick="gerarRelatorio({{ grupo.id }})"
-                                class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-semibold">
-                            <i class="fas fa-file-pdf mr-2"></i>Relatório
-                        </button>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <div class="bg-white rounded-xl shadow-md p-12 text-center">
-                <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
-                <h3 class="text-xl font-bold text-gray-700 mb-2">Nenhum atendimento encontrado</h3>
-                <p class="text-gray-500">Não há atendimentos registrados no sistema.</p>
-            </div>
-            {% endfor %}
-        </div>
-
-        <!-- Botão Voltar -->
-        <div class="mt-8 text-center">
-            <a href="{% url 'seguranca_publica:penal' %}" 
-               class="inline-flex items-center gap-2 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-semibold">
-                <i class="fas fa-arrow-left"></i>Voltar para Penal
-            </a>
         </div>
     </div>
 
-    <!-- Modal Container -->
-    <div id="modal-container"></div>
+    <!-- Filtros e Busca -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-search mr-1"></i>Buscar
+                </label>
+                <input type="text" 
+                       id="busca-grupos" 
+                       placeholder="Buscar por ID, data ou profissional..."
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-filter mr-1"></i>Filtrar por Setor
+                </label>
+                <select id="filtro-setor" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                    <option value="">Todos os Setores</option>
+                    <option value="Assistente Social">Assistente Social</option>
+                    <option value="Psicóloga">Psicóloga</option>
+                    <option value="Enfermagem">Enfermagem</option>
+                    <option value="Grupo refletivo">Grupo Refletivo</option>
+                    <option value="Outros">Outros</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-calendar mr-1"></i>Ordenar por
+                </label>
+                <select id="ordenacao" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                    <option value="recente">Mais Recentes</option>
+                    <option value="antigo">Mais Antigos</option>
+                    <option value="participantes-desc">Mais Participantes</option>
+                    <option value="participantes-asc">Menos Participantes</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        // Calcular estatísticas
-        document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.grupo-card');
-            let totalAgressores = 0;
-            let atendimentosMes = 0;
-            const mesAtual = new Date().getMonth();
-            const anoAtual = new Date().getFullYear();
+    <!-- Estatísticas Rápidas -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-blue-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Total de Atendimentos</p>
+                    <p class="text-2xl font-bold text-gray-800">{{ grupos.count }}</p>
+                </div>
+                <div class="bg-blue-100 rounded-full p-3">
+                    <i class="fas fa-clipboard-list text-2xl text-blue-600"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-green-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Total de Agressores</p>
+                    <p class="text-2xl font-bold text-gray-800" id="total-agressores">0</p>
+                </div>
+                <div class="bg-green-100 rounded-full p-3">
+                    <i class="fas fa-user-shield text-2xl text-green-600"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-purple-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Este Mês</p>
+                    <p class="text-2xl font-bold text-gray-800" id="atendimentos-mes">0</p>
+                </div>
+                <div class="bg-purple-100 rounded-full p-3">
+                    <i class="fas fa-calendar-check text-2xl text-purple-600"></i>
+                </div>
+            </div>
+        </div>
+        
+       
+    </div>
 
-            cards.forEach(card => {
-                const participantes = parseInt(card.dataset.participantes) || 0;
-                totalAgressores += participantes;
-
-                const dataAtendimento = new Date(card.dataset.data);
-                if (dataAtendimento.getMonth() === mesAtual && dataAtendimento.getFullYear() === anoAtual) {
-                    atendimentosMes++;
-                }
-            });
-
+    <!-- Lista de Grupos -->
+    <div id="lista-grupos" class="space-y-4">
+        {% for grupo in grupos %}
+        <div class="grupo-card bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
+             data-setor="{{ grupo.setor_atendimento }}"
+             data-data="{{ grupo.data_atendimento|date:'Y-m-d' }}"
+             data-participantes="{{ grupo.agressores_atendidos.count }}">
             
+            <!-- Cabeçalho do Card -->
+            <div class="bg-gradient-to-r from-green-600 to-green-400 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white rounded-full p-3">
+                            <i class="fas fa-clipboard-list text-2xl text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">
+                                Atendimento #{{ grupo.id }}
+                            </h3>
+                            <p class="text-green-50 text-sm">
+                                <i class="far fa-calendar-alt mr-1"></i>
+                                {{ grupo.data_atendimento|date:"d/m/Y H:i" }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="bg-0 bg-opacity-20 rounded-lg px-4 py-2">
+                            <div class="text-white text-2xl font-bold">
+                                {{ grupo.agressores_atendidos.count }}
+                            </div>
+                            <div class="text-green-50 text-xs">Participantes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            document.getElementById('total-agressores').textContent = totalAgressores;
-            document.getElementById('atendimentos-mes').textContent = atendimentosMes;
-        });
+            <!-- Corpo do Card -->
+            <div class="p-6">
+                <!-- Informações do Atendimento -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-blue-100 rounded-lg p-2">
+                            <i class="fas fa-briefcase text-blue-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase">Setor</p>
+                            <p class="font-semibold text-gray-800">{{ grupo.setor_atendimento }}</p>
+                        </div>
+                    </div>
+                    
+                    {% if grupo.atendimento %}
+                    <div class="flex items-start gap-3">
+                        <div class="bg-purple-100 rounded-lg p-2">
+                            <i class="fas fa-tags text-purple-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase">Tipo</p>
+                            <p class="font-semibold text-gray-800">{{ grupo.atendimento }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if grupo.tempo_atendimento %}
+                    <div class="flex items-start gap-3">
+                        <div class="bg-yellow-100 rounded-lg p-2">
+                            <i class="fas fa-clock text-yellow-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase">Duração</p>
+                            <p class="font-semibold text-gray-800">{{ grupo.tempo_atendimento }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if grupo.usuario %}
+                    <div class="flex items-start gap-3">
+                        <div class="bg-green-100 rounded-lg p-2">
+                            <i class="fas fa-user-md text-green-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase">Profissional</p>
+                            <p class="font-semibold text-gray-800">
+                                {{ grupo.usuario.get_full_name|default:grupo.usuario.username }}
+                            </p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
 
-        // Toggle participantes
-        function toggleParticipantes(id) {
-            const participantes = document.getElementById(`participantes-${id}`);
-            const chevron = document.getElementById(`chevron-${id}`);
-            
-            participantes.classList.toggle('hidden');
-            chevron.classList.toggle('rotate-180');
-        }
+                <!-- Avaliação -->
+                {% if grupo.avaliacao %}
+                <div class="mb-6 bg-gray-50 rounded-lg p-4">
+                    <p class="text-xs text-gray-500 uppercase mb-2 flex items-center gap-2">
+                        <i class="fas fa-comment-alt"></i>Avaliação do Atendimento
+                    </p>
+                    <p class="text-gray-700 text-sm leading-relaxed">{{ grupo.avaliacao }}</p>
+                </div>
+                {% endif %}
 
-        // Busca
-        document.getElementById('busca-grupos').addEventListener('input', function(e) {
-            const busca = e.target.value.toLowerCase();
-            filtrarGrupos();
-        });
+                <!-- Lista de Participantes -->
+                <div class="border-t pt-4">
+                    <button onclick="toggleParticipantes({{ grupo.id }})" 
+                            class="w-full flex items-center justify-between text-left font-semibold text-gray-800 hover:text-green-600 transition-colors">
+                        <span class="flex items-center gap-2">
+                            <i class="fas fa-users"></i>
+                            Participantes ({{ grupo.agressores_atendidos.count }})
+                        </span>
+                        <i class="fas fa-chevron-down transition-transform" id="chevron-{{ grupo.id }}"></i>
+                    </button>
+                    
+                    <div id="participantes-{{ grupo.id }}" class="hidden mt-4 space-y-2">
+                        {% for agressor in grupo.agressores_atendidos.all %}
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-green-100 rounded-full p-2">
+                                    <i class="fas fa-user text-green-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-800">{{ agressor.nome }}</p>
+                                    <p class="text-xs text-gray-500">CPF: {{ agressor.cpf }}</p>
+                                </div>
+                            </div>
+                            <button onclick="visualizarAgressor('{{ agressor.cpf }}')"
+                                    class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition text-sm">
+                                <i class="fas fa-eye mr-1"></i>Ver Histórico
+                            </button>
+                        </div>
+                        {% empty %}
+                        <p class="text-gray-500 text-center py-4">Nenhum participante registrado</p>
+                        {% endfor %}
+                    </div>
+                </div>
 
-        // Filtro por setor
-        document.getElementById('filtro-setor').addEventListener('change', function() {
-            filtrarGrupos();
-        });
+                <!-- Ações -->
+                <div class="flex gap-2 mt-6 pt-4 border-t">
+                    <button onclick="editarAtendimento({{ grupo.id }})"
+                            class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+                        <i class="fas fa-edit mr-2"></i>Editar
+                    </button>
+                    
+                    <button onclick="gerarRelatorio({{ grupo.id }})"
+                            class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-semibold">
+                        <i class="fas fa-file-pdf mr-2"></i>Relatório
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="bg-white rounded-xl shadow-md p-12 text-center">
+            <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+            <h3 class="text-xl font-bold text-gray-700 mb-2">Nenhum atendimento encontrado</h3>
+            <p class="text-gray-500">Não há atendimentos registrados no sistema.</p>
+        </div>
+        {% endfor %}
+    </div>
 
-        // Ordenação
-        document.getElementById('ordenacao').addEventListener('change', function() {
-            ordenarGrupos(this.value);
-        });
+    <!-- Botão Voltar -->
+    <div class="mt-8 text-center">
+        <a href="{% url 'seguranca_publica:penal' %}" 
+           class="inline-flex items-center gap-2 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-semibold">
+            <i class="fas fa-arrow-left"></i>Voltar ao Dashboard
+        </a>
+    </div>
+</div>
 
-        function filtrarGrupos() {
-            const busca = document.getElementById('busca-grupos').value.toLowerCase();
-            const setor = document.getElementById('filtro-setor').value;
-            const cards = document.querySelectorAll('.grupo-card');
+<!-- Modal Container -->
+<div id="modal-container"></div>
 
-            cards.forEach(card => {
-                const texto = card.textContent.toLowerCase();
-                const setorCard = card.dataset.setor;
-                
-                const matchBusca = texto.includes(busca);
-                const matchSetor = !setor || setorCard === setor;
 
-                if (matchBusca && matchSetor) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
 
-        function ordenarGrupos(tipo) {
-            const lista = document.getElementById('lista-grupos');
-            const cards = Array.from(document.querySelectorAll('.grupo-card'));
+<script>
+    // Calcular estatísticas
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.grupo-card');
+        let totalAgressores = 0;
+        let atendimentosMes = 0;
+        const mesAtual = new Date().getMonth();
+        const anoAtual = new Date().getFullYear();
 
-            cards.sort((a, b) => {
-                switch(tipo) {
-                    case 'recente':
-                        return b.dataset.data.localeCompare(a.dataset.data);
-                    case 'antigo':
-                        return a.dataset.data.localeCompare(b.dataset.data);
-                    case 'participantes-desc':
-                        return parseInt(b.dataset.participantes) - parseInt(a.dataset.participantes);
-                    case 'participantes-asc':
-                        return parseInt(a.dataset.participantes) - parseInt(b.dataset.participantes);
-                }
-            });
+        cards.forEach(card => {
+            const participantes = parseInt(card.dataset.participantes) || 0;
+            totalAgressores += participantes;
 
-            cards.forEach(card => lista.appendChild(card));
-        }
-
-        // Funções de ação
-        function visualizarAgressor(cpf) {
-            // Abrir modal de busca por CPF
-            fetch("{% url 'seguranca_publica:buscar_atendimentos_por_cpf_modal' %}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: `cpf=${cpf}`
-            })
-            .then(resp => resp.text())
-            .then(html => {
-                document.getElementById('modal-container').innerHTML = html;
-            });
-        }
-
-        // Fechar modal com tecla ESC
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' || e.keyCode === 27) {
-                const modalContainer = document.getElementById('modal-container');
-                if (modalContainer && modalContainer.innerHTML.trim() !== '') {
-                    modalContainer.innerHTML = '';
-                }
+            const dataAtendimento = new Date(card.dataset.data);
+            if (dataAtendimento.getMonth() === mesAtual && dataAtendimento.getFullYear() === anoAtual) {
+                atendimentosMes++;
             }
         });
 
-        function editarAtendimento(id) {
-            alert(`Editar atendimento #${id} - Funcionalidade em desenvolvimento`);
-        }
-        function gerarRelatorio(id) {
-            alert(`Gerar relatório do atendimento #${id} - Funcionalidade em desenvolvimento`);
-        }
+    
 
-    </script>
-</body>
-</html>
+        document.getElementById('total-agressores').textContent = totalAgressores;
+        document.getElementById('atendimentos-mes').textContent = atendimentosMes;
+    });
+
+    // Toggle participantes
+    function toggleParticipantes(id) {
+        const participantes = document.getElementById(`participantes-${id}`);
+        const chevron = document.getElementById(`chevron-${id}`);
+        
+        participantes.classList.toggle('hidden');
+        chevron.classList.toggle('rotate-180');
+    }
+
+    // Busca
+    document.getElementById('busca-grupos').addEventListener('input', function(e) {
+        filtrarGrupos();
+    });
+
+    // Filtro por setor
+    document.getElementById('filtro-setor').addEventListener('change', function() {
+        filtrarGrupos();
+    });
+
+    // Ordenação
+    document.getElementById('ordenacao').addEventListener('change', function() {
+        ordenarGrupos(this.value);
+    });
+
+    function filtrarGrupos() {
+        const busca = document.getElementById('busca-grupos').value.toLowerCase();
+        const setor = document.getElementById('filtro-setor').value;
+        const cards = document.querySelectorAll('.grupo-card');
+
+        cards.forEach(card => {
+            const texto = card.textContent.toLowerCase();
+            const setorCard = card.dataset.setor;
+            
+            const matchBusca = texto.includes(busca);
+            const matchSetor = !setor || setorCard === setor;
+
+            if (matchBusca && matchSetor) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    function ordenarGrupos(tipo) {
+        const lista = document.getElementById('lista-grupos');
+        const cards = Array.from(document.querySelectorAll('.grupo-card'));
+
+        cards.sort((a, b) => {
+            switch(tipo) {
+                case 'recente':
+                    return b.dataset.data.localeCompare(a.dataset.data);
+                case 'antigo':
+                    return a.dataset.data.localeCompare(b.dataset.data);
+                case 'participantes-desc':
+                    return parseInt(b.dataset.participantes) - parseInt(a.dataset.participantes);
+                case 'participantes-asc':
+                    return parseInt(a.dataset.participantes) - parseInt(b.dataset.participantes);
+            }
+        });
+
+        cards.forEach(card => lista.appendChild(card));
+    }
+
+    // Funções de ação
+    function visualizarAgressor(cpf) {
+        fetch("{% url 'seguranca_publica:buscar_atendimentos_por_cpf_modal' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: `cpf=${cpf}`
+        })
+        .then(resp => resp.text())
+        .then(html => {
+            document.getElementById('modal-container').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Erro ao buscar agressor:', error);
+            alert('Erro ao carregar informações do agressor.');
+        });
+    }
+
+    // Fechar modal com tecla ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' || e.keyCode === 27) {
+            fecharTodosModais();
+        }
+    });
+
+    function fecharTodosModais() {
+        const modalContainer = document.getElementById('modal-container');
+        if (modalContainer && modalContainer.innerHTML.trim() !== '') {
+            modalContainer.innerHTML = '';
+        }
+    }
+
+    function editarAtendimento(id) {
+        // TODO: Implementar edição de atendimento
+        alert(`Editar atendimento #${id} - Funcionalidade em desenvolvimento`);
+    }
+    
+    function gerarRelatorio(id) {
+        // TODO: Implementar geração de relatório
+        alert(`Gerar relatório do atendimento #${id} - Funcionalidade em desenvolvimento`);
+    }
+</script>
+{% endblock %}
