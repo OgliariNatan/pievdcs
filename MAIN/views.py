@@ -27,7 +27,7 @@ from datetime import datetime
 """ Configuraçao de decoradores para debug """
 import os
 
-var_debug = os.getenv('DEBUG', False) #Carrega apenas a variavel de debug
+var_debug = os.getenv('DEBUG')
 
 if var_debug == 'True':
     from MAIN.decoradores.calcula_tempo import calcula_tempo, calcula_tempo_fun
