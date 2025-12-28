@@ -1,10 +1,11 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - PIEVDCS</title>
+    <title>{{ title }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -90,18 +91,6 @@
                     </div>
                     <div class="bg-green-100 rounded-full p-3">
                         <i class="fas fa-user-shield text-2xl text-green-600"></i>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-yellow-500">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-600">Média de Participantes</p>
-                        <p class="text-2xl font-bold text-gray-800" id="media-participantes">0</p>
-                    </div>
-                    <div class="bg-yellow-100 rounded-full p-3">
-                        <i class="fas fa-users text-2xl text-yellow-600"></i>
                     </div>
                 </div>
             </div>
@@ -259,10 +248,7 @@
                                 class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
                             <i class="fas fa-edit mr-2"></i>Editar
                         </button>
-                        <button onclick="duplicarAtendimento({{ grupo.id }})"
-                                class="flex-1 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition font-semibold">
-                            <i class="fas fa-copy mr-2"></i>Duplicar
-                        </button>
+                        
                         <button onclick="gerarRelatorio({{ grupo.id }})"
                                 class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-semibold">
                             <i class="fas fa-file-pdf mr-2"></i>Relatório
@@ -283,7 +269,7 @@
         <div class="mt-8 text-center">
             <a href="{% url 'seguranca_publica:penal' %}" 
                class="inline-flex items-center gap-2 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-semibold">
-                <i class="fas fa-arrow-left"></i>Voltar ao Dashboard
+                <i class="fas fa-arrow-left"></i>Voltar para Penal
             </a>
         </div>
     </div>
@@ -310,10 +296,9 @@
                 }
             });
 
-            const media = cards.length > 0 ? (totalAgressores / cards.length).toFixed(1) : 0;
+            
 
             document.getElementById('total-agressores').textContent = totalAgressores;
-            document.getElementById('media-participantes').textContent = media;
             document.getElementById('atendimentos-mes').textContent = atendimentosMes;
         });
 
@@ -399,17 +384,23 @@
             });
         }
 
+        // Fechar modal com tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' || e.keyCode === 27) {
+                const modalContainer = document.getElementById('modal-container');
+                if (modalContainer && modalContainer.innerHTML.trim() !== '') {
+                    modalContainer.innerHTML = '';
+                }
+            }
+        });
+
         function editarAtendimento(id) {
             alert(`Editar atendimento #${id} - Funcionalidade em desenvolvimento`);
         }
-
-        function duplicarAtendimento(id) {
-            alert(`Duplicar atendimento #${id} - Funcionalidade em desenvolvimento`);
-        }
-
         function gerarRelatorio(id) {
             alert(`Gerar relatório do atendimento #${id} - Funcionalidade em desenvolvimento`);
         }
+
     </script>
 </body>
 </html>
