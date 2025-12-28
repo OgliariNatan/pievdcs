@@ -87,12 +87,13 @@
     </div>
 
     <!-- Estatísticas Rápidas -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-blue-500">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-600">Total de Atendimentos</p>
                     <p class="text-2xl font-bold text-gray-800">{{ qtd_de_grupos }}</p>
+                    <p class="text-sm text-gray-400">Este Mês: {{ qtd_de_grupos_mes }}</p>
                 </div>
                 <div class="bg-blue-100 rounded-full p-3">
                     <i class="fas fa-clipboard-list text-2xl text-blue-600"></i>
@@ -113,17 +114,6 @@
             </div>
         </div>
         
-        <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-purple-500">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-600">Este Mês</p>
-                    <p class="text-2xl font-bold text-gray-800" id="atendimentos-mes">0</p>
-                </div>
-                <div class="bg-purple-100 rounded-full p-3">
-                    <i class="fas fa-calendar-check text-2xl text-purple-600"></i>
-                </div>
-            </div>
-        </div>
         
        
     </div>
@@ -283,14 +273,6 @@
         </div>
         {% endfor %}
     </div>
-
-    <!-- Botão Voltar -->
-    <div class="mt-8 text-center">
-        <a href="{% url 'seguranca_publica:penal' %}" 
-           class="inline-flex items-center gap-2 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-semibold">
-            <i class="fas fa-arrow-left"></i>Voltar ao Dashboard
-        </a>
-    </div>
 </div>
 
 <!-- Modal Container -->
@@ -299,28 +281,6 @@
 
 
 <script>
-    // Calcular estatísticas
-    document.addEventListener('DOMContentLoaded', function() {
-        const cards = document.querySelectorAll('.grupo-card');
-        
-        let atendimentosMes = 0;
-        const mesAtual = new Date().getMonth();
-        const anoAtual = new Date().getFullYear();
-
-        cards.forEach(card => {
-            
-
-            const dataAtendimento = new Date(card.dataset.data);
-            if (dataAtendimento.getMonth() === mesAtual && dataAtendimento.getFullYear() === anoAtual) {
-                atendimentosMes++;
-            }
-        });
-
-    
-
-       
-        document.getElementById('atendimentos-mes').textContent = atendimentosMes;
-    });
 
     // Toggle participantes
     function toggleParticipantes(id) {

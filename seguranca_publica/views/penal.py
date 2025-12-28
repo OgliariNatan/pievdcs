@@ -289,11 +289,19 @@ def mostra_todos_grupos_penal(request):
         agressores_atendidos__in=grupos
     ).distinct().count()
     
+
+    qtd_de_grupos_mes = grupos.filter(
+        data_atendimento__month=timezone.now().month,
+        data_atendimento__year=timezone.now().year
+    ).count()
+
+
     contexto = {
         'title': 'Todos os Atendimentos - Polícia Penal',
         'description': 'Lista completa de todos os atendimentos registrados pela Polícia Penal.',
         'grupos': grupos,
         'qtd_de_grupos': qtd_de_grupos,
+        'qtd_de_grupos_mes': qtd_de_grupos_mes,
         'agressores_totais': quantidades_atendidos,
         'agressores_unicos_totais': quantidades_atendidos_unicos,
         'user': request.user,
