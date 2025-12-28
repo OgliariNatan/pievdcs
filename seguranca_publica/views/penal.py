@@ -266,3 +266,25 @@ def buscar_atendimentos_por_cpf_modal(request):
     
     html = render_to_string('parcial/modal_busca_cpf.html', {'resultado': resultado}, request)
     return HttpResponse(html)
+
+
+@checked_debug_decorador
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Polícia Penal'])
+def mostra_todos_grupos_penal(request):
+    """Mostra todos os grupos de atendimentos registrados no sistema Penal"""
+    # Carregar todos os atendimentos com relacionamentos otimizados
+    grupos = ModeloPenal.objects.select_related(
+        'usuario',
+        'atendimento'
+    ).prefetch_related(
+        'agressores_atendidos'
+    ).order_by('-data_atendimento')
+    
+    contexto = {
+        'title': 'Todos os Atendimentos - Polícia Penal',
+        'description': 'Lista completa de todos os atendimentos registrados no sistema da Polícia Penal.',
+        'grupos': grupos,
+        'user': request.user,
+    }
+    return render(request, "parcial/mostra_todos_grupos.html", contexto)
