@@ -280,11 +280,22 @@ def mostra_todos_grupos_penal(request):
     ).prefetch_related(
         'agressores_atendidos'
     ).order_by('-data_atendimento')
+
+    qtd_de_grupos = grupos.count()
+
+    quantidades_atendidos = sum([grupo.agressores_atendidos.count() for grupo in grupos])
+
+    quantidades_atendidos_unicos = Agressor_dados.objects.filter(
+        agressores_atendidos__in=grupos
+    ).distinct().count()
     
     contexto = {
         'title': 'Todos os Atendimentos - Polícia Penal',
-        'description': 'Lista completa de todos os atendimentos registrados no sistema da Polícia Penal.',
+        'description': 'Lista completa de todos os atendimentos registrados pela Polícia Penal.',
         'grupos': grupos,
+        'qtd_de_grupos': qtd_de_grupos,
+        'agressores_totais': quantidades_atendidos,
+        'agressores_unicos_totais': quantidades_atendidos_unicos,
         'user': request.user,
     }
     return render(request, "parcial/mostra_todos_grupos.html", contexto)

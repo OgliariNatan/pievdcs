@@ -33,18 +33,15 @@
 
 <div class="container mx-auto px-4 py-8">
     <!-- Cabeçalho -->
-    <div class="bg-gradient-to-r from-green-600 to-green-400 rounded-2xl shadow-xl p-6 mb-8">
+    <div class="bg-gradient-to-r from-indigo-600 to-indigo-400 rounded-2xl shadow-xl p-6 mb-8">
         <div class="flex items-center justify-between">
             <div>
                 <h1 class="text-3xl font-bold text-white mb-2">
                     <i class="fas fa-users mr-3"></i>{{ title }}
                 </h1>
-                <p class="text-green-50">{{ description }}</p>
+                <p class="text-indigo-50">{{ description }}</p>
             </div>
-            <div class="text-right">
-                <div class="text-white text-4xl font-bold">{{ grupos.count }}</div>
-                <div class="text-green-50 text-sm">Total de Atendimentos</div>
-            </div>
+            
         </div>
     </div>
 
@@ -90,12 +87,12 @@
     </div>
 
     <!-- Estatísticas Rápidas -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-blue-500">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-600">Total de Atendimentos</p>
-                    <p class="text-2xl font-bold text-gray-800">{{ grupos.count }}</p>
+                    <p class="text-2xl font-bold text-gray-800">{{ qtd_de_grupos }}</p>
                 </div>
                 <div class="bg-blue-100 rounded-full p-3">
                     <i class="fas fa-clipboard-list text-2xl text-blue-600"></i>
@@ -107,7 +104,8 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-600">Total de Agressores</p>
-                    <p class="text-2xl font-bold text-gray-800" id="total-agressores">0</p>
+                    <p class="text-2xl font-bold text-gray-800" id="total-agressores">{{ agressores_totais }}</p>
+                    <p class="text-sm text-gray-300">Únicos: {{ agressores_unicos_totais }}</p>
                 </div>
                 <div class="bg-green-100 rounded-full p-3">
                     <i class="fas fa-user-shield text-2xl text-green-600"></i>
@@ -139,17 +137,17 @@
              data-participantes="{{ grupo.agressores_atendidos.count }}">
             
             <!-- Cabeçalho do Card -->
-            <div class="bg-gradient-to-r from-green-600 to-green-400 px-6 py-4">
+            <div class="bg-gradient-to-r from-indigo-600 to-indigo-400 px-6 py-4">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-4">
                         <div class="bg-white rounded-full p-3">
-                            <i class="fas fa-clipboard-list text-2xl text-green-600"></i>
+                            <i class="fas fa-clipboard-list text-2xl text-indigo-600"></i>
                         </div>
                         <div>
                             <h3 class="text-xl font-bold text-white">
-                                Atendimento #{{ grupo.id }}
+                                Atendimento n.{{ grupo.id }}
                             </h3>
-                            <p class="text-green-50 text-sm">
+                            <p class="text-indigo-50 text-sm">
                                 <i class="far fa-calendar-alt mr-1"></i>
                                 {{ grupo.data_atendimento|date:"d/m/Y H:i" }}
                             </p>
@@ -169,7 +167,7 @@
             <!-- Corpo do Card -->
             <div class="p-6">
                 <!-- Informações do Atendimento -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     <div class="flex items-start gap-3">
                         <div class="bg-blue-100 rounded-lg p-2">
                             <i class="fas fa-briefcase text-blue-600"></i>
@@ -240,7 +238,7 @@
                         <i class="fas fa-chevron-down transition-transform" id="chevron-{{ grupo.id }}"></i>
                     </button>
                     
-                    <div id="participantes-{{ grupo.id }}" class="hidden mt-4 space-y-2">
+                    <div id="participantes-{{ grupo.id }}" class="grid grid-cols-1 md:grid-cols-2 hidden mt-4 gap-4">
                         {% for agressor in grupo.agressores_atendidos.all %}
                         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <div class="flex items-center gap-3">
@@ -304,14 +302,13 @@
     // Calcular estatísticas
     document.addEventListener('DOMContentLoaded', function() {
         const cards = document.querySelectorAll('.grupo-card');
-        let totalAgressores = 0;
+        
         let atendimentosMes = 0;
         const mesAtual = new Date().getMonth();
         const anoAtual = new Date().getFullYear();
 
         cards.forEach(card => {
-            const participantes = parseInt(card.dataset.participantes) || 0;
-            totalAgressores += participantes;
+            
 
             const dataAtendimento = new Date(card.dataset.data);
             if (dataAtendimento.getMonth() === mesAtual && dataAtendimento.getFullYear() === anoAtual) {
@@ -321,7 +318,7 @@
 
     
 
-        document.getElementById('total-agressores').textContent = totalAgressores;
+       
         document.getElementById('atendimentos-mes').textContent = atendimentosMes;
     });
 
