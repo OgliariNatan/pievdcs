@@ -13,8 +13,28 @@ from django.contrib.auth.models import Group as CustomGroup
 from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 
+""" Configuraçao de decoradores para debug """
+import os
 
-@calcula_tempo
+var_debug = os.getenv('DEBUG')
+
+if var_debug == 'True':
+    from MAIN.decoradores.calcula_tempo import calcula_tempo, calcula_tempo_fun
+    checked_debug_decorador = calcula_tempo
+    checked_debug_decorador_fun = calcula_tempo_fun
+    #raise Exception("Debug ativado - interrompendo a execução para evitar lentidão.")
+    
+else:
+    checked_debug_decorador = None
+    checked_debug_decorador_fun = None
+
+""" Fim da configuraçao de decoradores para debug """
+
+
+
+
+
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Defensoria Pública',])
 def defensoria_publica(request):
@@ -37,7 +57,7 @@ def defensoria_publica(request):
     }
     return render(request, "defensoria_publica.html", contexto)
 
-@calcula_tempo
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Defensoria Pública',])
 def listar_encaminhamentos(request):
@@ -61,7 +81,7 @@ def listar_encaminhamentos(request):
     }
     return render(request, "encaminhamentos.html", context)
 
-@calcula_tempo
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Defensoria Pública',])
 def listar_notificacoes(request):
@@ -96,7 +116,7 @@ def marcar_notificacao_lida(request, notificacao_id):
     except Notificacao.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'Notificação não encontrada'}, status=404)
 
-@calcula_tempo
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Defensoria Pública', 'Ministério Público',])
 def cadastro_mpu(request):

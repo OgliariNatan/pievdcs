@@ -18,12 +18,31 @@ from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grup
 # 
 from MAIN.decoradores.calcula_tempo import calcula_tempo
 
+""" Configuraçao de decoradores para debug """
+import os
+
+var_debug = os.getenv('DEBUG')
+
+if var_debug == 'True':
+    from MAIN.decoradores.calcula_tempo import calcula_tempo, calcula_tempo_fun
+    checked_debug_decorador = calcula_tempo
+    checked_debug_decorador_fun = calcula_tempo_fun
+    
+else:
+    checked_debug_decorador = None
+    checked_debug_decorador_fun = None
+
+""" Fim da configuraçao de decoradores para debug """
+
+
+
+
 # Configuração do Ollama
 OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://localhost:11434')
 OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'qwen2.5:7B')  # ou 'mixtral:latest', 'gemma3:27b', 'llama3.1:70b', 'llama3.1:latest', 'qwen3-vl:latest', 'gpt-oss:120b'
 
 
-@calcula_tempo
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Poder Judiciário',])
 def poder_judiciario(request):
@@ -40,11 +59,12 @@ def poder_judiciario(request):
     }
     return render(request, "judiciario_IA.html", contexto)
 
-@calcula_tempo
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_vitima_form(request):
     form = CadastroVitimaForm()
     return render(request, 'parcial/cadastro_vitima_form.html', {'form': form})
+
 
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_vitima_submit(request):
@@ -64,7 +84,7 @@ def cadastro_vitima_submit(request):
         return render(request, "parcial/cadastro_vitima_form.html", {"form": form})
     return HttpResponse(status=405)
 
-@calcula_tempo
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 def cadastro_agressor_form(request):
     form = CadastroAgressorForm()
@@ -121,7 +141,9 @@ def verificar_ollama_disponivel():
         client = ollama.Client(host=OLLAMA_HOST)
         # Tenta listar modelos para verificar conexão
         models = client.list()
-        #print(f"Ollama está disponível. Modelos: {models}")
+        if var_debug:
+            nomes_modelos = [model['model'] for model in models['models']]
+            print(f"Ollama está disponível. Modelos: {', '.join(nomes_modelos)}")
         return True
     except Exception as e:
         print(f"Ollama não está disponível: {e}")
@@ -177,7 +199,7 @@ def obter_resposta_ollama(pergunta):
         """
         
         # Cria o prompt completo
-        prompt_completo = f"{system_prompt}\n\nUsuário: {pergunta}\n\LaelIA:"
+        prompt_completo = f"{system_prompt}\n\nUsuário: {pergunta}\n\nLaelIA:"
         
         # Faz a chamada ao Ollama
         response = client.generate(
@@ -334,7 +356,7 @@ def obter_resposta_demo(pergunta):
         <br>• <strong>Como denunciar</strong> - Passo a passo
         <br><br>Por favor, seja mais específica ou escolha um dos tópicos acima."""
 
-@calcula_tempo
+@checked_debug_decorador
 @csrf_exempt
 @login_required(login_url=reverse_lazy('login'))
 def chat_ia(request):

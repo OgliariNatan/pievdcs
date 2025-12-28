@@ -266,3 +266,44 @@ def buscar_atendimentos_por_cpf_modal(request):
     
     html = render_to_string('parcial/modal_busca_cpf.html', {'resultado': resultado}, request)
     return HttpResponse(html)
+
+
+@checked_debug_decorador
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Polícia Penal'])
+def mostra_todos_grupos_penal(request):
+    """Mostra todos os grupos de atendimentos registrados no sistema Penal"""
+    # Carregar todos os atendimentos com relacionamentos otimizados
+    grupos = ModeloPenal.objects.select_related(
+        'usuario',
+        'atendimento'
+    ).prefetch_related(
+        'agressores_atendidos'
+    ).order_by('-data_atendimento')
+
+    qtd_de_grupos = grupos.count()
+
+    quantidades_atendidos = sum([grupo.agressores_atendidos.count() for grupo in grupos])
+
+    quantidades_atendidos_unicos = Agressor_dados.objects.filter(
+        agressores_atendidos__in=grupos
+    ).distinct().count()
+    
+
+    qtd_de_grupos_mes = grupos.filter(
+        data_atendimento__month=timezone.now().month,
+        data_atendimento__year=timezone.now().year
+    ).count()
+
+
+    contexto = {
+        'title': 'Todos os Atendimentos - Polícia Penal',
+        'description': 'Lista completa de todos os atendimentos registrados pela Polícia Penal.',
+        'grupos': grupos,
+        'qtd_de_grupos': qtd_de_grupos,
+        'qtd_de_grupos_mes': qtd_de_grupos_mes,
+        'agressores_totais': quantidades_atendidos,
+        'agressores_unicos_totais': quantidades_atendidos_unicos,
+        'user': request.user,
+    }
+    return render(request, "parcial/mostra_todos_grupos.html", contexto)
