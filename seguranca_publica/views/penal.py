@@ -272,8 +272,13 @@ def buscar_atendimentos_por_cpf_modal(request):
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Polícia Penal'])
 def mostra_todos_grupos_penal(request):
-    """Mostra todos os grupos de atendimentos registrados no sistema Penal"""
-    # Carregar todos os atendimentos com relacionamentos otimizados
+    """
+        Mostra todos os grupos de atendimentos registrados no sistema Penal
+        Viualização CRÍTICA.
+    """
+    if not request.user.has_perm('seguranca_publica.view_modelopenal'):
+        raise ValueError("Usuário não tem permissão para visualizar os atendimentos penais.")
+
     grupos = ModeloPenal.objects.select_related(
         'usuario',
         'atendimento'
