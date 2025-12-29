@@ -153,7 +153,11 @@
                 <div>
                     <p class="text-sm text-gray-600">Taxa de Proteção</p>
                     <p class="text-2xl font-bold text-gray-800">
-                        {% widthratio vitimas_unicas total_medidas 100 %}%
+                        {% if total_medidas > 0 %}
+                            {% widthratio vitimas_unicas total_medidas 100 %}%
+                        {% else %}
+                            0%
+                        {% endif %}
                     </p>
                     <p class="text-sm text-gray-400">Vítimas/Medidas</p>
                 </div>
@@ -182,11 +186,11 @@
                         </div>
                         <div>
                             <h3 class="text-xl font-bold text-white">
-                                Medida Protetiva n.{{ medida.id }}
+                                Medida Protetiva n.{{ medida.ID }}
                             </h3>
                             <p class="text-red-50 text-sm">
                                 <i class="far fa-calendar-alt mr-1"></i>
-                                Cadastrada em: {{ medida.data_hora_cadastro|date:"d/m/Y H:i" }}
+                                Cadastrada em: {{ medida.data_solicitacao|date:"d/m/Y H:i" }}
                             </p>
                         </div>
                     </div>
@@ -248,7 +252,9 @@
                         {% if medida.vitima.telefone %}
                         <div>
                             <p class="text-xs text-gray-500 uppercase mb-1">Telefone</p>
-                            <p class="font-semibold text-gray-800">{{ medida.vitima.telefone }}</p>
+                            <p class="font-semibold text-gray-800">
+                                <i class="fa fa-phone" aria-hidden="true"></i>{{ medida.vitima.telefone }}
+                            </p>
                         </div>
                         {% endif %}
                         
@@ -324,7 +330,9 @@
                         {% if medida.agressor.telefone %}
                         <div>
                             <p class="text-xs text-gray-500 uppercase mb-1">Telefone</p>
-                            <p class="font-semibold text-gray-800">{{ medida.agressor.telefone }}</p>
+                            <p class="font-semibold text-gray-800"> 
+                                <i class="fa fa-phone" aria-hidden="true"></i> {{ medida.agressor.telefone }}
+                            </p>
                         </div>
                         {% endif %}
                         
@@ -381,12 +389,12 @@
                 <div class="flex gap-2 pt-4 border-t">
                     <button onclick="visualizarDetalhesCompletos({{ medida.id }})"
                             class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
-                        <i class="fas fa-eye mr-2"></i>Ver Detalhes Completos
+                        <i class="fas fa-eye mr-2"></i>Consultar Atendimentos
                     </button>
                     
                     <button onclick="editarMedida({{ medida.id }})"
                             class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold">
-                        <i class="fas fa-edit mr-2"></i>Editar
+                        <i class="fas fa-edit mr-2"></i>Cadastrar Atendimento
                     </button>
                     
                     <button onclick="gerarRelatorioMedida({{ medida.id }})"
