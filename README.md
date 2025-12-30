@@ -168,20 +168,81 @@ ____________________
 
 
 
-
-
-
-
 <!-- https://api.whatsapp.com/send/?phone=556196100180&text=Ol%C3%A1&type=phone_number&app_absent=0 -->
 
 
 <!-- Deus quer encarregar-te-ás de uma missão. Serás contrariado, mas não temas; terás a graça de fazer o que for necessário. -->
 
 
-<!-- (http://10.40.22.110:8000/chaining/filter/sistema_justica/Municipio/estado/sistema_justica/Vitima_dados/municipio/SC/) -->
+<h4> Padrões para commits </h4> 
 
+<table>
+<tr> 
+<th>Tipo</th>
+<th>Quando Usar</th>
+<th>Exemplo</th>
+</tr>
 
+<tr>
+<th>feat</th>
+<th>Nova Funcionalidade</th>
+<th>[NOME_APP] feat: Comentário Verboso</th>
+</tr>
 
+<tr>
+<th>fix</th>
+<th>Correção de BUG</th>
+<th>[NOME_APP] fix: Comentário Verboso</th>
+</tr>
+
+<tr>
+<th>update</th>
+<th>Atualização de funcionalidade existente</th>
+<th>[NOME_APP] update: Comentário Verboso</th>
+</tr>
+
+<tr>
+<th>refactor</th>
+<th>Refatoração sem mudar o comportamento</th>
+<th>[NOME_APP] refactor: Comentário Verboso</th>
+</tr>
+
+<tr>
+<th>style</th>
+<th>Mudança de estilização</th>
+<th>[NOME_APP] style: Comentário Verboso</th>
+</tr>
+
+<tr>
+<th>docs</th>
+<th>Documentação</th>
+<th>[NOME_APP] docs: Comentário Verboso</th>
+</tr>
+
+<tr>
+<th>perf</th>
+<th>Melhorias de performace</th>
+<th>[NOME_APP] perf: Comentário Verboso</th>
+</tr>
+
+<tr>
+<th>test</th>
+<th>Testes</th>
+<th>[NOME_APP] test: Comentário Verboso</th>
+</tr>
+
+<tr>
+<th>chore</th>
+<th>Tarefa de Manutenção</th>
+<th>[NOME_APP] chore: Atualiza requirements.txt</th>
+</tr>
+
+<tr>
+<th>db</th>
+<th>Mudanças no Banco de Dados</th>
+<th>[NOME_APP] db: Comentário Verboso</th>
+</tr>
+</table>
 
 <h5> Atualizar Licença </h5>
 Licença Pública Geral Affero (AGPL) deve publicar o código fonte

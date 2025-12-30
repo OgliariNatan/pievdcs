@@ -1,0 +1,525 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block main_content %}
+<style>
+    .medida-card {
+        transition: all 0.3s ease;
+    }
+    
+    .medida-card:hover {
+        transform: translateY(-2px);
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .medida-card {
+        animation: fadeIn 0.2s ease-in-out;
+    }
+    
+    .badge-alerta {
+        animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: .5;
+        }
+    }
+</style>
+
+<div class="container mx-auto px-4 py-8">
+    <!-- Cabeçalho -->
+    <div class="bg-gradient-to-r from-red-600 to-red-400 rounded-2xl shadow-xl p-6 mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">
+                    <i class="fas fa-shield-alt mr-3"></i>{{ title }}
+                </h1>
+                <p class="text-red-50">{{ description }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros e Busca -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-search mr-1"></i>Buscar
+                </label>
+                <input type="text" 
+                       id="busca-medidas" 
+                       placeholder="Buscar por CPF, nome ou número da medida..."
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-filter mr-1"></i>Filtrar por Status
+                </label>
+                <select id="filtro-status" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    <option value="">Todos os Status</option>
+                    <option value="ativa">Ativa</option>
+                    <option value="vencida">Vencida</option>
+                    <option value="suspensa">Suspensa</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-user-shield mr-1"></i>Reincidência
+                </label>
+                <select id="filtro-reincidencia" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    <option value="">Todas</option>
+                    <option value="agressor">Agressor Reincidente</option>
+                    <option value="vitima">Vítima Recorrente</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <i class="fas fa-calendar mr-1"></i>Ordenar por
+                </label>
+                <select id="ordenacao" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                    <option value="recente">Mais Recentes</option>
+                    <option value="antigo">Mais Antigas</option>
+                    <option value="prioridade">Prioridade</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estatísticas Rápidas -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-red-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Total de Medidas</p>
+                    <p class="text-2xl font-bold text-gray-800">{{ total_medidas }}</p>
+                    <p class="text-sm text-gray-400">Este Mês: {{ medidas_mes }}</p>
+                </div>
+                <div class="bg-red-100 rounded-full p-3">
+                    <i class="fas fa-shield-alt text-2xl text-red-600"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-purple-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Vítimas Únicas</p>
+                    <p class="text-2xl font-bold text-gray-800">{{ vitimas_unicas }}</p>
+                    <p class="text-sm text-gray-400">Registradas</p>
+                </div>
+                <div class="bg-purple-100 rounded-full p-3">
+                    <i class="fas fa-user-injured text-2xl text-purple-600"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-orange-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Agressores Únicos</p>
+                    <p class="text-2xl font-bold text-gray-800">{{ agressores_unicos }}</p>
+                    <p class="text-sm text-gray-400">Registrados</p>
+                </div>
+                <div class="bg-orange-100 rounded-full p-3">
+                    <i class="fas fa-user-slash text-2xl text-orange-600"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-yellow-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-600">Taxa de Proteção</p>
+                    <p class="text-2xl font-bold text-gray-800">
+                        {% if total_medidas > 0 %}
+                            {% widthratio vitimas_unicas total_medidas 100 %}%
+                        {% else %}
+                            0%
+                        {% endif %}
+                    </p>
+                    <p class="text-sm text-gray-400">Vítimas/Medidas</p>
+                </div>
+                <div class="bg-yellow-100 rounded-full p-3">
+                    <i class="fas fa-chart-line text-2xl text-yellow-600"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Medidas Protetivas -->
+    <div id="lista-medidas" class="space-y-6">
+        {% for item in medidas_protetivas %}
+        {% with medida=item.medida %}
+        <div class="medida-card bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
+             data-data="{{ medida.data_hora_cadastro|date:'Y-m-d' }}"
+             data-reincidencia-agressor="{{ item.outras_medidas_agressor }}"
+             data-reincidencia-vitima="{{ item.outras_medidas_vitima }}">
+            
+            <!-- Cabeçalho do Card -->
+            <div class="bg-gradient-to-r from-red-600 to-red-400 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white rounded-full p-3">
+                            <i class="fas fa-gavel text-2xl text-red-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">
+                                Medida Protetiva n.{{ medida.ID }}
+                            </h3>
+                            <p class="text-red-50 text-sm">
+                                <i class="far fa-calendar-alt mr-1"></i>
+                                Cadastrada em: {{ medida.data_solicitacao|date:"d/m/Y H:i" }}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Badges de Alerta -->
+                    <div class="flex gap-2">
+                        {% if item.outras_medidas_agressor > 0 %}
+                        <span class="badge-alerta bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            Agressor: +{{ item.outras_medidas_agressor }} MP
+                        </span>
+                        {% endif %}
+                        
+                        {% if item.outras_medidas_vitima > 0 %}
+                        <span class="badge-alerta bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                            <i class="fas fa-exclamation-circle mr-1"></i>
+                            Vítima: +{{ item.outras_medidas_vitima }} MP
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Corpo do Card -->
+            <div class="p-6">
+                <!-- Seção da Vítima -->
+                <div class="mb-6 bg-purple-50 rounded-xl p-5 border-l-4 border-purple-500">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                            <i class="fas fa-user-injured text-purple-600"></i>
+                            Informações da Vítima
+                        </h4>
+                        
+                        {% if item.outras_medidas_vitima > 0 %}
+                        <button onclick="toggleDetalhes('vitima', {{ medida.id }})"
+                                class="px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                            <i class="fas fa-history mr-1"></i>
+                            Ver Histórico ({{ item.outras_medidas_vitima }})
+                        </button>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase mb-1">Nome Completo</p>
+                            <p class="font-semibold text-gray-800">{{ medida.vitima.nome }}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase mb-1">CPF</p>
+                            <p class="font-semibold text-gray-800">{{ medida.vitima.cpf }}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase mb-1">Data de Nascimento</p>
+                            <p class="font-semibold text-gray-800">{{ medida.vitima.data_nascimento|date:"d/m/Y" }}</p>
+                        </div>
+                        
+                        {% if medida.vitima.telefone %}
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase mb-1">Telefone</p>
+                            <p class="font-semibold text-gray-800">
+                                <i class="fa fa-phone" aria-hidden="true"></i> {{ medida.vitima.telefone }}
+                            </p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if medida.vitima.email %}
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase mb-1">E-mail</p>
+                            <p class="font-semibold text-gray-800 text-sm">{{ medida.vitima.email }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Endereço da Vítima -->
+                    {% if medida.vitima.endereco %}
+                    <div class="mt-4 pt-4 border-t border-purple-200">
+                        <p class="text-xs text-gray-500 uppercase mb-2 flex items-center gap-1">
+                            <i class="fas fa-map-marker-alt"></i>Endereço da Vítima
+                        </p>
+                        <p class="text-gray-700 text-sm">
+                            {{ medida.vitima.endereco }}
+                            {% if medida.vitima.bairro %}, {{ medida.vitima.bairro }}{% endif %}
+                            {% if medida.vitima.municipio %} - {{ medida.vitima.municipio.nome }}/{{ medida.vitima.estado.sigla }}{% endif %}
+                            {% if medida.vitima.cep %} - CEP: {{ medida.vitima.cep }}{% endif %}
+                        </p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Histórico de Outras Medidas da Vítima -->
+                    <div id="historico-vitima-{{ medida.id }}" class="hidden mt-4 pt-4 border-t border-purple-200">
+                        <p class="text-sm font-semibold text-purple-700 mb-2">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Esta vítima possui {{ item.outras_medidas_vitima }} outra(s) medida(s) protetiva(s) registrada(s)
+                        </p>
+                        <button onclick="carregarHistoricoVitima('{{ medida.vitima.cpf }}')"
+                                class="text-sm text-purple-600 hover:text-purple-800 underline">
+                            Clique para ver detalhes completos
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Seção do Agressor -->
+                <div class="mb-6 bg-orange-50 rounded-xl p-5 border-l-4 border-orange-500">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                            <i class="fas fa-user-slash text-orange-600"></i>
+                            Informações do Agressor
+                        </h4>
+                        
+                        {% if item.outras_medidas_agressor > 0 %}
+                        <button onclick="toggleDetalhes('agressor', {{ medida.id }})"
+                                class="px-3 py-1 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition text-sm">
+                            <i class="fas fa-history mr-1"></i>
+                            Ver Histórico ({{ item.outras_medidas_agressor }})
+                        </button>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase mb-1">Nome Completo</p>
+                            <p class="font-semibold text-gray-800">{{ medida.agressor.nome }}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase mb-1">CPF</p>
+                            <p class="font-semibold text-gray-800">{{ medida.agressor.cpf }}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase mb-1">Data de Nascimento</p>
+                            <p class="font-semibold text-gray-800">{{ medida.agressor.data_nascimento|date:"d/m/Y" }}</p>
+                        </div>
+                        
+                        {% if medida.agressor.telefone %}
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase mb-1">Telefone</p>
+                            <p class="font-semibold text-gray-800"> 
+                                <i class="fa fa-phone" aria-hidden="true"></i> {{ medida.agressor.telefone }}
+                            </p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if medida.agressor.email %}
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase mb-1">E-mail</p>
+                            <p class="font-semibold text-gray-800 text-sm">{{ medida.agressor.email }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Endereço do Agressor -->
+                    {% if medida.agressor.endereco %}
+                    <div class="mt-4 pt-4 border-t border-orange-200">
+                        <p class="text-xs text-gray-500 uppercase mb-2 flex items-center gap-1">
+                            <i class="fas fa-map-marker-alt"></i>Endereço do Agressor
+                        </p>
+                        <p class="text-gray-700 text-sm">
+                            {{ medida.agressor.endereco }}
+                            {% if medida.agressor.bairro %}, {{ medida.agressor.bairro }}{% endif %}
+                            {% if medida.agressor.municipio %} - {{ medida.agressor.municipio.nome }}/{{ medida.agressor.estado.sigla }}{% endif %}
+                            {% if medida.agressor.cep %} - CEP: {{ medida.agressor.cep }}{% endif %}
+                        </p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Histórico de Outras Medidas do Agressor -->
+                    <div id="historico-agressor-{{ medida.id }}" class="hidden mt-4 pt-4 border-t border-orange-200">
+                        <p class="text-sm font-semibold text-orange-700 mb-2">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            Este agressor possui {{ item.outras_medidas_agressor }} outra(s) medida(s) protetiva(s) registrada(s)
+                        </p>
+                        <button onclick="carregarHistoricoAgressor('{{ medida.agressor.cpf }}')"
+                                class="text-sm text-orange-600 hover:text-orange-800 underline">
+                            Clique para ver detalhes completos
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Informações da Medida Protetiva -->
+                {% if medida.endereco_medida_protetiva %}
+                <div class="mb-6 bg-blue-50 rounded-xl p-5 border-l-4 border-blue-500">
+                    <h4 class="text-lg font-bold text-gray-800 flex items-center gap-2 mb-4">
+                        <i class="fas fa-map-marked-alt text-blue-600"></i>
+                        Endereço da Medida Protetiva
+                    </h4>
+                    <p class="text-gray-700 text-sm leading-relaxed">
+                        {{ medida.endereco_medida_protetiva }}
+                    </p>
+                </div>
+                {% endif %}
+
+                <!-- Ações -->
+                <div class="flex gap-2 pt-4 border-t">
+                    <button onclick="visualizarDetalhesCompletos({{ medida.id }})"
+                            class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+                        <i class="fas fa-eye mr-2"></i>Consultar Atendimentos
+                    </button>
+                    
+                    <button onclick="editarMedida({{ medida.id }})"
+                            class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold">
+                        <i class="fas fa-edit mr-2"></i>Cadastrar Atendimento
+                    </button>
+                    
+                    <button onclick="gerarRelatorioMedida({{ medida.id }})"
+                            class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-semibold">
+                        <i class="fas fa-file-pdf mr-2"></i>Relatório
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+        {% empty %}
+        <div class="bg-white rounded-xl shadow-md p-12 text-center">
+            <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+            <h3 class="text-xl font-bold text-gray-700 mb-2">Nenhuma medida protetiva encontrada</h3>
+            <p class="text-gray-500">Não há medidas protetivas registradas no sistema.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Modal Container -->
+<div id="modal-container"></div>
+
+<script>
+    // Toggle detalhes de histórico
+    function toggleDetalhes(tipo, id) {
+        const elemento = document.getElementById(`historico-${tipo}-${id}`);
+        elemento.classList.toggle('hidden');
+    }
+
+    // Busca e filtros
+    document.getElementById('busca-medidas').addEventListener('input', filtrarMedidas);
+    document.getElementById('filtro-status').addEventListener('change', filtrarMedidas);
+    document.getElementById('filtro-reincidencia').addEventListener('change', filtrarMedidas);
+    document.getElementById('ordenacao').addEventListener('change', function() {
+        ordenarMedidas(this.value);
+    });
+
+    function filtrarMedidas() {
+        const busca = document.getElementById('busca-medidas').value.toLowerCase();
+        const status = document.getElementById('filtro-status').value;
+        const reincidencia = document.getElementById('filtro-reincidencia').value;
+        const cards = document.querySelectorAll('.medida-card');
+
+        cards.forEach(card => {
+            const texto = card.textContent.toLowerCase();
+            const reincAgressor = parseInt(card.dataset.reincidenciaAgressor || 0);
+            const reincVitima = parseInt(card.dataset.reincidenciaVitima || 0);
+            
+            let matchBusca = texto.includes(busca);
+            let matchReincidencia = true;
+            
+            if (reincidencia === 'agressor') {
+                matchReincidencia = reincAgressor > 0;
+            } else if (reincidencia === 'vitima') {
+                matchReincidencia = reincVitima > 0;
+            }
+
+            if (matchBusca && matchReincidencia) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    function ordenarMedidas(tipo) {
+        const lista = document.getElementById('lista-medidas');
+        const cards = Array.from(document.querySelectorAll('.medida-card'));
+
+        cards.sort((a, b) => {
+            switch(tipo) {
+                case 'recente':
+                    return b.dataset.data.localeCompare(a.dataset.data);
+                case 'antigo':
+                    return a.dataset.data.localeCompare(b.dataset.data);
+                case 'prioridade':
+                    const prioA = parseInt(a.dataset.reincidenciaAgressor || 0) + parseInt(a.dataset.reincidenciaVitima || 0);
+                    const prioB = parseInt(b.dataset.reincidenciaAgressor || 0) + parseInt(b.dataset.reincidenciaVitima || 0);
+                    return prioB - prioA;
+            }
+        });
+
+        cards.forEach(card => lista.appendChild(card));
+    }
+
+    // Funções de ação
+    function carregarHistoricoVitima(cpf) {
+        console.log('Carregando histórico da vítima:', cpf);
+        // TODO: Implementar modal com histórico completo
+        alert(`Histórico completo da vítima CPF: ${cpf}\n\nFuncionalidade em desenvolvimento`);
+    }
+
+    function carregarHistoricoAgressor(cpf) {
+        console.log('Carregando histórico do agressor:', cpf);
+        // TODO: Implementar modal com histórico completo
+        alert(`Histórico completo do agressor CPF: ${cpf}\n\nFuncionalidade em desenvolvimento`);
+    }
+
+    function visualizarDetalhesCompletos(id) {
+        console.log('Visualizando detalhes da medida:', id);
+        // TODO: Implementar visualização completa
+        alert(`Detalhes completos da Medida Protetiva #${id}\n\nFuncionalidade em desenvolvimento`);
+    }
+
+    function editarMedida(id) {
+        console.log('Editando medida:', id);
+        // TODO: Implementar edição
+        alert(`Editar Medida Protetiva #${id}\n\nFuncionalidade em desenvolvimento`);
+    }
+
+    function gerarRelatorioMedida(id) {
+        console.log('Gerando relatório da medida:', id);
+        // TODO: Implementar geração de relatório
+        alert(`Gerar relatório da Medida Protetiva #${id}\n\nFuncionalidade em desenvolvimento`);
+    }
+
+    // Fechar modal com ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' || e.keyCode === 27) {
+            const modalContainer = document.getElementById('modal-container');
+            if (modalContainer) {
+                modalContainer.innerHTML = '';
+            }
+        }
+    });
+</script>
+{% endblock %}
