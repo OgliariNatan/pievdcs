@@ -168,20 +168,67 @@ ____________________
 
 
 
-
-
-
-
 <!-- https://api.whatsapp.com/send/?phone=556196100180&text=Ol%C3%A1&type=phone_number&app_absent=0 -->
 
 
 <!-- Deus quer encarregar-te-ás de uma missão. Serás contrariado, mas não temas; terás a graça de fazer o que for necessário. -->
 
 
-<!-- (http://10.40.22.110:8000/chaining/filter/sistema_justica/Municipio/estado/sistema_justica/Vitima_dados/municipio/SC/) -->
+<h4> Padrões para commits </h4> 
 
+<table>
+<tr> 
+<th>Tipo</th>
+<th>Quando Usar</th>
+<th>Exemplo</th>
+</tr>
 
+<tr>
+<th>feat</th>
+<th>Nova Funcionalidade</th>
+<th>[NOME_APP] feat: Comentário Verboso</th>
+</tr>
 
+<tr>
+<th>fix</th>
+<th>Correção de BUG</th>
+<th>[NOME_APP] fix: Comentário Verboso</th>
+</tr>
+
+<tr>
+<th>update</th>
+<th>Atualização de funcionalidade existente</th>
+<th>[NOME_APP] update: Comentário Verboso</th>
+</tr>
+
+<tr>
+<th>d</th>
+</tr>
+
+<tr>
+<th>d</th>
+</tr>
+
+<tr>
+<th>d</th>
+</tr>
+
+<tr>
+<th>d</th>
+</tr>
+
+<tr>
+<th>d</th>
+</tr>
+
+<tr>
+<th>d</th>
+</tr>
+
+<tr>
+<th>d</th>
+</tr>
+</table>
 
 <h5> Atualizar Licença </h5>
 Licença Pública Geral Affero (AGPL) deve publicar o código fonte
