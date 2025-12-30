@@ -33,7 +33,7 @@ class Vitima_dados(models.Model):  # Nomenclatura em português brasileiro
 ### Configuração do Ambiente
 ```bash
 # Criar ambiente virtual
-python -m venv virtual_pievdcs
+python -m venv env
 # Atualizar requirements após novos pacotes
 pip freeze > requirements.txt
 ```
@@ -43,11 +43,7 @@ pip freeze > requirements.txt
 python manage.py makemigrations
 python manage.py migrate
 # Carregar dados iniciais usando scripts de automação
-python manage.py shell
->>> from automacoes.cria_estados import criar_estados
->>> criar_estados()
->>> from automacoes.cria_municipios import cadastrar_municipios_por_estado
->>> cadastrar_municipios_por_estado()
+python manage.py shell < automacoes/inserir_dados.py
 ```
 
 ### Servidor de Desenvolvimento*
@@ -66,9 +62,9 @@ python manage.py runserver 10.40.22.46:8000 # Padrão: http://127.0.0.1:8000
 ### Estrutura de Templates
 - Estende padrão `base/base.html`
 - Usa TailwindCSS para estilização com configuração customizada nos templates
-- Interações dinâmicas com jQuery
+- Interações dinâmicas com jQuery e HTMX
 - Gráficos JavaScript com Chart.js e mapas Leaflet.js
-- Herança de templates: `{% extends "base/base.html" %}` → `{% block main_content %}`
+- Herança de templates: `{% extends "base/base.html" %}` → `{% block main_content %}` ... `{% block article_content %}`...`{% block script %}`
 
 ### Organização de Arquivos Estáticos
 ```
@@ -120,6 +116,12 @@ staticfiles/
 ## Notas de Desenvolvimento
 - Projeto usa GitHub Projects para rastreamento de issues
 - Desenvolvimento baseado em branches (sem commits diretos na main)
-- Cada instituição deve ter sua própria aplicação Django
+- Cada área (ex: segurança pública, sistema de justiça, município, usuário) deve ter sua própria aplicação Django
 - Todos os apps devem incluir um `README.md`
 - Autenticação personalizada de usuário com permissões baseadas em instituição
+
+
+## Versão do Django e dependências
+- Projeto utiliza Django 5.2.6
+- Certifique-se de usar recursos compatíveis com esta versão
+- Dependências principais: TailwindCSS, jQuery, Chart.js, Leaflet.js, HTMX

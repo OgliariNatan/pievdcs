@@ -25,11 +25,11 @@
     }
     
     .medida-card {
-        animation: fadeIn 0.3s ease-in-out;
+        animation: fadeIn 0.2s ease-in-out;
     }
     
     .badge-alerta {
-        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
     
     @keyframes pulse {
@@ -253,7 +253,7 @@
                         <div>
                             <p class="text-xs text-gray-500 uppercase mb-1">Telefone</p>
                             <p class="font-semibold text-gray-800">
-                                <i class="fa fa-phone" aria-hidden="true"></i>{{ medida.vitima.telefone }}
+                                <i class="fa fa-phone" aria-hidden="true"></i> {{ medida.vitima.telefone }}
                             </p>
                         </div>
                         {% endif %}

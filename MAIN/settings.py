@@ -216,15 +216,22 @@ LOGIN_URL = '/login/'  # URL para redirecionar usuários não autenticados
 LOGIN_REDIRECT_URL = '/home/'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True #Fecha a seção quando fecha o navegador
 SESSION_COOKIE_NAME = 'sistema_justica_session'  # Nome do cookie de sessão
-SESSION_COOKIE_AGE = 9000  # x minutos em segundos
+SESSION_COOKIE_AGE = 2000  # x minutos em segundos
 SESSION_SAVE_EVERY_REQUEST = False  # Só renova se houver atividade
 
 CSRF_COOKIE_HTTPONLY = True       # Impede acesso via JavaScript (aumenta a segurança)
+CSRF_COOKIE_AGE = None
 SESSION_COOKIE_SAMESITE = 'Lax' # não aceita cookie de terceiros
-#SESSION_COOKIE_SECURE = True #Só transmite informação se for seguro 'https'
 
+
+if os.getenv('DEBUG') == True:
+    print("Habilitar a transmissão segura de cookies (HTTPS)")
+    SESSION_COOKIE_SECURE = False #Transmite informação mesmo não sendo seguro 'https'
+else:
+   SESSION_COOKIE_SECURE = True #Só transmite informação se for seguro 'https'
 
 AUTH_USER_MODEL = 'usuarios.CustomUser'
+#AUTH_GROUP_MODEL = 'usuarios.CustomGroup'
 
 
 #configurar logging

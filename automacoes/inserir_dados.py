@@ -19,6 +19,7 @@ from automacoes.gera_formularios_mp import criar_formularios_mp_aleatorios
 from automacoes.cria_grupos import criar_grupos_institucionais
 
 
+
 #Cria estados no db
 criar_estados()
 
