@@ -202,31 +202,45 @@ ____________________
 </tr>
 
 <tr>
-<th>d</th>
+<th>refactor</th>
+<th>Refatoração sem mudar o comportamento</th>
+<th>[NOME_APP] refactor: Comentário Verboso</th>
 </tr>
 
 <tr>
-<th>d</th>
+<th>style</th>
+<th>Mudança de estilização</th>
+<th>[NOME_APP] style: Comentário Verboso</th>
 </tr>
 
 <tr>
-<th>d</th>
+<th>docs</th>
+<th>Documentação</th>
+<th>[NOME_APP] docs: Comentário Verboso</th>
 </tr>
 
 <tr>
-<th>d</th>
+<th>perf</th>
+<th>Melhorias de performace</th>
+<th>[NOME_APP] perf: Comentário Verboso</th>
 </tr>
 
 <tr>
-<th>d</th>
+<th>test</th>
+<th>Testes</th>
+<th>[NOME_APP] test: Comentário Verboso</th>
 </tr>
 
 <tr>
-<th>d</th>
+<th>chore</th>
+<th>Tarefa de Manutenção</th>
+<th>[NOME_APP] chore: Atualiza requirements.txt</th>
 </tr>
 
 <tr>
-<th>d</th>
+<th>db</th>
+<th>Mudanças no Banco de Dados</th>
+<th>[NOME_APP] db: Comentário Verboso</th>
 </tr>
 </table>
 
