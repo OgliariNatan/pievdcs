@@ -137,6 +137,8 @@ env.bak/
 venv.bak/
 MAIN/.env
 MAIN/.env
+/virtual_pievdcs/
+/virtual_ambiente/
 
 # Spyder project settings
 .spyderproject
@@ -176,9 +178,7 @@ cython_debug/
 .pypirc
 
 
-#Remove o ambiente virtual
-/virtual_pievdcs/
-/virtual_ambiente/
+
 
 #Remove os arquivos estaticos
 /staticfiles/
@@ -197,6 +197,7 @@ img_home/
 migrations/*
 */migrations/
 Relatorio/
+*/migrations/*
 
 codigo.txt
 *.png
