@@ -109,17 +109,7 @@ def obter_mapeamento_tipos_violencia():
     return {tipo['id']: tipo['nome'] for tipo in obter_tipos_violencia_ativos()}
 
 
-# ========================================================================
-# VARIÁVEIS GLOBAIS COMPARTILHADAS
-# ✅ REMOVIDO: Inicialização no import (causava erro)
-# ✅ NOVO: Usa lazy loading via propriedades de classe
-# ========================================================================
 
-# ❌ REMOVIDO: Consultas ao banco durante import
-# TIPOS_VIOLENCIA_IDS = obter_ids_tipos_violencia()
-# LABELS_TIPO_VIOLENCIA = obter_mapeamento_tipos_violencia()
-
-# ✅ Mantido: Não consulta banco de dados
 LABELS_TIPO_PARENTESCO = dict(grau_parentesco_agressor_choices)
 
 

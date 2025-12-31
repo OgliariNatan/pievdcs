@@ -35,7 +35,7 @@ class OcorrenciaBase(models.Model):
         primary_key=True,  
     )
     data = models.DateTimeField(default=timezone.now, verbose_name="Data")
-    #local = models.CharField(max_length=255, verbose_name="Local da Ocorrência")
+
     vitima = models.ForeignKey(
         Vitima_dados, 
         on_delete=models.CASCADE,
