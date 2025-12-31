@@ -224,11 +224,13 @@ CSRF_COOKIE_AGE = None
 SESSION_COOKIE_SAMESITE = 'Lax' # não aceita cookie de terceiros
 
 
-if os.getenv('DEBUG') == True:
+if DEBUG == 'True':
     print("Habilitar a transmissão segura de cookies (HTTPS)")
     SESSION_COOKIE_SECURE = False #Transmite informação mesmo não sendo seguro 'https'
+    CSRF_COOKIE_SECURE = False #Transmite informação mesmo não sendo seguro 'https'
 else:
    SESSION_COOKIE_SECURE = True #Só transmite informação se for seguro 'https'
+   CSRF_COOKIE_SECURE = True #Só transmite informação se for seguro 'https'
 
 AUTH_USER_MODEL = 'usuarios.CustomUser'
 #AUTH_GROUP_MODEL = 'usuarios.CustomGroup'
