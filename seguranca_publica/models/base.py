@@ -116,8 +116,16 @@ class OcorrenciaBase(models.Model):
         CustomUser,
         related_name="%(class)s_criado_por",
         on_delete=models.SET_NULL,
+        editable=False,
         null=True, blank=True,
-        
+    )
+
+    atualizado_por = models.ForeignKey(
+        CustomUser,
+        related_name="%(class)s_atualizado_por",
+        on_delete=models.SET_NULL,
+        editable=False,
+        null=True, blank=True,
     )
 
     def __str__(self):
@@ -125,3 +133,14 @@ class OcorrenciaBase(models.Model):
 
     class Meta:
         abstract = True
+
+    def save(self, *args, **kwargs):
+        
+        user = kwargs.pop('user', None)
+        if user:
+            if not self.pk:
+                self.criado_por = user
+            
+            self.atualizado_por = user
+        
+        super().save(*args, **kwargs)
