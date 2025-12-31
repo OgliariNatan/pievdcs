@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from sistema_justica.models.base import Vitima_dados, Agressor_dados, Municipio, Estado, TipoDeViolencia
 from MAIN.cadastros_padrao import agressor_padrao
+from usuarios.models import CustomUser
 from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
 from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
 
@@ -109,6 +110,14 @@ class OcorrenciaBase(models.Model):
 
     descricao = models.TextField(
         verbose_name="Descrição da Ocorrência",
+    )
+
+    criado_por = models.ForeignKey(
+        CustomUser,
+        related_name="%(class)s_criado_por",
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        
     )
 
     def __str__(self):
