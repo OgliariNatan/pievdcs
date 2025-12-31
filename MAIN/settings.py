@@ -92,6 +92,30 @@ CSRF_TRUSTED_ORIGINS = [
     'http://10.40.22.46',
 ]
 
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',  # Database 1 do Redis (separado de Channel Layers)
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {
+                'max_connections': 50,
+                'retry_on_timeout': True,
+            },
+            'SOCKET_CONNECT_TIMEOUT': 5,
+            'SOCKET_TIMEOUT': 5,
+            'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',  # Compressão de dados
+            'IGNORE_EXCEPTIONS': True,  # Não quebra aplicação se Redis cair
+        },
+        'KEY_PREFIX': 'pievdcs',  # Prefixo para todas as chaves
+        'TIMEOUT': 1800,  # Timeout padrão: 30 minutos
+        'VERSION': 1,
+    }
+}
+
+
+
 # Channel Layers - Redis como backend
 CHANNEL_LAYERS = {
     'default': {
@@ -99,7 +123,7 @@ CHANNEL_LAYERS = {
         'CONFIG': {
             "hosts": [('127.0.0.1', 6379)],
             "capacity": 1500,
-            "expiry": 10,
+            "expiry": 1800,
         },
     },
 }
