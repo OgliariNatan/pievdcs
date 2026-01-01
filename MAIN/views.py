@@ -29,7 +29,11 @@ from datetime import datetime
 import os
 
 var_debug = os.getenv('DEBUG')
-
+# \033[0m - reset
+# \033[92m - verde
+# \033[34m - azul
+# \033[31m - vermelho
+# \033[33m - amarelo
 if var_debug == 'True':
     from MAIN.decoradores.calcula_tempo import calcula_tempo, calcula_tempo_fun
     print(30*'-')
