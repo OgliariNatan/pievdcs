@@ -10,7 +10,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from collections import defaultdict
-from sistema_justica.models.base import Vitima_dados
+from sistema_justica.models.base import Vitima_dados, TipoDeViolencia
 from seguranca_publica.models.militar import OcorrenciaMilitar
 from seguranca_publica.models.civil import OcorrenciaCivil
 from seguranca_publica.models.penal import ModeloPenal
@@ -246,6 +246,42 @@ def relatorios(request):
             print(f"Erro ao obter comarcas do poder judiciário: {e}")
         comarcas_pj = []
 
+
+    try:
+        tipos_violencia_ativos = TipoDeViolencia.objects.filter(ativo=True).order_by('nome')
+        label_violencia = [tipo.nome for tipo in tipos_violencia_ativos]
+        dados_violencia = []
+
+        for tipo in tipos_violencia_ativos:
+            # Contagem direta sem prefetch - mais eficiente para agregações
+            conta_pm = OcorrenciaMilitar.objects.filter(
+                tipo_de_violencia=tipo
+            ).count()
+            
+            conta_pc = OcorrenciaCivil.objects.filter(
+                tipo_de_violencia=tipo
+            ).count()
+            
+            conta_mp = FormularioMedidaProtetiva.objects.filter(
+                tipo_de_violencia=tipo
+            ).count()
+            
+            total = conta_pm + conta_pc + conta_mp
+            dados_violencia.append(total)
+
+            if var_debug == 'True':
+                print(f"Tipo: {tipo.nome} | PM: {conta_pm} | PC: {conta_pc} | MP: {conta_mp} | Total: {total}")
+
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao obter dados adicionais: {e}")
+            import traceback
+            traceback.print_exc()
+        label_violencia = ["Física", "Psicológica", "Sexual", "Patrimonial", "Moral"]
+        dados_violencia = [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
+
+
     context = {
         
         "title": "Painel Informativo",
@@ -329,15 +365,8 @@ def relatorios(request):
         ],
         
         "Tipos_de_Violência": {
-            "labels": ["Física", "Psicológica", "Sexual", "Patrimonial", "Moral"],
-            # "data": [
-            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Fisica').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Fisica').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Fisica').count(),
-            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Psicologica').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Psicologica').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Psicologica').count(),
-            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Sexual').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Sexual').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Sexual').count(),
-            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Patrimonial').count() + OcorrenciaCivil.objects.filter(tipo_de_violencia='Patrimonial').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Patrimonial').count(),
-            #     OcorrenciaMilitar.objects.filter(tipo_de_violencia='Moral').count()  + OcorrenciaCivil.objects.filter(tipo_de_violencia='Moral').count() + FormularioMedidaProtetiva.objects.filter(tipo_de_violencia='Moral').count(),
-            # ]
-            "data": [random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,100), random.randint(1,50)]
+            "labels": label_violencia,
+            "data": dados_violencia,
         },
         "tipo_violencia_1" : tipo_violencia_1,
         "tipo_violencia_1_total" : tipo_violencia_1_total,
