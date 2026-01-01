@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+
 from django.db import models
 from django.utils import timezone
-#from django.contrib.auth.models import User
 from usuarios.models import CustomUser
-from django.contrib.auth.models import Group as CustomGroup
+from django.contrib.auth.models import Group
+from django.core.validators import FileExtensionValidator
 
 secao_choices = (
     ('seguranca_publica', 'Segurança Pública'),
@@ -25,12 +26,14 @@ class ConteudoHome(models.Model):
     )
     imagem = models.ImageField(
         upload_to='img_home/',
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'gif'])],
         null=True, blank=True,
         verbose_name="Imagem",
     )
     video = models.FileField(
         upload_to='videos/',
         null=True, blank=True,
+        validators=[FileExtensionValidator(allowed_extensions=['mp4', 'avi', 'mov', 'wmv'])],
         verbose_name='Vídeo',
     )
 
