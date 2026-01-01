@@ -10,7 +10,7 @@ from mensageria.models import Notificacao, StatusNotificacao
 from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
 from usuarios.models import CustomUser
 from django.contrib.auth.models import Group
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Prefetch
 from django.utils import timezone
 
 
@@ -62,7 +62,14 @@ def consultas_informacao_vitima_agressor(request):
         'vitima__estado',
         'vitima__municipio',
         'agressor__estado',
-        'agressor__municipio'
+        'agressor__municipio',
+        'municipio_mp',
+        'comarca_competente',
+        #'tipo_de_violencia'
+    ).prefetch_related(
+        #Prefetch('vitima'),
+        #Prefetch('agressor')
+        'tipo_de_violencia'
     ).order_by('-data_solicitacao')
     
     # Estatísticas gerais
