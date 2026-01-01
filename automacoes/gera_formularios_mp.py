@@ -3,7 +3,7 @@ Script para gerar dados fictícios de FormularioMedidaProtetiva (Defensoria Púb
 Gera 500 registros de solicitações de medida protetiva com dados realistas brasileiros.
 
 Para executar:
- python manage.py shell
+    python manage.py shell
     >>> from automacoes.gera_formularios_mp import criar_formularios_mp_aleatorios
     >>> criar_formularios_mp_aleatorios()
 """
@@ -14,6 +14,7 @@ import sys
 import django
 from datetime import datetime, timedelta
 from django.utils import timezone
+from django.db import models
 
 # Configuração do Django
 if __name__ == "__main__":
@@ -21,9 +22,9 @@ if __name__ == "__main__":
     django.setup()
 
 from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
-from sistema_justica.models.base import Vitima_dados, Agressor_dados
+from sistema_justica.models.base import Vitima_dados, Agressor_dados, TipoDeViolencia
 from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
-from seguranca_publica.models.base import tipo_de_violencia_choices, grau_parentesco_agressor_choices
+from seguranca_publica.models.base import grau_parentesco_agressor_choices
 
 
 def criar_formularios_mp_aleatorios(quantidade=500):
@@ -40,6 +41,7 @@ def criar_formularios_mp_aleatorios(quantidade=500):
     total_vitimas = Vitima_dados.objects.count()
     total_agressores = Agressor_dados.objects.count()
     total_comarcas = ComarcasPoderJudiciario.objects.count()
+    total_tipos_violencia = TipoDeViolencia.objects.filter(ativo=True).count()
     
     if total_vitimas < 50:
         print(f"⚠️  AVISO: Apenas {total_vitimas} vítimas cadastradas. Recomenda-se ter pelo menos 50.")
@@ -52,18 +54,25 @@ def criar_formularios_mp_aleatorios(quantidade=500):
     if total_comarcas < 5:
         print(f"⚠️  AVISO: Apenas {total_comarcas} comarcas cadastradas. Alguns formulários não terão comarca.")
     
-    print(f"📊 Dados disponíveis: {total_vitimas} vítimas, {total_agressores} agressores, {total_comarcas} comarcas")
+    if total_tipos_violencia == 0:
+        print("❌ ERRO: Nenhum tipo de violência cadastrado no banco de dados!")
+        print("   Por favor, cadastre os tipos de violência antes de executar este script.")
+        print("   Acesse: /admin/sistema_justica/tipodeviolencia/")
+        return 0
+    
+    print(f"📊 Dados disponíveis: {total_vitimas} vítimas, {total_agressores} agressores, " +
+          f"{total_comarcas} comarcas, {total_tipos_violencia} tipos de violência")
     
     # Listas para seleção aleatória
     vitimas_disponiveis = list(Vitima_dados.objects.all())
     agressores_disponiveis = list(Agressor_dados.objects.all())
     comarcas_disponiveis = list(ComarcasPoderJudiciario.objects.all())
+    tipos_violencia_disponiveis = list(TipoDeViolencia.objects.filter(ativo=True))
     
     # Choices para seleção aleatória
-    tipos_violencia = [choice[0] for choice in tipo_de_violencia_choices]
     graus_parentesco = [choice[0] for choice in grau_parentesco_agressor_choices]
 
-    # Lista de ruas fictícias comuns (reutilizando)
+    # Lista de ruas fictícias comuns
     RUAS = [
         "Rua das Flores", "Rua São João", "Rua Santa Maria", "Rua XV de Novembro",
         "Rua Tiradentes", "Rua Dom Pedro II", "Rua Getúlio Vargas", "Rua Presidente Vargas",
@@ -75,17 +84,30 @@ def criar_formularios_mp_aleatorios(quantidade=500):
     ]
     
     # Distribuição de períodos de medida protetiva (em dias)
-    periodos_mp_dias = [120, 180, 240, 300, 360]  # Mais comum: 120 dias
-    pesos_periodos = [40, 20, 15, 10, 8]  # 120 dias é mais provável
+    periodos_mp_dias = [120, 180, 240, 300, 360]
+    pesos_periodos = [40, 20, 15, 10, 8]
     
-    # Distribuição de tipos de violência
-    pesos_violencia = {
+    # Distribuição de pesos para tipos de violência (baseado em estatísticas reais)
+    # Os pesos são proporcionais aos tipos cadastrados
+    pesos_violencia_default = {
         'Fisica': 35,
+        'Fisíca': 35,
         'Psicologica': 25,
+        'Psicológica': 25,
         'Sexual': 15,
         'Patrimonial': 12,
         'Moral': 13
     }
+    
+    # Criar dicionário de pesos baseado nos tipos cadastrados
+    pesos_violencia = []
+    for tipo in tipos_violencia_disponiveis:
+        peso = pesos_violencia_default.get(tipo.nome, 10)  # Peso padrão de 10 se não encontrado
+        pesos_violencia.append(peso)
+    
+    # Normalizar pesos se necessário
+    if sum(pesos_violencia) == 0:
+        pesos_violencia = [1] * len(tipos_violencia_disponiveis)
     
     # Distribuição de graus de parentesco
     pesos_parentesco = {
@@ -114,7 +136,7 @@ def criar_formularios_mp_aleatorios(quantidade=500):
             vitima_selecionada = random.choice(vitimas_disponiveis)
             agressor_selecionado = random.choice(agressores_disponiveis)
             
-            # Verificar se já existe um formulário com essa combinação vítima-agressor (Poderia pular esta verificação)
+            # Verificar se já existe um formulário com essa combinação vítima-agressor
             if FormularioMedidaProtetiva.objects.filter(
                 vitima=vitima_selecionada, 
                 agressor=agressor_selecionado
@@ -129,19 +151,12 @@ def criar_formularios_mp_aleatorios(quantidade=500):
                 days=random.randint(0, (data_fim - data_inicio).days)
             )
             
-            # Período da medida protetiva (120 dias é o padrão, mas pode variar)
+            # Período da medida protetiva (120 dias é o padrão)
             dias_mp = random.choices(periodos_mp_dias, weights=pesos_periodos, k=1)[0]
             periodo_mp = data_aleatoria.date() + timedelta(days=dias_mp)
             
-            # Medida Protetiva de Urgência (90% são de urgência)
+            # Medida Protetiva de Urgência (80% são de urgência)
             solicitada_mpu = random.choices([True, False], weights=[80, 20], k=1)[0]
-            
-            # Tipo de violência
-            tipo_violencia = random.choices(
-                list(pesos_violencia.keys()), 
-                weights=list(pesos_violencia.values()), 
-                k=1
-            )[0]
             
             # Grau de parentesco
             grau_parentesco = random.choices(
@@ -150,13 +165,14 @@ def criar_formularios_mp_aleatorios(quantidade=500):
                 k=1
             )[0]
             
-            # Comarca (100% dos casos têm comarca definida)
-            comarca = random.choice(comarcas_disponiveis)
-            
+            # Comarca (100% dos casos têm comarca definida se houver comarcas disponíveis)
+            comarca = random.choice(comarcas_disponiveis) if comarcas_disponiveis else None
             
             # Seleciona município entre os municípios da comarca
-            municipios_comarca = comarca.municipios_abrangentes.all()
-            municipio_mp = random.choice(municipios_comarca) if municipios_comarca else None
+            municipio_mp = None
+            if comarca:
+                municipios_comarca = comarca.municipios_abrangentes.all()
+                municipio_mp = random.choice(list(municipios_comarca)) if municipios_comarca else None
             
             # Criar o formulário
             formulario = FormularioMedidaProtetiva.objects.create(
@@ -165,15 +181,30 @@ def criar_formularios_mp_aleatorios(quantidade=500):
                 agressor=agressor_selecionado,
                 periodo_mp=periodo_mp,
                 solicitada_mpu=solicitada_mpu,
-                tipo_de_violencia=tipo_violencia,
                 comarca_competente=comarca,
                 grau_parentesco_agressor=grau_parentesco,
                 bairro_mp=random.choice(RUAS),
                 municipio_mp=municipio_mp
             )
             
+            # ✅ NOVO: Adicionar tipos de violência ao relacionamento ManyToMany
+            # Cada formulário pode ter de 1 a 3 tipos de violência
+            quantidade_tipos = random.choices([1, 2, 3], weights=[60, 30, 10], k=1)[0]
+            tipos_selecionados = random.choices(
+                tipos_violencia_disponiveis,
+                weights=pesos_violencia,
+                k=quantidade_tipos
+            )
+            
+            # Adicionar tipos de violência sem duplicatas
+            tipos_unicos = list(set(tipos_selecionados))
+            formulario.tipo_de_violencia.set(tipos_unicos)
+            
             formularios_criados += 1
             
+            # Progresso a cada 50 registros
+            if (i + 1) % 50 == 0:
+                print(f"   ⏳ Progresso: {i + 1}/{quantidade} formulários processados...")
                 
         except Exception as e:
             erros.append(f"Erro no registro {i + 1}: {str(e)}")
@@ -186,32 +217,43 @@ def criar_formularios_mp_aleatorios(quantidade=500):
     print(f"✅ Formulários criados com sucesso: {formularios_criados}")
     print(f"⚠️  Formulários já existentes (ignorados): {formularios_existentes}")
     print(f"❌ Erros encontrados: {len(erros)}")
-    print(f"📈 Taxa de sucesso: {(formularios_criados/(formularios_criados+len(erros))*100):.1f}%")
+    
+    if formularios_criados + len(erros) > 0:
+        taxa_sucesso = (formularios_criados / (formularios_criados + len(erros))) * 100
+        print(f"📈 Taxa de sucesso: {taxa_sucesso:.1f}%")
     
     if formularios_criados > 0:
         print("\n📋 ESTATÍSTICAS DOS FORMULÁRIOS CRIADOS:")
         
         # Estatísticas por tipo de violência
         print("\n🔍 Distribuição por Tipo de Violência:")
-        for tipo_violencia in tipos_violencia:
-            count = FormularioMedidaProtetiva.objects.filter(tipo_de_violencia=tipo_violencia).count()
-            print(f"   • {dict(tipo_de_violencia_choices)[tipo_violencia]}: {count} casos")
+        for tipo in tipos_violencia_disponiveis:
+            count = FormularioMedidaProtetiva.objects.filter(tipo_de_violencia=tipo).count()
+            percentual = (count / formularios_criados) * 100 if formularios_criados > 0 else 0
+            print(f"   • {tipo.nome}: {count} casos ({percentual:.1f}%)")
         
         # Estatísticas por grau de parentesco
         print("\n👥 Distribuição por Grau de Parentesco:")
-        for grau in graus_parentesco:
-            count = FormularioMedidaProtetiva.objects.filter(grau_parentesco_agressor=grau).count()
-            print(f"   • {dict(grau_parentesco_agressor_choices)[grau]}: {count} casos")
+        for grau_codigo, grau_nome in grau_parentesco_agressor_choices:
+            count = FormularioMedidaProtetiva.objects.filter(
+                grau_parentesco_agressor=grau_codigo
+            ).count()
+            if count > 0:
+                percentual = (count / formularios_criados) * 100
+                print(f"   • {grau_nome}: {count} casos ({percentual:.1f}%)")
         
         # Estatísticas por urgência
         urgentes = FormularioMedidaProtetiva.objects.filter(solicitada_mpu=True).count()
         nao_urgentes = FormularioMedidaProtetiva.objects.filter(solicitada_mpu=False).count()
-        print(f"\n⚡ Medidas de Urgência:")
-        print(f"   • Urgentes: {urgentes} ({(urgentes/(urgentes+nao_urgentes)*100):.1f}%)")
-        print(f"   • Não urgentes: {nao_urgentes} ({(nao_urgentes/(urgentes+nao_urgentes)*100):.1f}%)")
+        total_analisados = urgentes + nao_urgentes
+        
+        if total_analisados > 0:
+            print(f"\n⚡ Medidas de Urgência:")
+            print(f"   • Urgentes: {urgentes} ({(urgentes/total_analisados)*100:.1f}%)")
+            print(f"   • Não urgentes: {nao_urgentes} ({(nao_urgentes/total_analisados)*100:.1f}%)")
         
         # Período médio de validade
-        formularios_recentes = FormularioMedidaProtetiva.objects.all()[:100]  # Amostra de 100
+        formularios_recentes = FormularioMedidaProtetiva.objects.all()[:100]
         if formularios_recentes:
             periodos = []
             for form in formularios_recentes:
@@ -222,10 +264,19 @@ def criar_formularios_mp_aleatorios(quantidade=500):
             if periodos:
                 periodo_medio = sum(periodos) / len(periodos)
                 print(f"\n📅 Período Médio de Validade: {periodo_medio:.0f} dias")
+        
+        # Estatísticas de tipos de violência múltiplos
+        formularios_multiplos = FormularioMedidaProtetiva.objects.annotate(
+            num_tipos=models.Count('tipo_de_violencia')
+        ).filter(num_tipos__gt=1).count()
+        
+        if formularios_multiplos > 0:
+            percentual_multiplos = (formularios_multiplos / formularios_criados) * 100
+            print(f"\n🔗 Formulários com Múltiplos Tipos de Violência: {formularios_multiplos} ({percentual_multiplos:.1f}%)")
     
     if erros:
         print(f"\n❌ DETALHES DOS ERROS ({len(erros)} total):")
-        for i, erro in enumerate(erros[:10]):  # Mostra apenas os 10 primeiros erros
+        for i, erro in enumerate(erros[:10]):
             print(f"   {i+1}. {erro}")
         if len(erros) > 10:
             print(f"   ... e mais {len(erros) - 10} erros similares.")
@@ -264,13 +315,14 @@ def estatisticas_formularios():
     print(f"📊 ESTATÍSTICAS DOS FORMULÁRIOS DE MEDIDA PROTETIVA ({total} total)")
     print("="*60)
     
-    # Por tipo de violência
+    # Por tipo de violência (usando o modelo TipoDeViolencia)
+    tipos_violencia = TipoDeViolencia.objects.filter(ativo=True)
     print("\n🔍 Por Tipo de Violência:")
-    for codigo, nome in tipo_de_violencia_choices:
-        count = FormularioMedidaProtetiva.objects.filter(tipo_de_violencia=codigo).count()
+    for tipo in tipos_violencia:
+        count = FormularioMedidaProtetiva.objects.filter(tipo_de_violencia=tipo).count()
         if count > 0:
             percentual = (count / total) * 100
-            print(f"   • {nome}: {count} ({percentual:.1f}%)")
+            print(f"   • {tipo.nome}: {count} ({percentual:.1f}%)")
     
     # Por grau de parentesco
     print("\n👥 Por Grau de Parentesco:")
@@ -293,9 +345,14 @@ def estatisticas_formularios():
     recentes = FormularioMedidaProtetiva.objects.order_by('-data_solicitacao')[:5]
     for form in recentes:
         data_str = form.data_solicitacao.strftime('%d/%m/%Y %H:%M')
+        tipos_str = ", ".join([tipo.nome for tipo in form.tipo_de_violencia.all()])
         print(f"   • {data_str} - {form.vitima.nome} vs {form.agressor.nome}")
+        print(f"     Tipos: {tipos_str if tipos_str else 'Nenhum'}")
 
 
 if __name__ == "__main__":
+    # Adicionar import necessário para anotações
+    
+    
     # Executa a função principal quando o script é chamado diretamente
     criar_formularios_mp_aleatorios()
