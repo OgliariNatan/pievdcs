@@ -16,7 +16,8 @@ from seguranca_publica.models.civil import OcorrenciaCivil
 from seguranca_publica.models.penal import ModeloPenal
 from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
 from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
-from django.db import models, connection
+from django.db import connection
+from django.db.models import Prefetch, Count, Q
 from .models import ConteudoHome
 from usuarios.models import CustomUser
 from .calculo_variaveis import *
@@ -270,7 +271,7 @@ def relatorios(request):
             dados_violencia.append(total)
 
             if var_debug == 'True':
-                print(f"Tipo: {tipo.nome} | PM: {conta_pm} | PC: {conta_pc} | MP: {conta_mp} | Total: {total}")
+                print(f"\033[92mTipo:\033[0m {tipo.nome} | PM: {conta_pm} | PC: {conta_pc} | MP: {conta_mp} | \033[34mTotal {total}\033[0m")
 
     except Exception as e:
         if var_debug == 'True':
