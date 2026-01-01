@@ -92,6 +92,30 @@ CSRF_TRUSTED_ORIGINS = [
     'http://10.40.22.46',
 ]
 
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',  # Database 1 do Redis (separado de Channel Layers)
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {
+                'max_connections': 50,
+                'retry_on_timeout': True,
+            },
+            'SOCKET_CONNECT_TIMEOUT': 5,
+            'SOCKET_TIMEOUT': 5,
+            'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',  # Compressão de dados
+            'IGNORE_EXCEPTIONS': True,  # Não quebra aplicação se Redis cair
+        },
+        'KEY_PREFIX': 'pievdcs',  # Prefixo para todas as chaves
+        'TIMEOUT': 1800,  # Timeout padrão: 30 minutos
+        'VERSION': 1,
+    }
+}
+
+
+
 # Channel Layers - Redis como backend
 CHANNEL_LAYERS = {
     'default': {
@@ -99,7 +123,7 @@ CHANNEL_LAYERS = {
         'CONFIG': {
             "hosts": [('127.0.0.1', 6379)],
             "capacity": 1500,
-            "expiry": 10,
+            "expiry": 1800,
         },
     },
 }
@@ -204,8 +228,8 @@ STATICFILES_DIRS = [
 ]
 
 
-MEDIA_URL = '/img_home/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'img_home')  # Pasta para armazenar imagens carregadas
+MEDIA_URL = '/anexos/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'anexos')  # Pasta para armazenar imagens carregadas
 
 # Default primary key field type
 
@@ -224,11 +248,13 @@ CSRF_COOKIE_AGE = None
 SESSION_COOKIE_SAMESITE = 'Lax' # não aceita cookie de terceiros
 
 
-if os.getenv('DEBUG') == True:
+if DEBUG == 'True':
     print("Habilitar a transmissão segura de cookies (HTTPS)")
     SESSION_COOKIE_SECURE = False #Transmite informação mesmo não sendo seguro 'https'
+    CSRF_COOKIE_SECURE = False #Transmite informação mesmo não sendo seguro 'https'
 else:
    SESSION_COOKIE_SECURE = True #Só transmite informação se for seguro 'https'
+   CSRF_COOKIE_SECURE = True #Só transmite informação se for seguro 'https'
 
 AUTH_USER_MODEL = 'usuarios.CustomUser'
 #AUTH_GROUP_MODEL = 'usuarios.CustomGroup'

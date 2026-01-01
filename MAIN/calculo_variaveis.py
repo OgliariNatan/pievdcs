@@ -25,28 +25,23 @@ from seguranca_publica.models.militar import OcorrenciaMilitar
 from seguranca_publica.models.civil import OcorrenciaCivil
 from seguranca_publica.models.base import grau_parentesco_agressor_choices
 
-""" Configuraçao de decoradores para debug """
+# Configuração de debug
 import os
 from dotenv import load_dotenv
 
-var_debug = os.getenv('DEBUG', False) #Carrega apenas a variavel de debug
+var_debug = os.getenv('DEBUG', 'False')
 
 if var_debug == 'True':
     from MAIN.decoradores.calcula_tempo import calcula_tempo, calcula_tempo_fun
     checked_debug_decorador = calcula_tempo
     checked_debug_decorador_fun = calcula_tempo_fun
-    
 else:
-    checked_debug_decorador = None
-    checked_debug_decorador_fun = None
-
-""" Fim da configuraçao de decoradores para debug """
-
+    checked_debug_decorador = lambda x: x
+    checked_debug_decorador_fun = lambda x: x
 
 
 # ========================================================================
 # FUNÇÕES AUXILIARES PARA TIPOS DE VIOLÊNCIA
-# ✅ Lazy loading: só executa quando chamada, não no import
 # ========================================================================
 
 @checked_debug_decorador_fun
@@ -55,17 +50,8 @@ def obter_tipos_violencia_ativos():
     Obtém lista de tipos de violência ativos do banco de dados.
     Usa cache Django para melhorar performance.
     
-    Adaptado para modelo simplificado (apenas id, nome, descricao, ativo)
-    
     Returns:
         list: Lista de dicionários com 'id' e 'nome'
-        
-    Exemplo:
-        [
-            {'id': 1, 'nome': 'Violência Física'},
-            {'id': 2, 'nome': 'Violência Psicológica'},
-            ...
-        ]
     """
     cache_key = 'pievdcs_tipos_violencia_ativos'
     tipos = cache.get(cache_key)
@@ -78,48 +64,25 @@ def obter_tipos_violencia_ativos():
                 .values('id', 'nome')
                 .order_by('nome')
             )
-            cache.set(cache_key, tipos, 3600)  # Cache por 1 hora
-        except Exception:
-            # ✅ Fallback: retorna lista vazia se tabela não existe
+            cache.set(cache_key, tipos, 1800)  # Cache por 30 minutos
+        except Exception as e:
+            if var_debug == 'True':
+                print(f"Erro ao carregar tipos de violência: {e}")
             tipos = []
     
     return tipos
 
 
 def obter_ids_tipos_violencia():
-    """
-    Retorna apenas os IDs dos tipos de violência ativos.
-    
-    Returns:
-        list: Lista de IDs
-    """
+    """Retorna apenas os IDs dos tipos de violência ativos"""
     return [tipo['id'] for tipo in obter_tipos_violencia_ativos()]
 
 
 def obter_mapeamento_tipos_violencia():
-    """
-    Cria dicionário mapeando ID → Nome dos tipos de violência.
-    
-    Returns:
-        dict: {id: nome}
-        
-    Exemplo:
-        {1: 'Violência Física', 2: 'Violência Psicológica', ...}
-    """
+    """Cria dicionário mapeando ID → Nome dos tipos de violência"""
     return {tipo['id']: tipo['nome'] for tipo in obter_tipos_violencia_ativos()}
 
 
-# ========================================================================
-# VARIÁVEIS GLOBAIS COMPARTILHADAS
-# ✅ REMOVIDO: Inicialização no import (causava erro)
-# ✅ NOVO: Usa lazy loading via propriedades de classe
-# ========================================================================
-
-# ❌ REMOVIDO: Consultas ao banco durante import
-# TIPOS_VIOLENCIA_IDS = obter_ids_tipos_violencia()
-# LABELS_TIPO_VIOLENCIA = obter_mapeamento_tipos_violencia()
-
-# ✅ Mantido: Não consulta banco de dados
 LABELS_TIPO_PARENTESCO = dict(grau_parentesco_agressor_choices)
 
 
@@ -157,25 +120,26 @@ class TipoViolenciaStats:
     """
     Classe para cálculo de estatísticas relacionadas a tipos de violência.
     
-    Suporta ManyToManyField: uma ocorrência pode ter múltiplos tipos.
+    ✅ Atualizado para suportar:
+    - ForeignKey: tipo_de_violencia (singular)
+    - ManyToManyField: tipos_de_violencia (plural) - DESCONTINUADO
     """
     
     @property
     def tipos_violencia_ids(self):
-        """✅ Lazy property: carrega IDs apenas quando necessário"""
+        """Lazy property: carrega IDs apenas quando necessário"""
         return obter_ids_tipos_violencia()
     
     @property
     def labels_tipo_violencia(self):
-        """✅ Lazy property: carrega labels apenas quando necessário"""
+        """Lazy property: carrega labels apenas quando necessário"""
         return obter_mapeamento_tipos_violencia()
     
     def conta_violencias_por_mes(self, mes, ano):
         """
         Conta ocorrências de cada tipo de violência em um mês específico.
         
-        ⚠️ Como tipos_de_violencia é ManyToMany, um formulário pode ter 
-        múltiplos tipos. Cada relacionamento é contado individualmente.
+        ✅ CORRIGIDO: Usa 'tipo_de_violencia' (singular) ao invés de 'tipos_de_violencia'
         
         Args:
             mes (int): Número do mês (1-12)
@@ -189,31 +153,45 @@ class TipoViolenciaStats:
         filtro_data = Q(data__month=mes, data__year=ano)
         filtro_data_formulario = Q(data_solicitacao__month=mes, data_solicitacao__year=ano)
         
-        # ✅ Usa property ao invés de variável global
         for tipo_id in self.tipos_violencia_ids:
-            # Polícia Militar
-            total_pm = (
-                OcorrenciaMilitar.objects
-                .filter(filtro_data, tipos_de_violencia__id=tipo_id)
-                .distinct()
-                .count()
-            )
+            try:
+                # ✅ Polícia Militar - CORRIGIDO
+                total_pm = (
+                    OcorrenciaMilitar.objects
+                    .filter(filtro_data, tipo_de_violencia__id=tipo_id)  # Singular!
+                    .distinct()
+                    .count()
+                )
+            except Exception as e:
+                if var_debug == 'True':
+                    print(f"⚠️  Erro PM tipo {tipo_id}: {e}")
+                total_pm = 0
             
-            # Polícia Civil
-            total_pc = (
-                OcorrenciaCivil.objects
-                .filter(filtro_data, tipos_de_violencia__id=tipo_id)
-                .distinct()
-                .count()
-            )
+            try:
+                # ✅ Polícia Civil - CORRIGIDO
+                total_pc = (
+                    OcorrenciaCivil.objects
+                    .filter(filtro_data, tipo_de_violencia__id=tipo_id)  # Singular!
+                    .distinct()
+                    .count()
+                )
+            except Exception as e:
+                if var_debug == 'True':
+                    print(f"⚠️  Erro PC tipo {tipo_id}: {e}")
+                total_pc = 0
             
-            # Formulário de Medida Protetiva
-            total_mp = (
-                FormularioMedidaProtetiva.objects
-                .filter(filtro_data_formulario, tipos_de_violencia__id=tipo_id)
-                .distinct()
-                .count()
-            )
+            try:
+                # ✅ Formulário de Medida Protetiva - CORRIGIDO
+                total_mp = (
+                    FormularioMedidaProtetiva.objects
+                    .filter(filtro_data_formulario, tipo_de_violencia__id=tipo_id)  # Singular!
+                    .distinct()
+                    .count()
+                )
+            except Exception as e:
+                if var_debug == 'True':
+                    print(f"⚠️  Erro MP tipo {tipo_id}: {e}")
+                total_mp = 0
             
             contagem[tipo_id] = total_pm + total_pc + total_mp
         
@@ -227,64 +205,82 @@ class TipoViolenciaStats:
         Returns:
             dict: Estatísticas comparativas entre meses
         """
-        hoje = date.today()
-        mes_atual = hoje.month
-        ano_atual = hoje.year
+        try:
+            hoje = date.today()
+            mes_atual = hoje.month
+            ano_atual = hoje.year
+            
+            # Calcular mês anterior
+            primeiro_dia_mes_atual = hoje.replace(day=1)
+            data_mes_anterior = primeiro_dia_mes_atual - timedelta(days=1)
+            mes_anterior = data_mes_anterior.month
+            ano_anterior = data_mes_anterior.year
+            
+            # Contagens
+            atual = self.conta_violencias_por_mes(mes_atual, ano_atual)
+            anterior = self.conta_violencias_por_mes(mes_anterior, ano_anterior)
+            
+            labels = self.labels_tipo_violencia
+            
+            # Tipo mais comum no mês atual
+            if atual:
+                tipo_id_atual, total_atual = atual.most_common(1)[0]
+                tipo_atual = labels.get(tipo_id_atual, f"ID {tipo_id_atual}")
+            else:
+                tipo_atual = "Nenhum registro"
+                total_atual = 0
+            
+            # Tipo mais comum no mês anterior
+            if anterior:
+                tipo_id_anterior, total_anterior = anterior.most_common(1)[0]
+                tipo_anterior = labels.get(tipo_id_anterior, f"ID {tipo_id_anterior}")
+            else:
+                tipo_anterior = "Nenhum registro"
+                total_anterior = 0
+            
+            # Porcentagem do tipo mais comum no mês anterior
+            total_violencias_mes_anterior = sum(anterior.values())
+            porcentagem_anterior = (
+                round((total_anterior / total_violencias_mes_anterior) * 100, 2)
+                if total_violencias_mes_anterior > 0 else 0
+            )
+            
+            # Variação percentual
+            if total_anterior > 0:
+                variacao = round(((total_atual - total_anterior) / total_anterior) * 100, 2)
+            else:
+                variacao = 100.0 if total_atual > 0 else 0.0
+            
+            return {
+                "mes_atual": {
+                    "tipo": tipo_atual,
+                    "total": total_atual
+                },
+                "mes_anterior": {
+                    "tipo": tipo_anterior,
+                    "total": total_anterior,
+                    "porcentagem": porcentagem_anterior
+                },
+                "variacao_percentual": variacao
+            }
         
-        # Calcular mês anterior
-        primeiro_dia_mes_atual = hoje.replace(day=1)
-        data_mes_anterior = primeiro_dia_mes_atual - timedelta(days=1)
-        mes_anterior = data_mes_anterior.month
-        ano_anterior = data_mes_anterior.year
-        
-        # Contagens
-        atual = self.conta_violencias_por_mes(mes_atual, ano_atual)
-        anterior = self.conta_violencias_por_mes(mes_anterior, ano_anterior)
-        
-        # ✅ Usa property ao invés de variável global
-        labels = self.labels_tipo_violencia
-        
-        # Tipo mais comum no mês atual
-        if atual:
-            tipo_id_atual, total_atual = atual.most_common(1)[0]
-            tipo_atual = labels.get(tipo_id_atual, f"ID {tipo_id_atual}")
-        else:
-            tipo_atual = "Nenhum registro"
-            total_atual = 0
-        
-        # Tipo mais comum no mês anterior
-        if anterior:
-            tipo_id_anterior, total_anterior = anterior.most_common(1)[0]
-            tipo_anterior = labels.get(tipo_id_anterior, f"ID {tipo_id_anterior}")
-        else:
-            tipo_anterior = "Nenhum registro"
-            total_anterior = 0
-        
-        # Porcentagem do tipo mais comum no mês anterior
-        total_violencias_mes_anterior = sum(anterior.values())
-        porcentagem_anterior = (
-            round((total_anterior / total_violencias_mes_anterior) * 100, 2)
-            if total_violencias_mes_anterior > 0 else 0
-        )
-        
-        # Variação percentual
-        if total_anterior > 0:
-            variacao = round(((total_atual - total_anterior) / total_anterior) * 100, 2)
-        else:
-            variacao = 100.0 if total_atual > 0 else 0.0
-        
-        return {
-            "mes_atual": {
-                "tipo": tipo_atual,
-                "total": total_atual
-            },
-            "mes_anterior": {
-                "tipo": tipo_anterior,
-                "total": total_anterior,
-                "porcentagem": porcentagem_anterior
-            },
-            "variacao_percentual": variacao
-        }
+        except Exception as e:
+            if var_debug == 'True':
+                print(f"❌ Erro em verifica_maior_violencia_por_mes: {e}")
+            
+            # Retorno seguro em caso de erro
+            return {
+                "mes_atual": {
+                    "tipo": "Erro ao calcular",
+                    "total": 0
+                },
+                "mes_anterior": {
+                    "tipo": "Erro ao calcular",
+                    "total": 0,
+                    "porcentagem": 0
+                },
+                "variacao_percentual": 0
+            }
 
 
 # ========================================================================
@@ -307,7 +303,6 @@ class MedidasProtetivas:
         mes_anterior = data_mes_anterior.month
         ano_anterior = data_mes_anterior.year
         
-        # Filtros por data
         filtro_ocorrencias = Q(data__month=mes_anterior, data__year=ano_anterior)
         filtro_formulario = Q(data_solicitacao__month=mes_anterior, data_solicitacao__year=ano_anterior)
         
@@ -325,7 +320,6 @@ class MedidasProtetivas:
             FormularioMedidaProtetiva.objects.filter(filtro_formulario).count()
         )
         
-        # Porcentagem
         porcentagem = (
             round((solicitadas / total_ocorrencias) * 100, 2) 
             if total_ocorrencias > 0 else 0
@@ -355,28 +349,24 @@ class MunicipiosViolentos:
         Returns:
             list: Lista de tuplas (município, total) ordenada por total
         """
-        # Ocorrências militares
         militares = (
             OcorrenciaMilitar.objects
             .values('municipio_ocorrencia__nome')
             .annotate(total=Count('id'))
         )
         
-        # Ocorrências civis
         civis = (
             OcorrenciaCivil.objects
             .values('municipio_ocorrencia__nome')
             .annotate(total=Count('id'))
         )
         
-        # Formulários de medida protetiva
         formularios = (
             FormularioMedidaProtetiva.objects
             .values('municipio_mp__nome')
             .annotate(total=Count('ID'))
         )
         
-        # Agregar totais por município
         contagem = {}
         
         for qs in [militares, civis]:
@@ -390,7 +380,6 @@ class MunicipiosViolentos:
             if nome:
                 contagem[nome] = contagem.get(nome, 0) + item['total']
         
-        # Ordenar e retornar top N
         ranking = sorted(contagem.items(), key=lambda x: x[1], reverse=True)
         return ranking[:top]
 
@@ -427,7 +416,10 @@ class GrauParentesco:
                 "total": parentescos[0]['total']
             }
         
-        return None
+        return {
+            "grau_parentesco": "Sem dados",
+            "total": 0
+        }
 
 
 # ========================================================================
@@ -444,7 +436,6 @@ class BuscaReincidencia:
         Returns:
             dict: Lista de reincidentes e porcentagens
         """
-        # Agressores com mais de uma ocorrência
         reincidentes = (
             FormularioMedidaProtetiva.objects
             .values('agressor__id', 'agressor__nome', 'agressor__cpf')
@@ -453,20 +444,15 @@ class BuscaReincidencia:
             .order_by('-total_mp')
         )
         
-        # Total de formulários
         total_formularios = FormularioMedidaProtetiva.objects.count()
-        
-        # Quantidade de agressores reincidentes
         qtd_reincidentes_agressor = reincidentes.count()
         
-        # Porcentagem de reincidência
         porcentagem_agressor_reincidente = (
             round((qtd_reincidentes_agressor / total_formularios) * 100, 2) 
             if total_formularios > 0 else 0
         )
         
-        # ⚠️ TODO: Implementar cálculo de reincidência de vítimas
-        # Por enquanto, valor fixo
+        # TODO: Implementar cálculo de reincidência de vítimas
         porcentagem_vitima_reincidente = 6
         
         return {
@@ -488,7 +474,6 @@ class IncidenciasPorMes:
     Agrega dados de todas as fontes (PM, PC, MP).
     """
     
-    # Mapeamento de meses em português brasileiro
     MESES_MAP = {
         1: 'janeiro', 2: 'fevereiro', 3: 'março', 4: 'abril',
         5: 'maio', 6: 'junho', 7: 'julho', 8: 'agosto',
@@ -532,15 +517,12 @@ class IncidenciasPorMes:
             filtro_ocorrencias = Q(data__month=mes_num, data__year=ano)
             filtro_formulario = Q(data_solicitacao__month=mes_num, data_solicitacao__year=ano)
             
-            # Contar cada fonte
             total_militar = OcorrenciaMilitar.objects.filter(filtro_ocorrencias).count()
             total_civil = OcorrenciaCivil.objects.filter(filtro_ocorrencias).count()
             total_mp = FormularioMedidaProtetiva.objects.filter(filtro_formulario).count()
             
-            # Somar total
             total_mes = total_militar + total_civil + total_mp
             
-            # Mapear para nome do mês em português brasileiro
             mes_nome = self.MESES_MAP[mes_num]
             incidencias[mes_nome] = total_mes
         
@@ -557,11 +539,9 @@ class IncidenciasPorMes:
         ano_atual = hoje.year
         ano_anterior = ano_atual - 1
         
-        # Calcular incidências
         atual = self.calcular_incidencias_por_periodo(ano=ano_atual)
         anterior = self.calcular_incidencias_por_periodo(ano=ano_anterior)
         
-        # Calcular variação percentual por mês
         variacao = {}
         for mes in atual.keys():
             total_atual = atual[mes]
@@ -590,12 +570,11 @@ class IncidenciasPorMes:
 
 
 # ========================================================================
-# INSTÂNCIAS GLOBAIS DAS CLASSES
-# Conforme padrão PIEVDCS para uso em templates e views
+# INSTÂNCIAS GLOBAIS
 # ========================================================================
 
 if var_debug == 'True':
-    print("\nInicializando instâncias globais de cálculo de variáveis...\n")
+    print("\n✅ Inicializando instâncias globais de cálculo de variáveis...\n")
 
 tipoviolencia = TipoViolenciaStats()
 medidasprotetivas = MedidasProtetivas()

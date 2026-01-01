@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+
 from django.db import models
 from django.utils import timezone
-#from django.contrib.auth.models import User
 from usuarios.models import CustomUser
-from django.contrib.auth.models import Group as CustomGroup
+from django.contrib.auth.models import Group
+from django.core.validators import FileExtensionValidator
 
 secao_choices = (
     ('seguranca_publica', 'Segurança Pública'),
@@ -24,13 +25,15 @@ class ConteudoHome(models.Model):
         verbose_name="Texto",
     )
     imagem = models.ImageField(
-        upload_to='img_home/',
+        upload_to='MAIN/img/',
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'gif'])],
         null=True, blank=True,
         verbose_name="Imagem",
     )
     video = models.FileField(
-        upload_to='videos/',
+        upload_to='MAIN/videos/',
         null=True, blank=True,
+        validators=[FileExtensionValidator(allowed_extensions=['mp4', 'avi', 'mov', 'wmv'])],
         verbose_name='Vídeo',
     )
 
@@ -74,3 +77,9 @@ class ConteudoHome(models.Model):
         verbose_name = "Conteúdo da Página Inicial"
         verbose_name_plural = "Conteúdos da Página Inicial"
         ordering = ['-data_publicacao']
+
+    def save(self, *args, **kwargs):
+        usuario = kwargs.pop('user', None)
+        if usuario and not self.autor:
+            self.autor = usuario
+        super(ConteudoHome, self).save(*args, **kwargs)

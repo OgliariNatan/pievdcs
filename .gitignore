@@ -191,7 +191,7 @@ cython_debug/
 *.log
 
 #pastas de fotos de noticias
-img_home/
+anexos/
 
 #Ignora pasta migrations
 migrations/*

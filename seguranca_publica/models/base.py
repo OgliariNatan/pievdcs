@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from sistema_justica.models.base import Vitima_dados, Agressor_dados, Municipio, Estado, TipoDeViolencia
 from MAIN.cadastros_padrao import agressor_padrao
+from usuarios.models import CustomUser
 from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
 from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
 
@@ -35,7 +36,7 @@ class OcorrenciaBase(models.Model):
         primary_key=True,  
     )
     data = models.DateTimeField(default=timezone.now, verbose_name="Data")
-    #local = models.CharField(max_length=255, verbose_name="Local da Ocorrência")
+
     vitima = models.ForeignKey(
         Vitima_dados, 
         on_delete=models.CASCADE,
@@ -111,8 +112,35 @@ class OcorrenciaBase(models.Model):
         verbose_name="Descrição da Ocorrência",
     )
 
+    criado_por = models.ForeignKey(
+        CustomUser,
+        related_name="%(class)s_criado_por",
+        on_delete=models.SET_NULL,
+        editable=False,
+        null=True, blank=True,
+    )
+
+    atualizado_por = models.ForeignKey(
+        CustomUser,
+        related_name="%(class)s_atualizado_por",
+        on_delete=models.SET_NULL,
+        editable=False,
+        null=True, blank=True,
+    )
+
     def __str__(self):
         return f"Ocorrência: {self.id} - {self.data.strftime('%d/%m/%Y')}"
 
     class Meta:
         abstract = True
+
+    def save(self, *args, **kwargs):
+        
+        user = kwargs.pop('user', None)
+        if user:
+            if not self.pk:
+                self.criado_por = user
+            
+            self.atualizado_por = user
+        
+        super().save(*args, **kwargs)

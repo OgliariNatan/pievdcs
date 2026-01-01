@@ -207,7 +207,16 @@
                             class="news-item bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1"
                             data-index="{{ forloop.counter0 }}"
                             style="{% if forloop.counter0 >= 3 %}display: none;{% endif %}">
-                            {% if conteudo.imagem %}
+                            {% if conteudo.video %}
+                            <div class="h-48 flex items-center justify-center bg-gray-50">
+                                <video controls class="max-h-44 w-full object-contain">
+                                    <source src="{{ conteudo.video.url }}" type="video/mp4">
+                                    <source src="{{ conteudo.video.url }}" type="video/avi">
+                                    <source src="{{ conteudo.video.url }}" type="video/quicktime">
+                                    Seu navegador não suporta a reprodução de vídeos.
+                                </video>
+                            </div>
+                            {% elif conteudo.imagem %}
                             <div class="h-48 flex items-center justify-center bg-gray-50">
                                 <img src="{{ conteudo.imagem.url }}" alt="{{ conteudo.titulo }}"
                                     class="max-h-44 object-contain w-full">
