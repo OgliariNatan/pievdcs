@@ -10,6 +10,10 @@ class ConteudoHomeAdmin(admin.ModelAdmin):
     list_filter = ('data_publicacao', 'secao', 'autor')
     search_fields = ('titulo', 'texto')
 
+    def save_model(self, request, obj, form, change):
+        """Salva o modelo passando o usuário atual"""
+        obj.save(user=request.user)
+
     def preview_link(self, obj):
         url = reverse('pre_visualizacao_conteudo', args=[obj.pk])
         return format_html('<a class="button" href="{}" >Pré-visualizar</a>', url)

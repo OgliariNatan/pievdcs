@@ -228,8 +228,8 @@ STATICFILES_DIRS = [
 ]
 
 
-MEDIA_URL = '/img_home/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'img_home')  # Pasta para armazenar imagens carregadas
+MEDIA_URL = '/anexos/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'anexos')  # Pasta para armazenar imagens carregadas
 
 # Default primary key field type
 
