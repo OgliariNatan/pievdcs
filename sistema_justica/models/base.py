@@ -4,6 +4,8 @@ from seguranca_publica.models import *
 from django import forms
 from smart_selects.db_fields import ChainedForeignKey
 
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 from usuarios.models import CustomUser
 from django.utils import timezone
 
@@ -99,6 +101,12 @@ class Estado(models.Model):
         verbose_name="Nome do Estado",
         null=True, blank=False,
     )
+    sigla_IBGE = models.IntegerField(
+        validators=[MinValueValidator(11), MaxValueValidator(80)],
+        verbose_name="Código IBGE",
+        unique=False,
+        null=True, blank=True,
+    )
     def __str__(self):
         return f'{self.sigla}'
 
@@ -116,6 +124,12 @@ class Municipio(models.Model):
         on_delete=models.PROTECT,
         null=True, blank=False,
         verbose_name="Estado"
+    )
+    codigo_ibge = models.IntegerField(
+        verbose_name="Código IBGE",
+        validators=[MinValueValidator(1100015), MaxValueValidator(9999999)],
+        unique=False,
+        null=True, blank=True,
     )
 
     def __str__(self):
