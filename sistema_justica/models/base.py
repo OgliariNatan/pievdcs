@@ -104,11 +104,22 @@ class Estado(models.Model):
     sigla_IBGE = models.IntegerField(
         validators=[MinValueValidator(11), MaxValueValidator(80)],
         verbose_name="Código IBGE",
-        unique=False,
+        unique=True,
         null=True, blank=True,
     )
+
+    limites = models.JSONField(
+        verbose_name="Limites Geográficos",
+        null=True, blank=True,
+    )
+    
     def __str__(self):
         return f'{self.sigla}'
+    
+    class Meta:
+        verbose_name = "Estado"
+        verbose_name_plural = "Estados"
+        ordering = ['nome', 'sigla']
 
 
 class Municipio(models.Model):
@@ -131,10 +142,48 @@ class Municipio(models.Model):
         unique=False,
         null=True, blank=True,
     )
+    limites = models.JSONField(
+        verbose_name="Limites Geográficos",
+        null=True, blank=True,
+    )
 
     def __str__(self):
         return f"{self.nome} ({self.estado})"
+    
+    class Meta:
+        verbose_name = "Município"
+        verbose_name_plural = "Municípios"
+        ordering = ['-id', 'nome']
+        
+class Bairro(models.Model):
+    """
+    Modelo para armazenar os dados do bairro.
+    """
+    nome = models.CharField(
+        max_length=100, 
+        verbose_name="Bairro",
+        
+    )
+    municipio = models.ForeignKey(
+        Municipio,
+        on_delete=models.PROTECT,
+        null=True, blank=False,
+        verbose_name="Município",
+        #related_name="bairros"
+    )
 
+    limites = models.JSONField(
+        verbose_name="Limites Geográficos",
+        null=True, blank=True,
+    )
+
+    def __str__(self):
+        return f"{self.nome} ({self.municipio.nome})"
+    
+    class Meta:
+        verbose_name = "Bairro"
+        verbose_name_plural = "Bairros"
+        ordering = ['-id', 'nome']
 
 
 
