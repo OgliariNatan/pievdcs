@@ -29,9 +29,9 @@ def calcula_tempo(funcao):
         
         print('----------------------------------------')
         print(f'Tempo: {time.strftime("%d-%m-%Y %H:%M:%S")}')
-        print(f'IP do cliente: {ip_cliente}')
+        print(f'\033[34mIP do cliente:\033[0m \033[33m{ip_cliente}\033[0m')
         #print(f'IP do servidor: {ip_servidor}\tHostname: {hostname_servidor}\tMAC: {uuid.getnode()}')
-        print(f"Tempo de execução do {funcao.__name__}: {fim - inicio:.4f} segundos")
+        print(f"\033[31mTempo de execução do {funcao.__name__}: {fim - inicio:.4f} segundos\033[0m")
         print('----------------------------------------')
         
         return resultado
@@ -54,7 +54,7 @@ def calcula_tempo_fun(funcao):
         print('\n'*4)
         print('---------- FUNÇÃO AUXILIAR -----------')
         print(f'Tempo: {time.strftime("%d-%m-%Y %H:%M:%S")}')
-        print(f"Execução de '{funcao.__name__}': {fim - inicio:.4f} segundos")
+        print(f"\033[31mExecução de '{funcao.__name__}': {fim - inicio:.4f} segundos\033[0m")
         print('--------------------------------------')
         
         return resultado

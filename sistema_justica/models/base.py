@@ -4,6 +4,8 @@ from seguranca_publica.models import *
 from django import forms
 from smart_selects.db_fields import ChainedForeignKey
 
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 from usuarios.models import CustomUser
 from django.utils import timezone
 
@@ -99,8 +101,25 @@ class Estado(models.Model):
         verbose_name="Nome do Estado",
         null=True, blank=False,
     )
+    sigla_IBGE = models.IntegerField(
+        validators=[MinValueValidator(11), MaxValueValidator(80)],
+        verbose_name="Código IBGE",
+        unique=True,
+        null=True, blank=True,
+    )
+
+    limites = models.JSONField(
+        verbose_name="Limites Geográficos",
+        null=True, blank=True,
+    )
+    
     def __str__(self):
         return f'{self.sigla}'
+    
+    class Meta:
+        verbose_name = "Estado"
+        verbose_name_plural = "Estados"
+        ordering = ['nome', 'sigla']
 
 
 class Municipio(models.Model):
@@ -117,10 +136,54 @@ class Municipio(models.Model):
         null=True, blank=False,
         verbose_name="Estado"
     )
+    codigo_ibge = models.IntegerField(
+        verbose_name="Código IBGE",
+        validators=[MinValueValidator(1100015), MaxValueValidator(9999999)],
+        unique=False,
+        null=True, blank=True,
+    )
+    limites = models.JSONField(
+        verbose_name="Limites Geográficos",
+        null=True, blank=True,
+    )
 
     def __str__(self):
         return f"{self.nome} ({self.estado})"
+    
+    class Meta:
+        verbose_name = "Município"
+        verbose_name_plural = "Municípios"
+        ordering = ['-id', 'nome']
+        
+class Bairro(models.Model):
+    """
+    Modelo para armazenar os dados do bairro.
+    """
+    nome = models.CharField(
+        max_length=100, 
+        verbose_name="Bairro",
+        
+    )
+    municipio = models.ForeignKey(
+        Municipio,
+        on_delete=models.PROTECT,
+        null=True, blank=False,
+        verbose_name="Município",
+        #related_name="bairros"
+    )
 
+    limites = models.JSONField(
+        verbose_name="Limites Geográficos",
+        null=True, blank=True,
+    )
+
+    def __str__(self):
+        return f"{self.nome} ({self.municipio.nome})"
+    
+    class Meta:
+        verbose_name = "Bairro"
+        verbose_name_plural = "Bairros"
+        ordering = ['-id', 'nome']
 
 
 
