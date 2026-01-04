@@ -17,6 +17,7 @@ from automacoes.gera_vitimas import criar_vitimas_aleatorias
 from automacoes.gera_agressores import criar_agressores_aleatorios
 from automacoes.gera_formularios_mp import criar_formularios_mp_aleatorios
 from automacoes.cria_grupos import criar_grupos_institucionais
+from automacoes.limites_IBGE_update import atualizar_limites_brasil
 
 
 
@@ -24,7 +25,10 @@ from automacoes.cria_grupos import criar_grupos_institucionais
 criar_estados()
 
 #Atribui todos os municipios aos estados no db
-cadastrar_municipios_por_estado()
+cadastrar_municipios_por_estado_ibge() 
+
+#Atribuicao dos limites geograficos no db
+atualizar_limites_brasil()
 
 #Atribui todas as comarcas do judiciario de SC no db
 cadastrar_comarcas_judiciario_sc()
