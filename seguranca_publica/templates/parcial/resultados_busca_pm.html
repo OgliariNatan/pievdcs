@@ -1,10 +1,24 @@
-<!-- URL: seguranca_publica/templates/parcial/resultados_busca_pm.html -->
+<!-- URL:  seguranca_publica/templates/parcial/resultados_busca_pm.html -->
 
 <div data-total="{{ total }}">
     {% if resultados %}
+    <!-- Header com contagem -->
+    <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
+        <div class="flex items-center gap-2">
+            <span class="bg-purple-600 text-white text-sm font-bold px-3 py-1.5 rounded-lg">
+                {{ total }}
+            </span>
+            <span class="text-gray-600 font-medium">registro(s) encontrado(s)</span>
+        </div>
+        <span class="text-sm text-gray-400">
+            <i class="fas fa-search mr-1"></i>
+            "{{ query }}"
+        </span>
+    </div>
+    
     <div class="space-y-4">
         {% for item in resultados %}
-        <div class="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+        <div class="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg hover:border-purple-300 transition-all duration-200 cursor-pointer"
              onclick="verDetalhesMedida({{ item.medida. ID }})">
             
             <!-- Cabeçalho da Medida -->
@@ -16,7 +30,7 @@
                     </span>
                     {% if item.medida.status %}
                     <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">
-                        {{ item.medida. status }}
+                        {{ item.medida.status }}
                     </span>
                     {% endif %}
                 </div>
@@ -57,7 +71,7 @@
                                     VÍTIMA
                                 </p>
                                 {% if item.encontrado_vitima %}
-                                <span class="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-bold animate-pulse">
+                                <span class="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
                                     <i class="fas fa-check mr-1"></i>MATCH
                                 </span>
                                 {% endif %}
@@ -73,10 +87,10 @@
                                 {% if item.medida.vitima.telefone %}
                                 <p>
                                     <i class="fas fa-phone w-4 text-gray-400"></i>
-                                    <span class="font-medium">Tel: </span> {{ item. medida.vitima.telefone }}
+                                    <span class="font-medium">Tel:</span> {{ item.medida.vitima.telefone }}
                                 </p>
                                 {% endif %}
-                                {% if item.medida.vitima.municipio %}
+                                {% if item.medida.vitima. municipio %}
                                 <p>
                                     <i class="fas fa-map-marker-alt w-4 text-gray-400"></i>
                                     {{ item.medida. vitima.municipio. nome }}/{{ item.medida.vitima.estado.sigla }}
@@ -107,7 +121,7 @@
                                     AGRESSOR
                                 </p>
                                 {% if item. encontrado_agressor %}
-                                <span class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-bold animate-pulse">
+                                <span class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
                                     <i class="fas fa-check mr-1"></i>MATCH
                                 </span>
                                 {% endif %}
@@ -118,18 +132,18 @@
                             <div class="mt-2 space-y-1 text-sm text-gray-600">
                                 <p>
                                     <i class="fas fa-id-card w-4 text-gray-400"></i>
-                                    <span class="font-medium">CPF:</span> {{ item.medida.agressor. cpf|default:"Não informado" }}
+                                    <span class="font-medium">CPF:</span> {{ item.medida.agressor.cpf|default:"Não informado" }}
                                 </p>
-                                {% if item.medida.agressor. telefone %}
+                                {% if item.medida.agressor.telefone %}
                                 <p>
                                     <i class="fas fa-phone w-4 text-gray-400"></i>
-                                    <span class="font-medium">Tel:</span> {{ item.medida. agressor.telefone }}
+                                    <span class="font-medium">Tel:</span> {{ item.medida.agressor. telefone }}
                                 </p>
                                 {% endif %}
-                                {% if item. medida.agressor.municipio %}
+                                {% if item.medida. agressor.municipio %}
                                 <p>
                                     <i class="fas fa-map-marker-alt w-4 text-gray-400"></i>
-                                    {{ item. medida.agressor.municipio.nome }}/{{ item. medida.agressor.estado.sigla }}
+                                    {{ item.medida. agressor.municipio.nome }}/{{ item.medida. agressor.estado. sigla }}
                                 </p>
                                 {% endif %}
                             </div>
@@ -157,9 +171,9 @@
             
             <!-- Footer com ação -->
             <div class="mt-4 flex justify-end">
-                <span class="text-purple-600 text-sm font-medium flex items-center gap-1 hover:text-purple-800">
+                <span class="text-purple-600 text-sm font-medium flex items-center gap-1 hover:text-purple-800 group">
                     Ver detalhes completos
-                    <i class="fas fa-arrow-right"></i>
+                    <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                 </span>
             </div>
         </div>
@@ -167,24 +181,22 @@
     </div>
     {% else %}
     <!-- Sem resultados -->
-    <div class="flex flex-col items-center justify-center py-12">
-        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-            <i class="fas fa-search text-gray-400 text-3xl"></i>
+    <div class="flex flex-col items-center justify-center py-16">
+        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <i class="fas fa-search text-gray-300 text-4xl"></i>
         </div>
-        <p class="text-gray-700 font-semibold text-lg mb-2">Nenhum registro encontrado</p>
-        <p class="text-gray-500 text-sm text-center max-w-md">
-            Não encontramos medidas protetivas para o termo "<strong>{{ query }}</strong>".
+        <p class="text-gray-700 font-semibold text-xl mb-2">Nenhum registro encontrado</p>
+        <p class="text-gray-500 text-sm text-center max-w-md mb-6">
+            Não encontramos medidas protetivas para o termo "<strong class="text-purple-600">{{ query }}</strong>". 
             Tente buscar com outro nome ou CPF.
         </p>
+        <div class="flex gap-3">
+            <button onclick="fecharModalResultados(); document.getElementById('campo-busca').focus();" 
+                class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 rounded-xl font-medium transition-colors flex items-center gap-2">
+                <i class="fas fa-search"></i>
+                Nova busca
+            </button>
+        </div>
     </div>
     {% endif %}
 </div>
-
-<script>
-    // Função para ver detalhes da medida (pode ser implementada posteriormente)
-    function verDetalhesMedida(medidaId) {
-        console.log('Ver detalhes da medida:', medidaId);
-        // Implementar navegação ou modal de detalhes
-        // window.location.href = `/seguranca-publica/medida/${medidaId}/`;
-    }
-</script>
