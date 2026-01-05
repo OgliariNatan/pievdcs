@@ -12,6 +12,7 @@ from .views.penal import (
 from .views.militar import (
     militar,
     consultas_informacao_vitima_agressor,
+    buscar_vitimas,
 )
 from .views.civil import civil
 from .views.cientifica import cientifica
@@ -32,6 +33,7 @@ urlpatterns = [
     #Instituição Militar
     path('militar/', militar, name='militar'),
     path('consultas_PM/', consultas_informacao_vitima_agressor, name='consultas_PM'),
+    path('buscar_vitimas/', buscar_vitimas, name='buscar_vitimas'),
     
     path('civil/', civil, name='civil'),
     path('cientifica/', cientifica, name='cientifica')

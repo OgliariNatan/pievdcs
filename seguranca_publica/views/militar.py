@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from .permission_group import grupos_permitidos
@@ -122,3 +122,83 @@ def consultas_informacao_vitima_agressor(request):
     }
     
     return render(request, "parcial/consultas_informacao_vitima_agressor.html", context)
+
+
+@checked_debug_decorador
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Polícia Militar'])
+def buscar_vitimas(request):
+    """
+    View para busca de vítimas e agressores via HTMX. 
+    Busca por nome ou CPF nas Medidas Protetivas.
+    """
+    query = request.GET.get('q', '').strip()
+    
+    if var_debug == 'True': 
+        print(f"Solicitação de consulta:  '{query}'")
+        print(f'Tamanho do query: {len(query)}')
+
+    if len(query) < 2:
+        return HttpResponse('''
+            <div class="text-center py-8 text-gray-500">
+                <i class="fas fa-info-circle text-2xl mb-2"></i>
+                <p>Digite pelo menos 2 caracteres para buscar... </p>
+            </div>
+        ''')
+    
+    # Busca nas Medidas Protetivas por vítima OU agressor (nome ou CPF)
+    medidas = FormularioMedidaProtetiva.objects. select_related(
+        'vitima',
+        'agressor',
+        'vitima__estado',
+        'vitima__municipio',
+        'agressor__estado',
+        'agressor__municipio',
+    ).prefetch_related(
+        'tipo_de_violencia'
+    ).filter(
+        # Busca por vítima
+        Q(vitima__nome__icontains=query) | 
+        Q(vitima__cpf__icontains=query) |
+        # Busca por agressor
+        Q(agressor__nome__icontains=query) | 
+        Q(agressor__cpf__icontains=query)
+    ).order_by('-data_solicitacao')[:20]  # Limita a 20 resultados
+    
+    if var_debug == 'True':
+        print(f"Medidas encontradas: {medidas. count()}")
+        for m in medidas: 
+            print(f"  - Vítima: {m.vitima.nome} | Agressor: {m.agressor. nome} | data: {m.data_solicitacao}")
+    
+    if not medidas. exists():
+        return HttpResponse('''
+            <div class="text-center py-8 text-gray-500">
+                <i class="fas fa-search text-2xl mb-2"></i>
+                <p>Nenhum registro encontrado para essa busca. </p>
+            </div>
+        ''')
+    
+    # Processar resultados para indicar se a busca foi por vítima ou agressor
+    resultados = []
+    for medida in medidas: 
+        # Verificar onde o termo foi encontrado
+        encontrado_vitima = (
+            query. lower() in medida.vitima.nome.lower() or 
+            query.lower() in (medida.vitima.cpf or '').lower()
+        )
+        encontrado_agressor = (
+            query. lower() in medida.agressor.nome.lower() or 
+            query.lower() in (medida.agressor.cpf or '').lower()
+        )
+        
+        resultados.append({
+            'medida':  medida,
+            'encontrado_vitima': encontrado_vitima,
+            'encontrado_agressor': encontrado_agressor,
+        })
+    
+    return render(request, 'seguranca_publica/parcial/resultados_busca_pm.html', {
+        'resultados': resultados,
+        'query':  query,
+        'total': len(resultados)
+    })
