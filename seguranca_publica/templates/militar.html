@@ -5,6 +5,31 @@
 
 {% block titulo %}{{ title }}{% endblock %}
 
+{% block style %}
+
+<style>
+    . htmx-indicator {
+    display:  none ! important;
+}
+
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+    display: flex ! important;
+}
+
+/* Fade effect durante requisição */
+#resultados-busca {
+    transition: opacity 0.2s ease-in-out;
+}
+
+. htmx-request #resultados-busca,
+.htmx-swapping #resultados-busca {
+    opacity: 0.5;
+}
+</style>
+
+{% endblock %}
+
 {% block main_content %}
 <!-- Toast/Popup container -->
 <div id="popup-sucesso-container" class="fixed top-6 right-6 z-[9999]"></div>
@@ -125,31 +150,43 @@
                 </div>
             </div>
 
-            <!--Remover aqui -->
-            <div class="flex flex-col sm: flex-row gap-3">
-                <div class="flex-1 relative">
-                    <input type="text"
-                        id="campo-busca"
-                        name="q"
-                        class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus: ring-purple-500 focus:border-transparent shadow-sm"
-                        placeholder="Digite o nome ou CPF para buscar..."
-                        hx-get="{% url 'seguranca_publica:buscar_vitimas' %}"
-                        hx-trigger="keyup changed delay:300ms, search"
-                        hx-target="#resultados-busca"
-                        hx-indicator="#loading-indicator">
-                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                </div>
-                <div class="flex gap-2">
-                    <button
-                        type="button"
-                        class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
-                        hx-get="{% url 'seguranca_publica:buscar_vitimas' %}"
-                        hx-include="#campo-busca"
-                        hx-target="#resultados-busca"
-                        hx-indicator="#loading-indicator">
-                        <i class="fas fa-search text-sm"></i>
-                        Pesquisar
-                    </button>
+            <!-- Barra de pesquisa moderna -->
+            <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-6 border-l-4 border-purple-600 mb-6">
+                <h3 class="text-lg font-semibold text-purple-600 mb-4 flex items-center gap-2">
+                    <i class="fas fa-search text-purple-500"></i>
+                    Pesquisar Registros
+                </h3>
+                
+                <div class="flex flex-col sm: flex-row gap-3">
+                    <div class="flex-1 relative">
+                        <input type="text"
+                            id="campo-busca"
+                            name="q"
+                            class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus: ring-purple-500 focus:border-transparent shadow-sm"
+                            placeholder="Digite o nome ou CPF para buscar..."
+                            hx-get="{% url 'seguranca_publica:buscar_vitimas' %}"
+                            hx-trigger="keyup changed delay:300ms, search"
+                            hx-target="#resultados-busca"
+                            hx-indicator="#loading-indicator">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <div class="flex gap-2">
+                        <button
+                            type="button"
+                            class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+                            hx-get="{% url 'seguranca_publica:buscar_vitimas' %}"
+                            hx-include="#campo-busca"
+                            hx-target="#resultados-busca"
+                            hx-indicator="#loading-indicator">
+                            <i class="fas fa-search text-sm"></i>
+                            Pesquisar
+                        </button>
+                        <button
+                                class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2" type="button" onclick="location.href='{% url 'seguranca_publica:consultas_PM' %}'">
+                                <i class="fa fa-globe"></i>
+                                Ver todos
+                            </button>
+                    </div>
                 </div>
             </div>
 
@@ -169,109 +206,10 @@
                 <!-- Os resultados serão carregados aqui via HTMX -->
             </div>
 
-            <!-- Container para modal de detalhes -->
-            <div id="modal-container"></div>
+    
 
-
-            <!-- Modal de Resultados da Busca -->
-            <div id="modal-resultados" class="fixed inset-0 z-50 hidden">
-                <!-- Overlay escuro -->
-                <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="fecharModalResultados()"></div>
-                
-                <!-- Container do Modal -->
-                <div class="absolute inset-4 sm:inset-8 lg:inset-16 flex items-start justify-center overflow-hidden">
-                    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-full overflow-hidden flex flex-col animate-modal-in">
-                        <!-- Header do Modal -->
-                        <div class="bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-4 flex items-center justify-between flex-shrink-0">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                                    <i class="fas fa-search text-white text-lg"></i>
-                                </div>
-                                <div>
-                                    <h2 class="text-white font-bold text-lg">Resultados da Busca</h2>
-                                    <p class="text-purple-200 text-sm" id="modal-subtitle">Pesquisando...</p>
-                                </div>
-                            </div>
-                            <button onclick="fecharModalResultados()" 
-                                class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-colors duration-200">
-                                <i class="fas fa-times text-white text-lg"></i>
-                            </button>
-                        </div>
-                        
-                        <!-- Corpo do Modal (resultados carregados via HTMX) -->
-                        <div class="flex-1 overflow-y-auto p-6" id="modal-body">
-                            <!-- Loading inicial -->
-                            <div class="flex flex-col items-center justify-center py-12">
-                                <svg class="animate-spin h-12 w-12 text-purple-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                <p class="text-gray-500 font-medium">Buscando registros...</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Footer do Modal -->
-                        <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex items-center justify-between flex-shrink-0">
-                            <p class="text-sm text-gray-500">
-                                <i class="fas fa-info-circle mr-1"></i>
-                                Clique em um registro para ver detalhes
-                            </p>
-                            <button onclick="fecharModalResultados()" 
-                                class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-xl font-semibold transition-colors duration-200">
-                                Fechar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            <!-- FIM DO REMOVER-->
-
-            <!-- Barra de pesquisa moderna -->
-            <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-6 border-l-4 border-purple-600 mb-6">
-                <h3 class="text-lg font-semibold text-purple-600 mb-4 flex items-center gap-2">
-                    <i class="fas fa-search text-purple-500"></i>
-                    Pesquisar Registros
-                </h3>
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="flex-1 relative">
-                        <input type="text"
-                            class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm"
-                            placeholder="Digite o nome ou CPF para buscar...">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    </div>
-                    <div class="flex gap-2">
-                        <button
-                            class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2">
-                            <i class="fas fa-search text-sm"></i>
-                            Pesquisar
-                        </button>
-                        <button
-                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2" type="button" onclick="location.href='{% url 'seguranca_publica:consultas_PM' %}'">
-                            <i class="fa fa-globe"></i>
-                            Ver todos
-                        </button>
-                    </div>
-                </div>
-            </div>
+           
+            
 
             <!-- Conteúdo informativo -->
             <div class="prose max-w-none text-gray-700 leading-relaxed">
@@ -312,7 +250,8 @@
                             <h4 class="font-semibold text-amber-800">Encaminhamentos</h4>
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Controle e acompanhamento de encaminhamentos entre diferentes setores.
+                            Maria lucia <span> 526.369.258-98 </span> <br>
+                            Jaqueline Sebben <span> 123.456.789-00 </span>
                         </p>
                     </div>
 
@@ -336,7 +275,8 @@
                             <h4 class="font-semibold text-green-800">Relatórios</h4>
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Geração de relatórios detalhados e análises estatísticas.
+                            <a href='#' class="hover:text-black">Atendimentos por período</a> <br>
+                            <a href="#" class="hover:text-black">Fiscalizações por período</a>
                         </p>
                     </div>
 
@@ -581,8 +521,4 @@
     });
 </script>
 
-{% endblock %}
-
-{% block script %}
-<!-- Scripts adicionais podem ser colocados aqui -->
 {% endblock %}

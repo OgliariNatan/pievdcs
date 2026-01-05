@@ -135,8 +135,10 @@ def buscar_vitimas(request):
     query = request.GET.get('q', '').strip()
     
     if var_debug == 'True': 
+        print(50*'=')
         print(f"Solicitação de consulta:  '{query}'")
         print(f'Tamanho do query: {len(query)}')
+        print(50*'=')
 
     if len(query) < 2:
         return HttpResponse('''
@@ -197,7 +199,7 @@ def buscar_vitimas(request):
             'encontrado_agressor': encontrado_agressor,
         })
     
-    return render(request, 'seguranca_publica/parcial/resultados_busca_pm.html', {
+    return render(request, 'parcial/resultados_busca_pm.html', {
         'resultados': resultados,
         'query':  query,
         'total': len(resultados)
