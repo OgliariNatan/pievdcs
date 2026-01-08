@@ -71,6 +71,19 @@ class FormularioMedidaProtetiva(models.Model):
         blank=True,
     )
 
+    relacionamento_familiar = models.CharField(
+        max_length=1,
+        choices=[
+            ('1', 'Pessoa que reside no mesmo lar '),
+            ('2', 'Ex-residente do lar'),
+            ('3', 'Empregado(a) doméstico(a)'),
+            ('4', 'Cuidador(a)'),
+            ('5', 'Outro'),
+        ],
+        verbose_name="Relacionamento Familiar",
+        null=True, blank=True
+    )
+
     comarca_competente = models.ForeignKey(
         ComarcasPoderJudiciario,
         on_delete=models.CASCADE,

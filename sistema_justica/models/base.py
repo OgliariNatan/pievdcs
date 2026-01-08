@@ -414,7 +414,6 @@ class Agressor_dados(models.Model):
         max_length=250,
         verbose_name="Nome Social",
         null=True, blank=True,
-        #help_text="Nome social da vítima",
     )
     nome_do_pai = models.CharField(
         max_length=250,
