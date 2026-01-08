@@ -135,10 +135,10 @@ def buscar_vitimas(request):
     query = request.GET.get('q', '').strip()
     
     if var_debug == 'True': 
-        print(50*'=')
+        print((50*'\033[33m-\033[0m'))
         print(f"Solicitação de consulta:  '{query}'")
         print(f'Tamanho do query: {len(query)}')
-        print(50*'=')
+        print(50*'\033[33m-\033[0m')
 
     if len(query) < 2:
         return HttpResponse('''
@@ -149,7 +149,7 @@ def buscar_vitimas(request):
         ''')
     
     # Busca nas Medidas Protetivas por vítima OU agressor (nome ou CPF)
-    medidas = FormularioMedidaProtetiva.objects. select_related(
+    medidas = FormularioMedidaProtetiva.objects.select_related(
         'vitima',
         'agressor',
         'vitima__estado',
@@ -198,6 +198,11 @@ def buscar_vitimas(request):
             'encontrado_vitima': encontrado_vitima,
             'encontrado_agressor': encontrado_agressor,
         })
+
+    if var_debug == 'True':
+        print(50*'\033[33m-\033[0m')
+        print(f"Valor dos resultados processados:\t{resultados}")
+        print(f"Total de resultados processados: {len(resultados)}")
     
     return render(request, 'parcial/resultados_busca_pm.html', {
         'resultados': resultados,

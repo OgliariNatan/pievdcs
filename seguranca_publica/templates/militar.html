@@ -604,9 +604,10 @@
         // Fazer requisição fetch
         fetch(`${URL_BUSCAR_VITIMAS}?q=${encodeURIComponent(query)}`, {
             method:  'GET',
+            credentials: 'same-origin',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'HX-Request':  'true'
+                'HX-Request':  'text/html'
             }
         })
         .then(response => {
@@ -676,7 +677,7 @@
         setTimeout(() => popup.remove(), 400);
     }
 
-    // ========== SIDEBAR ==========
+  
     
     function toggleSidebar() {
         const sidebar = document.querySelector('.sidebar-container');
@@ -689,7 +690,7 @@
         }
     }
 
-    // ========== EVENT LISTENERS ==========
+    
     
     document. addEventListener('DOMContentLoaded', function () {
         // Botão Pesquisar
