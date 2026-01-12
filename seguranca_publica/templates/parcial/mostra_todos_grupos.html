@@ -1,3 +1,6 @@
+<!-- seguranca_publica/templates/parcial/mostra_todos_grupos.html -->
+
+
 {% extends "base/base.html" %}
 {% load static %}
 
@@ -253,8 +256,11 @@
 
                 <!-- Ações -->
                 <div class="flex gap-2 mt-6 pt-4 border-t">
-                    <button onclick="editarAtendimento({{ grupo.id }})"
-                            class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+                    <button hx-get="{% url 'seguranca_publica:edita_atendimento_pp' grupo_id=grupo.id %}"
+                            hx-target="#modal-container"
+                            hx-swap="innerHTML"
+                            class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 
+                                transition font-semibold shadow-md hover:shadow-lg">
                         <i class="fas fa-edit mr-2"></i>Editar
                     </button>
                     
@@ -371,6 +377,12 @@
         if (e.key === 'Escape' || e.keyCode === 27) {
             fecharTodosModais();
         }
+        if (e.key === 'Escape' || e.keyCode === 27) {
+            const modalContainer = document.getElementById('modal-container');
+            if (modalContainer && modalContainer.innerHTML.trim() !== '') {
+                modalContainer.innerHTML = '';
+            }
+        }
     });
 
     function fecharTodosModais() {
@@ -380,11 +392,7 @@
         }
     }
 
-    function editarAtendimento(id) {
-        // TODO: Implementar edição de atendimento
-        alert(`Editar atendimento #${id} - Funcionalidade em desenvolvimento`);
-    }
-    
+  
     function gerarRelatorio(id) {
         // TODO: Implementar geração de relatório
         alert(`Gerar relatório do atendimento #${id} - Funcionalidade em desenvolvimento`);

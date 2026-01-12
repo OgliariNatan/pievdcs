@@ -8,6 +8,7 @@ from .views.penal import (
     buscar_atendimentos_por_cpf_ajax, 
     buscar_atendimentos_por_cpf_modal,
     mostra_todos_grupos_penal,
+    edita_atendimento_pp,
 )
 from .views.militar import (
     militar,
@@ -29,6 +30,7 @@ urlpatterns = [
     path('buscar-atendimentos-ajax/', buscar_atendimentos_por_cpf_ajax, name='buscar_atendimentos_por_cpf_ajax'),
     path('buscar-atendimentos-modal/', buscar_atendimentos_por_cpf_modal, name='buscar_atendimentos_por_cpf_modal'),
     path('mostra_todos_grupos_penal/', mostra_todos_grupos_penal, name='mostra_todos_grupos_penal'),
+    path('edita_atendimento_pp/<int:grupo_id>/', edita_atendimento_pp, name='edita_atendimento_pp'),
     
     #Instituição Militar
     path('militar/', militar, name='militar'),

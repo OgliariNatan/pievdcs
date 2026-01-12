@@ -4,7 +4,7 @@
     dir: seguranca_publica/views/penal.py
     @author: OgliariNatan
 """
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
@@ -65,7 +65,7 @@ def penal(request):
 
         # Atendimentos do mês anterior
         atendimentos_mes_anterior = ModeloPenal.objects.filter(
-            usuario=request.user,
+            #usuario=request.user,
             data_atendimento__gte=first_day_last_month,
             data_atendimento__lte=last_day_last_month
         ).count()
@@ -312,3 +312,60 @@ def mostra_todos_grupos_penal(request):
         'user': request.user,
     }
     return render(request, "parcial/mostra_todos_grupos.html", contexto)
+
+
+
+@checked_debug_decorador
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Polícia Penal'])
+def edita_atendimento_pp(request, grupo_id):
+    """
+    Edita um atendimento penal específico via HTMX.
+    """
+    try:
+        grupo = ModeloPenal.objects.prefetch_related('agressores_atendidos', 'usuario').get(id=grupo_id)
+    except ModeloPenal.DoesNotExist:
+        return HttpResponse(
+            '<div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-lg text-center">'
+            '<p class="text-sm text-red-700"><i class="fas fa-exclamation-triangle mr-2"></i>'
+            'Atendimento não encontrado.</p></div>',
+            status=404
+        )
+
+    if request.method == 'POST':
+        form = ModeloPenalForm(request.POST, instance=grupo)
+        if form.is_valid():
+            atendimento = form.save(commit=False)
+            atendimento.usuario = request.user
+            atendimento.save()
+            form.save_m2m()
+            
+            # Retornar script que fecha modal e mostra sucesso
+            return HttpResponse(
+                '<script>'
+                'exibirPopupSucesso("✅ Atendimento atualizado com sucesso!", "sucesso");'
+                'document.getElementById("modal-container").innerHTML = "";'
+                'htmx.ajax("GET", "' + reverse('seguranca_publica:mostra_todos_grupos_penal') + '", '
+                '{target: "#lista-grupos", swap: "innerHTML"});'
+                '</script>'
+            )
+        else:
+            # Re-renderizar modal com erros
+            contexto = {
+                'title': f'Editar Atendimento #{grupo_id}',
+                'form': form,
+                'grupo': grupo,
+                'user': request.user,
+            }
+            return render(request, 'parcial/penal/edita_atendimento.html', contexto)
+    
+    else:  # GET request - renderizar modal
+        form = ModeloPenalForm(instance=grupo)
+
+    contexto = {
+        'title': f'Editar Atendimento #{grupo_id}',
+        'form': form,
+        'grupo': grupo,
+        'user': request.user,
+    }
+    return render(request, 'parcial/penal/edita_atendimento.html', contexto)
