@@ -29,6 +29,7 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 # Application definition
 
 INSTALLED_APPS = [
+    'django_htmx', #Para usar HTMX
     "daphne",  
     "channels",
     "django.contrib.admin",
@@ -72,6 +73,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'corsheaders.middleware.CorsMiddleware',  # Middleware para CORS
     'MAIN.middleware.logs_pers.APILogMiddleware',  # Middleware personalizado para logs
+    'django_htmx.middleware.HtmxMiddleware', # Middleware para HTMX
 ]
 
 # define aonde sera armagenado as mensagens

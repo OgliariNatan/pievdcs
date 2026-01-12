@@ -8,10 +8,12 @@ from .views.penal import (
     buscar_atendimentos_por_cpf_ajax, 
     buscar_atendimentos_por_cpf_modal,
     mostra_todos_grupos_penal,
+    edita_atendimento_pp,
 )
 from .views.militar import (
     militar,
     consultas_informacao_vitima_agressor,
+    buscar_vitimas,
 )
 from .views.civil import civil
 from .views.cientifica import cientifica
@@ -28,10 +30,12 @@ urlpatterns = [
     path('buscar-atendimentos-ajax/', buscar_atendimentos_por_cpf_ajax, name='buscar_atendimentos_por_cpf_ajax'),
     path('buscar-atendimentos-modal/', buscar_atendimentos_por_cpf_modal, name='buscar_atendimentos_por_cpf_modal'),
     path('mostra_todos_grupos_penal/', mostra_todos_grupos_penal, name='mostra_todos_grupos_penal'),
+    path('edita_atendimento_pp/<int:grupo_id>/', edita_atendimento_pp, name='edita_atendimento_pp'),
     
     #Instituição Militar
     path('militar/', militar, name='militar'),
     path('consultas_PM/', consultas_informacao_vitima_agressor, name='consultas_PM'),
+    path('buscar_vitimas/', buscar_vitimas, name='buscar_vitimas'),
     
     path('civil/', civil, name='civil'),
     path('cientifica/', cientifica, name='cientifica')

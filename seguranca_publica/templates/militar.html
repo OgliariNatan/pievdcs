@@ -1,11 +1,158 @@
+<!-- URL:  seguranca_publica/templates/militar. html -->
 {% extends "base/base.html" %}
 {% load static %}
+{% load django_htmx %}
 
 {% block titulo %}{{ title }}{% endblock %}
+
+{% block style %}
+<style>
+    /* ========== HTMX Indicator ========== */
+    .htmx-indicator {
+        display: none ! important;
+    }
+
+    . htmx-request . htmx-indicator,
+    .htmx-request. htmx-indicator {
+        display:  flex !important;
+    }
+
+    /* Fade effect durante requisição no modal */
+    #modal-body {
+        transition:  opacity 0.2s ease-in-out;
+    }
+
+    . htmx-request #modal-body,
+    .htmx-swapping #modal-body {
+        opacity:  0.5;
+    }
+
+    /* ========== Animações do Modal ========== */
+    @keyframes modalIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes modalOut {
+        from {
+            opacity:  1;
+            transform: translateY(0) scale(1);
+        }
+        to {
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+        }
+    }
+
+    @keyframes overlayIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes overlayOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+
+    . animate-modal-in {
+        animation: modalIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .animate-modal-out {
+        animation: modalOut 0.25s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .animate-overlay-in {
+        animation: overlayIn 0.3s ease-out both;
+    }
+
+    .animate-overlay-out {
+        animation: overlayOut 0.25s ease-in both;
+    }
+
+    /* Scrollbar customizada para o modal */
+    #modal-body::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #modal-body::-webkit-scrollbar-track {
+        background:  #f1f1f1;
+        border-radius: 4px;
+    }
+
+    #modal-body::-webkit-scrollbar-thumb {
+        background:  rgba(139, 92, 246, 0.5);
+        border-radius: 4px;
+    }
+
+    #modal-body::-webkit-scrollbar-thumb:hover {
+        background:  rgba(139, 92, 246, 0.7);
+    }
+</style>
+{% endblock %}
 
 {% block main_content %}
 <!-- Toast/Popup container -->
 <div id="popup-sucesso-container" class="fixed top-6 right-6 z-[9999]"></div>
+
+<!-- ========== MODAL DE RESULTADOS DA BUSCA (HTMX Target) ========== -->
+<div id="modal-resultados" class="fixed inset-0 z-50 hidden">
+    <!-- Overlay escuro -->
+    <div id="modal-overlay" class="absolute inset-0 bg-black/60 backdrop-blur-sm animate-overlay-in" onclick="fecharModalResultados()"></div>
+    
+    <!-- Container do Modal -->
+    <div class="absolute inset-4 sm:inset-6 lg:inset-12 flex items-start justify-center pt-4 sm:pt-8 overflow-hidden pointer-events-none">
+        <div id="modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-full overflow-hidden flex flex-col animate-modal-in pointer-events-auto">
+            <!-- Header do Modal -->
+            <div class="bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-4 flex items-center justify-between flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-search text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-white font-bold text-lg">Resultados da Busca</h2>
+                        <p class="text-purple-200 text-sm" id="modal-subtitle">Pesquisando... </p>
+                    </div>
+                </div>
+                <button onclick="fecharModalResultados()" 
+                    class="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-colors duration-200 group">
+                    <i class="fas fa-times text-white text-lg group-hover:rotate-90 transition-transform duration-200"></i>
+                </button>
+            </div>
+            
+            <!-- Corpo do Modal (resultados carregados via HTMX) -->
+            <div class="flex-1 overflow-y-auto p-6 bg-gray-50" id="modal-body">
+                <!-- Loading inicial -->
+                <div id="modal-loading" class="flex flex-col items-center justify-center py-16">
+                    <svg class="animate-spin h-12 w-12 text-purple-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p class="text-gray-500 font-medium">Buscando registros...</p>
+                </div>
+            </div>
+            
+            <!-- Footer do Modal -->
+            <div class="bg-white px-6 py-4 border-t border-gray-200 flex items-center justify-between flex-shrink-0">
+                <p class="text-sm text-gray-500">
+                    <i class="fas fa-info-circle mr-1 text-purple-400"></i>
+                    Clique em um registro para ver detalhes
+                </p>
+                <button onclick="fecharModalResultados()" 
+                    class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2.5 rounded-xl font-semibold transition-colors duration-200 flex items-center gap-2">
+                    <i class="fas fa-times text-sm"></i>
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="flex min-h-[80vh] bg-gray-50">
     <!-- Sidebar responsiva com efeito hover -->
@@ -33,8 +180,7 @@
             <a href="#"
                 class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item">
                 <div class="w-6 h-6 flex items-center justify-center">
-                    <i
-                        class="fas fa-hand-holding-heart text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                    <i class="fas fa-hand-holding-heart text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
                 </div>
                 <span class="sidebar-label whitespace-nowrap font-medium">
                     Atendimentos Realizados
@@ -42,20 +188,16 @@
             </a>
 
             <a href="{% url 'encaminhamentos' %}"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item relative">
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover: bg-white/10 transition-all duration-200 group/item relative">
                 <div class="w-6 h-6 flex items-center justify-center">
-                    <i
-                        class="fas fa-share-square text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                    <i class="fas fa-share-square text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
                 </div>
                 <span class="sidebar-label whitespace-nowrap font-medium">
                     Encaminhamentos
                 </span>
-                <span
-                    class="sidebar-badge bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded-full min-w-[1.5rem] text-center"
+                <span class="sidebar-badge bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded-full min-w-[1. 5rem] text-center"
                     id="span_encaminhamentos">{{ encaminhamentos }}</span>
-                <!-- Badge para sidebar collapsed -->
-                <span
-                    class="collapsed-badge absolute -top-1 -right-1 bg-amber-400 text-amber-900 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
+                <span class="collapsed-badge absolute -top-1 -right-1 bg-amber-400 text-amber-900 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
                     style="font-size: 10px;">{{ encaminhamentos }}</span>
             </a>
 
@@ -67,20 +209,16 @@
                 <span class="sidebar-label whitespace-nowrap font-medium">
                     Notificações
                 </span>
-                <span
-                    class="sidebar-badge bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[1.5rem] text-center"
+                <span class="sidebar-badge bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[1.5rem] text-center"
                     id="span_alert">{{ alert }}</span>
-                <!-- Badge para sidebar collapsed -->
-                <span
-                    class="collapsed-badge absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
+                <span class="collapsed-badge absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
                     style="font-size: 10px;">{{ alert }}</span>
             </a>
 
             <a href="{% url 'relatorios' %}"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item">
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover: bg-white/10 transition-all duration-200 group/item">
                 <div class="w-6 h-6 flex items-center justify-center">
-                    <i
-                        class="fas fa-chart-line text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                    <i class="fas fa-chart-line text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
                 </div>
                 <span class="sidebar-label whitespace-nowrap font-medium">
                     Relatórios
@@ -123,29 +261,37 @@
                 </div>
             </div>
 
-            <!-- Barra de pesquisa moderna -->
+            <!-- Barra de pesquisa moderna com HTMX para POPUP -->
             <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-6 border-l-4 border-purple-600 mb-6">
                 <h3 class="text-lg font-semibold text-purple-600 mb-4 flex items-center gap-2">
                     <i class="fas fa-search text-purple-500"></i>
                     Pesquisar Registros
                 </h3>
+                
                 <div class="flex flex-col sm:flex-row gap-3">
                     <div class="flex-1 relative">
                         <input type="text"
-                            class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm"
-                            placeholder="Digite o nome ou CPF para buscar...">
+                            id="campo-busca"
+                            name="q"
+                            class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus: ring-purple-500 focus:border-transparent shadow-sm"
+                            placeholder="Digite o nome ou CPF para buscar..."
+                            autocomplete="off">
                         <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                     </div>
                     <div class="flex gap-2">
                         <button
+                            type="button"
+                            id="btn-pesquisar"
                             class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2">
                             <i class="fas fa-search text-sm"></i>
                             Pesquisar
                         </button>
                         <button
-                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2" type="button" onclick="location.href='{% url 'seguranca_publica:consultas_PM' %}'">
-                            <i class="fas fa-plus text-sm"></i>
-                            Cadastrar
+                            type="button"
+                            class="bg-green-600 hover: bg-green-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover: shadow-xl transition-all duration-200 flex items-center gap-2"
+                            onclick="location.href='{% url 'seguranca_publica:consultas_PM' %}'">
+                            <i class="fa fa-globe"></i>
+                            Ver todos
                         </button>
                     </div>
                 </div>
@@ -159,12 +305,12 @@
                         Rede Catarina
                     </h3>
                     <p class="text-gray-700 mb-2">
-                        Implementar funcionalidade para a <span class="font-semibold text-blue-600">rede
-                            catarina</span>. Algo do tipo, cadastrar a vitima na rede catariana, entrar em contato com a
-                        vítima, responder alguma demanda da vítima.
+                        Implementar funcionalidade para a <span class="font-semibold text-blue-600"> <a href='https://www.pm.sc.gov.br/paginas/rede-catarina' target='_blank'> rede
+                            catarina</a></span>.  Algo do tipo, cadastrar a vitima na rede catariana, entrar em contato com a
+                        vítima, responder alguma demanda da vítima. 
                     </p>
                     <p class="text-gray-600 text-sm">
-                        Use as ferramentas acima para pesquisar registros existentes ou cadastrar novos casos.
+                        Use as ferramentas acima para pesquisar registros existentes ou cadastrar novos casos. 
                     </p>
                 </div>
 
@@ -178,7 +324,7 @@
                             <h4 class="font-semibold text-purple-800">Atendimentos</h4>
                         </div>
                         <p class="text-gray-600 text-2xl leading-relaxed">
-                            10 <span class="text-gray-400 text-xs">este mês.</span>
+                            10 <span class="text-gray-400 text-xs">este mês. </span>
                         </p>
                     </div>
 
@@ -190,7 +336,8 @@
                             <h4 class="font-semibold text-amber-800">Encaminhamentos</h4>
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Controle e acompanhamento de encaminhamentos entre diferentes setores.
+                            Maria lucia <span> 526. 369.258-98 </span> <br>
+                            Jaqueline Sebben <span> 123.456.789-00 </span>
                         </p>
                     </div>
 
@@ -214,7 +361,8 @@
                             <h4 class="font-semibold text-green-800">Relatórios</h4>
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Geração de relatórios detalhados e análises estatísticas.
+                            <a href='#' class="hover:text-black">Atendimentos por período</a> <br>
+                            <a href="#" class="hover: text-black">Fiscalizações por período</a>
                         </p>
                     </div>
 
@@ -226,7 +374,7 @@
                             <h4 class="font-semibold text-blue-800">Segurança</h4>
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Dados protegidos com criptografia e acesso controlado por níveis.
+                            Dados protegidos com criptografia e acesso controlado por níveis. 
                         </p>
                     </div>
 
@@ -253,12 +401,12 @@
 
 <style>
     /* Estilos para o hover da sidebar */
-    .sidebar-container {
+    . sidebar-container {
         width: 4rem;
         transition: width 0.3s ease-in-out;
     }
 
-    .sidebar-container:hover {
+    . sidebar-container:hover {
         width: 18rem;
     }
 
@@ -272,16 +420,16 @@
     }
 
     /* Mostrar labels quando hover na sidebar */
-    .sidebar-container:hover .sidebar-label {
+    . sidebar-container:hover .sidebar-label {
         opacity: 1;
         transform: translateX(0);
     }
 
     /* Badges expandidos */
-    .sidebar-badge {
+    . sidebar-badge {
         opacity: 0;
-        transform: translateX(-10px);
-        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        transform:  translateX(-10px);
+        transition:  opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
         margin-left: auto;
     }
 
@@ -296,17 +444,16 @@
         transition: opacity 0.3s ease-in-out;
     }
 
-    .sidebar-container:hover .collapsed-badge {
+    .sidebar-container:hover . collapsed-badge {
         opacity: 0;
     }
 
     /* Animações personalizadas */
     @keyframes fadeInUp {
         from {
-            opacity: 0;
+            opacity:  0;
             transform: translateY(30px) scale(0.95);
         }
-
         to {
             opacity: 1;
             transform: translateY(0) scale(1);
@@ -315,22 +462,21 @@
 
     @keyframes fadeOutUp {
         from {
-            opacity: 1;
+            opacity:  1;
             transform: translateY(0) scale(1);
         }
-
         to {
             opacity: 0;
             transform: translateY(-20px) scale(0.95);
         }
     }
 
-    .animate-fade-in-up {
+    . animate-fade-in-up {
         animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
     }
 
     /* Scrollbar customizada */
-    .sidebar-container::-webkit-scrollbar {
+    . sidebar-container::-webkit-scrollbar {
         width: 4px;
     }
 
@@ -340,21 +486,21 @@
 
     .sidebar-container::-webkit-scrollbar-thumb {
         background: rgba(255, 255, 255, 0.3);
-        border-radius: 2px;
+        border-radius:  2px;
     }
 
-    .sidebar-container::-webkit-scrollbar-thumb:hover {
+    .sidebar-container::-webkit-scrollbar-thumb: hover {
         background: rgba(255, 255, 255, 0.5);
     }
 
     /* Responsividade para mobile */
-    @media (max-width: 1024px) {
+    @media (max-width:  1024px) {
         .sidebar-container {
-            width: 4rem;
+            width:  4rem;
         }
 
-        .sidebar-container.mobile-expanded {
-            width: 18rem;
+        .sidebar-container. mobile-expanded {
+            width:  18rem;
         }
 
         .sidebar-container.mobile-expanded .sidebar-label {
@@ -362,34 +508,147 @@
             transform: translateX(0);
         }
 
-        .sidebar-container.mobile-expanded .sidebar-badge {
+        .sidebar-container.mobile-expanded . sidebar-badge {
             opacity: 1;
-            transform: translateX(0);
+            transform:  translateX(0);
         }
 
-        .sidebar-container.mobile-expanded .collapsed-badge {
+        .sidebar-container. mobile-expanded .collapsed-badge {
             opacity: 0;
         }
     }
 </style>
 
 <script>
-    // Função para exibir popup de sucesso
+    // ========== CONFIGURAÇÃO ==========
+    const URL_BUSCAR_VITIMAS = "{% url 'seguranca_publica:buscar_vitimas' %}";
+    let termoBuscaAtual = '';
+    let debounceTimer = null;
+
+    // ========== FUNÇÕES DO MODAL ==========
+    
+    function abrirModalResultados() {
+        const modal = document.getElementById('modal-resultados');
+        const overlay = document.getElementById('modal-overlay');
+        const content = document.getElementById('modal-content');
+        
+        modal.classList.remove('hidden');
+        overlay.classList.remove('animate-overlay-out');
+        overlay.classList.add('animate-overlay-in');
+        content.classList.remove('animate-modal-out');
+        content.classList.add('animate-modal-in');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function fecharModalResultados() {
+        const modal = document.getElementById('modal-resultados');
+        const overlay = document.getElementById('modal-overlay');
+        const content = document.getElementById('modal-content');
+        
+        overlay.classList.remove('animate-overlay-in');
+        overlay.classList.add('animate-overlay-out');
+        content.classList.remove('animate-modal-in');
+        content.classList. add('animate-modal-out');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            document.body.style. overflow = '';
+        }, 250);
+    }
+
+    function mostrarLoadingModal(query) {
+        document.getElementById('modal-subtitle').textContent = `Buscando por "${query}"... `;
+        document.getElementById('modal-body').innerHTML = `
+            <div class="flex flex-col items-center justify-center py-16">
+                <svg class="animate-spin h-12 w-12 text-purple-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p class="text-gray-500 font-medium">Buscando registros...</p>
+            </div>
+        `;
+    }
+
+    function mostrarErroModal(mensagem) {
+        document.getElementById('modal-subtitle').textContent = 'Erro na busca';
+        document.getElementById('modal-body').innerHTML = `
+            <div class="flex flex-col items-center justify-center py-16">
+                <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-3xl"></i>
+                </div>
+                <p class="text-gray-700 font-semibold text-lg mb-2">Erro na busca</p>
+                <p class="text-gray-500 text-sm text-center max-w-md">${mensagem}</p>
+                <button onclick="executarBusca()" class="mt-4 bg-purple-600 hover: bg-purple-700 text-white px-6 py-2 rounded-xl font-medium transition-colors">
+                    <i class="fas fa-redo mr-2"></i>Tentar novamente
+                </button>
+            </div>
+        `;
+    }
+
+    // ========== FUNÇÃO PRINCIPAL DE BUSCA ==========
+    
+    function executarBusca() {
+        const query = document.getElementById('campo-busca').value.trim();
+        
+        if (query. length < 2) {
+            exibirPopupSucesso('Digite pelo menos 2 caracteres para buscar. ', 'aviso');
+            return;
+        }
+        
+        termoBuscaAtual = query;
+        
+        // Abrir modal e mostrar loading
+        abrirModalResultados();
+        mostrarLoadingModal(query);
+        
+        // Fazer requisição fetch
+        fetch(`${URL_BUSCAR_VITIMAS}?q=${encodeURIComponent(query)}`, {
+            method:  'GET',
+            credentials: 'same-origin',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'HX-Request':  'text/html'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erro HTTP: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(html => {
+            // Injetar resultado no modal
+            document.getElementById('modal-body').innerHTML = html;
+            
+            // Atualizar subtítulo
+            const totalElement = document.getElementById('modal-body').querySelector('[data-total]');
+            if (totalElement) {
+                const total = totalElement.getAttribute('data-total');
+                document.getElementById('modal-subtitle').textContent = `${total} resultado(s) para "${termoBuscaAtual}"`;
+            } else {
+                document.getElementById('modal-subtitle').textContent = `Resultados para "${termoBuscaAtual}"`;
+            }
+        })
+        .catch(error => {
+            console.error('Erro na busca:', error);
+            mostrarErroModal('Não foi possível completar a pesquisa. Verifique sua conexão e tente novamente.');
+        });
+    }
+
+    // ========== FUNÇÕES DE POPUP/TOAST ==========
+    
     function exibirPopupSucesso(mensagem, tipo = 'sucesso') {
         const container = document.getElementById('popup-sucesso-container');
-        container.innerHTML = '';
 
-        // Configurações por tipo
         const configs = {
             sucesso: { bg: 'bg-gradient-to-r from-green-500 to-green-600', icon: 'fa-check-circle' },
             erro: { bg: 'bg-gradient-to-r from-red-500 to-red-600', icon: 'fa-exclamation-circle' },
             info: { bg: 'bg-gradient-to-r from-blue-500 to-blue-600', icon: 'fa-info-circle' },
-            aviso: { bg: 'bg-gradient-to-r from-amber-500 to-amber-600', icon: 'fa-exclamation-triangle' }
+            aviso:  { bg: 'bg-gradient-to-r from-amber-500 to-amber-600', icon: 'fa-exclamation-triangle' }
         };
 
         const config = configs[tipo] || configs.sucesso;
 
-        // Criar popup
         const popup = document.createElement('div');
         popup.className = `${config.bg} text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in-up mb-3 min-w-[280px] max-w-[400px] backdrop-blur-sm border border-white/20`;
         popup.innerHTML = `
@@ -404,7 +663,6 @@
 
         container.appendChild(popup);
 
-        // Auto-remove após 5 segundos
         setTimeout(() => {
             if (popup.parentNode) {
                 popup.style.animation = 'fadeOutUp 0.4s ease-in-out forwards';
@@ -413,34 +671,72 @@
         }, 5000);
     }
 
-    // Função para fechar popup
     function fecharPopup(button) {
         const popup = button.closest('.animate-fade-in-up');
         popup.style.animation = 'fadeOutUp 0.4s ease-in-out forwards';
         setTimeout(() => popup.remove(), 400);
     }
 
-    // Controle do sidebar em mobile
+  
+    
     function toggleSidebar() {
         const sidebar = document.querySelector('.sidebar-container');
         const overlay = document.getElementById('sidebar-overlay');
 
         if (window.innerWidth < 1024) {
             sidebar.classList.toggle('mobile-expanded');
-            overlay.classList.toggle('opacity-0');
+            overlay. classList.toggle('opacity-0');
             overlay.classList.toggle('pointer-events-none');
         }
     }
 
-    // Event listeners
-    document.addEventListener('DOMContentLoaded', function () {
+    
+    
+    document. addEventListener('DOMContentLoaded', function () {
+        // Botão Pesquisar
+        document.getElementById('btn-pesquisar').addEventListener('click', function() {
+            executarBusca();
+        });
+        
+        // Enter no campo de busca
+        document.getElementById('campo-busca').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                executarBusca();
+            }
+        });
+        
+        // Busca com debounce ao digitar (opcional - descomente se quiser busca automática)
+        /*
+        document.getElementById('campo-busca').addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            const query = this.value. trim();
+            
+            if (query. length >= 2) {
+                debounceTimer = setTimeout(() => {
+                    executarBusca();
+                }, 500);
+            }
+        });
+        */
+        
         // Sidebar overlay click
         document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar);
 
+        // Fechar modal com ESC
+        document. addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('modal-resultados');
+                if (! modal.classList.contains('hidden')) {
+                    fecharModalResultados();
+                }
+            }
+        });
+
         // Comportamento em mobile
-        const sidebar = document.querySelector('.sidebar-container');
+        const sidebar = document.querySelector('. sidebar-container');
         if (window.innerWidth < 1024) {
-            sidebar.addEventListener('mouseenter', () => {
+            sidebar. addEventListener('mouseenter', () => {
                 sidebar.classList.add('mobile-expanded');
                 document.getElementById('sidebar-overlay').classList.remove('opacity-0', 'pointer-events-none');
             });
@@ -450,17 +746,14 @@
                 document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none');
             });
         }
-
-        // Exemplo de uso do popup (remova em produção)
-        // Simular uma ação de sucesso após 2 segundos
-        // setTimeout(() => {
-        //     exibirPopupSucesso('Dados carregados com sucesso!', 'sucesso');
-        // }, 2000);
     });
+    
+    // Função global para ver detalhes (usada no template de resultados)
+    function verDetalhesMedida(medidaId) {
+        console.log('Ver detalhes da medida:', medidaId);
+        exibirPopupSucesso(`Carregando detalhes da Medida #${medidaId}...`, 'info');
+    }
 </script>
 
 {% endblock %}
 
-{% block script %}
-<!-- Scripts adicionais podem ser colocados aqui -->
-{% endblock %}

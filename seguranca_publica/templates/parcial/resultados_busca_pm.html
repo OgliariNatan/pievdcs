@@ -1,0 +1,202 @@
+<!-- URL:  seguranca_publica/templates/parcial/resultados_busca_pm.html -->
+
+<div data-total="{{ total }}">
+    {% if resultados %}
+    <!-- Header com contagem -->
+    <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
+        <div class="flex items-center gap-2">
+            <span class="bg-purple-600 text-white text-sm font-bold px-3 py-1.5 rounded-lg">
+                {{ total }}
+            </span>
+            <span class="text-gray-600 font-medium">registro(s) encontrado(s)</span>
+        </div>
+        <span class="text-sm text-gray-400">
+            <i class="fas fa-search mr-1"></i>
+            "{{ query }}"
+        </span>
+    </div>
+    
+    <div class="space-y-4">
+        {% for item in resultados %}
+        <div class="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-lg hover:border-purple-300 transition-all duration-200 cursor-pointer"
+             onclick="verDetalhesMedida({{ item.medida. ID }})">
+            
+            <!-- Cabeçalho da Medida -->
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+                <div class="flex items-center gap-3">
+                    <span class="bg-purple-600 text-white px-4 py-1. 5 rounded-lg text-sm font-bold">
+                        <i class="fas fa-file-alt mr-1"></i>
+                        Medida #{{ item.medida.ID }}
+                    </span>
+                    {% if item.medida.status %}
+                    <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">
+                        {{ item.medida.status }}
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-gray-500">
+                        <i class="fas fa-calendar-alt mr-1"></i>
+                        {{ item.medida.data_solicitacao|date:"d/m/Y" }}
+                    </p>
+                    {% if item.medida.hora_solicitacao %}
+                    <p class="text-xs text-gray-400">
+                        <i class="fas fa-clock mr-1"></i>
+                        {{ item.medida.hora_solicitacao }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Grid com Vítima e Agressor -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <!-- Card da Vítima -->
+                <div class="p-4 rounded-xl transition-all duration-200
+                    {% if item.encontrado_vitima %}
+                        bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-400 shadow-green-100 shadow-md
+                    {% else %}
+                        bg-gray-50 border border-gray-200
+                    {% endif %}">
+                    
+                    <div class="flex items-start gap-3">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0
+                            {% if item.encontrado_vitima %}bg-green-500{% else %}bg-green-100{% endif %}">
+                            <i class="fas fa-user-shield text-xl {% if item.encontrado_vitima %}text-white{% else %}text-green-600{% endif %}"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <p class="text-xs font-bold uppercase tracking-wide
+                                    {% if item.encontrado_vitima %}text-green-700{% else %}text-green-600{% endif %}">
+                                    VÍTIMA
+                                </p>
+                                {% if item.encontrado_vitima %}
+                                <span class="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                                    <i class="fas fa-check mr-1"></i>MATCH
+                                </span>
+                                {% endif %}
+                            </div>
+                            <h4 class="font-bold text-gray-800 text-lg truncate" title="{{ item.medida.vitima. nome }}">
+                                {{ item.medida.vitima. nome }}
+                            </h4>
+                            <div class="mt-2 space-y-1 text-sm text-gray-600">
+                                <p>
+                                    <i class="fas fa-id-card w-4 text-gray-400"></i>
+                                    <span class="font-medium">CPF:</span> {{ item.medida.vitima.cpf|default:"Não informado" }}
+                                </p>
+                                {% if item.medida.vitima.telefone %}
+                                <p>
+                                    <i class="fas fa-phone w-4 text-gray-400"></i>
+                                    <span class="font-medium">Tel:</span> {{ item.medida.vitima.telefone }}
+                                </p>
+                                {% endif %}
+                                {% if item.medida.vitima. municipio %}
+                                <p>
+                                    <i class="fas fa-map-marker-alt w-4 text-gray-400"></i>
+                                    {{ item.medida. vitima.municipio. nome }}/{{ item.medida.vitima.estado.sigla }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card do Agressor -->
+                <div class="p-4 rounded-xl transition-all duration-200
+                    {% if item.encontrado_agressor %}
+                        bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-400 shadow-red-100 shadow-md
+                    {% else %}
+                        bg-gray-50 border border-gray-200
+                    {% endif %}">
+                    
+                    <div class="flex items-start gap-3">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0
+                            {% if item. encontrado_agressor %}bg-red-500{% else %}bg-red-100{% endif %}">
+                            <i class="fas fa-user-slash text-xl {% if item.encontrado_agressor %}text-white{% else %}text-red-600{% endif %}"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <p class="text-xs font-bold uppercase tracking-wide
+                                    {% if item.encontrado_agressor %}text-red-700{% else %}text-red-600{% endif %}">
+                                    AGRESSOR
+                                </p>
+                                {% if item. encontrado_agressor %}
+                                <span class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                                    <i class="fas fa-check mr-1"></i>MATCH
+                                </span>
+                                {% endif %}
+                            </div>
+                            <h4 class="font-bold text-gray-800 text-lg truncate" title="{{ item.medida.agressor.nome }}">
+                                {{ item.medida.agressor.nome }}
+                            </h4>
+                            <div class="mt-2 space-y-1 text-sm text-gray-600">
+                                <p>
+                                    <i class="fas fa-id-card w-4 text-gray-400"></i>
+                                    <span class="font-medium">CPF:</span> {{ item.medida.agressor.cpf|default:"Não informado" }}
+                                </p>
+                                {% if item.medida.agressor.telefone %}
+                                <p>
+                                    <i class="fas fa-phone w-4 text-gray-400"></i>
+                                    <span class="font-medium">Tel:</span> {{ item.medida.agressor. telefone }}
+                                </p>
+                                {% endif %}
+                                {% if item.medida. agressor.municipio %}
+                                <p>
+                                    <i class="fas fa-map-marker-alt w-4 text-gray-400"></i>
+                                    {{ item.medida. agressor.municipio.nome }}/{{ item.medida. agressor.estado. sigla }}
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tipos de Violência -->
+            <div class="mt-4 pt-3 border-t border-gray-100">
+                <p class="text-xs text-gray-500 font-semibold uppercase mb-2">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                    Tipos de Violência
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    {% for tipo in item. medida.tipo_de_violencia. all %}
+                    <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-medium">
+                        <i class="fas fa-tag mr-1"></i>{{ tipo. nome }}
+                    </span>
+                    {% empty %}
+                    <span class="text-gray-400 text-sm italic">Não especificado</span>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Footer com ação -->
+            <div class="mt-4 flex justify-end">
+                <span class="text-purple-600 text-sm font-medium flex items-center gap-1 hover:text-purple-800 group">
+                    Ver detalhes completos
+                    <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Sem resultados -->
+    <div class="flex flex-col items-center justify-center py-16">
+        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <i class="fas fa-search text-gray-300 text-4xl"></i>
+        </div>
+        <p class="text-gray-700 font-semibold text-xl mb-2">Nenhum registro encontrado</p>
+        <p class="text-gray-500 text-sm text-center max-w-md mb-6">
+            Não encontramos medidas protetivas para o termo "<strong class="text-purple-600">{{ query }}</strong>". 
+            Tente buscar com outro nome ou CPF.
+        </p>
+        <div class="flex gap-3">
+            <button onclick="fecharModalResultados(); document.getElementById('campo-busca').focus();" 
+                class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 rounded-xl font-medium transition-colors flex items-center gap-2">
+                <i class="fas fa-search"></i>
+                Nova busca
+            </button>
+        </div>
+    </div>
+    {% endif %}
+</div>

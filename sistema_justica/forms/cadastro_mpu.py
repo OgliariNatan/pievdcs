@@ -19,7 +19,9 @@ class CadastroMedidaProtetiva(forms.ModelForm):
                 'class': 'form-control form-control-sm border border-gray-400 rounded-xl'
             }),
             
-            'tipo_de_violencia': forms.CheckboxSelectMultiple(),
+            'tipo_de_violencia': forms.CheckboxSelectMultiple(
+                attrs={'class': 'form-check-input'}
+            ),
 
             'solicitada_mpu': ToggleSwitchWidget(size='xs',
                 active_color=cor_ativa_toggle,
@@ -27,7 +29,7 @@ class CadastroMedidaProtetiva(forms.ModelForm):
                 active_text='Solicitada',
                 inactive_text='Não Solicitada'
             ),  # Widget personalizado
-            #Relacionado a parte 1: Condutas de violência psicológica
+            #parte 1: Condutas de violência psicológica
             'critica_aparencia': ToggleSwitchWidget(size='xs',
                 active_color=cor_ativa_toggle,
                 inactive_color=cor_inativa_toggle,
