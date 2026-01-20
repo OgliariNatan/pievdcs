@@ -598,51 +598,6 @@ responsabilidade civil em conexão com o Programa, a menos que uma garantia ou
 assunção de responsabilidade acompanhe uma cópia do Programa em troca de uma 
 taxa.
 
-                     FIM DOS TERMOS E CONDIÇÕES
-
-            Como Aplicar Estes Termos aos Seus Novos Programas
-
-  Se você desenvolver um novo programa, e quer que ele seja do maior uso possível 
-ao público, a melhor maneira de conseguir isso é torná-lo software livre que 
-qualquer um pode redistribuir e alterar sob estes termos. 
-
-  Para fazê-lo, anexe os seguintes avisos ao programa.  É mais seguro anexá-los 
-ao início de cada arquivo-fonte para mais efetivamente declarar a exclusão de 
-garantia; e cada arquivo deve ter pelo menos a linha de "copyright" e um 
-ponteiro para onde o aviso completo é encontrado.
-
-    <uma linha para dar o nome do programa e uma breve ideia do que ele faz. >
-    Copyright (C) <ano>  <nome do autor>
-
-    Este programa é software livre:  você pode redistribuí-lo e/ou modificá-lo
-    sob os termos da GNU Affero General Public License como publicada pela
-    Free Software Foundation, seja a versão 3 da Licença, ou
-    (a seu critério) qualquer versão posterior.
-
-    Este programa é distribuído na esperança de que seja útil,
-    mas SEM QUALQUER GARANTIA; sem mesmo a garantia implícita de
-    COMERCIABILIDADE ou ADEQUAÇÃO A UM PROPÓSITO PARTICULAR.  Veja a
-    GNU Affero General Public License para mais detalhes. 
-
-    Você deve ter recebido uma cópia da GNU Affero General Public License
-    junto com este programa. Se não, veja <https://www.gnu.org/licenses/>. 
-
-Adicione também informações sobre como contatá-lo por correio eletrônico e 
-correio físico. 
-
-  Se seu software pode interagir com usuários remotamente através de uma rede 
-de computadores, você também deve garantir que ele forneça uma maneira para os 
-usuários obterem seu fonte.  Por exemplo, se seu programa é uma aplicação web, 
-sua interface poderia exibir um link "Fonte" que leva os usuários a um arquivo 
-do código.  Há muitas maneiras que você poderia oferecer fonte, e diferentes 
-soluções serão melhores para diferentes programas; veja a seção 13 para os 
-requisitos específicos. 
-
-  Você também deve fazer com que seu empregador (se você trabalha como 
-programador) ou escola, se houver, assine uma "renúncia de direitos autorais" 
-para o programa, se necessário. Para mais informações sobre isso, e como aplicar 
-e seguir a GNU AGPL, veja <https://www.gnu.org/licenses/>. 
-
 ═══════════════════════════════════════════════════════════════════════════════
 
 NOTA ADICIONAL PARA O PROJETO PIEVDCS:
@@ -675,7 +630,7 @@ Catarina - Comarca de Maravilha, como parte de um projeto de interesse público
 destinado ao enfrentamento da violência doméstica e crimes sexuais. 
 
 Copyright (c) 2025 Natan Ogliari (@OgliariNatan) e Poder Judiciário do Estado 
-de Santa Catarina - Comarca de Maravilha. 
+de Santa Catarina.
 
 O uso deste software deve respeitar a dignidade humana e os direitos 
 fundamentais.  Qualquer instituição pública ou privada que utilize, modifique ou 
