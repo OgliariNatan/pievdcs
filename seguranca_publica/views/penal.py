@@ -97,6 +97,9 @@ def penal(request):
         variacao = 0
         grupos = []
 
+    casos_ativos= (256, '+12')
+    tipo_atendimentos = tipo_atendimento.objects.count()
+
     contexto = {
         'title': 'Polícia Penal',
         'description': 'This page provides information about the penal system.',
@@ -105,9 +108,11 @@ def penal(request):
         'qtd_atendimentos': atendimentos_mes,
         'qtd_atendimentos_anterior': atendimentos_mes_anterior,
         'variacao_atendimentos': variacao,
-        'tipo_atendimentos': tipo_atendimento.objects.count(),
+        'tipo_atendimentos': tipo_atendimentos,
         'grupos': grupos,
         'user': request.user,
+        'casos_ativos': casos_ativos[0],
+        'casos_ativos_percent': casos_ativos[1],
     }
     return render(request, "penal.html", contexto)
    
