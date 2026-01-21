@@ -5,10 +5,28 @@
 
 ## Arquitetura e Organização
 
+### instrucoes para PR
+- Nunca crie pull requests
+- Para verifiação de código, use a branch `63-ogliari
+- Nunca use o modo `Agent`
+- Sempre responda em português brasileiro
+
+
+### Convenção de decodificação Python/Django
+- Segue PEP 8 para estilo de código Python
+- Segue PEP 257 para estilo de docstrings Python
+- Escreve comentarios claros e concisos em português brasileiro para cada funçao e classe
+- divida o código em funções e classes pequenas e reutilizáveis
+- sempre priorize a legibilidade e a clareza do código
+- sempre priorize um codigo curto e simples
+- Use linhas em branco para separar funções, classes e blocos de código, quando apropriado.
+
+
+
 ### Estrutura Principal dos Apps Django
 - `MAIN/` - App central com dashboard, relatórios e modelos compartilhados
 - `sistema_justica/` - Sistema de justiça (Judiciário, Ministério Público, Defensoria Pública)
-- `seguranca_publica/` - Segurança pública (Polícia Militar, Polícia Civil, Polícia Penal)
+- `seguranca_publica/` - Segurança pública (Polícia Militar, Polícia Civil, Polícia Penal, Polícia cientiífica)
 - `municipio/` - Serviços municipais (CRAS, CAPS, Conselhos Municipais)
 - `usuarios/` - Gerenciamento de usuários e permissões
 
@@ -27,8 +45,6 @@ class Vitima_dados(models.Model):  # Nomenclatura em português brasileiro
     data_nascimento = models.DateField(verbose_name="Data de Nascimento*")
     # Usa ForeignKeys encadeadas Estado/Município
 ```
-
-## Fluxos de Desenvolvimento
 
 ### Configuração do Ambiente
 ```bash
@@ -95,6 +111,7 @@ staticfiles/
 - Estados/Municípios carregados via scripts de automação a partir de GeoJSON
 - Smart selects para dropdowns dependentes (Estado→Município)
 - Coordenadas de mapa armazenadas para visualizações do dashboard
+- Coordenadas de bairro para mapas detalhados
 
 ### Comunicação Entre Aplicações
 - Modelos compartilhados em `sistema_justica.models.base`
@@ -112,6 +129,9 @@ staticfiles/
 - `MAIN/settings.py` - Configuração completa do Django
 - `automacoes/` - Scripts de carregamento de dados para configuração inicial
 - `requirements.txt` - Dependências da pilha tecnológica
+- `usuarios` - Cadastro de usuarios e permissões baseadas em instituições
+- `mensageria/` - Sistema de mensagens em tempo real entre usuários com uso do Django Channels, daphne e Redis
+   
 
 ## Notas de Desenvolvimento
 - Projeto usa GitHub Projects para rastreamento de issues
