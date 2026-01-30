@@ -1,0 +1,252 @@
+{% for item in medidas_protetivas %}
+{% with medida=item.medida %}
+<div class="medida-card bg-white border-b hover:bg-gray-50 transition-colors duration-150"
+     data-data="{{ medida.data_solicitacao|date:'Y-m-d' }}"
+     data-reincidencia-agressor="{{ item.outras_medidas_agressor }}"
+     data-reincidencia-vitima="{{ item.outras_medidas_vitima }}">
+    
+    <!-- Cabeçalho do Card -->
+    <div class="bg-gradient-to-r from-red-600 to-red-400 px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="bg-white rounded-full p-3">
+                    <i class="fas fa-gavel text-2xl text-red-600"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">
+                        Medida Protetiva n.{{ medida.ID }}
+                    </h3>
+                    <p class="text-red-50 text-sm">
+                        <i class="far fa-calendar-alt mr-1"></i>
+                        Cadastrada em: {{ medida.data_solicitacao|date:"d/m/Y H:i" }}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Badges de Alerta -->
+            <div class="flex gap-2">
+                {% if item.outras_medidas_agressor > 0 %}
+                <span class="badge-alerta bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                    Agressor: +{{ item.outras_medidas_agressor }} MP
+                </span>
+                {% endif %}
+                
+                {% if item.outras_medidas_vitima > 0 %}
+                <span class="badge-alerta bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                    <i class="fas fa-exclamation-circle mr-1"></i>
+                    Vítima: +{{ item.outras_medidas_vitima }} MP
+                </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Corpo do Card -->
+    <div class="p-6">
+        <!-- Seção da Vítima -->
+        <div class="mb-6 bg-purple-50 rounded-xl p-5 border-l-4 border-purple-500">
+            <div class="flex items-center justify-between mb-4">
+                <h4 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                    <i class="fas fa-user-injured text-purple-600"></i>
+                    Informações da Vítima
+                </h4>
+                
+                {% if item.outras_medidas_vitima > 0 %}
+                <button onclick="toggleDetalhes('vitima', {{ medida.id }})"
+                        class="px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
+                    <i class="fas fa-history mr-1"></i>
+                    Ver Histórico ({{ item.outras_medidas_vitima }})
+                </button>
+                {% endif %}
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <p class="text-xs text-gray-500 uppercase mb-1">Nome Completo</p>
+                    <p class="font-semibold text-gray-800">{{ medida.vitima.nome }}</p>
+                </div>
+                
+                <div>
+                    <p class="text-xs text-gray-500 uppercase mb-1">CPF</p>
+                    <p class="font-semibold text-gray-800">{{ medida.vitima.cpf }}</p>
+                </div>
+                
+                <div>
+                    <p class="text-xs text-gray-500 uppercase mb-1">Data de Nascimento</p>
+                    <p class="font-semibold text-gray-800">{{ medida.vitima.data_nascimento|date:"d/m/Y" }}</p>
+                </div>
+                
+                {% if medida.vitima.telefone %}
+                <div>
+                    <p class="text-xs text-gray-500 uppercase mb-1">Telefone</p>
+                    <p class="font-semibold text-gray-800">
+                        <i class="fa fa-phone" aria-hidden="true"></i> {{ medida.vitima.telefone }}
+                    </p>
+                </div>
+                {% endif %}
+                
+                {% if medida.vitima.email %}
+                <div>
+                    <p class="text-xs text-gray-500 uppercase mb-1">E-mail</p>
+                    <p class="font-semibold text-gray-800 text-sm">{{ medida.vitima.email }}</p>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Endereço da Vítima -->
+            {% if medida.vitima.endereco %}
+            <div class="mt-4 pt-4 border-t border-purple-200">
+                <p class="text-xs text-gray-500 uppercase mb-2 flex items-center gap-1">
+                    <i class="fas fa-map-marker-alt"></i>Endereço
+                </p>
+                <p class="text-gray-700 text-sm">
+                    {{ medida.vitima.endereco }}
+                    {% if medida.vitima.bairro %}, {{ medida.vitima.bairro }}{% endif %}
+                    {% if medida.vitima.municipio %} - {{ medida.vitima.municipio.nome }}/{{ medida.vitima.estado.sigla }}{% endif %}
+                    {% if medida.vitima.cep %} - CEP: {{ medida.vitima.cep }}{% endif %}
+                </p>
+            </div>
+            {% endif %}
+            
+            <!-- Histórico da Vítima -->
+            <div id="historico-vitima-{{ medida.id }}" class="hidden mt-4 pt-4 border-t border-purple-200">
+                <p class="text-sm font-semibold text-purple-700 mb-2">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Esta vítima possui {{ item.outras_medidas_vitima }} outra(s) medida(s) protetiva(s)
+                </p>
+                <button onclick="carregarHistoricoVitima('{{ medida.vitima.cpf }}')"
+                        class="text-sm text-purple-600 hover:text-purple-800 underline">
+                    Ver detalhes completos
+                </button>
+            </div>
+        </div>
+
+        <!-- Seção do Agressor -->
+        <div class="mb-6 bg-orange-50 rounded-xl p-5 border-l-4 border-orange-500">
+            <div class="flex items-center justify-between mb-4">
+                <h4 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                    <i class="fas fa-user-slash text-orange-600"></i>
+                    Informações do Agressor
+                </h4>
+                
+                {% if item.outras_medidas_agressor > 0 %}
+                <button onclick="toggleDetalhes('agressor', {{ medida.id }})"
+                        class="px-3 py-1 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition text-sm">
+                    <i class="fas fa-history mr-1"></i>
+                    Ver Histórico ({{ item.outras_medidas_agressor }})
+                </button>
+                {% endif %}
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <p class="text-xs text-gray-500 uppercase mb-1">Nome Completo</p>
+                    <p class="font-semibold text-gray-800">{{ medida.agressor.nome }}</p>
+                </div>
+                
+                <div>
+                    <p class="text-xs text-gray-500 uppercase mb-1">CPF</p>
+                    <p class="font-semibold text-gray-800">{{ medida.agressor.cpf }}</p>
+                </div>
+                
+                <div>
+                    <p class="text-xs text-gray-500 uppercase mb-1">Data de Nascimento</p>
+                    <p class="font-semibold text-gray-800">{{ medida.agressor.data_nascimento|date:"d/m/Y" }}</p>
+                </div>
+                
+                {% if medida.agressor.telefone %}
+                <div>
+                    <p class="text-xs text-gray-500 uppercase mb-1">Telefone</p>
+                    <p class="font-semibold text-gray-800"> 
+                        <i class="fa fa-phone" aria-hidden="true"></i> {{ medida.agressor.telefone }}
+                    </p>
+                </div>
+                {% endif %}
+                
+                {% if medida.agressor.email %}
+                <div>
+                    <p class="text-xs text-gray-500 uppercase mb-1">E-mail</p>
+                    <p class="font-semibold text-gray-800 text-sm">{{ medida.agressor.email }}</p>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Endereço do Agressor -->
+            {% if medida.agressor.endereco %}
+            <div class="mt-4 pt-4 border-t border-orange-200">
+                <p class="text-xs text-gray-500 uppercase mb-2 flex items-center gap-1">
+                    <i class="fas fa-map-marker-alt"></i>Endereço
+                </p>
+                <p class="text-gray-700 text-sm">
+                    {{ medida.agressor.endereco }}
+                    {% if medida.agressor.bairro %}, {{ medida.agressor.bairro }}{% endif %}
+                    {% if medida.agressor.municipio %} - {{ medida.agressor.municipio.nome }}/{{ medida.agressor.estado.sigla }}{% endif %}
+                    {% if medida.agressor.cep %} - CEP: {{ medida.agressor.cep }}{% endif %}
+                </p>
+            </div>
+            {% endif %}
+            
+            <!-- Histórico do Agressor -->
+            <div id="historico-agressor-{{ medida.id }}" class="hidden mt-4 pt-4 border-t border-orange-200">
+                <p class="text-sm font-semibold text-orange-700 mb-2">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                    Este agressor possui {{ item.outras_medidas_agressor }} outra(s) medida(s) protetiva(s)
+                </p>
+                <button onclick="carregarHistoricoAgressor('{{ medida.agressor.cpf }}')"
+                        class="text-sm text-orange-600 hover:text-orange-800 underline">
+                    Ver detalhes completos
+                </button>
+            </div>
+        </div>
+
+        <!-- Ações -->
+        <div class="flex gap-2 pt-4 border-t">
+            <button onclick="visualizarDetalhesCompletos({{ medida.id }})"
+                    class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+                <i class="fas fa-eye mr-2"></i>Consultar Atendimentos
+            </button>
+            
+            <button onclick="editarMedida({{ medida.id }})"
+                    class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold">
+                <i class="fas fa-edit mr-2"></i>Cadastrar Atendimento
+            </button>
+            
+            <button onclick="gerarRelatorioMedida({{ medida.id }})"
+                    class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-semibold">
+                <i class="fas fa-file-pdf mr-2"></i>Relatório
+            </button>
+        </div>
+    </div>
+</div>
+{% endwith %}
+{% empty %}
+<div class="bg-white p-12 text-center">
+    <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+    <h3 class="text-xl font-bold text-gray-700 mb-2">Nenhuma medida encontrada</h3>
+    <p class="text-gray-500">Não há medidas protetivas para exibir nesta página.</p>
+</div>
+{% endfor %}
+
+<!-- ✅ TRIGGER PARA SCROLL INFINITO -->
+{% if page_obj.has_next %}
+<div 
+    hx-get="?page={{ page_obj.next_page_number }}"
+    hx-trigger="intersect once"
+    hx-swap="afterend"
+    hx-target="this"
+    hx-indicator="#loading-indicator-{{ page_obj.number }}"
+    class="text-center py-8 scroll-trigger"
+    id="scroll-trigger-{{ page_obj.number }}"
+>
+    <div id="loading-indicator-{{ page_obj.number }}" class="htmx-indicator">
+        <div class="loading-spinner"></div>
+        <p class="text-gray-500 mt-4">Carregando mais registros...</p>
+    </div>
+</div>
+{% else %}
+<div class="text-center py-6 text-gray-500 border-t">
+    <i class="fas fa-check-circle text-2xl mb-2"></i>
+    <p>Todos os registros foram carregados ({{ page_obj.paginator.count }} medidas)</p>
+</div>
+{% endif %}

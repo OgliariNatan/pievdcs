@@ -13,6 +13,9 @@
 from sistema_justica.models import Estado
 
 def criar_estados():
+    """
+    Cria os estados brasileiros no banco de dados com seus respectivos códigos IBGE.
+    """
     estados = [
         ("AC", "Acre", 12),
         ("AL", "Alagoas", 27),
@@ -44,9 +47,12 @@ def criar_estados():
         ("EX", "Estrangeiro", None),
     ]
 
-    for sigla, nome, codigo in estados:
-        estado, created = Estado.objects.get_or_create(sigla=sigla, nome=nome, codigo=codigo)
+    for sigla, nome, sigla_ibge in estados:
+        estado, created = Estado.objects.get_or_create(
+            sigla=sigla,
+            defaults={'nome': nome, 'sigla_IBGE': sigla_ibge}
+        )
         if created:
-            print(f"Estado Criado: {nome} ({sigla})")
+            print(f"Estado Criado: {nome} ({sigla}) - Código IBGE: {sigla_ibge}")
         else:
             print(f"Estado Já Existente: {nome} ({sigla})")

@@ -18,6 +18,7 @@ from automacoes.gera_agressores import criar_agressores_aleatorios
 from automacoes.gera_formularios_mp import criar_formularios_mp_aleatorios
 from automacoes.cria_grupos import criar_grupos_institucionais
 from automacoes.limites_IBGE_update import atualizar_limites_brasil
+from automacoes.cria_tipos_violencia import criar_tipos_violencia
 
 
 
@@ -33,17 +34,20 @@ atualizar_limites_brasil()
 #Atribui todas as comarcas do judiciario de SC no db
 cadastrar_comarcas_judiciario_sc()
 
+# Cria tipos de violência no db
+criar_tipos_violencia()
+
 #Cria grupos institucionais no db
 criar_grupos_institucionais()
 
-#Cria 3500 vitimas aleatorias no db
-criar_vitimas_aleatorias(3500)
+#Cria x vitimas aleatorias no db
+criar_vitimas_aleatorias(1000)
 
-#Cria 2500 agressores aleatorios no db
-criar_agressores_aleatorios(2500)
+#Cria x agressores aleatorios no db
+criar_agressores_aleatorios(1500)
 
-#Cria 5000 formularios de medida protetiva aleatorios no db
-criar_formularios_mp_aleatorios(5000)
+#Cria x formularios de medida protetiva aleatorios no db
+criar_formularios_mp_aleatorios(2000)
 
 print('\n'*5)
 print("="*40)

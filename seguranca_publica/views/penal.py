@@ -7,7 +7,7 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from .permission_group import grupos_permitidos
 from django.template.loader import render_to_string
 from django.db.models import Func, F, Value, CharField
@@ -32,8 +32,8 @@ if var_debug == 'True':
     checked_debug_decorador_fun = calcula_tempo_fun
     
 else:
-    checked_debug_decorador = None
-    checked_debug_decorador_fun = None
+    checked_debug_decorador = lambda x: x
+    checked_debug_decorador_fun = lambda x: x
 
 """ Fim da configuraçao de decoradores para debug """
 
@@ -41,6 +41,7 @@ else:
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Polícia Penal'])
 def penal(request):
+
     try:
         notificacao_nao_lida = Notificacao.contar_nao_lidas_usuario(request.user)
     except Exception as e:
@@ -96,6 +97,9 @@ def penal(request):
         variacao = 0
         grupos = []
 
+    casos_ativos= (256, '+12')
+    tipo_atendimentos = tipo_atendimento.objects.count()
+
     contexto = {
         'title': 'Polícia Penal',
         'description': 'This page provides information about the penal system.',
@@ -104,11 +108,14 @@ def penal(request):
         'qtd_atendimentos': atendimentos_mes,
         'qtd_atendimentos_anterior': atendimentos_mes_anterior,
         'variacao_atendimentos': variacao,
-        'tipo_atendimentos': tipo_atendimento.objects.count(),
+        'tipo_atendimentos': tipo_atendimentos,
         'grupos': grupos,
         'user': request.user,
+        'casos_ativos': casos_ativos[0],
+        'casos_ativos_percent': casos_ativos[1],
     }
     return render(request, "penal.html", contexto)
+   
 
 
 
