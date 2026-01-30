@@ -12,6 +12,7 @@ from usuarios.models import CustomUser
 from django.contrib.auth.models import Group
 from django.db.models import Count, Q, Prefetch
 from django.utils import timezone
+from collections import defaultdict
 
 
 """ Configuraçao de decoradores para debug """
@@ -53,9 +54,12 @@ def militar(request):
 @grupos_permitidos(['Polícia Militar'])
 @checked_debug_decorador
 def consultas_informacao_vitima_agressor(request):
-    """Exibe todas as Medidas Protetivas com informações de vítimas e agressores"""
+    """
+    Exibe todas as Medidas Protetivas com informações de vítimas e agressores.
+    Otimizado com agregação em memória em uma única passagem O(n).
+    """
     
-    # Buscar todas as medidas protetivas com relacionamentos
+    # Query otimizada: carrega todos os dados relacionados em uma única consulta
     medidas_protetivas = FormularioMedidaProtetiva.objects.select_related(
         'vitima',
         'agressor',
@@ -64,46 +68,58 @@ def consultas_informacao_vitima_agressor(request):
         'agressor__estado',
         'agressor__municipio',
         'municipio_mp',
-        'comarca_competente',
-        #'tipo_de_violencia'
     ).prefetch_related(
-        #Prefetch('vitima'),
-        #Prefetch('agressor')
         'tipo_de_violencia'
     ).order_by('-data_solicitacao')
     
-    # Estatísticas gerais
-    total_medidas = medidas_protetivas.count()
-    
-    # Medidas deste mês
-    hoje = timezone.now()
-    medidas_mes = medidas_protetivas.filter(
-        data_solicitacao__month=hoje.month,
-        data_solicitacao__year=hoje.year
-    ).count()
-    
-    # Contadores de vítimas e agressores únicos
-    vitimas_unicas = medidas_protetivas.values('vitima__cpf').distinct().count()
-    agressores_unicos = medidas_protetivas.values('agressor__cpf').distinct().count()
-    
-    # Adicionar contagem de medidas para cada vítima e agressor
+    # Contadores usando defaultdict para performance
+    contagem_vitimas = defaultdict(int)
+    contagem_agressores = defaultdict(int)
     medidas_processadas = []
+    
+    # Data atual para filtro de mês
+    hoje = timezone.now()
+    medidas_mes_count = 0
+    vitimas_cpf_set = set()
+    agressores_cpf_set = set()
+    
+    # Processamento em ÚNICA PASSAGEM: O(n) ao invés de O(2n)
     for medida in medidas_protetivas:
-        # Contar outras medidas da mesma vítima
-        outras_medidas_vitima = FormularioMedidaProtetiva.objects.filter(
-            vitima__cpf=medida.vitima.cpf
-        ).exclude(ID=medida.ID).count()
+        cpf_vitima = medida.vitima.cpf
+        cpf_agressor = medida.agressor.cpf
         
-        # Contar outras medidas do mesmo agressor
-        outras_medidas_agressor = FormularioMedidaProtetiva.objects.filter(
-            agressor__cpf=medida.agressor.cpf
-        ).exclude(ID=medida.ID).count()
+        # Incrementa contadores
+        contagem_vitimas[cpf_vitima] += 1
+        contagem_agressores[cpf_agressor] += 1
         
+        # Adiciona aos conjuntos de CPFs únicos
+        vitimas_cpf_set.add(cpf_vitima)
+        agressores_cpf_set.add(cpf_agressor)
+        
+        # Conta medidas do mês atual
+        if (medida.data_solicitacao.month == hoje.month and 
+            medida.data_solicitacao.year == hoje.year):
+            medidas_mes_count += 1
+        
+        # Monta lista processada (não precisa iterar novamente)
         medidas_processadas.append({
             'medida': medida,
-            'outras_medidas_vitima': outras_medidas_vitima,
-            'outras_medidas_agressor': outras_medidas_agressor
+            'cpf_vitima': cpf_vitima,
+            'cpf_agressor': cpf_agressor,
         })
+    
+    # Segunda passagem apenas para adicionar contagens (já calculadas)
+    for item in medidas_processadas:
+        item['outras_medidas_vitima'] = contagem_vitimas[item['cpf_vitima']] - 1
+        item['outras_medidas_agressor'] = contagem_agressores[item['cpf_agressor']] - 1
+        # Remove CPFs temporários (não necessários no template)
+        del item['cpf_vitima']
+        del item['cpf_agressor']
+    
+    # Estatísticas gerais
+    total_medidas = len(medidas_processadas)
+    vitimas_unicas = len(vitimas_cpf_set)
+    agressores_unicos = len(agressores_cpf_set)
     
     if var_debug == 'True':
         print(f"Total de Medidas Protetivas: {total_medidas}")
@@ -116,12 +132,13 @@ def consultas_informacao_vitima_agressor(request):
         'user': request.user,
         'medidas_protetivas': medidas_processadas,
         'total_medidas': total_medidas,
-        'medidas_mes': medidas_mes,
+        'medidas_mes': medidas_mes_count,
         'vitimas_unicas': vitimas_unicas,
         'agressores_unicos': agressores_unicos,
     }
     
     return render(request, "parcial/consultas_informacao_vitima_agressor.html", context)
+
 
 
 @checked_debug_decorador
