@@ -138,14 +138,17 @@ def processar_medidas_pagina(page_obj):
     # Monta lista processada
     medidas_processadas = []
     for medida in page_obj:
+        # Calcula "outras medidas" excluindo a medida atual
+        total_vitima = contagem_vitimas.get(medida.vitima.cpf, 0)
+        total_agressor = contagem_agressores.get(medida.agressor.cpf, 0)
+        
         medidas_processadas.append({
             'medida': medida,
-            'outras_medidas_vitima': contagem_vitimas.get(medida.vitima.cpf, 1) - 1,
-            'outras_medidas_agressor': contagem_agressores.get(medida.agressor.cpf, 1) - 1,
+            'outras_medidas_vitima': max(0, total_vitima - 1),
+            'outras_medidas_agressor': max(0, total_agressor - 1),
         })
     
     return medidas_processadas
-
 
 @checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))

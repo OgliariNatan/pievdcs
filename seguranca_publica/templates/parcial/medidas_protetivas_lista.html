@@ -227,3 +227,26 @@
     <p class="text-gray-500">Não há medidas protetivas para exibir nesta página.</p>
 </div>
 {% endfor %}
+
+<!-- ✅ TRIGGER PARA SCROLL INFINITO -->
+{% if page_obj.has_next %}
+<div 
+    hx-get="?page={{ page_obj.next_page_number }}"
+    hx-trigger="intersect once"
+    hx-swap="afterend"
+    hx-target="this"
+    hx-indicator="#loading-indicator-{{ page_obj.number }}"
+    class="text-center py-8 scroll-trigger"
+    id="scroll-trigger-{{ page_obj.number }}"
+>
+    <div id="loading-indicator-{{ page_obj.number }}" class="htmx-indicator">
+        <div class="loading-spinner"></div>
+        <p class="text-gray-500 mt-4">Carregando mais registros...</p>
+    </div>
+</div>
+{% else %}
+<div class="text-center py-6 text-gray-500 border-t">
+    <i class="fas fa-check-circle text-2xl mb-2"></i>
+    <p>Todos os registros foram carregados ({{ page_obj.paginator.count }} medidas)</p>
+</div>
+{% endif %}

@@ -55,6 +55,14 @@
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
+    
+    .htmx-indicator {
+        display: none;
+    }
+    
+    .htmx-request .htmx-indicator {
+        display: block;
+    }
 </style>
 
 <div class="container mx-auto px-4 py-8">
@@ -188,28 +196,6 @@
         <div id="medidas-container">
             {% include 'parcial/medidas_protetivas_lista.html' %}
         </div>
-
-        <!-- Trigger para Scroll Infinito HTMX -->
-        {% if page_obj.has_next %}
-        <div 
-            hx-get="?page={{ page_obj.next_page_number }}"
-            hx-trigger="intersect once"
-            hx-swap="beforeend"
-            hx-target="#medidas-container"
-            hx-indicator="#loading-indicator"
-            class="text-center py-8"
-        >
-            <div id="loading-indicator" class="htmx-indicator">
-                <div class="loading-spinner"></div>
-                <p class="text-gray-500 mt-4">Carregando mais registros...</p>
-            </div>
-        </div>
-        {% else %}
-        <div class="text-center py-6 text-gray-500 border-t">
-            <i class="fas fa-check-circle text-2xl mb-2"></i>
-            <p>Todos os registros foram carregados</p>
-        </div>
-        {% endif %}
     </div>
 </div>
 
@@ -315,13 +301,17 @@
         }
     });
 
-    // Feedback visual ao carregar mais dados
+    // Feedback visual ao carregar mais dados com HTMX
     document.body.addEventListener('htmx:beforeRequest', function(evt) {
-        console.log('Carregando próxima página...');
+        console.log('🔄 Carregando próxima página...');
     });
 
     document.body.addEventListener('htmx:afterSwap', function(evt) {
-        console.log('Nova página carregada com sucesso');
+        console.log('✅ Nova página carregada com sucesso');
+    });
+
+    document.body.addEventListener('htmx:afterSettle', function(evt) {
+        console.log('✨ Conteúdo renderizado e animações concluídas');
     });
 </script>
 {% endblock %}
