@@ -12,7 +12,12 @@ from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from MAIN.views import home, relatorios, encaminhamentos, notificacoes, pre_visualizacao_conteudo, index_tailwind, CustomLoginView
+from MAIN.views import( 
+    home, 
+    relatorios, 
+    encaminhamentos, notificacoes, pre_visualizacao_conteudo, 
+    index_tailwind, CustomLoginView, api_tendencia_temporal
+)
 
 app_name = 'MAIN'
 
@@ -32,6 +37,7 @@ urlpatterns = [
     path("pre_visualizacao_conteudo/<int:pk>/", pre_visualizacao_conteudo, name="pre_visualizacao_conteudo"),
     
     path("relatorios/", relatorios, name="relatorios"),
+    path("relatorios/api/tendencia/", api_tendencia_temporal, name="api_tendencia_temporal"),
     path("encaminhamentos/", encaminhamentos, name="encaminhamentos"),
     path("notificacoes/<int:notificacoes>", notificacoes, name="notificacoes"),
     

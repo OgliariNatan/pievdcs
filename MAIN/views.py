@@ -519,6 +519,99 @@ def relatorios(request):
     
     return render(request, "relatorios.html", context)
 
+@login_required
+def api_tendencia_temporal(request):
+    """
+    Endpoint HTMX para retornar dados de tendência temporal filtrados
+    """
+    periodo = request.GET.get('periodo', 'Todos')
+    comarca = request.GET.get('comarca', '')
+    
+    hoje = timezone.now()
+    
+    # Calcular data de início baseado no período
+    if periodo == 'Semanal':
+        data_inicio = hoje - timedelta(days=7)
+        meses_total = 1
+    elif periodo == 'Mensal':
+        data_inicio = hoje.replace(day=1)
+        meses_total = 1
+    elif periodo == 'Anual':
+        data_inicio = hoje.replace(month=1, day=1)
+        meses_total = 12
+    else:  # Todos
+        data_inicio = hoje - timedelta(days=24*30)  # 24 meses
+        meses_total = 24
+    
+    # Querysets base
+    qs_pm = OcorrenciaMilitar.objects.filter(data_ocorrencia__gte=data_inicio)
+    qs_pc = OcorrenciaCivil.objects.filter(data__gte=data_inicio)
+    qs_mp = FormularioMedidaProtetiva.objects.filter(data_solicitacao__gte=data_inicio)
+    
+    # Aplicar filtro de comarca
+    if comarca and comarca != 'Todas':
+        qs_mp = qs_mp.filter(comarca_competente__nome=comarca)
+        # OcorrenciaMilitar e OcorrenciaCivil podem não ter comarca
+    
+    # Agregar por mês usando TruncMonth
+    from django.db.models.functions import TruncMonth
+    
+    dados_pm = qs_pm.annotate(
+        mes_ano=TruncMonth('data_ocorrencia')
+    ).values('mes_ano').annotate(
+        total=Count('id')
+    ).order_by('mes_ano')
+    
+    dados_pc = qs_pc.annotate(
+        mes_ano=TruncMonth('data')
+    ).values('mes_ano').annotate(
+        total=Count('id')
+    ).order_by('mes_ano')
+    
+    dados_mp = qs_mp.annotate(
+        mes_ano=TruncMonth('data_solicitacao')
+    ).values('mes_ano').annotate(
+        total=Count('ID')
+    ).order_by('mes_ano')
+    
+    # Consolidar dados
+    todos_meses = {}
+    
+    for item in dados_pm:
+        mes_key = item['mes_ano'].strftime('%Y-%m')
+        todos_meses[mes_key] = todos_meses.get(mes_key, 0) + item['total']
+    
+    for item in dados_pc:
+        mes_key = item['mes_ano'].strftime('%Y-%m')
+        todos_meses[mes_key] = todos_meses.get(mes_key, 0) + item['total']
+    
+    for item in dados_mp:
+        mes_key = item['mes_ano'].strftime('%Y-%m')
+        todos_meses[mes_key] = todos_meses.get(mes_key, 0) + item['total']
+    
+    # Formatar para frontend
+    meses_pt = {
+        1: 'Jan', 2: 'Fev', 3: 'Mar', 4: 'Abr', 
+        5: 'Mai', 6: 'Jun', 7: 'Jul', 8: 'Ago',
+        9: 'Set', 10: 'Out', 11: 'Nov', 12: 'Dez'
+    }
+    
+    labels = []
+    valores = []
+    
+    for mes_key in sorted(todos_meses.keys()):
+        ano, mes = mes_key.split('-')
+        label = f"{meses_pt[int(mes)]}/{ano[-2:]}"
+        labels.append(label)
+        valores.append(todos_meses[mes_key])
+    
+    return JsonResponse({
+        'labels': labels,
+        'data': valores,
+        'total': sum(valores),
+        'media': round(sum(valores) / len(valores), 1) if valores else 0
+    })
+
 
 #Destinado a recuperação de senha
 class CustomPasswordResetView:
