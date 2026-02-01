@@ -243,7 +243,7 @@ def processar_medidas_pagina(page_obj):
 @grupos_permitidos(['Polícia Militar'])
 def buscar_vitimas(request):
     """
-    Busca otimizada de vítimas e agressores via HTMX.
+    Busca otimizada de vítimas e agressores via HTMX/AJAX.
     Retorna até 20 resultados mais recentes.
     """
     query = request.GET.get('q', '').strip()
@@ -252,15 +252,17 @@ def buscar_vitimas(request):
         print(50 * '\033[33m-\033[0m')
         print(f"Solicitação de consulta: '{query}'")
         print(f'Tamanho do query: {len(query)}')
+        print(f'Headers da requisição: {dict(request.headers)}')
         print(50 * '\033[33m-\033[0m')
 
     if len(query) < 2:
-        return HttpResponse('''
-            <div class="text-center py-8 text-gray-500">
-                <i class="fas fa-info-circle text-2xl mb-2"></i>
-                <p>Digite pelo menos 2 caracteres para buscar...</p>
-            </div>
-        ''')
+        context = {
+            'resultados': [],
+            'query': query,
+            'total': 0,
+            'mensagem': 'Digite pelo menos 2 caracteres para buscar...'
+        }
+        return render(request, 'parcial/resultados_busca_pm.html', context)
     
     # Query otimizada com limite de 20 resultados
     medidas = FormularioMedidaProtetiva.objects.select_related(
@@ -283,14 +285,6 @@ def buscar_vitimas(request):
         print(f"Medidas encontradas: {medidas.count()}")
         for m in medidas:
             print(f"  - Vítima: {m.vitima.nome} | Agressor: {m.agressor.nome} | Data: {m.data_solicitacao}")
-    
-    if not medidas.exists():
-        return HttpResponse('''
-            <div class="text-center py-8 text-gray-500">
-                <i class="fas fa-search text-2xl mb-2"></i>
-                <p>Nenhum registro encontrado.</p>
-            </div>
-        ''')
     
     # Processar resultados identificando correspondências
     query_lower = query.lower()
@@ -315,9 +309,20 @@ def buscar_vitimas(request):
     if var_debug == 'True':
         print(50 * '\033[33m-\033[0m')
         print(f"Total de resultados processados: {len(resultados)}")
+        print(f"Renderizando template com {len(resultados)} registros")
     
-    return render(request, 'parcial/resultados_busca_pm.html', {
+    context = {
         'resultados': resultados,
         'query': query,
         'total': len(resultados)
-    })
+    }
+    
+    # Renderiza template completo
+    response = render(request, 'parcial/resultados_busca_pm.html', context)
+    
+    if var_debug == 'True':
+        print(f"✅ Resposta HTTP enviada com status {response.status_code}")
+        print(f"Content-Type: {response.get('Content-Type')}")
+        print(50 * '\033[33m-\033[0m')
+    
+    return response
