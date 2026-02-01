@@ -1,0 +1,45 @@
+<!-- filepath: /media/ogliari/backup_ssd/GitHub/pievdcs/MAIN/templates/partials/graficos_relatorios.html -->
+<!-- Partial para atualização HTMX dos gráficos -->
+
+<!-- Badge de filtros ativos -->
+{% if periodo_selecionado != 'Todos' or comarca_selecionada %}
+<div class="mb-4 p-3 bg-purple-100 rounded-lg flex items-center gap-2">
+    <i class="fas fa-filter text-purple-600"></i>
+    <span class="text-purple-800 font-medium">
+        Filtros ativos: 
+        {% if periodo_selecionado != 'Todos' %}Período: <strong>{{ periodo_selecionado }}</strong>{% endif %}
+        {% if comarca_selecionada %} | Comarca: <strong>{{ comarca_selecionada }}</strong>{% endif %}
+    </span>
+</div>
+{% endif %}
+
+<!-- Dados JSON para os gráficos -->
+{{ tendencia_data|json_script:"tendencia-data" }}
+{{ comarcas_com_mp|json_script:"comarcas_com_mp-data" }}
+{{ idades|json_script:"idades-data" }}
+{{ etnias|json_script:"etnias-data" }}
+{{ classeEconomica|json_script:"classe-data" }}
+{{ grauInstrucao|json_script:"grau-data" }}
+{{ parentesco_do_agressor|json_script:"parentesco-data" }}
+{{ Tipos_de_Violência|json_script:"violencia-data" }}
+
+<script>
+    // Recarregar gráficos após HTMX
+    (function() {
+        const tendencia = JSON.parse(document.getElementById('tendencia-data').textContent);
+        const comarcas = JSON.parse(document.getElementById('comarcas_com_mp-data').textContent);
+        const idades = JSON.parse(document.getElementById('idades-data').textContent);
+        const etnias = JSON.parse(document.getElementById('etnias-data').textContent);
+        const classe = JSON.parse(document.getElementById('classe-data').textContent);
+        const grau = JSON.parse(document.getElementById('grau-data').textContent);
+        const parentesco = JSON.parse(document.getElementById('parentesco-data').textContent);
+        const violencia = JSON.parse(document.getElementById('violencia-data').textContent);
+        
+        // Atualizar gráficos globais
+        if (typeof atualizarGraficos === 'function') {
+            atualizarGraficos({
+                tendencia, comarcas, idades, etnias, classe, grau, parentesco, violencia
+            });
+        }
+    })();
+</script>

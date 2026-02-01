@@ -1,54 +1,64 @@
+<!-- filepath: /media/ogliari/backup_ssd/GitHub/pievdcs/MAIN/templates/relatorios.html -->
 {% extends "base/base.html" %}
 {% load static %}
 
 {% block titulo %}{{ title }}{% endblock %}
+
 {% block head %}
+<!-- HTMX -->
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+<!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
 <style>
+    /* Indicador de loading HTMX */
+    .htmx-request .htmx-indicator {
+        display: flex !important;
+    }
+    
+    .htmx-indicator {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 100;
+    }
+    
+    .grafico-container {
+        position: relative;
+        min-height: 350px;
+    }
+    
+    .htmx-request .grafico-container canvas {
+        opacity: 0.3;
+    }
+    
+    /* Estilo do gráfico de tendência */
+    .tendencia-chart {
+        background: linear-gradient(180deg, rgba(139, 90, 159, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+    }
+    
+    /* Animação de pulse para loading */
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    
+    .loading-pulse {
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    /* Estilos do mapa */
     .custom-div-icon {
         background: transparent !important;
         border: none !important;
-        box-shadow: none !important;
-    }
-
-    .leaflet-popup-content-wrapper {
-        border-radius: 12px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-        border: none;
-    }
-
-    .leaflet-popup-tip {
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .custom-popup .leaflet-popup-content {
-        margin: 12px;
-    }
-
-    .custom-popup .leaflet-popup-content-wrapper {
-        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    }
-
-    /* Animação sutil para os marcadores */
-    .custom-div-icon>div {
-        transition: all 0.3s ease;
-    }
-
-    .custom-div-icon:hover>div {
-        transform: rotate(-45deg) scale(1.15);
-    }
-
-    .custom-div-icon:hover>div>div:first-child {
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5) !important;
-    }
-
-    /* Estilo adicional para marcadores em formato clássico */
-    .custom-div-icon {
-        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
     }
 </style>
+
 <script>
     tailwind.config = {
         theme: {
@@ -68,309 +78,234 @@
 {% block main_content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-    <!-- Frases -->
-    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border-primary">
-        <h2 class="text-xl font-semibold mb-4 text-[#8B5A9F]">
-            <i class="fas fa-solid fa-brain"></i>
-            Cuidados que importam</h2>
-        <blockquote id="frase-block" class="space-y-4 text-gray-700">
-            <!-- Frase será inserida via JS -->
-        </blockquote>
-        <div class="flex justify-end mt-4 space-x-2">
-            <button id="prev-frase"
-                class="px-3 py-1 rounded bg-purple-400 text-white hover:bg-purple-600 transition">Anterior</button>
-            <button id="next-frase"
-                class="px-3 py-1 rounded bg-purple-400 text-white hover:bg-purple-600 transition">Próxima</button>
+    <!-- Frases Motivacionais -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border-l-4 border-primary">
+        <h2 class="text-xl font-semibold mb-4 text-primary">
+            <i class="fas fa-brain mr-2"></i>
+            Cuidados que importam
+        </h2>
+        <blockquote id="frase-block" class="text-gray-700 italic"></blockquote>
+        <div class="flex justify-end mt-4 gap-2">
+            <button id="prev-frase" class="px-3 py-1 rounded bg-primary text-white hover:bg-purple-700 transition">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button id="next-frase" class="px-3 py-1 rounded bg-primary text-white hover:bg-purple-700 transition">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     </div>
 
-    <h1 class="text-3xl font-bold text-center text-[#8B5A9F] mb-10"><i class="fas fa-chart-line mr-3"></i> Painel
-        Informativo Estatístico</h1>
-        
+    <!-- Título -->
+    <h1 class="text-3xl font-bold text-center text-primary mb-10">
+        <i class="fas fa-chart-line mr-3"></i>
+        Painel Informativo Estatístico
+    </h1>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-blue-500">
+    <!-- Cards de Estatísticas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+        <div class="bg-white rounded-2xl p-5 shadow border-l-4 border-blue-500">
             <h3 class="text-sm font-medium text-gray-600">
-                <i class="fas fa-shield-alt text-1xl mb-2"></i>
-                Medidas Protetivas de Urgência
+                <i class="fas fa-shield-alt mr-1"></i> Medidas Protetivas
             </h3>
             <p class="text-2xl font-bold text-gray-900">{{ medidas_protetivas_solicitadas_ocorrencias }}</p>
-            <p class="text-sm text-green-600">{{ medidas_protetivas_solicitadas_ocorrencias_porcentagem }}% <span
-                    class="text-xs text-gray-400">(vs mês anterior)</span></p>
+            <p class="text-sm text-green-600">{{ medidas_protetivas_solicitadas_ocorrencias_porcentagem }}% 
+                <span class="text-xs text-gray-400">(vs mês anterior)</span>
+            </p>
         </div>
-        <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-red-500">
-            <h3 class="text-sm font-medium text-gray-600">Parentesco</h3>
-            <p class="text-2xl font-bold text-gray-900">{{ grau_parentesco_comum }} <span
-                    class="text-xs text-gray-400">(do total)</span></p>
-            <!-- <p class="text-sm text-red-600">Atenção necessária</p> -->
+        
+        <div class="bg-white rounded-2xl p-5 shadow border-l-4 border-red-500">
+            <h3 class="text-sm font-medium text-gray-600">Parentesco Comum</h3>
+            <p class="text-2xl font-bold text-gray-900">{{ grau_parentesco_comum }}</p>
         </div>
-        <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-green-500">
-            <h3 class="text-sm font-medium text-gray-600">Maior incidência</h3>
+        
+        <div class="bg-white rounded-2xl p-5 shadow border-l-4 border-green-500">
+            <h3 class="text-sm font-medium text-gray-600">Maior Incidência</h3>
             <p class="text-2xl font-bold text-gray-900">{{ municipio_primeiro }}</p>
             <p class="text-sm text-yellow-600">{{ municipio_segundo }}</p>
-            <p class="text-sm text-gray-400">(vs meses anteriores)</p>
         </div>
-        <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-purple-500">
-
-            <h3 class="text-sm font-medium text-gray-600">Tipo de violência</h3>
+        
+        <div class="bg-white rounded-2xl p-5 shadow border-l-4 border-purple-500">
+            <h3 class="text-sm font-medium text-gray-600">Tipo de Violência</h3>
             <p class="text-2xl font-bold text-gray-900">{{ tipo_violencia_1 }}</p>
-            <p class="text-sm text-yellow-600">{{ tipo_violencia_1_porcentagem }}% <span
-                    class="text-xs text-gray-400">(vs mês anterior)</span>
-            </p>
-            <p class="text-sm text-orange-400">
-                {{ tipo_violencia_1_total }} Casos
-            </p>
+            <p class="text-sm text-orange-500">{{ tipo_violencia_1_total }} casos</p>
         </div>
-        <div class="bg-white rounded-2xl p-6 shadow border-l-4 border-yellow-500">
-            <h3 class="text-sm font-medium text-gray-600">Reincidência Agressor</h3>
-            <p class="text-2xl font-bold text-gray-900">{{ reincidencia }}% <span class="text-xs text-gray-400">(do
-                    total)</span>
-            </p>
-            <p class="text-sm text-purple-600">{{ total_reincidencias }} agressores reincidentes</p>
+        
+        <div class="bg-white rounded-2xl p-5 shadow border-l-4 border-yellow-500">
+            <h3 class="text-sm font-medium text-gray-600">Reincidência</h3>
+            <p class="text-2xl font-bold text-gray-900">{{ reincidencia }}%</p>
+            <p class="text-sm text-purple-600">{{ total_reincidencias }} agressores</p>
         </div>
-
-
-    </div>
-    <br>
-    <!-- Filtros -->
-    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 flex flex-col md:flex-row gap-4 items-center">
-        <h2 class="text-lg font-semibold text-purple-400 mb-2 md:mb-0">Filtro(s):</h2>
-        <select name="periodo" id="periodo" class="form-select border-gray-300 rounded-lg">
-            <option value="">Período</option>
-            {% for periodos in periodo %}
-            <option value="{{ periodos }}">{{ periodos }}</option>
-            {% endfor %}
-        </select>
-        <select name="comarca" id="comarca" class="form-select border-gray-300 rounded-lg">
-            <option value="">Comarca</option>
-            {% for comarca in comarcas %}
-            <option value="{{ comarca }}">{{ comarca }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit" id="aplicar-filtros" class="submit bg-blue-400  text-white houver:bg-blue-600 px-2 rounded-lg">
-            aplicar
-        </button>
     </div>
 
-    <!-- Gráficos em grid responsivo -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        <!-- Gráfico de Rosca: Comarcas -->
-        <div class="bg-white rounded-2xl shadow-2xl p-6 md:col-span-2">
-            <div class="grid grid-cols-3 gap-4">
-                <h2 class="text-lg font-semibold mb-4 text-purple-400">Distribuição por Comarcas</h2>
-                <p class="text-sm text-gray-500 mb-2">*Implementar comparação por período.</p>
-                <select id="comarca-select" class="form-select-sm border-gray-300 rounded-lg w-full text-center">
-                    <option value="todos">Selecione o Periodo</option>
-                    <option value="ano">ano</option>
-                    <option value="mensal">mensal</option>
-                    
+    <!-- Filtros com HTMX -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+        <form id="filtros-form" 
+              hx-get="{% url 'relatorios' %}" 
+              hx-target="#graficos-container" 
+              hx-swap="innerHTML"
+              hx-indicator="#loading-indicator"
+              class="flex flex-col md:flex-row gap-4 items-end">
+            
+            <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <i class="fas fa-calendar-alt mr-1"></i> Período
+                </label>
+                <select name="periodo" id="periodo" 
+                        class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary"
+                        hx-get="{% url 'relatorios' %}"
+                        hx-target="#graficos-container"
+                        hx-include="#comarca"
+                        hx-trigger="change">
+                    {% for p in periodo %}
+                    <option value="{{ p }}" {% if p == periodo_selecionado %}selected{% endif %}>{{ p }}</option>
+                    {% endfor %}
                 </select>
             </div>
             
-            <canvas id="comarcaChart"></canvas>
+            <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <i class="fas fa-map-marker-alt mr-1"></i> Comarca
+                </label>
+                <select name="comarca" id="comarca" 
+                        class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary"
+                        hx-get="{% url 'relatorios' %}"
+                        hx-target="#graficos-container"
+                        hx-include="#periodo"
+                        hx-trigger="change">
+                    <option value="">Todas</option>
+                    {% for c in comarcas %}
+                    <option value="{{ c }}" {% if c == comarca_selecionada %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="button" 
+                    onclick="window.location.href='{% url 'relatorios' %}'"
+                    class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                <i class="fas fa-redo mr-1"></i> Limpar
+            </button>
+        </form>
+        
+        <!-- Loading Indicator -->
+        <div id="loading-indicator" class="htmx-indicator justify-center mt-4">
+            <div class="flex items-center gap-2 text-primary">
+                <i class="fas fa-spinner fa-spin text-2xl"></i>
+                <span>Atualizando gráficos...</span>
+            </div>
+        </div>
+    </div>
 
+    <!-- Container de Gráficos (atualizado via HTMX) -->
+    <div id="graficos-container">
+        
+        <!-- Badge de filtros ativos -->
+        {% if periodo_selecionado != 'Todos' or comarca_selecionada %}
+        <div class="mb-4 p-3 bg-purple-100 rounded-lg flex items-center gap-2">
+            <i class="fas fa-filter text-purple-600"></i>
+            <span class="text-purple-800 font-medium">
+                Filtros ativos: 
+                {% if periodo_selecionado != 'Todos' %}Período: <strong>{{ periodo_selecionado }}</strong>{% endif %}
+                {% if comarca_selecionada %} | Comarca: <strong>{{ comarca_selecionada }}</strong>{% endif %}
+            </span>
         </div>
+        {% endif %}
 
-
-        <!-- Gráfico de Rosca: Cidades -->
-        <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-purple-400">Distribuição por Cidades (Mostrar nome da comarca)
-                <p class="text-sm text-red-300">Estático</p>
-            </h2>
-            <canvas id="cidadeChart"></canvas>
-        </div>
-
-        <!-- Gráfico de Barras: Idade -->
-        <div class="bg-white rounded-2xl shadow-lg plugins-6">
-            <h2 class="text-lg font-semibold mb-4 text-purple-400"><i class="fas fa-birthday-cake mr-2"></i>
-                Distribuição por Idade</h2>
-            <canvas id="idadeChart"></canvas>
-            <div id="idade-legend" class="chart-legend mt-2"></div>
-        </div>
-        <!-- Gráfico de Barras: Tipo de violência -->
-        <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-purple-400"><i class="fas fa-exclamation-circle mr-2"></i> Tipo
-                de  Violência</h2>
-            <canvas id="violenciaChart"></canvas>
-        </div>
-
-        <!-- Gráfico de Barras: Classe Econômica -->
-        <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-purple-400"><i class="fas fa-dollar-sign mr-2"></i> Classe
-                Econômica
-            </h2>
-            <canvas id="classeEconomicaChart"></canvas>
-            <div id="classe-legend" class="chart-legend mt-2"></div>
-        </div>
-        <!-- Gráfico de Barras: Grau de instrução -->
-        <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-purple-400"><i class="fas fa-graduation-cap mr-2"></i> Grau de
-                Instrução</h2>
-            <canvas id="grauInstrucaoChart"></canvas>
-            <div id="grau-legend" class="chart-legend mt-2"></div>
-        </div>
-
-        <!-- Gráfico de Barras: Etnia -->
-        <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-purple-400"><i class="fas fa-users mr-2"></i> Distribuição por
-                Etnia
-            </h2>
-            <canvas id="etniaChart"></canvas>
-        </div>
-        <!-- Gráfico de Barras: Parentesco -->
-        <div class="bg-white rounded-2xl shadow-lg p-6">
-            <h2 class="text-lg font-semibold mb-4 text-purple-400"><i class="fas fa-home mr-2"></i> Grau de Parentesco
-                do Agressor</h2>
-            <canvas id="parentescoChart"></canvas>
-        </div>
-
-        <!-- Gráfico de Incidências Mensais -->
-        <div class="bg-white rounded-2xl shadow-lg p-6 md:col-span-2">
-            <h2 class="text-lg font-semibold mb-4 text-purple-400">
-                <i class="fas fa-calendar-alt mr-2"></i>
-                Incidências nos meses do ano de {{ ano_atual }}
-            </h2>
-            <canvas id="incidenciasMensaisChart"></canvas>
+        <!-- Grid de Gráficos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            
+            <!-- Gráfico de Tendência Temporal (NOVO) -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:col-span-2 grafico-container tendencia-chart">
+                <h2 class="text-lg font-semibold mb-4 text-primary">
+                    <i class="fas fa-chart-line mr-2"></i>
+                    Tendência Temporal (Mês a Mês)
+                </h2>
+                <div style="position: relative; height: 450px; width: 100%;">
+                    <canvas id="tendenciaChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Gráfico de Comarcas -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:col-span-2 grafico-container">
+                <h2 class="text-lg font-semibold mb-4 text-primary">
+                    <i class="fas fa-building mr-2"></i>
+                    Distribuição por Comarcas
+                </h2>
+                <canvas id="comarcaChart"></canvas>
+            </div>
+            
+            <!-- Gráfico de Idades -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 grafico-container">
+                <h2 class="text-lg font-semibold mb-4 text-primary">
+                    <i class="fas fa-birthday-cake mr-2"></i>
+                    Distribuição por Idade
+                </h2>
+                <canvas id="idadeChart"></canvas>
+            </div>
+            
+            <!-- Gráfico de Tipos de Violência -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 grafico-container">
+                <h2 class="text-lg font-semibold mb-4 text-primary">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    Tipos de Violência
+                </h2>
+                <canvas id="violenciaChart"></canvas>
+            </div>
+            
+            <!-- Gráfico de Classe Econômica -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 grafico-container">
+                <h2 class="text-lg font-semibold mb-4 text-primary">
+                    <i class="fas fa-dollar-sign mr-2"></i>
+                    Classe Econômica
+                </h2>
+                <canvas id="classeEconomicaChart"></canvas>
+            </div>
+            
+            <!-- Gráfico de Grau de Instrução -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 grafico-container">
+                <h2 class="text-lg font-semibold mb-4 text-primary">
+                    <i class="fas fa-graduation-cap mr-2"></i>
+                    Grau de Instrução
+                </h2>
+                <canvas id="grauInstrucaoChart"></canvas>
+            </div>
+            
+            <!-- Gráfico de Etnia -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 grafico-container">
+                <h2 class="text-lg font-semibold mb-4 text-primary">
+                    <i class="fas fa-users mr-2"></i>
+                    Distribuição por Etnia
+                </h2>
+                <canvas id="etniaChart"></canvas>
+            </div>
+            
+            <!-- Gráfico de Parentesco -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 grafico-container">
+                <h2 class="text-lg font-semibold mb-4 text-primary">
+                    <i class="fas fa-home mr-2"></i>
+                    Grau de Parentesco do Agressor
+                </h2>
+                <canvas id="parentescoChart"></canvas>
+            </div>
         </div>
     </div>
 
     <!-- Mapa Interativo -->
     <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
-        <h2 class="text-lg font-semibold mb-4 text-purple-400"><i class="fas fa-search mr-2"></i> Comarca: <span
-                id="comarca">{% if comarca %}{{ comarca }}{%
-                else %}Todas{% endif %}</span></h2>
+        <h2 class="text-lg font-semibold mb-4 text-primary">
+            <i class="fas fa-map-marked-alt mr-2"></i>
+            Mapa de Ocorrências
+        </h2>
         <div id="map" class="w-full h-96 rounded-lg"></div>
-
+        
         <!-- Legenda do Mapa -->
         <div class="mt-4 p-4 bg-gray-50 rounded-lg">
-            <h3 class="text-sm font-semibold text-gray-700 mb-2">Legenda - Tipos de Violência:</h3>
-            <div class="flex flex-wrap gap-6">
-                <div class="flex items-center">
-                    <div style="position: relative; width: 20px; height: 20px; margin-right: 8px;">
-                        <div style="
-                            width: 16px;
-                            height: 16px;
-                            background-color: #FF4444;
-                            border-radius: 50% 50% 50% 0;
-                            transform: rotate(-45deg);
-                            border: 1px solid white;
-                            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-                            position: relative;
-                        ">
-                            <div style=" width: 4px; height: 4px; background-color: #333;
-                                border-radius: 50%; position: absolute;
-                                top: 50%;
-                                left: 50%;
-                                transform: translate(-50%, -50%) rotate(45deg);
-                            "></div>
-                        </div>
-                    </div>
-                    <span class="text-sm text-gray-600">Física</span>
-                </div>
-                <div class="flex items-center">
-                    <div style="position: relative; width: 20px; height: 20px; margin-right: 8px;">
-                        <div style="
-                            width: 16px;
-                            height: 16px;
-                            background-color: #FF8800;
-                            border-radius: 50% 50% 50% 0;
-                            transform: rotate(-45deg);
-                            border: 1px solid white;
-                            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-                            position: relative;
-                        ">
-                            <div style="
-                                width: 4px;
-                                height: 4px;
-                                background-color: #333;
-                                border-radius: 50%;
-                                position: absolute;
-                                top: 50%;
-                                left: 50%;
-                                transform: translate(-50%, -50%) rotate(45deg);
-                            "></div>
-                        </div>
-                    </div>
-                    <span class="text-sm text-gray-600">Psicológica</span>
-                </div>
-                <div class="flex items-center">
-                    <div style="position: relative; width: 20px; height: 20px; margin-right: 8px;">
-                        <div style="
-                            width: 16px;
-                            height: 16px;
-                            background-color: #8B00FF;
-                            border-radius: 50% 50% 50% 0;
-                            transform: rotate(-45deg);
-                            border: 1px solid white;
-                            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-                            position: relative;
-                        ">
-                            <div style="
-                                width: 4px;
-                                height: 4px;
-                                background-color: #333;
-                                border-radius: 50%;
-                                position: absolute;
-                                top: 50%;
-                                left: 50%;
-                                transform: translate(-50%, -50%) rotate(45deg);
-                            "></div>
-                        </div>
-                    </div>
-                    <span class="text-sm text-gray-600">Sexual</span>
-                </div>
-                <div class="flex items-center">
-                    <div style="position: relative; width: 20px; height: 20px; margin-right: 8px;">
-                        <div style="
-                            width: 16px;
-                            height: 16px;
-                            background-color: #0088FF;
-                            border-radius: 50% 50% 50% 0;
-                            transform: rotate(-45deg);
-                            border: 1px solid white;
-                            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-                            position: relative;
-                        ">
-                            <div style="
-                                width: 4px;
-                                height: 4px;
-                                background-color: #333;
-                                border-radius: 50%;
-                                position: absolute;
-                                top: 50%;
-                                left: 50%;
-                                transform: translate(-50%, -50%) rotate(45deg);
-                            "></div>
-                        </div>
-                    </div>
-                    <span class="text-sm text-gray-600">Patrimonial</span>
-                </div>
-                <div class="flex items-center">
-                    <div style="position: relative; width: 20px; height: 20px; margin-right: 8px;">
-                        <div style="
-                            width: 16px;
-                            height: 16px;
-                            background-color: #00AA44;
-                            border-radius: 50% 50% 50% 0;
-                            transform: rotate(-45deg);
-                            border: 1px solid white;
-                            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-                            position: relative;
-                        ">
-                            <div style="
-                                width: 4px;
-                                height: 4px;
-                                background-color: #333;
-                                border-radius: 50%;
-                                position: absolute;
-                                top: 50%;
-                                left: 50%;
-                                transform: translate(-50%, -50%) rotate(45deg);
-                            "></div>
-                        </div>
-                    </div>
-                    <span class="text-sm text-gray-600">Moral</span>
-                </div>
+            <h3 class="text-sm font-semibold text-gray-700 mb-2">Legenda:</h3>
+            <div class="flex flex-wrap gap-4">
+                <span class="flex items-center"><span class="w-4 h-4 rounded-full bg-red-500 mr-2"></span>Física</span>
+                <span class="flex items-center"><span class="w-4 h-4 rounded-full bg-orange-500 mr-2"></span>Psicológica</span>
+                <span class="flex items-center"><span class="w-4 h-4 rounded-full bg-purple-600 mr-2"></span>Sexual</span>
+                <span class="flex items-center"><span class="w-4 h-4 rounded-full bg-blue-500 mr-2"></span>Patrimonial</span>
+                <span class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-500 mr-2"></span>Moral</span>
             </div>
         </div>
     </div>
@@ -378,617 +313,368 @@
 
 <!-- Botão Voltar ao Topo -->
 <button id="backToTopBtn"
-    class="fixed bottom-6 right-6 z-50 rounded-full shadow-lg p-2 border border-gray-200 transition-colors"
-    onclick="window.scrollTo({top: 0, behavior: 'smooth'});" title="Voltar ao topo">
-    <img src="{% static 'img/arrow-circle-up.png' %}" alt="Voltar ao topo" class="w-10 h-10">
+        class="fixed bottom-6 right-6 z-50 bg-primary text-white rounded-full shadow-lg p-3 opacity-0 transition-opacity duration-300"
+        onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
+    <i class="fas fa-arrow-up"></i>
 </button>
 {% endblock %}
 
 {% block script %}
-<script src="{% static 'js/relatorios.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-
-{{ cidades|json_script:"cidades-data" }}
-{{ comarcas_com_mp|json_script:"comarcas_com_mp-data" }}
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Leaflet -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Dados JSON -->
+{{ tendencia_data|json_script:"tendencia-data" }}
+{{ comarcas_com_mp|json_script:"comarcas-data" }}
+{{ idades|json_script:"idades-data" }}
+{{ etnias|json_script:"etnias-data" }}
+{{ classeEconomica|json_script:"classe-data" }}
+{{ grauInstrucao|json_script:"grau-data" }}
+{{ parentesco_do_agressor|json_script:"parentesco-data" }}
+{{ Tipos_de_Violência|json_script:"violencia-data" }}
+{{ bairros|json_script:"bairros-data" }}
+
 <script>
-    // Função para gerar paleta de cores dinâmica utilizando HSL.
+    // ========================================
+    // CONFIGURAÇÕES GLOBAIS
+    // ========================================
+    
+    // Paleta de cores HSL dinâmica
     function gerarCoresHSL(qtd) {
         const cores = [];
-        const saturacao = 70; // Saturação em %
-        const luminosidade = 50; // Luminosidade em %
         for (let i = 0; i < qtd; i++) {
             const matiz = Math.round((360 * i) / qtd);
-            cores.push(`hsl(${matiz}, ${saturacao}%, ${luminosidade}%)`);
+            cores.push(`hsl(${matiz}, 70%, 50%)`);
         }
         return cores;
     }
-
-
-
-    // Dados passados pelo Django
-
-    const cidades = JSON.parse(document.getElementById('cidades-data').textContent);
-    const comarcas_mp = JSON.parse(document.getElementById('comarcas_com_mp-data').textContent);
-    const incidenciasMesesData = {{ qtd_incidencias_meses|safe }};
-    const idades = {{ idades| safe }};
-    const etnias = {{ etnias| safe }};
-    const violencia = {{ Tipos_de_Violência| safe }};
-    const parentesco = {{ parentesco_do_agressor| safe }};
-    const classeEconomica = {{ classeEconomica| safe }};
-    const grauInstrucao = {{ grauInstrucao| safe }};
-    const bairros = {{ bairros| safe }};
-
-
-
-    // Converter para arrays ordenados
-    const mesesLabels = [
-        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-        'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-    ];
-
-    const incidenciasValues = mesesLabels.map(mes => 
-        incidenciasMesesData[mes.toLowerCase()] || 0
-    );
-
-    // Gerar cores dinâmicas usando a função padrão do PIEVDCS
-const incidenciasCores = gerarCoresHSL(mesesLabels.length);
-
-const incidenciasMensaisCtx = document.getElementById('incidenciasMensaisChart').getContext('2d');
-new Chart(incidenciasMensaisCtx, {
-    type: 'bar',
-    data: {
-        labels: mesesLabels,
-        datasets: [{
-            label: 'Casos de Violência',
-            data: incidenciasValues,
-            backgroundColor: incidenciasCores,
-            borderColor: incidenciasCores.map(cor => cor.replace('50%', '40%')),
-            borderWidth: 1,
-            borderRadius: 4,
-            borderSkipped: false,
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-            legend: {
-                display: false
-            },
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        return `${context.dataset.label}: ${context.parsed.y}`;
-                    }
-                }
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Casos de Violência'
-                },
-                ticks: {
-                    stepSize: 1
-                }
-            },
-            x: {
-                title: {
-                    display: true,
-                    text: 'Meses do Ano'
-                }
-            }
-        }
-    }
-});
-
-
-    // Inicializar o mapa com foco no Brasil
-    const map = L.map('map').setView([-14.2350, -51.9253], 5); // Centro do Brasil
-
-    // Definir limites do Brasil
-    const brasilBounds = L.latLngBounds(
-        [6.2718, -73.9870],   // Canto superior esquerdo (Norte/Oeste)
-        [-33.7516, -34.7299]  // Canto inferior direito (Sul/Leste)
-    );
-
-    // Aplicar limites ao mapa
-    map.setMaxBounds(brasilBounds);
-    map.on('drag', function () {
-        map.panInsideBounds(brasilBounds, { animate: false });
-    });
-
-    // TIPOS DE GRAFICO
-    // bar -> 'Grafico de Barras'
-    // doughnut -> 'Gráfico de Rosca'
-    // line -> 'Gráfico de Linha'
-    // pie -> 'Gráfico de Pizza'
-    // radar -> 'Gráfico Radar'
-    // polarArea -> 'Gráfico Polar'
-    // bubble -> 'Gráfico de Bolhas'
-    // scatter -> 'Gráfico de Dispersão'
-
-    // Gráfico de rosca: Comarcas com MP
-    const comarcaCtx = document.getElementById('comarcaChart').getContext('2d');
-    new Chart(comarcaCtx, {
-        type: 'bar',
-        data: {
-            labels: comarcas_mp.labels,
-            datasets: [{
-                label: 'Total',
-                data: comarcas_mp.data,
-                backgroundColor: gerarCoresHSL(comarcas_mp.data.length)
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Casos de Violência'
-                    }
-                },
-                x: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Comarcas'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (tooltipItem) {
-                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
-                        }
-                    }
-                }
-            },
-            responsive: true
-        }
-    });
-
-
-    // Gráfico de rosca: Cidades
-    const cidadeCtx = document.getElementById('cidadeChart').getContext('2d');
-    new Chart(cidadeCtx, {
-        type: 'pie',
-        data: {
-            labels: cidades.labels,
-            datasets: [{
-                label: 'Total',
-                data: cidades.data,
-                backgroundColor: gerarCoresHSL(cidades.data.length)
-            }]
-        },
-    });
-
-
-    // Gráfico de rosca: idade
-    const idadeChart = document.getElementById('idadeChart').getContext('2d');
-    new Chart(idadeChart, {
-        type: 'bar',
-        data: {
-            labels: idades.labels,
-            datasets: [{
-                label: 'Total',
-                data: idades.data,
-                backgroundColor: gerarCoresHSL(idades.data.length)
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Casos de Violência'
-                    }
-                },
-                x: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Anos'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (tooltipItem) {
-                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
-                        }
-                    }
-                }
-            },
-            responsive: true
-        }
-    });
-    //Legendas para o gráfico de idade
-    const idadeColors = gerarCoresHSL(idades.data.length);
-    const idadeLabels = idades.labels;
-    let idadeLegendHtml = '';
-    idadeLabels.forEach((label, i) => {
-        idadeLegendHtml += `<span style="display:inline-block;margin-right:15px;">
-        <span style="display:inline-block;width:15px;height:15px;background:${idadeColors[i]};margin-right:5px;border-radius:3px;"></span>
-        ${label}
-    </span>`;
-    });
-    document.getElementById('idade-legend').innerHTML = idadeLegendHtml;
-
-    // Gráfico de barras: grau de instrução
-    const grauChart = document.getElementById('grauInstrucaoChart').getContext('2d');
-    new Chart(grauChart, {
-        type: 'bar',
-        data: {
-            labels: grauInstrucao.labels,
-            datasets: [{
-                label: 'Total',
-                data: grauInstrucao.data,
-                backgroundColor: gerarCoresHSL(grauInstrucao.data.length)
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Casos de Violência'
-                    }
-                },
-                x: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Grau de Instrução'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false,
-                    position: 'right',
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (tooltipItem) {
-                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
-                        }
-                    }
-                }
-            },
-            responsive: true,
-        }
-    });
-    // Legenda do gráfico de grau de instrução
-    const grauColors = gerarCoresHSL(grauInstrucao.data.length);
-    const grauLabels = grauInstrucao.labels;
-
-    let legendHtml = '';
-    grauLabels.forEach((label, i) => {
-        legendHtml += `<span style="display:inline-block;margin-right:15px;">
-        <span style="display:inline-block;width:15px;height:15px;background:${grauColors[i]};margin-right:5px;border-radius:3px;"></span>
-        ${label}
-    </span>`;
-    });
-    document.getElementById('grau-legend').innerHTML = legendHtml;
-
-
-    // Gráfico de rosca: Tipo de violência
-    const violenciaChart = document.getElementById('violenciaChart').getContext('2d');
-    new Chart(violenciaChart, {
-        type: 'pie',
-        data: {
-            labels: violencia.labels,
-            datasets: [{
-                label: 'Total',
-                data: violencia.data,
-                backgroundColor: gerarCoresHSL(violencia.data.length)
-            }]
-        },
-    });
-
-    // Gráfico de rosca: Parentesco do Agressor
-    const parentescoChart = document.getElementById('parentescoChart').getContext('2d');
-    new Chart(parentescoChart, {
-        type: 'pie',
-        data: {
-            labels: parentesco.labels,
-            datasets: [{
-                label: 'Total',
-                data: parentesco.data,
-                backgroundColor: gerarCoresHSL(parentesco.data.length)
-            }]
-        },
-    });
-
-    // Gráfico de Barras: Classe econômica
-    const classeCtx = document.getElementById('classeEconomicaChart').getContext('2d');
-    new Chart(classeCtx, {
-        type: 'bar', // Mudando para gráfico de barras para categorias discretas
-        data: {
-            labels: classeEconomica.labels,
-            datasets: [{
-                label: 'Classe Econômica',
-                data: classeEconomica.data,
-                backgroundColor: gerarCoresHSL(classeEconomica.data.length)
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Casos de Violência'
-                    }
-                },
-
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (tooltipItem) {
-                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw;
-                        }
-                    }
-                }
-            },
-            responsive: true
-        }
-    });
-
-    // Legenda do gráfico de Classe Econômica
-    const classeColors = gerarCoresHSL(classeEconomica.data.length);
-    const classeLabels = classeEconomica.labels;
-
-    let classeLegendHtml = '';
-    classeLabels.forEach((label, i) => {
-        classeLegendHtml += `<span style="display:inline-block;margin-right:15px;">
-        <span style="display:inline-block;width:15px;height:15px;background:${classeColors[i]};margin-right:5px;border-radius:3px;"></span>
-        ${label}
-    </span>`;
-    });
-    document.getElementById('classe-legend').innerHTML = classeLegendHtml;
-
-    // Gráfico de Barras: Etnia
-    const etniaCtx = document.getElementById('etniaChart').getContext('2d');
-    new Chart(etniaCtx, {
-        type: 'pie',
-        data: {
-            labels: etnias.labels,
-            datasets: [{
-                label: 'Distribuição por Etnia',
-                data: etnias.data,
-                backgroundColor: gerarCoresHSL(etnias.data.length)
-            }]
-        },
-    });
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        minZoom: 4,     // Zoom mínimo para não mostrar muito do mundo
-        maxZoom: 16,    // Zoom máximo ajustado para o Brasil
-        //attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
-
-    // Garantir que o mapa respeite os limites do contêiner
-    setTimeout(() => {
-        map.invalidateSize();
-    }, 1000);
-
-    // Função para obter cor por tipo de violência
-    function getCorPorTipoViolencia(tipo) {
-        const cores = {
-            'Física': '#FF4444',      // Vermelho
-            'Psicológica': '#FF8800', // Laranja
-            'Sexual': '#8B00FF',      // Roxo
-            'Patrimonial': '#0088FF', // Azul
-            'Moral': '#00AA44'        // Verde
+    
+    // Armazenar instâncias dos gráficos
+    const chartInstances = {};
+    
+    // ========================================
+    // CARREGAR DADOS
+    // ========================================
+    function carregarDados() {
+        return {
+            tendencia: JSON.parse(document.getElementById('tendencia-data').textContent),
+            comarcas: JSON.parse(document.getElementById('comarcas-data').textContent),
+            idades: JSON.parse(document.getElementById('idades-data').textContent),
+            etnias: JSON.parse(document.getElementById('etnias-data').textContent),
+            classe: JSON.parse(document.getElementById('classe-data').textContent),
+            grau: JSON.parse(document.getElementById('grau-data').textContent),
+            parentesco: JSON.parse(document.getElementById('parentesco-data').textContent),
+            violencia: JSON.parse(document.getElementById('violencia-data').textContent),
+            bairros: JSON.parse(document.getElementById('bairros-data').textContent)
         };
-        return cores[tipo] || '#666666'; // Cor padrão (cinza)
     }
-
-    // Função para criar ícone colorido no formato clássico de marcador do Google Maps
-    function criarIconeColorido(cor) {
-        return L.divIcon({
-            className: 'custom-div-icon',
-            html: `
-                <div style="position: relative;">
-                    <!-- Corpo principal do marcador (formato gota/balão) -->
-                    <div style="
-                        width: 32px;
-                        height: 32px;
-                        background-color: ${cor};
-                        border-radius: 50% 50% 50% 0;
-                        transform: rotate(-45deg);
-                        border: 2px solid white;
-                        box-shadow: 0 3px 8px rgba(0,0,0,0.35);
-                        position: relative;
-                        z-index: 2;
-                    ">
-                        <!-- Bolinha central -->
-                        <div style="
-                            width: 8px;
-                            height: 8px;
-                            background-color: #333;
-                            border-radius: 50%;
-                            position: absolute;
-                            top: 50%;
-                            left: 50%;
-                            transform: translate(-50%, -50%) rotate(45deg);
-                            z-index: 3;
-                        "></div>
-                    </div>
-                </div>
-            `,
-            iconSize: [32, 32],
-            iconAnchor: [16, 32]
+    
+    // ========================================
+    // CRIAR GRÁFICOS
+    // ========================================
+    function criarGraficos() {
+        const dados = carregarDados();
+        
+        // Destruir gráficos existentes
+        Object.values(chartInstances).forEach(chart => chart?.destroy());
+        
+        // 1. Gráfico de Tendência Temporal (NOVO - conforme imagem)
+        const tendenciaCtx = document.getElementById('tendenciaChart')?.getContext('2d');
+        if (tendenciaCtx) {
+            chartInstances.tendencia = new Chart(tendenciaCtx, {
+                type: 'line',
+                data: {
+                    labels: dados.tendencia.labels,
+                    datasets: [{
+                        label: 'Número de Casos',
+                        data: dados.tendencia.data,
+                        borderColor: '#8B5A9F',
+                        backgroundColor: 'rgba(139, 90, 159, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.1,
+                        pointBackgroundColor: '#FF4444',
+                        pointBorderColor: '#FF4444',
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(45, 27, 64, 0.9)',
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                title: (items) => `Período: ${items[0].label}`,
+                                label: (item) => `Casos registrados: ${item.raw}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Número de Casos', font: { weight: 'bold' } },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Período', font: { weight: 'bold' } },
+                            grid: { display: false },
+                            ticks: { maxRotation: 45, minRotation: 45 }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 2. Gráfico de Comarcas
+        const comarcaCtx = document.getElementById('comarcaChart')?.getContext('2d');
+        if (comarcaCtx && dados.comarcas.data.length > 0) {
+            chartInstances.comarca = new Chart(comarcaCtx, {
+                type: 'bar',
+                data: {
+                    labels: dados.comarcas.labels,
+                    datasets: [{
+                        label: 'Total de Casos',
+                        data: dados.comarcas.data,
+                        backgroundColor: gerarCoresHSL(dados.comarcas.data.length)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Casos' } },
+                        x: { title: { display: true, text: 'Comarcas' } }
+                    }
+                }
+            });
+        }
+        
+        // 3. Gráfico de Idades
+        const idadeCtx = document.getElementById('idadeChart')?.getContext('2d');
+        if (idadeCtx) {
+            chartInstances.idade = new Chart(idadeCtx, {
+                type: 'bar',
+                data: {
+                    labels: dados.idades.labels,
+                    datasets: [{
+                        label: 'Total',
+                        data: dados.idades.data,
+                        backgroundColor: gerarCoresHSL(dados.idades.data.length)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+        
+        // 4. Gráfico de Violência
+        const violenciaCtx = document.getElementById('violenciaChart')?.getContext('2d');
+        if (violenciaCtx) {
+            chartInstances.violencia = new Chart(violenciaCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: dados.violencia.labels,
+                    datasets: [{
+                        data: dados.violencia.data,
+                        backgroundColor: gerarCoresHSL(dados.violencia.data.length)
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+        
+        // 5. Gráfico de Classe Econômica
+        const classeCtx = document.getElementById('classeEconomicaChart')?.getContext('2d');
+        if (classeCtx) {
+            chartInstances.classe = new Chart(classeCtx, {
+                type: 'bar',
+                data: {
+                    labels: dados.classe.labels,
+                    datasets: [{
+                        label: 'Total',
+                        data: dados.classe.data,
+                        backgroundColor: gerarCoresHSL(dados.classe.data.length)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+        
+        // 6. Gráfico de Grau de Instrução
+        const grauCtx = document.getElementById('grauInstrucaoChart')?.getContext('2d');
+        if (grauCtx) {
+            chartInstances.grau = new Chart(grauCtx, {
+                type: 'bar',
+                data: {
+                    labels: dados.grau.labels,
+                    datasets: [{
+                        label: 'Total',
+                        data: dados.grau.data,
+                        backgroundColor: gerarCoresHSL(dados.grau.data.length)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+        
+        // 7. Gráfico de Etnia
+        const etniaCtx = document.getElementById('etniaChart')?.getContext('2d');
+        if (etniaCtx) {
+            chartInstances.etnia = new Chart(etniaCtx, {
+                type: 'pie',
+                data: {
+                    labels: dados.etnias.labels,
+                    datasets: [{
+                        data: dados.etnias.data,
+                        backgroundColor: gerarCoresHSL(dados.etnias.data.length)
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+        
+        // 8. Gráfico de Parentesco
+        const parentescoCtx = document.getElementById('parentescoChart')?.getContext('2d');
+        if (parentescoCtx) {
+            chartInstances.parentesco = new Chart(parentescoCtx, {
+                type: 'pie',
+                data: {
+                    labels: dados.parentesco.labels,
+                    datasets: [{
+                        data: dados.parentesco.data,
+                        backgroundColor: gerarCoresHSL(dados.parentesco.data.length)
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+        
+        console.log('✅ Gráficos criados com sucesso!');
+    }
+    
+    // Função global para atualização HTMX
+    window.atualizarGraficos = function(dados) {
+        criarGraficos();
+    };
+    
+    // ========================================
+    // MAPA
+    // ========================================
+    function inicializarMapa() {
+        const dados = carregarDados();
+        
+        const map = L.map('map').setView([-26.77, -53.19], 10);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18
+        }).addTo(map);
+        
+        const cores = {
+            'Física': '#FF4444',
+            'Psicológica': '#FF8800',
+            'Sexual': '#8B00FF',
+            'Patrimonial': '#0088FF',
+            'Moral': '#00AA44'
+        };
+        
+        dados.bairros.forEach(bairro => {
+            const cor = cores[bairro.tipo_violencia] || '#666';
+            L.circleMarker([bairro.lat, bairro.lng], {
+                radius: 8 + bairro.casos,
+                fillColor: cor,
+                color: '#fff',
+                weight: 2,
+                fillOpacity: 0.8
+            })
+            .bindPopup(`<b>${bairro.nome}</b><br>Casos: ${bairro.casos}<br>Tipo: ${bairro.tipo_violencia}`)
+            .addTo(map);
         });
     }
-
-    // Adicionar marcadores coloridos para os bairros
-    const marcadores = [];
-    bairros.forEach(bairro => {
-        const cor = getCorPorTipoViolencia(bairro.tipo_violencia);
-        const icone = criarIconeColorido(cor);
-
-        const marker = L.marker([bairro.lat, bairro.lng], { icon: icone })
-            .addTo(map)
-            .bindPopup(`
-                <div style="font-family: Arial, sans-serif; min-width: 200px;">
-                    <div style="border-bottom: 2px solid ${cor}; padding-bottom: 8px; margin-bottom: 8px;">
-                        <h4 style="margin: 0; color: #333; font-size: 16px; font-weight: bold;">
-                            <i class="fas fa-map-marker-alt" style="color: ${cor}; margin-right: 5px;"></i>
-                            ${bairro.nome}
-                        </h4>
-                    </div>
-                    <div style="margin-bottom: 6px;">
-                        <strong style="color: #555;">Total de casos:</strong> 
-                        <span style="color: #333; font-weight: bold; font-size: 18px;">${bairro.casos}</span>
-                    </div>
-                    <div style="margin-bottom: 4px;">
-                        <strong style="color: #555;">Violência:</strong><br>
-                        <span style="color: ${cor}; font-weight: bold; font-size: 14px; 
-                                     background-color: rgba(${parseInt(cor.slice(1, 3), 16)}, ${parseInt(cor.slice(3, 5), 16)}, ${parseInt(cor.slice(5, 7), 16)}, 0.1);
-                                     padding: 2px 6px; border-radius: 4px; margin-top: 4px; display: inline-block;">
-                            ${bairro.tipo_violencia}
-                        </span>
-                    </div>
-                </div>
-            `, {
-                maxWidth: 250,
-                className: 'custom-popup'
-            });
-
-        marcadores.push(marker);
-    });
-
-    // Ajustar zoom para mostrar todos os marcadores (se houver), respeitando os limites do Brasil
-    if (marcadores.length > 0) {
-        const grupo = new L.featureGroup(marcadores);
-        const bounds = grupo.getBounds();
-
-        // Verificar se os bounds estão dentro dos limites do Brasil
-        const boundsClipped = L.latLngBounds(
-            [Math.max(bounds.getSouthWest().lat, brasilBounds.getSouthWest().lat),
-            Math.max(bounds.getSouthWest().lng, brasilBounds.getSouthWest().lng)],
-            [Math.min(bounds.getNorthEast().lat, brasilBounds.getNorthEast().lat),
-            Math.min(bounds.getNorthEast().lng, brasilBounds.getNorthEast().lng)]
-        );
-
-        map.fitBounds(boundsClipped, { padding: [20, 20] });
-    }
-
-    // Mostrar/esconder botão de voltar ao topo
-    const backToTopBtn = document.getElementById('backToTopBtn');
-    window.addEventListener('scroll', function () {
-        if (window.scrollY > 200) {
-            backToTopBtn.style.display = 'block';
-        } else {
-            backToTopBtn.style.display = 'none';
-        }
-    });
-    // Inicialmente oculto
-    backToTopBtn.style.display = 'none';
-
-
-    //Frase
+    
+    // ========================================
+    // FRASES MOTIVACIONAIS
+    // ========================================
     const frases = [
-        {
-            texto: `"Somos exímios construtores, filhos do sistema cartesiano. A dor humana virou estatística."`,
-            autor: `Augusto <cite>Cury</cite>`
-        },
-        {
-            texto: `"Primeiro eles vieram atrás dos socialistas, e eu não me manifestei porque eu não era socialista.<br>
-            Depois, vieram atrás dos sindicalistas, e eu não me manifestei porque eu não era sindicalista.<br>
-            Depois, vieram atrás dos judeus, e eu não me manifestei porque eu não era judeu.<br>
-            Finalmente, vieram atrás de mim, e não havia ninguém para se manifestar por mim."`,
-            autor: `Martin <cite>Niemöller</cite>`
-        },
-        {
-            texto: `“Cada campo preenchido corretamente é um passo rumo a decisões mais inteligentes.”`,
-            autor: ` `
-        },
-        {
-            texto: `“Você faz parte do processo — e seu cuidado faz toda a diferença.”`
-        },
-        {
-            texto: `"A história do ovo e do bacon fala sobre envolvimento e comprometimento. Quando você come o bacon, o porco está comprometido, já que ele é o próprio. O ovo, você come e o envolvimento da galinha é de menos. Que por sua vez aproveitará o tempo livre para ciscar o chão e continuará a procurar minhocas."`,
-            autor: `Mestre <cite>Ariévlis</cite>`
-        },
-        {
-            texto: `“Cada informação preenchida com atenção pode representar proteção e acolhimento para alguém.”`
-        },
-        {
-            texto: `“Uma ficha bem preenchida não é apenas um dado — pode ser um pedido de socorro escutado a tempo.”`
-        },
-        {
-            texto: `“Preencher com atenção é um gesto de empatia com quem pode estar vivendo o invisível.”`
-        },
-        {
-            texto: `“Sua atenção hoje pode ser a segurança de alguém amanhã.”`
-        },
-        {
-            texto: `“Você acha que consegue mudar alguma coisa e se importa com ela o suficiente para tentar?”`,
-            autor: `Adam <cite>Grant</cite>`
-        }
+        { texto: '"A dor humana virou estatística."', autor: 'Augusto Cury' },
+        { texto: '"Cada campo preenchido é um passo rumo a decisões inteligentes."' },
+        { texto: '"Você faz parte do processo — seu cuidado faz diferença."' },
+        { texto: '"Sua atenção hoje pode ser a segurança de alguém amanhã."' }
     ];
-
+    
     let fraseAtual = 0;
-    let fraseTimer = null;
-
+    
     function mostrarFrase(idx) {
         const frase = frases[idx];
         document.getElementById('frase-block').innerHTML = `
-                <div>
-                    <p class="italic">${frase.texto}</p>
-                    <footer class="text-sm text-gray-500">${frase.autor}</footer>
-                </div>
-            `;
+            <p>${frase.texto}</p>
+            ${frase.autor ? `<footer class="text-sm text-gray-500 mt-2">— ${frase.autor}</footer>` : ''}
+        `;
     }
-
+    
     function proximaFrase() {
         fraseAtual = (fraseAtual + 1) % frases.length;
         mostrarFrase(fraseAtual);
-        reiniciarTimer();
     }
-
+    
     function anteriorFrase() {
         fraseAtual = (fraseAtual - 1 + frases.length) % frases.length;
         mostrarFrase(fraseAtual);
-        reiniciarTimer();
     }
-
-    function reiniciarTimer() {
-        if (fraseTimer) clearInterval(fraseTimer);
-        fraseTimer = setInterval(proximaFrase, 30000);
-    }
-
+    
+    // ========================================
+    // BOTÃO VOLTAR AO TOPO
+    // ========================================
+    window.addEventListener('scroll', () => {
+        const btn = document.getElementById('backToTopBtn');
+        btn.style.opacity = window.scrollY > 300 ? '1' : '0';
+    });
+    
+    // ========================================
+    // INICIALIZAÇÃO
+    // ========================================
     document.addEventListener('DOMContentLoaded', () => {
-        mostrarFrase(fraseAtual);
+        criarGraficos();
+        inicializarMapa();
+        mostrarFrase(0);
+        
         document.getElementById('prev-frase').onclick = anteriorFrase;
         document.getElementById('next-frase').onclick = proximaFrase;
-        reiniciarTimer();
+        
+        // Intervalo para troca automática de frases
+        setInterval(proximaFrase, 30000);
     });
-
-
-
+    
+    // Recriar gráficos após HTMX
+    document.body.addEventListener('htmx:afterSwap', (e) => {
+        if (e.detail.target.id === 'graficos-container') {
+            setTimeout(criarGraficos, 100);
+        }
+    });
 </script>
 {% endblock %}
