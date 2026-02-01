@@ -52,8 +52,18 @@ def militar(request):
 def consultas_informacao_vitima_agressor(request):
     """
     Carrega medidas protetivas com paginação infinita via HTMX.
-    Performance otimizada: carrega apenas primeira página inicialmente.
+    Suporta busca e filtros globais aplicados no backend.
     """
+    
+    # Captura parâmetros de busca e filtros
+    busca = request.GET.get('busca', '').strip()
+    status_filtro = request.GET.get('status', '')
+    reincidencia_filtro = request.GET.get('reincidencia', '')
+    ordenacao = request.GET.get('ordenacao', 'recente')
+    
+    if var_debug == 'True':
+        print(f"🔍 Filtros aplicados: busca='{busca}', status='{status_filtro}', "
+              f"reincidencia='{reincidencia_filtro}', ordenacao='{ordenacao}'")
     
     # Query base otimizada
     medidas_base = FormularioMedidaProtetiva.objects.select_related(
@@ -64,19 +74,87 @@ def consultas_informacao_vitima_agressor(request):
         'agressor__estado',
         'agressor__municipio',
         'municipio_mp',
-    ).prefetch_related(
-        'tipo_de_violencia'
-    ).order_by('-data_solicitacao')
+    ).prefetch_related('tipo_de_violencia')
     
-    # Estatísticas gerais (queries otimizadas)
+    # Aplicar busca global (CPF ou nome)
+    if busca:
+        medidas_base = medidas_base.filter(
+            Q(vitima__nome__icontains=busca) | 
+            Q(vitima__cpf__icontains=busca) |
+            Q(agressor__nome__icontains=busca) | 
+            Q(agressor__cpf__icontains=busca)
+        )
+        
+        if var_debug == 'True':
+            print(f"📊 Registros após busca: {medidas_base.count()}")
+    
+    # Filtro de reincidência (agressor/vítima)
+    if reincidencia_filtro == 'agressor':
+        # Subquery: CPFs de agressores com mais de 1 medida
+        agressores_reincidentes = FormularioMedidaProtetiva.objects.values(
+            'agressor__cpf'
+        ).annotate(
+            total=Count('ID')
+        ).filter(total__gt=1).values_list('agressor__cpf', flat=True)
+        
+        medidas_base = medidas_base.filter(agressor__cpf__in=list(agressores_reincidentes))
+        
+        if var_debug == 'True':
+            print(f"🚨 Agressores reincidentes: {len(agressores_reincidentes)}")
+            
+    elif reincidencia_filtro == 'vitima':
+        # Subquery: CPFs de vítimas com mais de 1 medida
+        vitimas_recorrentes = FormularioMedidaProtetiva.objects.values(
+            'vitima__cpf'
+        ).annotate(
+            total=Count('ID')
+        ).filter(total__gt=1).values_list('vitima__cpf', flat=True)
+        
+        medidas_base = medidas_base.filter(vitima__cpf__in=list(vitimas_recorrentes))
+        
+        if var_debug == 'True':
+            print(f"💜 Vítimas recorrentes: {len(vitimas_recorrentes)}")
+    
+    # Aplicar ordenação
+    if ordenacao == 'recente':
+        medidas_base = medidas_base.order_by('-data_solicitacao')
+    elif ordenacao == 'antigo':
+        medidas_base = medidas_base.order_by('data_solicitacao')
+    elif ordenacao == 'prioridade':
+        # Anotar com contagem de medidas por pessoa e ordenar
+        medidas_base = medidas_base.annotate(
+            total_agressor=Count('agressor__cpf', distinct=True),
+            total_vitima=Count('vitima__cpf', distinct=True)
+        ).order_by('-total_agressor', '-total_vitima', '-data_solicitacao')
+    
+    # Estatísticas FILTRADAS
     hoje = timezone.now()
-    total_medidas = medidas_base.count()
-    medidas_mes = medidas_base.filter(
+    total_medidas_filtrado = medidas_base.count()
+    medidas_mes_filtrado = medidas_base.filter(
         data_solicitacao__month=hoje.month,
         data_solicitacao__year=hoje.year
     ).count()
-    vitimas_unicas = medidas_base.values('vitima__cpf').distinct().count()
-    agressores_unicos = medidas_base.values('agressor__cpf').distinct().count()
+    vitimas_unicas_filtrado = medidas_base.values('vitima__cpf').distinct().count()
+    agressores_unicos_filtrado = medidas_base.values('agressor__cpf').distinct().count()
+    
+    # Estatísticas GERAIS (sem filtros - apenas para comparação)
+    if not any([busca, status_filtro, reincidencia_filtro]):
+        total_geral = total_medidas_filtrado
+        medidas_mes_geral = medidas_mes_filtrado
+        vitimas_unicas_geral = vitimas_unicas_filtrado
+        agressores_unicos_geral = agressores_unicos_filtrado
+    else:
+        total_geral = FormularioMedidaProtetiva.objects.count()
+        medidas_mes_geral = FormularioMedidaProtetiva.objects.filter(
+            data_solicitacao__month=hoje.month,
+            data_solicitacao__year=hoje.year
+        ).count()
+        vitimas_unicas_geral = FormularioMedidaProtetiva.objects.values(
+            'vitima__cpf'
+        ).distinct().count()
+        agressores_unicos_geral = FormularioMedidaProtetiva.objects.values(
+            'agressor__cpf'
+        ).distinct().count()
     
     # Paginação: 50 registros por página
     paginator = Paginator(medidas_base, 50)
@@ -87,9 +165,8 @@ def consultas_informacao_vitima_agressor(request):
     medidas_processadas = processar_medidas_pagina(page_obj)
     
     if var_debug == 'True':
-        print(f"Total de Medidas: {total_medidas}")
-        print(f"Página: {page_number}/{paginator.num_pages}")
-        print(f"Registros na página: {len(medidas_processadas)}")
+        print(f"📄 Página: {page_number}/{paginator.num_pages}")
+        print(f"📦 Registros na página: {len(medidas_processadas)}")
     
     # Requisição HTMX: retorna apenas os novos registros
     if request.headers.get('HX-Request'):
@@ -105,10 +182,21 @@ def consultas_informacao_vitima_agressor(request):
         'user': request.user,
         'medidas_protetivas': medidas_processadas,
         'page_obj': page_obj,
-        'total_medidas': total_medidas,
-        'medidas_mes': medidas_mes,
-        'vitimas_unicas': vitimas_unicas,
-        'agressores_unicos': agressores_unicos,
+        # Estatísticas filtradas
+        'total_medidas': total_medidas_filtrado,
+        'medidas_mes': medidas_mes_filtrado,
+        'vitimas_unicas': vitimas_unicas_filtrado,
+        'agressores_unicos': agressores_unicos_filtrado,
+        # Estatísticas gerais
+        'total_geral': total_geral,
+        'medidas_mes_geral': medidas_mes_geral,
+        'vitimas_unicas_geral': vitimas_unicas_geral,
+        'agressores_unicos_geral': agressores_unicos_geral,
+        # Manter valores dos filtros nos inputs
+        'filtro_busca': busca,
+        'filtro_status': status_filtro,
+        'filtro_reincidencia': reincidencia_filtro,
+        'filtro_ordenacao': ordenacao,
     }
     
     return render(request, "parcial/consultas_informacao_vitima_agressor.html", context)

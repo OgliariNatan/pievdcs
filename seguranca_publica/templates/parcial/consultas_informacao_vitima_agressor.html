@@ -63,6 +63,22 @@
     .htmx-request .htmx-indicator {
         display: block;
     }
+    
+    /* Indicador de filtros ativos */
+    .filtro-ativo {
+        position: relative;
+    }
+    
+    .filtro-ativo::after {
+        content: '';
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 8px;
+        height: 8px;
+        background-color: #ef4444;
+        border-radius: 50%;
+    }
 </style>
 
 <div class="container mx-auto px-4 py-8">
@@ -75,17 +91,35 @@
                 </h1>
                 <p class="text-red-50">{{ description }}</p>
             </div>
+            
+            <!-- Indicador de filtros ativos -->
+            {% if filtro_busca or filtro_reincidencia or filtro_status %}
+            <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-4 py-2">
+                <p class="text-white text-sm">
+                    <i class="fas fa-filter mr-2"></i>
+                    Filtros ativos
+                    <button onclick="limparFiltros()" 
+                            class="ml-2 text-xs underline hover:text-red-100">
+                        Limpar
+                    </button>
+                </p>
+            </div>
+            {% endif %}
         </div>
     </div>
 
-    <!-- Estatísticas Rápidas (Carregadas imediatamente) -->
+    <!-- Estatísticas Rápidas -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-red-500">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-600">Total de Medidas</p>
                     <p class="text-2xl font-bold text-gray-800">{{ total_medidas }}</p>
-                    <p class="text-sm text-gray-400">Este Mês: {{ medidas_mes }}</p>
+                    {% if total_geral != total_medidas %}
+                    <p class="text-xs text-gray-400">de {{ total_geral }} no total</p>
+                    {% else %}
+                    <p class="text-xs text-gray-400">Este Mês: {{ medidas_mes }}</p>
+                    {% endif %}
                 </div>
                 <div class="bg-red-100 rounded-full p-3">
                     <i class="fas fa-shield-alt text-2xl text-red-600"></i>
@@ -98,7 +132,11 @@
                 <div>
                     <p class="text-sm text-gray-600">Vítimas Únicas</p>
                     <p class="text-2xl font-bold text-gray-800">{{ vitimas_unicas }}</p>
-                    <p class="text-sm text-gray-400">Registradas</p>
+                    {% if vitimas_unicas_geral != vitimas_unicas %}
+                    <p class="text-xs text-gray-400">de {{ vitimas_unicas_geral }} no total</p>
+                    {% else %}
+                    <p class="text-xs text-gray-400">Registradas</p>
+                    {% endif %}
                 </div>
                 <div class="bg-purple-100 rounded-full p-3">
                     <i class="fas fa-user-injured text-2xl text-purple-600"></i>
@@ -111,7 +149,11 @@
                 <div>
                     <p class="text-sm text-gray-600">Agressores Únicos</p>
                     <p class="text-2xl font-bold text-gray-800">{{ agressores_unicos }}</p>
-                    <p class="text-sm text-gray-400">Registrados</p>
+                    {% if agressores_unicos_geral != agressores_unicos %}
+                    <p class="text-xs text-gray-400">de {{ agressores_unicos_geral }} no total</p>
+                    {% else %}
+                    <p class="text-xs text-gray-400">Registrados</p>
+                    {% endif %}
                 </div>
                 <div class="bg-orange-100 rounded-full p-3">
                     <i class="fas fa-user-slash text-2xl text-orange-600"></i>
@@ -148,8 +190,9 @@
                 </label>
                 <input type="text" 
                        id="busca-medidas" 
+                       value="{{ filtro_busca }}"
                        placeholder="Buscar por CPF, nome..."
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 {% if filtro_busca %}filtro-ativo{% endif %}">
             </div>
             
             <div>
@@ -157,11 +200,11 @@
                     <i class="fas fa-filter mr-1"></i>Filtrar por Status
                 </label>
                 <select id="filtro-status" 
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 {% if filtro_status %}filtro-ativo{% endif %}">
                     <option value="">Todos os Status</option>
-                    <option value="ativa">Ativa</option>
-                    <option value="vencida">Vencida</option>
-                    <option value="suspensa">Suspensa</option>
+                    <option value="ativa" {% if filtro_status == 'ativa' %}selected{% endif %}>Ativa</option>
+                    <option value="vencida" {% if filtro_status == 'vencida' %}selected{% endif %}>Vencida</option>
+                    <option value="suspensa" {% if filtro_status == 'suspensa' %}selected{% endif %}>Suspensa</option>
                 </select>
             </div>
             
@@ -170,10 +213,10 @@
                     <i class="fas fa-user-shield mr-1"></i>Reincidência
                 </label>
                 <select id="filtro-reincidencia" 
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 {% if filtro_reincidencia %}filtro-ativo{% endif %}">
                     <option value="">Todas</option>
-                    <option value="agressor">Agressor Reincidente</option>
-                    <option value="vitima">Vítima Recorrente</option>
+                    <option value="agressor" {% if filtro_reincidencia == 'agressor' %}selected{% endif %}>Agressor Reincidente</option>
+                    <option value="vitima" {% if filtro_reincidencia == 'vitima' %}selected{% endif %}>Vítima Recorrente</option>
                 </select>
             </div>
             
@@ -183,15 +226,21 @@
                 </label>
                 <select id="ordenacao" 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500">
-                    <option value="recente">Mais Recentes</option>
-                    <option value="antigo">Mais Antigas</option>
-                    <option value="prioridade">Prioridade</option>
+                    <option value="recente" {% if filtro_ordenacao == 'recente' %}selected{% endif %}>Mais Recentes</option>
+                    <option value="antigo" {% if filtro_ordenacao == 'antigo' %}selected{% endif %}>Mais Antigas</option>
+                    <option value="prioridade" {% if filtro_ordenacao == 'prioridade' %}selected{% endif %}>Prioridade</option>
                 </select>
             </div>
         </div>
+        
+        <!-- Indicador de carregamento global -->
+        <div id="loading-global" class="hidden mt-4 text-center">
+            <div class="loading-spinner"></div>
+            <p class="text-gray-500 mt-2">Aplicando filtros...</p>
+        </div>
     </div>
 
-    <!-- Lista de Medidas com Scroll Infinito -->
+    <!-- Lista de Medidas -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div id="medidas-container">
             {% include 'parcial/medidas_protetivas_lista.html' %}
@@ -203,93 +252,125 @@
 <div id="modal-container"></div>
 
 <script>
-    // Toggle detalhes de histórico
+    // ========================================
+    // BUSCA E FILTROS GLOBAIS (BACKEND)
+    // ========================================
+    
+    // Debounce para evitar requisições excessivas
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+    
+    // Aplicar filtros globais via HTMX
+    function aplicarFiltrosGlobais() {
+        const busca = document.getElementById('busca-medidas').value.trim();
+        const status = document.getElementById('filtro-status').value;
+        const reincidencia = document.getElementById('filtro-reincidencia').value;
+        const ordenacao = document.getElementById('ordenacao').value;
+        
+        // Monta URL com parâmetros
+        const params = new URLSearchParams({
+            busca: busca,
+            status: status,
+            reincidencia: reincidencia,
+            ordenacao: ordenacao,
+            page: 1
+        });
+        
+        // Remove parâmetros vazios
+        for (let [key, value] of [...params.entries()]) {
+            if (!value) params.delete(key);
+        }
+        
+        console.log('🔍 Aplicando filtros:', Object.fromEntries(params));
+        
+        // Mostra indicador de carregamento
+        document.getElementById('loading-global').classList.remove('hidden');
+        
+        // Recarrega via HTMX
+        htmx.ajax('GET', `?${params.toString()}`, {
+            target: '#medidas-container',
+            swap: 'innerHTML'
+        }).then(() => {
+            // Esconde indicador após carregamento
+            document.getElementById('loading-global').classList.add('hidden');
+        });
+    }
+    
+    // Limpar todos os filtros
+    function limparFiltros() {
+        document.getElementById('busca-medidas').value = '';
+        document.getElementById('filtro-status').value = '';
+        document.getElementById('filtro-reincidencia').value = '';
+        document.getElementById('ordenacao').value = 'recente';
+        aplicarFiltrosGlobais();
+    }
+    
+    // Vincular eventos com debounce
+    document.getElementById('busca-medidas').addEventListener('input', 
+        debounce(aplicarFiltrosGlobais, 500)
+    );
+    document.getElementById('filtro-status').addEventListener('change', aplicarFiltrosGlobais);
+    document.getElementById('filtro-reincidencia').addEventListener('change', aplicarFiltrosGlobais);
+    document.getElementById('ordenacao').addEventListener('change', aplicarFiltrosGlobais);
+
+    // ========================================
+    // FUNÇÕES DE HISTÓRICO E DETALHES
+    // ========================================
+    
     function toggleDetalhes(tipo, id) {
         const elemento = document.getElementById(`historico-${tipo}-${id}`);
         elemento.classList.toggle('hidden');
     }
 
-    // Busca e filtros
-    document.getElementById('busca-medidas').addEventListener('input', filtrarMedidas);
-    document.getElementById('filtro-status').addEventListener('change', filtrarMedidas);
-    document.getElementById('filtro-reincidencia').addEventListener('change', filtrarMedidas);
-    document.getElementById('ordenacao').addEventListener('change', function() {
-        ordenarMedidas(this.value);
-    });
-
-    function filtrarMedidas() {
-        const busca = document.getElementById('busca-medidas').value.toLowerCase();
-        const status = document.getElementById('filtro-status').value;
-        const reincidencia = document.getElementById('filtro-reincidencia').value;
-        const cards = document.querySelectorAll('.medida-card');
-
-        cards.forEach(card => {
-            const texto = card.textContent.toLowerCase();
-            const reincAgressor = parseInt(card.dataset.reincidenciaAgressor || 0);
-            const reincVitima = parseInt(card.dataset.reincidenciaVitima || 0);
-            
-            let matchBusca = texto.includes(busca);
-            let matchReincidencia = true;
-            
-            if (reincidencia === 'agressor') {
-                matchReincidencia = reincAgressor > 0;
-            } else if (reincidencia === 'vitima') {
-                matchReincidencia = reincVitima > 0;
-            }
-
-            if (matchBusca && matchReincidencia) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    }
-
-    function ordenarMedidas(tipo) {
-        const lista = document.getElementById('medidas-container');
-        const cards = Array.from(document.querySelectorAll('.medida-card'));
-
-        cards.sort((a, b) => {
-            switch(tipo) {
-                case 'recente':
-                    return b.dataset.data.localeCompare(a.dataset.data);
-                case 'antigo':
-                    return a.dataset.data.localeCompare(b.dataset.data);
-                case 'prioridade':
-                    const prioA = parseInt(a.dataset.reincidenciaAgressor || 0) + parseInt(a.dataset.reincidenciaVitima || 0);
-                    const prioB = parseInt(b.dataset.reincidenciaAgressor || 0) + parseInt(b.dataset.reincidenciaVitima || 0);
-                    return prioB - prioA;
-            }
-        });
-
-        cards.forEach(card => lista.appendChild(card));
-    }
-
-    // Funções de ação
     function carregarHistoricoVitima(cpf) {
-        console.log('Carregando histórico da vítima:', cpf);
+        console.log('📋 Carregando histórico da vítima:', cpf);
         alert(`Histórico completo da vítima CPF: ${cpf}\n\nFuncionalidade em desenvolvimento`);
     }
 
     function carregarHistoricoAgressor(cpf) {
-        console.log('Carregando histórico do agressor:', cpf);
+        console.log('📋 Carregando histórico do agressor:', cpf);
         alert(`Histórico completo do agressor CPF: ${cpf}\n\nFuncionalidade em desenvolvimento`);
     }
 
     function visualizarDetalhesCompletos(id) {
-        console.log('Visualizando detalhes da medida:', id);
+        console.log('👁️ Visualizando detalhes da medida:', id);
         window.location.href = `/militar/medida/${id}/detalhes/`;
     }
 
     function editarMedida(id) {
-        console.log('Editando medida:', id);
+        console.log('✏️ Editando medida:', id);
         window.location.href = `/militar/medida/${id}/atendimento/novo/`;
     }
 
     function gerarRelatorioMedida(id) {
-        console.log('Gerando relatório da medida:', id);
+        console.log('📄 Gerando relatório da medida:', id);
         window.location.href = `/militar/medida/${id}/relatorio/`;
     }
+
+    // ========================================
+    // EVENTOS HTMX
+    // ========================================
+    
+    document.body.addEventListener('htmx:beforeRequest', function(evt) {
+        console.log('🔄 Requisição HTMX iniciada');
+    });
+
+    document.body.addEventListener('htmx:afterSwap', function(evt) {
+        console.log('✅ Conteúdo carregado com sucesso');
+    });
+
+    document.body.addEventListener('htmx:afterSettle', function(evt) {
+        console.log('✨ Renderização concluída');
+    });
 
     // Fechar modal com ESC
     document.addEventListener('keydown', function(e) {
@@ -299,19 +380,6 @@
                 modalContainer.innerHTML = '';
             }
         }
-    });
-
-    // Feedback visual ao carregar mais dados com HTMX
-    document.body.addEventListener('htmx:beforeRequest', function(evt) {
-        console.log('🔄 Carregando próxima página...');
-    });
-
-    document.body.addEventListener('htmx:afterSwap', function(evt) {
-        console.log('✅ Nova página carregada com sucesso');
-    });
-
-    document.body.addEventListener('htmx:afterSettle', function(evt) {
-        console.log('✨ Conteúdo renderizado e animações concluídas');
     });
 </script>
 {% endblock %}
