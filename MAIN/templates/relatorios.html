@@ -150,18 +150,17 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                     <i class="fas fa-calendar-alt mr-1"></i> Período
                 </label>
-                <select name="comarca" id="comarca" 
+                <select name="periodo" id="periodo" 
                     class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary"
-                    hx-get="{% url 'api_tendencia_temporal' %}"
-                    hx-target="#tendencia-data-container"
-                    hx-include="#periodo"
-                    hx-trigger="change"
-                    onchange="atualizarGraficoTendencia()">
-                <option value="">Todas</option>
-                {% for c in comarcas %}
-                <option value="{{ c }}" {% if c == comarca_selecionada %}selected{% endif %}>{{ c }}</option>
-                {% endfor %}
-            </select>
+                    hx-get="{% url 'relatorios' %}"
+                    hx-target="#graficos-container"
+                    hx-include="#comarca"
+                    hx-trigger="change">
+                    <option value="">Todos</option>
+                    <option value="Anual" {% if periodo_selecionado == 'Anual' %}selected{% endif %}>Anual</option>
+                    <option value="Mensal" {% if periodo_selecionado == 'Mensal' %}selected{% endif %}>Mensal</option>
+                    <option value="Semanal" {% if periodo_selecionado == 'Semanal' %}selected{% endif %}>Semanal</option>
+                </select>
             </div>
             
             <div class="flex-1">

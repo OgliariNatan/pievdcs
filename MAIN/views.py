@@ -261,6 +261,9 @@ def aplicar_filtros_queryset(request):
         qs_pm = qs_pm.filter(data__gte=data_inicio)
         qs_pc = qs_pc.filter(data__gte=data_inicio)
         qs_mp = qs_mp.filter(data_solicitacao__gte=data_inicio)
+        if var_debug == 'True':
+            print(f"Aplicando filtro semanal: data_inicio={data_inicio}, hoje={hoje}")
+            print(f'Conta MP: {qs_mp.count()}')
     elif periodo == 'Mensal':
         qs_pm = qs_pm.filter(data__month=hoje.month, data__year=hoje.year)
         qs_pc = qs_pc.filter(data__month=hoje.month, data__year=hoje.year)
@@ -269,10 +272,14 @@ def aplicar_filtros_queryset(request):
         qs_pm = qs_pm.filter(data__year=hoje.year)
         qs_pc = qs_pc.filter(data__year=hoje.year)
         qs_mp = qs_mp.filter(data_solicitacao__year=hoje.year)
+        if var_debug == 'True':
+            print(f"Aplicando filtro Anual: data_inicio={data_inicio}, hoje={hoje}")
+            print(f'Conta MP: {qs_mp.count()}')
     
     # Filtro de comarca (apenas MP tem comarca)
     if comarca and comarca != 'Todas':
         qs_mp = qs_mp.filter(comarca_competente__nome=comarca)
+        qs_pc = qs_pc.filter(Q(comarca_competente__nome=comarca) | Q(comarca_competente__isnull=True))
     
     return qs_pm, qs_pc, qs_mp, periodo, comarca
 
