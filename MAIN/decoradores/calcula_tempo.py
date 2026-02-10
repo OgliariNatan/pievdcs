@@ -58,6 +58,9 @@ def calcula_tempo_fun(funcao):
         print(f'Tempo: {time.strftime("%d-%m-%Y %H:%M:%S")}')
         print(f"\033[31mExecução de '{funcao.__name__}': {fim - inicio:.4f} segundos\033[0m")
         print(f'\033[34mNúmero de queries executadas:\033[0m \033[31m{len(connection.queries)}\033[0m')
+        #print(50*'+')
+        #for query in connection.queries:
+            #print(query['sql'][:100])
         print('--------------------------------------')
         
         return resultado
