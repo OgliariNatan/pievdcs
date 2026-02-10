@@ -5,6 +5,7 @@ import time
 import socket
 import uuid
 from functools import wraps
+from django.db import connection
 
 def calcula_tempo(funcao):
     @wraps(funcao)
@@ -32,6 +33,7 @@ def calcula_tempo(funcao):
         print(f'\033[34mIP do cliente:\033[0m \033[33m{ip_cliente}\033[0m')
         #print(f'IP do servidor: {ip_servidor}\tHostname: {hostname_servidor}\tMAC: {uuid.getnode()}')
         print(f"\033[31mTempo de execução do {funcao.__name__}: {fim - inicio:.4f} segundos\033[0m")
+        print(f'\033[34mNúmero de queries executadas:\033[0m \033[31m{len(connection.queries)}\033[0m')
         print('----------------------------------------')
         
         return resultado
@@ -55,6 +57,7 @@ def calcula_tempo_fun(funcao):
         print('---------- FUNÇÃO AUXILIAR -----------')
         print(f'Tempo: {time.strftime("%d-%m-%Y %H:%M:%S")}')
         print(f"\033[31mExecução de '{funcao.__name__}': {fim - inicio:.4f} segundos\033[0m")
+        print(f'\033[34mNúmero de queries executadas:\033[0m \033[31m{len(connection.queries)}\033[0m')
         print('--------------------------------------')
         
         return resultado

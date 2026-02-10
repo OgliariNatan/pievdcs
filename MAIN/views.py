@@ -275,6 +275,8 @@ def aplicar_filtros_queryset(request):
         if var_debug == 'True':
             print(f"Aplicando filtro Anual: data_inicio={data_inicio}, hoje={hoje}")
             print(f'Conta MP: {qs_mp.count()}')
+    if var_debug == 'True':
+        print(f"Filtro aplicado: {periodo}. Contagem PM: {qs_pm.count()}, PC: {qs_pc.count()}, MP: {qs_mp.count()}")
     
     # Filtro de comarca (apenas MP tem comarca)
     if comarca and comarca != 'Todas':

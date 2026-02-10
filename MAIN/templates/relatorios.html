@@ -156,7 +156,7 @@
                     hx-target="#graficos-container"
                     hx-include="#comarca"
                     hx-trigger="change">
-                    <option value="">Todos</option>
+                    <option value="Todos">Todos</option>
                     <option value="Anual" {% if periodo_selecionado == 'Anual' %}selected{% endif %}>Anual</option>
                     <option value="Mensal" {% if periodo_selecionado == 'Mensal' %}selected{% endif %}>Mensal</option>
                     <option value="Semanal" {% if periodo_selecionado == 'Semanal' %}selected{% endif %}>Semanal</option>
@@ -173,7 +173,7 @@
                         hx-target="#graficos-container"
                         hx-include="#periodo"
                         hx-trigger="change">
-                    <option value="">Todas</option>
+                    <option value="Todos">Todas</option>
                     {% for c in comarcas %}
                     <option value="{{ c }}" {% if c == comarca_selecionada %}selected{% endif %}>{{ c }}</option>
                     {% endfor %}
