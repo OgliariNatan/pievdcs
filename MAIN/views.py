@@ -291,17 +291,44 @@ def calcular_dados_graficos(qs_pm, qs_pc, qs_mp):
     Calcula todos os dados para os gráficos baseado nos querysets filtrados.
     """
     # Tipos de Violência
-    tipos_violencia_ativos = TipoDeViolencia.objects.filter(ativo=True).order_by('nome')
-    label_violencia = [tipo.nome for tipo in tipos_violencia_ativos]
-    dados_violencia = []
-    
-    for tipo in tipos_violencia_ativos:
-        total = (
-            qs_pm.filter(tipo_de_violencia=tipo).count() +
-            qs_pc.filter(tipo_de_violencia=tipo).count() +
-            qs_mp.filter(tipo_de_violencia=tipo).count()
+    try:
+        tipos_violencia_ativos = TipoDeViolencia.objects.filter(ativo=True).order_by('nome')
+        label_violencia = [tipo.nome for tipo in tipos_violencia_ativos]
+        ids_tipos = [tipo.id for tipo in tipos_violencia_ativos]
+        
+        pm_counts = dict(
+            OcorrenciaMilitar.objects
+            .filter(tipo_de_violencia__id__in=ids_tipos)
+            .values('tipo_de_violencia__id')
+            .annotate(total=Count('id'))
+            .values_list('tipo_de_violencia__id', 'total')
         )
-        dados_violencia.append(total)
+        
+        pc_counts = dict(
+            OcorrenciaCivil.objects
+            .filter(tipo_de_violencia__id__in=ids_tipos)
+            .values('tipo_de_violencia__id')
+            .annotate(total=Count('id'))
+            .values_list('tipo_de_violencia__id', 'total')
+        )
+        
+        mp_counts = dict(
+            FormularioMedidaProtetiva.objects
+            .filter(tipo_de_violencia__id__in=ids_tipos)
+            .values('tipo_de_violencia__id')
+            .annotate(total=Count('ID'))
+            .values_list('tipo_de_violencia__id', 'total')
+        )
+        
+        dados_violencia = [
+            pm_counts.get(tipo.id, 0) + pc_counts.get(tipo.id, 0) + mp_counts.get(tipo.id, 0)
+            for tipo in tipos_violencia_ativos
+        ]
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Erro violência: {e}')
+        label_violencia = []
+        dados_violencia = []
     
     # Idades
     idades_data = {
