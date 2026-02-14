@@ -46,3 +46,7 @@ tools: ['vscode', 'execute/testFailure', 'execute/getTerminalOutput', 'execute/r
 - Nunca criar Pull Requests
 - Verificar código na branch `63-ogliari`
 - Não usar modo Agent
+
+## Comportamento 
+- Desejo que as informações a serem exibidas em consultas ou cadastros sejam exibidas em um popup, sempre criando um template especifico para cada popup. (APP/TEMPLATES/PARCIAL/INSTITUICAO/NOME_DO_TEMPLATE.html)
+- Deverá fechar o popup ao clicar fora dele, em um botão de fechar ou com a tecla ESC
