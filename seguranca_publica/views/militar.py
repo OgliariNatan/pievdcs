@@ -326,3 +326,20 @@ def buscar_vitimas(request):
         print(50 * '\033[33m-\033[0m')
     
     return response
+
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Polícia Militar'])
+def detalhe_medida_protetiva(request, medida_id):
+    """Retorna o popup com detalhes completos da medida protetiva via HTMX."""
+    medida = FormularioMedidaProtetiva.objects.select_related(
+        'vitima', 'agressor',
+        'vitima__estado', 'vitima__municipio',
+        'agressor__estado', 'agressor__municipio',
+        'comarca_competente', 'municipio_mp',
+    ).prefetch_related(
+        'tipo_de_violencia', 'filhos',
+    ).get(ID=medida_id)
+
+    return render(request, 'parcial/militar/detalhe_medida_protetiva.html', {
+        'medida': medida,
+    })
