@@ -76,8 +76,8 @@
                             {{ medida.vitima.endereco_rua|default:"" }}, nº {{ medida.vitima.endereco_numero|default:"S/N" }}
                         </p>
                         <p><span class="font-semibold text-gray-500">Bairro:</span> {{ medida.vitima.bairro|default:"" }}</p>
-                        <p><span class="font-semibold text-gray-500">Cidade/UF:</span>
-                            {{ medida.vitima.municipio|default:"" }} / {{ medida.vitima.estado|default:"" }}
+                        <p><span class="font-semibold text-gray-500">Cidade(UF):</span>
+                            {{ medida.vitima.municipio|default:"" }}
                         </p>
                         <p><span class="font-semibold text-gray-500">Pai:</span> {{ medida.vitima.nome_do_pai|default:"Não informado" }}</p>
                         <p><span class="font-semibold text-gray-500">Mãe:</span> {{ medida.vitima.nome_da_mae|default:"Não informado" }}</p>
@@ -112,8 +112,8 @@
                             {{ medida.agressor.endereco|default:"" }}, nº {{ medida.agressor.endereco_numero|default:"S/N" }}
                         </p>
                         <p><span class="font-semibold text-gray-500">Bairro:</span> {{ medida.agressor.bairro|default:"" }}</p>
-                        <p><span class="font-semibold text-gray-500">Cidade/UF:</span>
-                            {{ medida.agressor.municipio|default:"" }} / {{ medida.agressor.estado|default:"" }}
+                        <p><span class="font-semibold text-gray-500">Cidade(UF):</span>
+                            {{ medida.agressor.municipio|default:"" }}
                         </p>
                         <p><span class="font-semibold text-gray-500">Pai:</span> {{ medida.agressor.nome_do_pai|default:"Não informado" }}</p>
                         <p><span class="font-semibold text-gray-500">Mãe:</span> {{ medida.agressor.nome_da_mae|default:"Não informado" }}</p>
