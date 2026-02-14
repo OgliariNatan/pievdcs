@@ -8,6 +8,7 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -665,3 +666,62 @@ class CustomLoginView(LoginView):
         if request.user.is_authenticated:
             return redirect('/home/')
         return super().dispatch(request, *args, **kwargs)
+    
+
+@csrf_exempt
+def chat_ia_publico(request):
+    """Chat IA público para a página inicial, sem restrição de login."""
+    if request.method == "POST":
+        from sistema_justica.views.poder_judiciario import (
+            verificar_ollama_disponivel, obter_resposta_ollama, obter_resposta_demo,
+            OLLAMA_MODEL
+        )
+        from django.conf import settings
+
+        pergunta = request.POST.get("mensagem", "").strip()
+        if not pergunta:
+            return HttpResponse("")
+
+        USE_OLLAMA = getattr(settings, 'USE_OLLAMA', True)
+        resposta_formatada = None
+        usando_ollama = False
+
+        if USE_OLLAMA and verificar_ollama_disponivel():
+            resposta_formatada = obter_resposta_ollama(pergunta)
+            if resposta_formatada:
+                usando_ollama = True
+
+        if not resposta_formatada:
+            resposta_formatada = obter_resposta_demo(pergunta)
+
+        fonte_resposta = ""
+        if settings.DEBUG:
+            if usando_ollama:
+                fonte_resposta = f"<div class='text-xs text-green-600 mt-2'><i class='fas fa-robot mr-1'></i>Resposta gerada por IA local (Ollama - {OLLAMA_MODEL})</div>"
+            else:
+                fonte_resposta = "<div class='text-xs text-orange-600 mt-2'><i class='fas fa-info-circle mr-1'></i>Resposta pré-definida (Ollama indisponível)</div>"
+
+        html_response = f"""
+            <div class='flex justify-end mb-3'>
+                <div class='bg-purple-600 text-white rounded-xl p-3 max-w-[80%] shadow-md'>
+                    <p class='text-sm'>{pergunta}</p>
+                </div>
+            </div>
+            <div class='flex items-start gap-2 mb-3'>
+                <div class='w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center flex-shrink-0'>
+                    <i class='fas fa-robot text-sm'></i>
+                </div>
+                <div class='bg-white rounded-xl p-4 max-w-[80%] shadow-md border border-gray-100'>
+                    <p class='text-sm text-gray-700 leading-relaxed'>{resposta_formatada}</p>
+                    {fonte_resposta}
+                    <div class='mt-3 pt-3 border-t border-gray-200'>
+                        <p class='text-xs text-gray-500'>
+                            <i class='fas fa-phone-alt mr-1'></i>
+                            Emergência: <strong>190</strong> | Central da Mulher: <strong>180</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        """
+        return HttpResponse(html_response)
+    return HttpResponse("")

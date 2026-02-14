@@ -358,7 +358,6 @@ def obter_resposta_demo(pergunta):
 
 @checked_debug_decorador
 @csrf_exempt
-@login_required(login_url=reverse_lazy('login'))
 def chat_ia(request):
     if request.method == "POST":
         pergunta = request.POST.get("mensagem", "").strip()

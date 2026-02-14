@@ -159,7 +159,7 @@
                     <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                         <i class="fas fa-thin fa-circle-info"></i>
                     </div>
-                    <span class="font-medium">Consultar MPU</span>
+                    <span class="font-medium">Cadastrar Agressor</span>
                 </button>
             </div>
 
@@ -184,6 +184,7 @@
                 <div id="modal-vitima"> </div>
                 <div id="modal-mpu"> </div>
                 <div id="modal-content1"> </div>
+                <div id="modal-consulta-mpu"></div>
 
                 <!-- Conteúdo lorem ipsum -->
                 <div class="bg-gray-50 rounded-xl p-6">
@@ -196,16 +197,15 @@
                             fictício.</p>
                         <p class="text-yellow-400">O botão de 'Solicitar MPU', já esta funcionado. Podes cadastrar
                             fictício.</p>
-                        <p class="text-pink-500"><a href="/admin/">http://10.40.22.110:8000/admin/</a> <<-- possui
+                        <p class="text-pink-500"><a href="/admin/">http://10.40.22.46:8000/admin/</a> <<-- possui
                                 algumas funcionalidades para testes, podes usufruir à vontade. </p> <br>
 
                                 <p class="text-green-600">Iniciei o<a href="/admin/sistema_justica/" class="text-4xl">
                                         formulário para a
                                         solicitação da Medida
-                                        Protetiva</a>, <br> Inserido formulario da violência psicológica. atualizado em: 18/09/2025 às
-                                    19h45min</p>
+                                        Protetiva</a>, <br> Inserido formulario da violência psicológica. atualizado em: 14/02/2026 às 19h23min</p>
                                 <br>
-                                {% comment %} <p>{% lorem 5 p %}</p> {% endcomment %}
+                                
                     </div>
                 </div>
             </div>
@@ -293,6 +293,20 @@
 
             sidebar.addEventListener('mouseleave', () => {
                 document.getElementById('sidebar-overlay').classList.add('opacity-0', 'pointer-events-none');
+            });
+        }
+    });
+
+        // Fechar qualquer modal aberto com ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            // Limpa todos os containers de modal
+            ['modal-mpu', 'modal-vitima', 'modal-content1'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el && el.innerHTML.trim() !== '') {
+                    el.innerHTML = '';
+                    e.stopPropagation();
+                }
             });
         }
     });
