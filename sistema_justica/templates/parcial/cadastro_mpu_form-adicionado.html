@@ -46,7 +46,7 @@ div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opaci
                 <button type="submit"
                     class="px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition">Salvar</button>
             </div>
-            {% if form.non_field_errors %}
+            {% comment %} {% if form.non_field_errors %}
             <div class="px-6 pb-4 text-red-600 text-sm">
                 {{ form.non_field_errors }}
             </div>
@@ -55,7 +55,7 @@ div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opaci
             <div class="px-6 pb-4 text-green-600 text-sm">
                 {{ mensagem_sucesso }}
             </div>
-            {% endif %}
+            {% endif %} {% endcomment %}
         </form> 
     </div>
 </div>

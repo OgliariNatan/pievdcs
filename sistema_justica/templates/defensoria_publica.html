@@ -297,6 +297,13 @@
         }
     });
 
+    // Escutar evento customizado para exibir popup de sucesso
+    document.body.addEventListener('mpuSalva', function(e) {
+        const modal = document.getElementById('modal-mpu');
+        if (modal) modal.innerHTML = '';
+        exibirPopupSucesso(e.detail.value, 'sucesso');
+    });
+
     // Adicionar animações CSS customizadas
     const style = document.createElement('style');
     style.textContent = `

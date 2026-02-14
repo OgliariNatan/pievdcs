@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from .permission_group import grupos_permitidos
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from mensageria.models import Notificacao, StatusNotificacao
 from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
@@ -120,14 +120,13 @@ def marcar_notificacao_lida(request, notificacao_id):
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Defensoria Pública', 'Ministério Público',])
 def cadastro_mpu(request):
-    mensagem_sucesso = None
+    """Cadastro de Medida Protetiva de Urgência."""
     if request.method == "POST":
         form = CadastroMedidaProtetiva(request.POST)
         if form.is_valid():
             mpu = form.save()
-            mensagem_sucesso = "Medida Protetiva cadastrada com sucesso!"
-            
-            # Enviar notificação para o Poder Judiciário
+
+            # Notificar Poder Judiciário
             try:
                 grupo_judiciario = CustomGroup.objects.get(name='PJ')
                 enviar_notificacao_grupo(
@@ -142,17 +141,19 @@ def cadastro_mpu(request):
                     importante=True
                 )
             except CustomGroup.DoesNotExist:
-                pass 
-            
-            form = CadastroMedidaProtetiva()  # Limpa o formulário após sucesso
-    else:
-        form = CadastroMedidaProtetiva()
-    
-    contexto = {
-        'form': form,
-        'mensagem_sucesso': mensagem_sucesso,
-    }
-    return render(request, "parcial/cadastro_mpu.html", contexto)
+                pass
+
+            # Retorna HTML vazio + header HTMX para fechar modal e exibir toast
+            response = HttpResponse('<div id="modal-mpu"></div>')
+            response['HX-Trigger'] = '{"mpuSalva": "Medida Protetiva #' + str(mpu.ID) + ' cadastrada com sucesso!"}'
+            return response
+
+        # Se formulário inválido, re-renderiza com erros no topo
+        contexto = {'form': form}
+        return render(request, "parcial/cadastro_mpu.html", contexto)
+
+    form = CadastroMedidaProtetiva()
+    return render(request, "parcial/cadastro_mpu.html", {'form': form})
 
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Defensoria Pública', 'Ministério Público',])
