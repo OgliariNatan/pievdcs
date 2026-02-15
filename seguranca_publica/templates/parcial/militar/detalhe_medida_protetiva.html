@@ -1,0 +1,308 @@
+<!-- Template: seguranca_publica/templates/parcial/militar/detalhe_medida_protetiva.html -->
+<!-- Popup de detalhes completos da Medida Protetiva -->
+
+<div id="modal-detalhe-medida" 
+     class="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+     onclick="if(event.target===this) this.remove()">
+    
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden mx-4"
+         onclick="event.stopPropagation()">
+        
+        <!-- Cabeçalho do Modal -->
+        <div class="bg-gradient-to-r from-purple-700 to-purple-500 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-file-shield text-white text-xl"></i>
+                <h2 class="text-white text-lg font-bold">
+                    Medida Protetiva #{{ medida.ID }}
+                </h2>
+                {% if medida.solicitada_mpu %}
+                <span class="bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-0.5 rounded-full">URGÊNCIA</span>
+                {% endif %}
+            </div>
+            <button onclick="document.getElementById('modal-detalhe-medida').remove()"
+                    class="text-white/80 hover:text-white transition-colors text-2xl leading-none">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Conteúdo com scroll -->
+        <div class="overflow-y-auto max-h-[calc(90vh-64px)] p-6 space-y-6">
+
+            <!-- Informações Gerais -->
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-purple-50 rounded-xl p-4 text-center">
+                    <p class="text-xs text-purple-600 font-semibold uppercase">Data da Solicitação</p>
+                    <p class="text-lg font-bold text-gray-800 mt-1">{{ medida.data_solicitacao|date:"d/m/Y" }}</p>
+                    <p class="text-sm text-gray-500">{{ medida.data_solicitacao|date:"H:i" }}</p>
+                </div>
+                <div class="bg-blue-50 rounded-xl p-4 text-center">
+                    <p class="text-xs text-blue-600 font-semibold uppercase">Período da MP</p>
+                    <p class="text-lg font-bold text-gray-800 mt-1">{{ medida.periodo_mp|date:"d/m/Y" }}</p>
+                </div>
+                <div class="bg-orange-50 rounded-xl p-4 text-center">
+                    <p class="text-xs text-orange-600 font-semibold uppercase">Comarca</p>
+                    <p class="text-lg font-bold text-gray-800 mt-1">{{ medida.comarca_competente|default:"Não informada" }}</p>
+                </div>
+            </section>
+
+            <!-- Vítima e Agressor -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <!-- Card Vítima -->
+                <section class="border-2 border-green-200 rounded-xl overflow-hidden">
+                    <div class="bg-green-500 px-4 py-2 flex items-center gap-2">
+                        <i class="fas fa-user-shield text-white"></i>
+                        <h3 class="text-white font-bold text-sm uppercase">Vítima</h3>
+                    </div>
+                    <div class="p-4 space-y-2 text-sm">
+                        <p><span class="font-semibold text-gray-500">Nome:</span> {{ medida.vitima.nome }}</p>
+                        {% if medida.vitima.nome_social %}
+                        <p><span class="font-semibold text-gray-500">Nome Social:</span> {{ medida.vitima.nome_social }}</p>
+                        {% endif %}
+                        <p><span class="font-semibold text-gray-500">CPF:</span> {{ medida.vitima.cpf }}</p>
+                        <p><span class="font-semibold text-gray-500">Nascimento:</span> {{ medida.vitima.data_nascimento|date:"d/m/Y" }}
+                            {% if medida.vitima.idade %}<span class="text-gray-400">({{ medida.vitima.idade }} anos)</span>{% endif %}
+                        </p>
+                        <p><span class="font-semibold text-gray-500">Sexo:</span> {{ medida.vitima.get_sexo_display }}</p>
+                        <p><span class="font-semibold text-gray-500">Etnia:</span> {{ medida.vitima.get_etnia_display }}</p>
+                        <p><span class="font-semibold text-gray-500">Estado Civil:</span> {{ medida.vitima.get_estado_civil_display }}</p>
+                        <p><span class="font-semibold text-gray-500">Telefone:</span> {{ medida.vitima.telefone|default:"Não informado" }}</p>
+                        <p><span class="font-semibold text-gray-500">Email:</span> {{ medida.vitima.email|default:"Não informado" }}</p>
+                        <p><span class="font-semibold text-gray-500">Profissão:</span> {{ medida.vitima.profissao|default:"Não informada" }}</p>
+                        <p><span class="font-semibold text-gray-500">Escolaridade:</span> {{ medida.vitima.get_escolaridade_display }}</p>
+                        <p><span class="font-semibold text-gray-500">Renda:</span> {{ medida.vitima.get_classeEconomica_display }}</p>
+                        <hr class="my-2">
+                        <p><span class="font-semibold text-gray-500">Endereço:</span>
+                            {{ medida.vitima.endereco_rua|default:"" }}, nº {{ medida.vitima.endereco_numero|default:"S/N" }}
+                        </p>
+                        <p><span class="font-semibold text-gray-500">Bairro:</span> {{ medida.vitima.bairro|default:"" }}</p>
+                        <p><span class="font-semibold text-gray-500">Cidade(UF):</span>
+                            {{ medida.vitima.municipio|default:"" }}
+                        </p>
+                        <p><span class="font-semibold text-gray-500">Pai:</span> {{ medida.vitima.nome_do_pai|default:"Não informado" }}</p>
+                        <p><span class="font-semibold text-gray-500">Mãe:</span> {{ medida.vitima.nome_da_mae|default:"Não informado" }}</p>
+                    </div>
+                </section>
+
+                <!-- Card Agressor -->
+                <section class="border-2 border-red-200 rounded-xl overflow-hidden">
+                    <div class="bg-red-500 px-4 py-2 flex items-center gap-2">
+                        <i class="fas fa-user-slash text-white"></i>
+                        <h3 class="text-white font-bold text-sm uppercase">Agressor</h3>
+                    </div>
+                    <div class="p-4 space-y-2 text-sm">
+                        <p><span class="font-semibold text-gray-500">Nome:</span> {{ medida.agressor.nome }}</p>
+                        {% if medida.agressor.nome_social %}
+                        <p><span class="font-semibold text-gray-500">Nome Social:</span> {{ medida.agressor.nome_social }}</p>
+                        {% endif %}
+                        <p><span class="font-semibold text-gray-500">CPF:</span> {{ medida.agressor.cpf }}</p>
+                        <p><span class="font-semibold text-gray-500">Nascimento:</span> {{ medida.agressor.data_nascimento|date:"d/m/Y" }}
+                            {% if medida.agressor.idade %}<span class="text-gray-400">({{ medida.agressor.idade }} anos)</span>{% endif %}
+                        </p>
+                        <p><span class="font-semibold text-gray-500">Sexo:</span> {{ medida.agressor.get_sexo_display }}</p>
+                        <p><span class="font-semibold text-gray-500">Etnia:</span> {{ medida.agressor.get_etnia_display }}</p>
+                        <p><span class="font-semibold text-gray-500">Estado Civil:</span> {{ medida.agressor.get_estado_civil_display }}</p>
+                        <p><span class="font-semibold text-gray-500">Telefone:</span> {{ medida.agressor.telefone|default:"Não informado" }}</p>
+                        <p><span class="font-semibold text-gray-500">Email:</span> {{ medida.agressor.email|default:"Não informado" }}</p>
+                        <p><span class="font-semibold text-gray-500">Profissão:</span> {{ medida.agressor.profissao|default:"Não informada" }}</p>
+                        <p><span class="font-semibold text-gray-500">Escolaridade:</span> {{ medida.agressor.get_escolaridade_display }}</p>
+                        <p><span class="font-semibold text-gray-500">Renda:</span> {{ medida.agressor.get_classeEconomica_display }}</p>
+                        <hr class="my-2">
+                        <p><span class="font-semibold text-gray-500">Endereço:</span>
+                            {{ medida.agressor.endereco|default:"" }}, nº {{ medida.agressor.endereco_numero|default:"S/N" }}
+                        </p>
+                        <p><span class="font-semibold text-gray-500">Bairro:</span> {{ medida.agressor.bairro|default:"" }}</p>
+                        <p><span class="font-semibold text-gray-500">Cidade(UF):</span>
+                            {{ medida.agressor.municipio|default:"" }}
+                        </p>
+                        <p><span class="font-semibold text-gray-500">Pai:</span> {{ medida.agressor.nome_do_pai|default:"Não informado" }}</p>
+                        <p><span class="font-semibold text-gray-500">Mãe:</span> {{ medida.agressor.nome_da_mae|default:"Não informado" }}</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Relacionamento e Local do Fato -->
+            <section class="bg-gray-50 rounded-xl p-4">
+                <h3 class="text-sm font-bold text-gray-700 uppercase mb-3">
+                    <i class="fas fa-link mr-1 text-purple-500"></i> Relacionamento e Local do Fato
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                    <p><span class="font-semibold text-gray-500">Grau de Parentesco:</span> {{ medida.get_grau_parentesco_agressor_display }}</p>
+                    <p><span class="font-semibold text-gray-500">Relacionamento Familiar:</span> {{ medida.get_relacionamento_familiar_display|default:"Não informado" }}</p>
+                    <p><span class="font-semibold text-gray-500">Município do Fato:</span> {{ medida.municipio_mp|default:"Não informado" }}</p>
+                    <p><span class="font-semibold text-gray-500">Bairro:</span> {{ medida.bairro_mp|default:"Não informado" }}</p>
+                    <p><span class="font-semibold text-gray-500">Rua:</span> {{ medida.rua_mp|default:"Não informada" }}, nº {{ medida.n_casa_mp|default:"S/N" }}</p>
+                    <p><span class="font-semibold text-gray-500">Possível Causa:</span> {{ medida.possivel_causa|default:"Não informada" }}</p>
+                </div>
+            </section>
+
+            <!-- Tipos de Violência -->
+            <section class="bg-orange-50 rounded-xl p-4">
+                <h3 class="text-sm font-bold text-gray-700 uppercase mb-3">
+                    <i class="fas fa-exclamation-triangle mr-1 text-orange-500"></i> Tipos de Violência
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                    {% for tipo in medida.tipo_de_violencia.all %}
+                    <span class="bg-orange-200 text-orange-800 px-3 py-1 rounded-full text-xs font-semibold">
+                        {{ tipo.nome }}
+                    </span>
+                    {% empty %}
+                    <span class="text-gray-400 text-sm italic">Não especificado</span>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- Filhos -->
+            {% if medida.filhos.all %}
+            <section class="bg-blue-50 rounded-xl p-4">
+                <h3 class="text-sm font-bold text-gray-700 uppercase mb-3">
+                    <i class="fas fa-child mr-1 text-blue-500"></i> Filhos
+                </h3>
+                <div class="space-y-2 text-sm">
+                    {% for filho in medida.filhos.all %}
+                    <div class="bg-white rounded-lg p-3 border border-blue-100">
+                        <span class="font-semibold">{{ filho.nome }}</span>
+                        — {{ filho.data_nascimento|date:"d/m/Y" }}
+                        {% if filho.idade %}<span class="text-gray-400">({{ filho.idade }} anos)</span>{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- Condutas de Violência Psicológica (resumo dos campos BooleanField marcados) -->
+            <section class="bg-red-50 rounded-xl p-4">
+                <h3 class="text-sm font-bold text-gray-700 uppercase mb-3">
+                    <i class="fas fa-brain mr-1 text-red-500"></i> Condutas de Violência Psicológica Identificadas
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm">
+                    {% if medida.critica_aparencia %}<p class="text-red-700">✔ Criticava aparência</p>{% endif %}
+                    {% if medida.proibia_make_roupas %}<p class="text-red-700">✔ Proibia roupas ou maquiagem</p>{% endif %}
+                    {% if medida.constrangia_frente_outras_pessoas %}<p class="text-red-700">✔ Constrangia na frente de outros</p>{% endif %}
+                    {% if medida.obrigava_pedir_desculpas %}<p class="text-red-700">✔ Obrigava a pedir desculpas</p>{% endif %}
+                    {% if medida.fazer_nao_gosta %}<p class="text-red-700">✔ Constrangia a fazer coisas que não gostava</p>{% endif %}
+                    {% if medida.ridicularizava_sozinha %}<p class="text-red-700">✔ Ridicularizava quando sozinhos</p>{% endif %}
+                    {% if medida.ridicularizava_terceiros %}<p class="text-red-700">✔ Ridicularizava na frente de outros</p>{% endif %}
+                    {% if medida.humiliava_frente_filhos %}<p class="text-red-700">✔ Humilhava na frente dos filhos</p>{% endif %}
+                    {% if medida.piadas_familia %}<p class="text-red-700">✔ Piadas sobre vítima ou família</p>{% endif %}
+                    {% if medida.xingava_louca_burra %}<p class="text-red-700">✔ Xingava de louca, burra, incapaz</p>{% endif %}
+                    {% if medida.apelidos_tristes %}<p class="text-red-700">✔ Criava apelidos constrangedores</p>{% endif %}
+                    {% if medida.perdia_cabeca_culpava %}<p class="text-red-700">✔ "Perdia a cabeça" e culpava a vítima</p>{% endif %}
+                    {% if medida.culpava_ruim_voce %}<p class="text-red-700">✔ Culpava por tudo de ruim</p>{% endif %}
+                    {% if medida.insegurancas_capza %}<p class="text-red-700">✔ Usava medos e inseguranças</p>{% endif %}
+                    {% if medida.boa_dona_casa %}<p class="text-red-700">✔ Justificava abuso como "boa esposa"</p>{% endif %}
+                    {% if medida.ameaca_se_matar %}<p class="text-red-700">✔ Ameaçava se matar ou matar filhos</p>{% endif %}
+                    {% if medida.invertia_fatos %}<p class="text-red-700">✔ Invertia fatos (gaslighting)</p>{% endif %}
+                    {% if medida.dificula_contato_familia %}<p class="text-red-700">✔ Dificultava contato com familiares</p>{% endif %}
+                    {% if medida.telefone_familia_viva_voz %}<p class="text-red-700">✔ Obrigava viva voz nas ligações</p>{% endif %}
+                    {% if medida.reclama_saia_sozinha %}<p class="text-red-700">✔ Reclamava quando saía sozinha</p>{% endif %}
+                    {% if medida.reclama_sozinha_estudar_trabalhar %}<p class="text-red-700">✔ Reclamava estudo/trabalho</p>{% endif %}
+                    {% if medida.bravo_conversa_homem %}<p class="text-red-700">✔ Bravo se conversava com homens</p>{% endif %}
+                    {% if medida.escolhia_amizade %}<p class="text-red-700">✔ Escolhia amizades</p>{% endif %}
+                    {% if medida.controlava_distancia %}<p class="text-red-700">✔ Controlava por mensagens/ligações</p>{% endif %}
+                    {% if medida.senhas_redes_sociais %}<p class="text-red-700">✔ Exigia senhas de redes sociais</p>{% endif %}
+                    {% if medida.ciumes_atencao_proximidade %}<p class="text-red-700">✔ Ciúmes de qualquer aproximação</p>{% endif %}
+                    {% if medida.gritava_qualquer_coisa %}<p class="text-red-700">✔ Gritava ou explodia por qualquer coisa</p>{% endif %}
+                    {% if medida.amante_paquera %}<p class="text-red-700">✔ Explodia por ciúmes (amantes)</p>{% endif %}
+                    {% if medida.escondia_coisas_pessoais %}<p class="text-red-700">✔ Destruía coisas pessoais</p>{% endif %}
+                    {% if medida.destruia_moveis_casa %}<p class="text-red-700">✔ Destruía móveis da casa</p>{% endif %}
+                    {% if medida.maltratava_animal_estimacao %}<p class="text-red-700">✔ Maltratava animais</p>{% endif %}
+                    {% if medida.contar_segredo %}<p class="text-red-700">✔ Ameaçava divulgar segredos/fotos</p>{% endif %}
+                    {% if medida.deixar_sem_nada %}<p class="text-red-700">✔ Ameaçava deixar sem nada</p>{% endif %}
+                    {% if medida.exibia_armas %}<p class="text-red-700">✔ Exibia armas como intimidação</p>{% endif %}
+                    {% if medida.manipulado_IA_BOOL %}<p class="text-red-700">✔ Uso de IA para manipulação</p>{% endif %}
+                    {% if medida.guarda_filhos %}<p class="text-red-700">✔ Ameaçava pedir guarda dos filhos</p>{% endif %}
+                    {% if medida.ameaca_filho_desiste_proc %}<p class="text-red-700">✔ Ameaçava filhos para desistir de processo</p>{% endif %}
+                    {% if medida.agia_agre_filhos_punir %}<p class="text-red-700">✔ Agredia filhos como punição</p>{% endif %}
+                    {% if medida.filhos_riscos %}<p class="text-red-700">✔ Colocava filhos em risco</p>{% endif %}
+                    {% if medida.recusava_pagar_pensao %}<p class="text-red-700">✔ Recusava pagar pensão</p>{% endif %}
+                </div>
+                {% if medida.frequencia_condutas %}
+                <p class="mt-3 text-sm"><span class="font-semibold text-gray-600">Frequência:</span> {{ medida.get_frequencia_condutas_display }}</p>
+                {% endif %}
+            </section>
+
+            <!-- Dano Emocional -->
+            <section class="bg-amber-50 rounded-xl p-4">
+                <h3 class="text-sm font-bold text-gray-700 uppercase mb-3">
+                    <i class="fas fa-heart-broken mr-1 text-amber-600"></i> Danos Emocionais Identificados
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm">
+                    {% if medida.evita_pessoas_locais %}<p class="text-amber-800">✔ Evita pessoas ou locais</p>{% endif %}
+                    {% if medida.medo_sozinha_casa %}<p class="text-amber-800">✔ Medo de ficar sozinha</p>{% endif %}
+                    {% if medida.pesadelo_dormir %}<p class="text-amber-800">✔ Pesadelos / dificuldade dormir</p>{% endif %}
+                    {% if medida.tristeza_profunda %}<p class="text-amber-800">✔ Tristeza profunda / choro</p>{% endif %}
+                    {% if medida.constante_estado_alerta %}<p class="text-amber-800">✔ Constante estado de alerta</p>{% endif %}
+                    {% if medida.dificuldade_fazer_atividades %}<p class="text-amber-800">✔ Dificuldade nas atividades diárias</p>{% endif %}
+                    {% if medida.afastamento_trabalho %}<p class="text-amber-800">✔ Afastamento do trabalho/estudos</p>{% endif %}
+                    {% if medida.afastamento_fami_ami %}<p class="text-amber-800">✔ Afastamento de família/amigos</p>{% endif %}
+                    {% if medida.deixou_relacionar_afetiva_sexu %}<p class="text-amber-800">✔ Deixou de se relacionar afetivamente</p>{% endif %}
+                    {% if medida.deixou_relacionar_afetiva_sexu_mesAgressor %}<p class="text-amber-800">✔ Evita pessoas do mesmo sexo do agressor</p>{% endif %}
+                    {% if medida.desenvolveu_fobia %}<p class="text-amber-800">✔ Desenvolveu fobia</p>{% endif %}
+                    {% if medida.alteracao_apetite %}<p class="text-amber-800">✔ Alterações de apetite/peso</p>{% endif %}
+                    {% if medida.doente_frequente %}<p class="text-amber-800">✔ Adoece com frequência</p>{% endif %}
+                    {% if medida.tremores_lembras %}<p class="text-amber-800">✔ Tremores ao relembrar</p>{% endif %}
+                    {% if medida.coracao_ace_sexo_oposto %}<p class="text-amber-800">✔ Taquicardia com presença do sexo oposto</p>{% endif %}
+                    {% if medida.estado_desanimo %}<p class="text-amber-800">✔ Desânimo e apatia</p>{% endif %}
+                    {% if medida.sentir_incapaz %}<p class="text-amber-800">✔ Sentimento de incapacidade</p>{% endif %}
+                    {% if medida.olha_mundo_perigoso %}<p class="text-amber-800">✔ Vê o mundo como perigoso</p>{% endif %}
+                    {% if medida.irritabilidade_constante %}<p class="text-amber-800">✔ Irritabilidade constante</p>{% endif %}
+                    {% if medida.perdeu_vontade_viver_suicida %}<p class="text-amber-800 font-bold">⚠ Ideação suicida</p>{% endif %}
+                </div>
+            </section>
+
+            <!-- Relatos textuais -->
+            {% if medida.comentario_situacao or medida.relato_constrangida or medida.detalhes_coisas or medida.info_situa_isola or medida.detalhes_medo or medida.manipula_IA or medida.outras_condutas_vicaria or medida.sintomas_persistem or medida.observacoes_profissional %}
+            <section class="bg-gray-50 rounded-xl p-4">
+                <h3 class="text-sm font-bold text-gray-700 uppercase mb-3">
+                    <i class="fas fa-comment-alt mr-1 text-gray-500"></i> Relatos e Observações
+                </h3>
+                <div class="space-y-3 text-sm">
+                    {% if medida.comentario_situacao %}
+                    <div><p class="font-semibold text-gray-600 mb-1">Situação de constrangimento:</p><p class="text-gray-700 bg-white p-3 rounded-lg border">{{ medida.comentario_situacao }}</p></div>
+                    {% endif %}
+                    {% if medida.relato_constrangida %}
+                    <div><p class="font-semibold text-gray-600 mb-1">Humilhação/Ridicularização:</p><p class="text-gray-700 bg-white p-3 rounded-lg border">{{ medida.relato_constrangida }}</p></div>
+                    {% endif %}
+                    {% if medida.detalhes_coisas %}
+                    <div><p class="font-semibold text-gray-600 mb-1">Detalhes de manipulação:</p><p class="text-gray-700 bg-white p-3 rounded-lg border">{{ medida.detalhes_coisas }}</p></div>
+                    {% endif %}
+                    {% if medida.info_situa_isola %}
+                    <div><p class="font-semibold text-gray-600 mb-1">Situação de isolamento:</p><p class="text-gray-700 bg-white p-3 rounded-lg border">{{ medida.info_situa_isola }}</p></div>
+                    {% endif %}
+                    {% if medida.detalhes_medo %}
+                    <div><p class="font-semibold text-gray-600 mb-1">Situações de medo:</p><p class="text-gray-700 bg-white p-3 rounded-lg border">{{ medida.detalhes_medo }}</p></div>
+                    {% endif %}
+                    {% if medida.manipula_IA %}
+                    <div><p class="font-semibold text-gray-600 mb-1">Uso de IA/tecnologia:</p><p class="text-gray-700 bg-white p-3 rounded-lg border">{{ medida.manipula_IA }}</p></div>
+                    {% endif %}
+                    {% if medida.outras_condutas_vicaria %}
+                    <div><p class="font-semibold text-gray-600 mb-1">Violência vicária:</p><p class="text-gray-700 bg-white p-3 rounded-lg border">{{ medida.outras_condutas_vicaria }}</p></div>
+                    {% endif %}
+                    {% if medida.sintomas_persistem %}
+                    <div><p class="font-semibold text-gray-600 mb-1">Persistência dos sintomas:</p><p class="text-gray-700 bg-white p-3 rounded-lg border">{{ medida.sintomas_persistem }}</p></div>
+                    {% endif %}
+                    {% if medida.observacoes_profissional %}
+                    <div><p class="font-semibold text-gray-600 mb-1">Observações profissionais:</p><p class="text-gray-700 bg-white p-3 rounded-lg border">{{ medida.observacoes_profissional }}</p></div>
+                    {% endif %}
+                </div>
+            </section>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<!-- Fechar modal com ESC -->
+<script>
+    (function() {
+        function fecharModal(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('modal-detalhe-medida');
+                if (modal) modal.remove();
+                document.removeEventListener('keydown', fecharModal);
+            }
+        }
+        document.addEventListener('keydown', fecharModal);
+    })();
+</script>

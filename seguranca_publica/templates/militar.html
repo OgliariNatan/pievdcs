@@ -1,4 +1,4 @@
-<!-- URL:  seguranca_publica/templates/militar. html -->
+<!-- URL: seguranca_publica/templates/militar.html -->
 {% extends "base/base.html" %}
 {% load static %}
 {% load django_htmx %}
@@ -9,22 +9,22 @@
 <style>
     /* ========== HTMX Indicator ========== */
     .htmx-indicator {
-        display: none ! important;
+        display: none !important;
     }
 
-    . htmx-request . htmx-indicator,
-    .htmx-request. htmx-indicator {
-        display:  flex !important;
+    .htmx-request .htmx-indicator,
+    .htmx-request.htmx-indicator {
+        display: flex !important;
     }
 
     /* Fade effect durante requisição no modal */
     #modal-body {
-        transition:  opacity 0.2s ease-in-out;
+        transition: opacity 0.2s ease-in-out;
     }
 
-    . htmx-request #modal-body,
+    .htmx-request #modal-body,
     .htmx-swapping #modal-body {
-        opacity:  0.5;
+        opacity: 0.5;
     }
 
     /* ========== Animações do Modal ========== */
@@ -41,7 +41,7 @@
 
     @keyframes modalOut {
         from {
-            opacity:  1;
+            opacity: 1;
             transform: translateY(0) scale(1);
         }
         to {
@@ -60,7 +60,7 @@
         to { opacity: 0; }
     }
 
-    . animate-modal-in {
+    .animate-modal-in {
         animation: modalIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
     }
 
@@ -82,17 +82,17 @@
     }
 
     #modal-body::-webkit-scrollbar-track {
-        background:  #f1f1f1;
+        background: #f1f1f1;
         border-radius: 4px;
     }
 
     #modal-body::-webkit-scrollbar-thumb {
-        background:  rgba(139, 92, 246, 0.5);
+        background: rgba(139, 92, 246, 0.5);
         border-radius: 4px;
     }
 
     #modal-body::-webkit-scrollbar-thumb:hover {
-        background:  rgba(139, 92, 246, 0.7);
+        background: rgba(139, 92, 246, 0.7);
     }
 </style>
 {% endblock %}
@@ -117,7 +117,7 @@
                     </div>
                     <div>
                         <h2 class="text-white font-bold text-lg">Resultados da Busca</h2>
-                        <p class="text-purple-200 text-sm" id="modal-subtitle">Pesquisando... </p>
+                        <p class="text-purple-200 text-sm" id="modal-subtitle">Pesquisando...</p>
                     </div>
                 </div>
                 <button onclick="fecharModalResultados()" 
@@ -188,14 +188,14 @@
             </a>
 
             <a href="{% url 'encaminhamentos' %}"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover: bg-white/10 transition-all duration-200 group/item relative">
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item relative">
                 <div class="w-6 h-6 flex items-center justify-center">
                     <i class="fas fa-share-square text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
                 </div>
                 <span class="sidebar-label whitespace-nowrap font-medium">
                     Encaminhamentos
                 </span>
-                <span class="sidebar-badge bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded-full min-w-[1. 5rem] text-center"
+                <span class="sidebar-badge bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded-full min-w-[1.5rem] text-center"
                     id="span_encaminhamentos">{{ encaminhamentos }}</span>
                 <span class="collapsed-badge absolute -top-1 -right-1 bg-amber-400 text-amber-900 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center"
                     style="font-size: 10px;">{{ encaminhamentos }}</span>
@@ -216,7 +216,7 @@
             </a>
 
             <a href="{% url 'relatorios' %}"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover: bg-white/10 transition-all duration-200 group/item">
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item">
                 <div class="w-6 h-6 flex items-center justify-center">
                     <i class="fas fa-chart-line text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
                 </div>
@@ -255,9 +255,6 @@
                         <span class="font-medium">Usuário:</span>
                         <span class="text-purple-600 font-semibold">{{ user.first_name }} {{ user.last_name }}</span>
                     </p>
-                    <p class="text-gray-600">
-                        Bem-vindo à página da <span class="font-semibold text-purple-600">{{ title }}</span>
-                    </p>
                 </div>
             </div>
 
@@ -273,7 +270,7 @@
                         <input type="text"
                             id="campo-busca"
                             name="q"
-                            class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus: ring-purple-500 focus:border-transparent shadow-sm"
+                            class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm"
                             placeholder="Digite o nome ou CPF para buscar..."
                             autocomplete="off">
                         <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
@@ -288,7 +285,7 @@
                         </button>
                         <button
                             type="button"
-                            class="bg-green-600 hover: bg-green-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover: shadow-xl transition-all duration-200 flex items-center gap-2"
+                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
                             onclick="location.href='{% url 'seguranca_publica:consultas_PM' %}'">
                             <i class="fa fa-globe"></i>
                             Ver todos
@@ -305,12 +302,12 @@
                         Rede Catarina
                     </h3>
                     <p class="text-gray-700 mb-2">
-                        Implementar funcionalidade para a <span class="font-semibold text-blue-600"> <a href='https://www.pm.sc.gov.br/paginas/rede-catarina' target='_blank'> rede
-                            catarina</a></span>.  Algo do tipo, cadastrar a vitima na rede catariana, entrar em contato com a
-                        vítima, responder alguma demanda da vítima. 
+                        Implementar funcionalidade para a <span class="font-semibold text-blue-600"><a href='https://www.pm.sc.gov.br/paginas/rede-catarina' target='_blank'>rede
+                            catarina</a></span>. Algo do tipo, cadastrar a vitima na rede catariana, entrar em contato com a
+                        vítima, responder alguma demanda da vítima.
                     </p>
                     <p class="text-gray-600 text-sm">
-                        Use as ferramentas acima para pesquisar registros existentes ou cadastrar novos casos. 
+                        Futuramente viabilizar um APP para que o atendimento possa ser feito no local da ocorrência.
                     </p>
                 </div>
 
@@ -324,7 +321,7 @@
                             <h4 class="font-semibold text-purple-800">Atendimentos</h4>
                         </div>
                         <p class="text-gray-600 text-2xl leading-relaxed">
-                            10 <span class="text-gray-400 text-xs">este mês. </span>
+                            10 <span class="text-gray-400 text-xs">este mês.</span>
                         </p>
                     </div>
 
@@ -336,8 +333,8 @@
                             <h4 class="font-semibold text-amber-800">Encaminhamentos</h4>
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Maria lucia <span> 526. 369.258-98 </span> <br>
-                            Jaqueline Sebben <span> 123.456.789-00 </span>
+                            Maria lucia <span>526.369.258-98</span> <br>
+                            Jaqueline Sebben <span>123.456.789-00</span>
                         </p>
                     </div>
 
@@ -362,7 +359,7 @@
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
                             <a href='#' class="hover:text-black">Atendimentos por período</a> <br>
-                            <a href="#" class="hover: text-black">Fiscalizações por período</a>
+                            <a href="#" class="hover:text-black">Fiscalizações por período</a>
                         </p>
                     </div>
 
@@ -374,7 +371,7 @@
                             <h4 class="font-semibold text-blue-800">Segurança</h4>
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Dados protegidos com criptografia e acesso controlado por níveis. 
+                            Dados protegidos com criptografia e acesso controlado por níveis.
                         </p>
                     </div>
 
@@ -401,12 +398,12 @@
 
 <style>
     /* Estilos para o hover da sidebar */
-    . sidebar-container {
+    .sidebar-container {
         width: 4rem;
         transition: width 0.3s ease-in-out;
     }
 
-    . sidebar-container:hover {
+    .sidebar-container:hover {
         width: 18rem;
     }
 
@@ -420,16 +417,16 @@
     }
 
     /* Mostrar labels quando hover na sidebar */
-    . sidebar-container:hover .sidebar-label {
+    .sidebar-container:hover .sidebar-label {
         opacity: 1;
         transform: translateX(0);
     }
 
     /* Badges expandidos */
-    . sidebar-badge {
+    .sidebar-badge {
         opacity: 0;
-        transform:  translateX(-10px);
-        transition:  opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        transform: translateX(-10px);
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
         margin-left: auto;
     }
 
@@ -444,14 +441,14 @@
         transition: opacity 0.3s ease-in-out;
     }
 
-    .sidebar-container:hover . collapsed-badge {
+    .sidebar-container:hover .collapsed-badge {
         opacity: 0;
     }
 
     /* Animações personalizadas */
     @keyframes fadeInUp {
         from {
-            opacity:  0;
+            opacity: 0;
             transform: translateY(30px) scale(0.95);
         }
         to {
@@ -462,7 +459,7 @@
 
     @keyframes fadeOutUp {
         from {
-            opacity:  1;
+            opacity: 1;
             transform: translateY(0) scale(1);
         }
         to {
@@ -471,12 +468,12 @@
         }
     }
 
-    . animate-fade-in-up {
+    .animate-fade-in-up {
         animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
     }
 
     /* Scrollbar customizada */
-    . sidebar-container::-webkit-scrollbar {
+    .sidebar-container::-webkit-scrollbar {
         width: 4px;
     }
 
@@ -486,21 +483,21 @@
 
     .sidebar-container::-webkit-scrollbar-thumb {
         background: rgba(255, 255, 255, 0.3);
-        border-radius:  2px;
+        border-radius: 2px;
     }
 
-    .sidebar-container::-webkit-scrollbar-thumb: hover {
+    .sidebar-container::-webkit-scrollbar-thumb:hover {
         background: rgba(255, 255, 255, 0.5);
     }
 
     /* Responsividade para mobile */
-    @media (max-width:  1024px) {
+    @media (max-width: 1024px) {
         .sidebar-container {
-            width:  4rem;
+            width: 4rem;
         }
 
-        .sidebar-container. mobile-expanded {
-            width:  18rem;
+        .sidebar-container.mobile-expanded {
+            width: 18rem;
         }
 
         .sidebar-container.mobile-expanded .sidebar-label {
@@ -508,12 +505,12 @@
             transform: translateX(0);
         }
 
-        .sidebar-container.mobile-expanded . sidebar-badge {
+        .sidebar-container.mobile-expanded .sidebar-badge {
             opacity: 1;
-            transform:  translateX(0);
+            transform: translateX(0);
         }
 
-        .sidebar-container. mobile-expanded .collapsed-badge {
+        .sidebar-container.mobile-expanded .collapsed-badge {
             opacity: 0;
         }
     }
@@ -522,6 +519,7 @@
 <script>
     // ========== CONFIGURAÇÃO ==========
     const URL_BUSCAR_VITIMAS = "{% url 'seguranca_publica:buscar_vitimas' %}";
+    const URL_DETALHE_MEDIDA = "{% url 'seguranca_publica:detalhe_medida_protetiva' 0 %}".replace('/0/', '/{id}/');
     let termoBuscaAtual = '';
     let debounceTimer = null;
 
@@ -548,16 +546,16 @@
         overlay.classList.remove('animate-overlay-in');
         overlay.classList.add('animate-overlay-out');
         content.classList.remove('animate-modal-in');
-        content.classList. add('animate-modal-out');
+        content.classList.add('animate-modal-out');
         
         setTimeout(() => {
             modal.classList.add('hidden');
-            document.body.style. overflow = '';
+            document.body.style.overflow = '';
         }, 250);
     }
 
     function mostrarLoadingModal(query) {
-        document.getElementById('modal-subtitle').textContent = `Buscando por "${query}"... `;
+        document.getElementById('modal-subtitle').textContent = `Buscando por "${query}"...`;
         document.getElementById('modal-body').innerHTML = `
             <div class="flex flex-col items-center justify-center py-16">
                 <svg class="animate-spin h-12 w-12 text-purple-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -578,7 +576,7 @@
                 </div>
                 <p class="text-gray-700 font-semibold text-lg mb-2">Erro na busca</p>
                 <p class="text-gray-500 text-sm text-center max-w-md">${mensagem}</p>
-                <button onclick="executarBusca()" class="mt-4 bg-purple-600 hover: bg-purple-700 text-white px-6 py-2 rounded-xl font-medium transition-colors">
+                <button onclick="executarBusca()" class="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-xl font-medium transition-colors">
                     <i class="fas fa-redo mr-2"></i>Tentar novamente
                 </button>
             </div>
@@ -590,8 +588,8 @@
     function executarBusca() {
         const query = document.getElementById('campo-busca').value.trim();
         
-        if (query. length < 2) {
-            exibirPopupSucesso('Digite pelo menos 2 caracteres para buscar. ', 'aviso');
+        if (query.length < 2) {
+            exibirPopupSucesso('Digite pelo menos 2 caracteres para buscar.', 'aviso');
             return;
         }
         
@@ -603,11 +601,11 @@
         
         // Fazer requisição fetch
         fetch(`${URL_BUSCAR_VITIMAS}?q=${encodeURIComponent(query)}`, {
-            method:  'GET',
+            method: 'GET',
             credentials: 'same-origin',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'HX-Request':  'text/html'
+                'HX-Request': 'text/html'
             }
         })
         .then(response => {
@@ -644,7 +642,7 @@
             sucesso: { bg: 'bg-gradient-to-r from-green-500 to-green-600', icon: 'fa-check-circle' },
             erro: { bg: 'bg-gradient-to-r from-red-500 to-red-600', icon: 'fa-exclamation-circle' },
             info: { bg: 'bg-gradient-to-r from-blue-500 to-blue-600', icon: 'fa-info-circle' },
-            aviso:  { bg: 'bg-gradient-to-r from-amber-500 to-amber-600', icon: 'fa-exclamation-triangle' }
+            aviso: { bg: 'bg-gradient-to-r from-amber-500 to-amber-600', icon: 'fa-exclamation-triangle' }
         };
 
         const config = configs[tipo] || configs.sucesso;
@@ -677,22 +675,18 @@
         setTimeout(() => popup.remove(), 400);
     }
 
-  
-    
     function toggleSidebar() {
         const sidebar = document.querySelector('.sidebar-container');
         const overlay = document.getElementById('sidebar-overlay');
 
         if (window.innerWidth < 1024) {
             sidebar.classList.toggle('mobile-expanded');
-            overlay. classList.toggle('opacity-0');
+            overlay.classList.toggle('opacity-0');
             overlay.classList.toggle('pointer-events-none');
         }
     }
 
-    
-    
-    document. addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
         // Botão Pesquisar
         document.getElementById('btn-pesquisar').addEventListener('click', function() {
             executarBusca();
@@ -706,37 +700,30 @@
             }
         });
         
-        // Busca com debounce ao digitar (opcional - descomente se quiser busca automática)
-        /*
-        document.getElementById('campo-busca').addEventListener('input', function() {
-            clearTimeout(debounceTimer);
-            const query = this.value. trim();
-            
-            if (query. length >= 2) {
-                debounceTimer = setTimeout(() => {
-                    executarBusca();
-                }, 500);
-            }
-        });
-        */
-        
         // Sidebar overlay click
         document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar);
 
         // Fechar modal com ESC
-        document. addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
+                // Fechar modal de detalhe primeiro (se aberto)
+                const modalDetalhe = document.getElementById('modal-detalhe-medida');
+                if (modalDetalhe) {
+                    modalDetalhe.remove();
+                    return;
+                }
+                // Depois fechar modal de resultados
                 const modal = document.getElementById('modal-resultados');
-                if (! modal.classList.contains('hidden')) {
+                if (!modal.classList.contains('hidden')) {
                     fecharModalResultados();
                 }
             }
         });
 
         // Comportamento em mobile
-        const sidebar = document.querySelector('. sidebar-container');
+        const sidebar = document.querySelector('.sidebar-container');
         if (window.innerWidth < 1024) {
-            sidebar. addEventListener('mouseenter', () => {
+            sidebar.addEventListener('mouseenter', () => {
                 sidebar.classList.add('mobile-expanded');
                 document.getElementById('sidebar-overlay').classList.remove('opacity-0', 'pointer-events-none');
             });
@@ -748,12 +735,33 @@
         }
     });
     
-    // Função global para ver detalhes (usada no template de resultados)
-    function verDetalhesMedida(medidaId) {
-        console.log('Ver detalhes da medida:', medidaId);
+    // Função global para ver detalhes da medida protetiva (popup)
+    function abrirDetalheMedida(medidaId) {
         exibirPopupSucesso(`Carregando detalhes da Medida #${medidaId}...`, 'info');
+
+        const url = URL_DETALHE_MEDIDA.replace('{id}', medidaId);
+
+        fetch(url, {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+            return response.text();
+        })
+        .then(html => {
+            const anterior = document.getElementById('modal-detalhe-medida');
+            if (anterior) anterior.remove();
+            document.body.insertAdjacentHTML('beforeend', html);
+        })
+        .catch(error => {
+            console.error('Erro ao carregar detalhes:', error);
+            exibirPopupSucesso('Erro ao carregar detalhes. Tente novamente.', 'erro');
+        });
     }
 </script>
 
 {% endblock %}
-
