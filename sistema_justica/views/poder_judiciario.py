@@ -442,12 +442,14 @@ def chat_ia(request):
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Poder Judiciário'])
 def listar_medidas_protetivas(request):
-    """Lista as medidas protetivas com filtros de status, busca e ordenação."""
+    """Lista as medidas protetivas com filtros de status, comarca, busca e ordenação."""
     from ..models.defensoria_publica import FormularioMedidaProtetiva
+    from ..models.poder_judiciario import ComarcasPoderJudiciario
 
     filtro_status = request.GET.get('status', 'todas')
     filtro_ordenar = request.GET.get('ordenar', 'periodo_mp')
     filtro_busca = request.GET.get('busca', '').strip()
+    filtro_comarca = request.GET.get('comarca', '')
 
     qs = FormularioMedidaProtetiva.objects.select_related(
         'vitima', 'agressor', 'comarca_competente'
@@ -461,11 +463,17 @@ def listar_medidas_protetivas(request):
     elif filtro_status == 'vencidas':
         qs = qs.filter(periodo_mp__lt=hoje)
 
+    # Filtro por comarca
+    if filtro_comarca:
+        qs = qs.filter(comarca_competente_id=filtro_comarca)
+
     # Filtro por busca (nome ou CPF da vítima)
     if filtro_busca:
         qs = qs.filter(
             Q(vitima__nome__icontains=filtro_busca) |
-            Q(vitima__cpf__icontains=filtro_busca)
+            Q(vitima__cpf__icontains=filtro_busca) |
+            Q(agressor__nome__icontains=filtro_busca) |
+            Q(agressor__cpf__icontains=filtro_busca)
         )
 
     # Ordenação
@@ -474,21 +482,29 @@ def listar_medidas_protetivas(request):
         filtro_ordenar = 'periodo_mp'
     qs = qs.order_by(filtro_ordenar)
 
-    # Calcula propriedades dinâmicas (ativa e dias_restantes)
+    # Calcula propriedades dinâmicas e separa ativos primeiro
     medidas = list(qs)
     for mp in medidas:
         mp.ativa = mp.periodo_mp >= hoje
         mp.dias_restantes = (mp.periodo_mp - hoje).days if mp.ativa else 0
+
+    # Ordena: ativos primeiro, depois inativos (mantendo a sub-ordenação escolhida)
+    medidas.sort(key=lambda mp: (not mp.ativa,))
+
+    # Comarcas disponíveis para o filtro
+    comarcas = ComarcasPoderJudiciario.objects.order_by('nome')
 
     contexto = {
         'medidas': medidas,
         'filtro_status': filtro_status,
         'filtro_ordenar': filtro_ordenar,
         'filtro_busca': filtro_busca,
+        'filtro_comarca': filtro_comarca,
+        'comarcas': comarcas,
     }
 
     # Se é requisição HTMX com filtro, retorna só a tabela
-    if request.headers.get('HX-Request') and request.GET:
+    if request.headers.get('HX-Target') == 'tabela-medidas':
         return render(request, 'parcial/judiciario/tabela_medidas_protetivas.html', contexto)
 
     return render(request, 'parcial/judiciario/listar_medidas_protetivas.html', contexto)

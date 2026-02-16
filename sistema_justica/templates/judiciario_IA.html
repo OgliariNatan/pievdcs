@@ -218,21 +218,42 @@
                         </div>
                     </div>
                 </button>
-
-                <button
-                    class="group p-6 bg-gradient-to-r from-blue-300 to-blue-600 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg">
-                    <div class="flex items-center gap-4">
-                        <div
-                            class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 transition">
-                            <i class="fas fa-gavel text-2xl"></i>
+                
+                <!--Busca de Medidas Protetivas-->
+                <div class="col-span-1 md:col-span-3 lg:col-span-2 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-5 shadow-lg border border-blue-200">
+                    <h3 class="text-sm font-bold text-blue-700 mb-3 flex items-center gap-2">
+                        <i class="fas fa-gavel text-blue-500"></i>
+                        Consultar Medida Protetiva
+                    </h3>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <div class="flex-1 relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                            <input type="text"
+                                id="campo-busca-mp"
+                                name="busca"
+                                class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-blue-300 text-sm
+                                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+                                placeholder="Nome ou CPF da vítima/agressor..."
+                                autocomplete="off"
+                                hx-get="{% url 'sistema_justica:listar_medidas_protetivas' %}"
+                                hx-target="#modal-medidas-protetivas-container"
+                                hx-swap="innerHTML"
+                                hx-trigger="keyup[keyCode==13]"
+                                hx-include="this">
                         </div>
-                        <div class="text-left">
-                            <h3 class="font-semibold">Medidas Protetivas</h3>
-                            <p class="text-sm text-blue-100">Consultas</p>
-                        </div>
+                        <button type="button"
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl
+                                    transition shadow flex items-center justify-center gap-2 text-sm whitespace-nowrap"
+                                onclick="htmx.ajax('GET', '{% url 'sistema_justica:listar_medidas_protetivas' %}?busca=' + encodeURIComponent(document.getElementById('campo-busca-mp').value), {target:'#modal-medidas-protetivas-container', swap:'innerHTML'})">
+                            <i class="fas fa-search"></i>
+                            <span>Buscar MP</span>
+                        </button>
                     </div>
-                </button>
-
+                    <p class="text-xs text-blue-400 mt-2">
+                        <i class="fas fa-info-circle mr-1"></i>Pressione Enter ou clique em Buscar
+                    </p>
+                </div>
+                <!--Fim Busca de Medidas Protetivas-->
                 <button
                     class="group p-6 bg-gradient-to-r from-yellow-700 to-orange-300 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
                     hx-get="{% url 'sistema_justica:listar_medidas_protetivas' %}"
