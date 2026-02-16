@@ -49,16 +49,64 @@ OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'qwen2.5:7B')  # ou 'mixtral:la
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Poder Judiciário',])
 def poder_judiciario(request):
+    """Renderiza o dashboard do Poder Judiciário com métricas reais do banco."""
+    from ..models.defensoria_publica import FormularioMedidaProtetiva
 
+    hoje = date.today()
     notificacoes_nao_lidas = Notificacao.contar_nao_lidas_usuario(request.user)
-    #print(f'Notificações não lidas: {notificacoes_nao_lidas}')
+
+    # Total de MPs (casos)
+    total_mp = FormularioMedidaProtetiva.objects.count()
+
+    # MPs ativas (período não expirado)
+    mp_ativas = FormularioMedidaProtetiva.objects.filter(periodo_mp__gte=hoje).count()
+
+    # MPs vencidas
+    mp_vencidas = total_mp - mp_ativas
+
+    # Alto risco: MPU + indicadores graves (exibia armas, ameaça matar, ideação suicida)
+    mp_alto_risco = FormularioMedidaProtetiva.objects.filter(
+        periodo_mp__gte=hoje,
+        solicitada_mpu=True,
+    ).filter(
+        Q(exibia_armas=True) |
+        Q(ameaca_se_matar=True) |
+        Q(perdeu_vontade_viver_suicida=True) |
+        Q(filhos_riscos=True)
+    ).count()
+
+    # Atendimentos hoje (solicitações feitas na data atual)
+    atendimentos_hoje = FormularioMedidaProtetiva.objects.filter(
+        data_solicitacao__date=hoje
+    ).count()
+
+    # MPs a vencer nos próximos 15 dias
+    mp_vencer_15dias = FormularioMedidaProtetiva.objects.filter(
+        periodo_mp__gte=hoje,
+        periodo_mp__lte=hoje + timedelta(days=15)
+    ).count()
+
+    # Último atendimento do dia
+    ultimo_atendimento = FormularioMedidaProtetiva.objects.filter(
+        data_solicitacao__date=hoje
+    ).order_by('-data_solicitacao').values_list('data_solicitacao', flat=True).first()
+
+    # Encaminhamentos pendentes (notificações não lidas do usuário)
+    encaminhamentos_count = Notificacao.contar_nao_lidas_usuario(request.user)
+
     contexto = {
         'title': 'Poder Judiciário',
         'description': 'Informações e ações pertinentes ao poder Judiciário.',
-        'encaminhamentos': 5,
+        'encaminhamentos': encaminhamentos_count,
         'notificacoes': notificacoes_nao_lidas,
         'user': request.user,
-
+        'total_mp': total_mp,
+        'mp_vencer_15dias': mp_vencer_15dias,
+        'mp_ativas': mp_ativas,
+        'mp_vencidas': mp_vencidas,
+        'mp_alto_risco': mp_alto_risco,
+        'atendimentos_hoje': atendimentos_hoje,
+        'ultimo_atendimento': ultimo_atendimento,
     }
     return render(request, "judiciario_IA.html", contexto)
 
