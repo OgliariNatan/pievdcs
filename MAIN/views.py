@@ -667,7 +667,7 @@ class CustomLoginView(LoginView):
             return redirect('/home/')
         return super().dispatch(request, *args, **kwargs)
     
-
+@checked_debug_decorador
 @csrf_exempt
 def chat_ia_publico(request):
     """Chat IA público para a página inicial, sem restrição de login."""

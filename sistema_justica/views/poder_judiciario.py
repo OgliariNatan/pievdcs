@@ -15,6 +15,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from mensageria.models import Notificacao, StatusNotificacao
 from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
+from datetime import date, datetime, timedelta
+from django.db.models import Q, F, Value, BooleanField, IntegerField, ExpressionWrapper
+from django.db.models.functions import Cast
 # 
 from MAIN.decoradores.calcula_tempo import calcula_tempo
 
@@ -195,7 +198,7 @@ def obter_resposta_ollama(pergunta):
         - Evite usar listas numeradas
 
         Porque o nome de LaelIA?
-        Laelia é um tipo de orquídea conhecida por sua beleza e resiliência, simbolizando a força e a delicadeza das mulheres que enfrentam a violência doméstica e simbolo oficial do estado de Santa Catarina. O nome LaelIA reflete a missão da assistente virtual de oferecer apoio, informação e empoderamento às vítimas, ajudando-as a florescer apesar das adversidades que enfrentam.
+        Laelia é um tipo de orquídea conhecida por sua beleza e resiliência, simbolizando a força e a delicadeza das mulheres que enfrentam a violência doméstica e simbolo oficial do estado de Santa Catarina. O nome LaelIA reflete a missão da assistente virtual de oferecer apoio, informação e empoderamento às vítimas, ajudando-as a florescer apesar das adversidades que enfrentam. Uma Curiosidade sobre o nome que possui o -IA- na composição do nome para destacar sua natureza de inteligência artificial.
         """
         
         # Cria o prompt completo
@@ -433,3 +436,147 @@ def chat_ia(request):
         return HttpResponse(html_response)
     
     return HttpResponse(status=405)
+
+
+@checked_debug_decorador
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Poder Judiciário'])
+def listar_medidas_protetivas(request):
+    """Lista as medidas protetivas com filtros de status, comarca, busca e ordenação."""
+    from ..models.defensoria_publica import FormularioMedidaProtetiva
+    from ..models.poder_judiciario import ComarcasPoderJudiciario
+
+    filtro_status = request.GET.get('status', 'todas')
+    filtro_ordenar = request.GET.get('ordenar', 'periodo_mp')
+    filtro_busca = request.GET.get('busca', '').strip()
+    filtro_comarca = request.GET.get('comarca', '')
+
+    qs = FormularioMedidaProtetiva.objects.select_related(
+        'vitima', 'agressor', 'comarca_competente'
+    )
+
+    hoje = date.today()
+
+    # Filtro por status
+    if filtro_status == 'ativas':
+        qs = qs.filter(periodo_mp__gte=hoje)
+    elif filtro_status == 'vencidas':
+        qs = qs.filter(periodo_mp__lt=hoje)
+
+    # Filtro por comarca
+    if filtro_comarca:
+        qs = qs.filter(comarca_competente_id=filtro_comarca)
+
+    # Filtro por busca (nome ou CPF da vítima)
+    if filtro_busca:
+        qs = qs.filter(
+            Q(vitima__nome__icontains=filtro_busca) |
+            Q(vitima__cpf__icontains=filtro_busca) |
+            Q(agressor__nome__icontains=filtro_busca) |
+            Q(agressor__cpf__icontains=filtro_busca)
+        )
+
+    # Ordenação
+    ordenacoes_permitidas = ['periodo_mp', '-periodo_mp', '-data_solicitacao']
+    if filtro_ordenar not in ordenacoes_permitidas:
+        filtro_ordenar = 'periodo_mp'
+    qs = qs.order_by(filtro_ordenar)
+
+    # Calcula propriedades dinâmicas e separa ativos primeiro
+    medidas = list(qs)
+    for mp in medidas:
+        mp.ativa = mp.periodo_mp >= hoje
+        mp.dias_restantes = (mp.periodo_mp - hoje).days if mp.ativa else 0
+
+    # Ordena: ativos primeiro, depois inativos (mantendo a sub-ordenação escolhida)
+    medidas.sort(key=lambda mp: (not mp.ativa,))
+
+    # Comarcas disponíveis para o filtro
+    comarcas = ComarcasPoderJudiciario.objects.order_by('nome')
+
+    contexto = {
+        'medidas': medidas,
+        'filtro_status': filtro_status,
+        'filtro_ordenar': filtro_ordenar,
+        'filtro_busca': filtro_busca,
+        'filtro_comarca': filtro_comarca,
+        'comarcas': comarcas,
+    }
+
+    # Se é requisição HTMX com filtro, retorna só a tabela
+    if request.headers.get('HX-Target') == 'tabela-medidas':
+        return render(request, 'parcial/judiciario/tabela_medidas_protetivas.html', contexto)
+
+    return render(request, 'parcial/judiciario/listar_medidas_protetivas.html', contexto)
+
+@checked_debug_decorador
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Poder Judiciário'])
+def form_alterar_periodo_mp(request, medida_id):
+    """Retorna o formulário popup para alterar o período da MP."""
+    from ..models.defensoria_publica import FormularioMedidaProtetiva
+
+    hoje = date.today()
+    medida = FormularioMedidaProtetiva.objects.select_related('vitima').get(ID=medida_id)
+    medida.ativa = medida.periodo_mp >= hoje
+    medida.dias_restantes = (medida.periodo_mp - hoje).days if medida.ativa else 0
+
+    return render(request, 'parcial/judiciario/form_alterar_periodo_mp.html', {
+        'medida': medida,
+    })
+
+@checked_debug_decorador
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Poder Judiciário'])
+def alterar_periodo_mp(request, medida_id):
+    """Processa a alteração do período da medida protetiva."""
+    from ..models.defensoria_publica import FormularioMedidaProtetiva
+
+    if request.method != 'POST':
+        return HttpResponse(status=405)
+
+    medida = FormularioMedidaProtetiva.objects.get(ID=medida_id)
+    novo_periodo_str = request.POST.get('novo_periodo', '')
+
+    try:
+        novo_periodo = datetime.strptime(novo_periodo_str, '%Y-%m-%d').date()
+    except (ValueError, TypeError):
+        return HttpResponse(
+            """<script>exibirPopupSucesso('Data inválida. Tente novamente.', 'erro');</script>"""
+        )
+
+    medida.periodo_mp = novo_periodo
+    medida.save(update_fields=['periodo_mp'])
+
+    return HttpResponse(
+        """<script>
+            exibirPopupSucesso('Período da medida protetiva atualizado com sucesso!', 'sucesso');
+            document.getElementById('modal-alterar-periodo-popup').remove();
+            htmx.ajax('GET', '""" + str(reverse_lazy('sistema_justica:listar_medidas_protetivas')) + """?status=todas', {target:'#tabela-medidas', swap:'innerHTML'});
+        </script>"""
+    )
+
+
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Poder Judiciário'])
+@checked_debug_decorador
+def detalhe_medida_protetiva_jud(request, medida_id):
+    """Retorna popup com detalhes da medida protetiva para o Judiciário."""
+    from ..models.defensoria_publica import FormularioMedidaProtetiva
+
+    hoje = date.today()
+    medida = FormularioMedidaProtetiva.objects.select_related(
+        'vitima', 'agressor',
+        'vitima__estado', 'vitima__municipio',
+        'agressor__estado', 'agressor__municipio',
+        'comarca_competente', 'municipio_mp',
+    ).prefetch_related(
+        'tipo_de_violencia', 'filhos',
+    ).get(ID=medida_id)
+
+    medida.ativa = medida.periodo_mp >= hoje
+    medida.dias_restantes = (medida.periodo_mp - hoje).days if medida.ativa else 0
+
+    return render(request, 'parcial/judiciario/detalhe_medida_protetiva_jud.html', {
+        'medida': medida,
+    })
