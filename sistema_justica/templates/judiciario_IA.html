@@ -235,11 +235,13 @@
 
                 <button
                     class="group p-6 bg-gradient-to-r from-yellow-700 to-orange-300 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
-                    hx-get="#" hx-target="#modal" hx-swap="innerHTML">
+                    hx-get="{% url 'sistema_justica:listar_medidas_protetivas' %}"
+                    hx-target="#modal-medidas-protetivas-container"
+                    hx-swap="innerHTML">
                     <div class="flex items-center gap-4">
                         <div
                             class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 transition">
-                            <i class="fas fa-gavel  text-2xl"></i>
+                            <i class="fas fa-gavel text-2xl"></i>
                         </div>
                         <div class="text-left">
                             <h3 class="font-semibold">Acompanhar MP</h3>
@@ -253,6 +255,7 @@
         <!-- Modais HTMX -->
         <div id="modal-vitima"></div>
         <div id="modal-agressor"></div>
+        <div id="modal-medidas-protetivas-container"></div>
     </main>
 </div>
 

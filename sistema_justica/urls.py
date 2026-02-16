@@ -1,5 +1,11 @@
 from django.urls import path
-from .views.poder_judiciario import poder_judiciario, cadastro_vitima_form, cadastro_vitima_submit, cadastro_agressor_form, cadastro_agressor_submit, cadastro_municipio_form, cadastro_municipio_submit, chat_ia
+from .views.poder_judiciario import( 
+    poder_judiciario, cadastro_vitima_form, cadastro_vitima_submit,
+    cadastro_agressor_form, cadastro_agressor_submit,
+    cadastro_municipio_form, cadastro_municipio_submit, chat_ia,
+    listar_medidas_protetivas, form_alterar_periodo_mp,
+    alterar_periodo_mp, detalhe_medida_protetiva_jud,
+)
 from .views.ministerio_publico import ministerio_publico
 from .views.defensoria_publica import defensoria_publica, cadastro_mpu, listar_encaminhamentos
 from sistema_justica.forms.cadastros import CadastroVitimaForm, CadastroAgressorForm, CadastroMunicipioForm
@@ -8,7 +14,14 @@ app_name = 'sistema_justica'
 
 urlpatterns = [
 
-    path('poder_judiciario/', poder_judiciario, name='poder_judiciario'), #Relacionado ao judiciario    
+    path('poder_judiciario/', poder_judiciario, name='poder_judiciario'), #Relacionado ao judiciario
+    path('medidas_protetivas/', listar_medidas_protetivas, name='listar_medidas_protetivas'),
+    path('medida_protetiva/<int:medida_id>/alterar_periodo/', form_alterar_periodo_mp, name='form_alterar_periodo_mp'),
+    path('medida_protetiva/<int:medida_id>/alterar_periodo/submit/', alterar_periodo_mp, name='alterar_periodo_mp'),
+    path('medida_protetiva/<int:medida_id>/detalhe/', detalhe_medida_protetiva_jud, name='detalhe_medida_protetiva_jud'),
+
+
+
     path('ministerio_publico/', ministerio_publico, name='ministerio_publico'), #Relacionado ao ministerio publico
     path('defensoria_publica/', defensoria_publica, name='defensoria_publica'), #Relacionado ao defensoria publica 
 
