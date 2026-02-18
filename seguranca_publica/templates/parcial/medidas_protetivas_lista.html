@@ -12,37 +12,42 @@
                 <div class="bg-white rounded-full p-3">
                     <i class="fas fa-gavel text-2xl text-red-600"></i>
                 </div>
-                <div>
+                <div class="gap-2 flex flex-col">
                     <h3 class="text-xl font-bold text-white">
                         Medida Protetiva n.{{ medida.ID }}
                     </h3>
-                    <p class="text-red-50 text-sm">
+                    <p class="text-red-50 text-sm gap-2 flex items-center">
                         <i class="far fa-calendar-alt mr-1"></i>
                         Cadastrada em: {{ medida.data_solicitacao|date:"d/m/Y H:i" }}
                     </p>
+
+                    <button hx-get="{% url 'seguranca_publica:detalhe_medida_protetiva' medida_id=medida.ID %}"
+                            hx-target="#modal-container"
+                            hx-swap="innerHTML"
+                            class="px-3 py-1 bg-sky-400 text-white rounded-full hover:bg-sky-700 transition text-sm">
+                            <i class="fas fa-list-ul"></i>
+                            Ver Detalhes
+                    </button>
                 </div>
             </div>
             
             <!-- Badges de Alerta -->
             <div class="flex gap-2">
                 {% if item.outras_medidas_agressor > 0 %}
-                <span class="badge-alerta bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                    <i class="fas fa-exclamation-triangle mr-1"></i>
-                    Agressor: +{{ item.outras_medidas_agressor }} MP
-                </span>
-                {% endif %}
-                
-                {% if item.outras_medidas_vitima > 0 %}
-                <span class="badge-alerta bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                    <i class="fas fa-exclamation-circle mr-1"></i>
-                    Vítima: +{{ item.outras_medidas_vitima }} MP
-                </span>
+                <button hx-get="{% url 'seguranca_publica:historico_mp_agressor' cpf_agressor=medida.agressor.cpf %}"
+                        hx-target="#modal-container"
+                        hx-swap="innerHTML"
+                        class="px-3 py-1 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition text-sm">
+                    <i class="fas fa-history mr-1"></i>
+                    Ver Histórico ({{ item.outras_medidas_agressor }})
+                </button>
                 {% endif %}
             </div>
         </div>
     </div>
 
     <!-- Corpo do Card -->
+    
     <div class="p-6">
         <!-- Seção da Vítima -->
         <div class="mb-6 bg-purple-50 rounded-xl p-5 border-l-4 border-purple-500">
@@ -53,7 +58,9 @@
                 </h4>
                 
                 {% if item.outras_medidas_vitima > 0 %}
-                <button onclick="toggleDetalhes('vitima', {{ medida.id }})"
+                <button hx-get="{% url 'seguranca_publica:historico_mp_vitima' cpf_vitima=medida.vitima.cpf %}"
+                        hx-target="#modal-container"
+                        hx-swap="innerHTML"
                         class="px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
                     <i class="fas fa-history mr-1"></i>
                     Ver Histórico ({{ item.outras_medidas_vitima }})
@@ -131,7 +138,9 @@
                 </h4>
                 
                 {% if item.outras_medidas_agressor > 0 %}
-                <button onclick="toggleDetalhes('agressor', {{ medida.id }})"
+                <button hx-get="{% url 'seguranca_publica:historico_mp_agressor' cpf_agressor=medida.agressor.cpf %}"
+                        hx-target="#modal-container"
+                        hx-swap="innerHTML"
                         class="px-3 py-1 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition text-sm">
                     <i class="fas fa-history mr-1"></i>
                     Ver Histórico ({{ item.outras_medidas_agressor }})
@@ -219,6 +228,7 @@
         </div>
     </div>
 </div>
+
 {% endwith %}
 {% empty %}
 <div class="bg-white p-12 text-center">
@@ -226,6 +236,8 @@
     <h3 class="text-xl font-bold text-gray-700 mb-2">Nenhuma medida encontrada</h3>
     <p class="text-gray-500">Não há medidas protetivas para exibir nesta página.</p>
 </div>
+
+
 {% endfor %}
 
 <!-- ✅ TRIGGER PARA SCROLL INFINITO -->

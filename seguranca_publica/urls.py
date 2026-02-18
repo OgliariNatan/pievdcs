@@ -14,7 +14,7 @@ from .views.militar import (
     militar,
     consultas_informacao_vitima_agressor,
     buscar_vitimas,
-    detalhe_medida_protetiva
+    detalhe_medida_protetiva, historico_mp_vitima, historico_mp_agressor
 )
 from .views.civil import civil
 from .views.cientifica import cientifica
@@ -38,6 +38,8 @@ urlpatterns = [
     path('consultas_PM/', consultas_informacao_vitima_agressor, name='consultas_PM'),
     path('buscar_vitimas/', buscar_vitimas, name='buscar_vitimas'),
     path('detalhe_medida_protetiva/<int:medida_id>/', detalhe_medida_protetiva, name='detalhe_medida_protetiva'),
+    path('historico_mp_vitima/<str:cpf_vitima>/', historico_mp_vitima, name='historico_mp_vitima'),
+    path('historico_mp_agressor/<str:cpf_agressor>/', historico_mp_agressor, name='historico_mp_agressor'),
     
     path('civil/', civil, name='civil'),
     path('cientifica/', cientifica, name='cientifica')
