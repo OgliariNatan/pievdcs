@@ -1,0 +1,127 @@
+<!-- sistema_justica/templates/parcial/judiciario/tabela_grupos_reflexivos.html -->
+
+{% if grupos %}
+<table class="w-full text-sm">
+    <thead class="bg-gray-50 sticky top-0 z-10">
+        <tr>
+            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Nº</th>
+            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Data</th>
+            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Setor</th>
+            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Tipo</th>
+            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Profissional</th>
+            <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase">Participantes</th>
+            <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Duração</th>
+            <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase">Detalhes</th>
+        </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+        {% for grupo in grupos %}
+        <tr class="hover:bg-sky-50/50 transition-colors">
+            <td class="px-4 py-3 font-semibold text-gray-700">{{ grupo.id }}</td>
+            <td class="px-4 py-3 text-gray-700">
+                <i class="far fa-calendar-alt text-sky-500 mr-1"></i>
+                {{ grupo.data_atendimento|date:"d/m/Y H:i" }}
+            </td>
+            <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                    {% if grupo.setor_atendimento == 'Grupo refletivo' %}
+                        bg-green-100 text-green-700
+                    {% elif grupo.setor_atendimento == 'Psicóloga' %}
+                        bg-purple-100 text-purple-700
+                    {% elif grupo.setor_atendimento == 'Assistente Social' %}
+                        bg-blue-100 text-blue-700
+                    {% elif grupo.setor_atendimento == 'Enfermagem' %}
+                        bg-pink-100 text-pink-700
+                    {% else %}
+                        bg-gray-100 text-gray-700
+                    {% endif %}">
+                    {{ grupo.setor_atendimento }}
+                </span>
+            </td>
+            <td class="px-4 py-3 text-gray-600">
+                {{ grupo.atendimento|default:"—" }}
+            </td>
+            <td class="px-4 py-3 text-gray-700">
+                <i class="fas fa-user-md text-sky-400 mr-1"></i>
+                {{ grupo.usuario.get_full_name|default:grupo.usuario.username }}
+            </td>
+            <td class="px-4 py-3 text-center">
+                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-sky-100 text-sky-700 font-bold text-sm">
+                    {{ grupo.agressores_atendidos.count }}
+                </span>
+            </td>
+            <td class="px-4 py-3 text-gray-600">
+                {% if grupo.tempo_atendimento %}
+                    <i class="fas fa-clock text-amber-500 mr-1"></i>{{ grupo.tempo_atendimento }}
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+            <td class="px-4 py-3 text-center">
+                <button type="button"
+                        onclick="toggleDetalhe({{ grupo.id }})"
+                        class="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-lg transition text-xs font-semibold">
+                    <i class="fas fa-eye mr-1"></i>Ver
+                </button>
+            </td>
+        </tr>
+        <!-- Linha expandível com detalhes -->
+        <tr id="detalhe-{{ grupo.id }}" class="hidden">
+            <td colspan="8" class="px-4 py-4 bg-sky-50/30">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Participantes -->
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                            <i class="fas fa-users text-sky-600"></i> Participantes
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            {% for agressor in grupo.agressores_atendidos.all %}
+                            <div class="flex items-center gap-2 p-2 bg-white rounded-lg shadow-sm">
+                                <div class="bg-sky-100 rounded-full p-1.5">
+                                    <i class="fas fa-user text-sky-600 text-xs"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-800">{{ agressor.nome }}</p>
+                                    <p class="text-xs text-gray-500">CPF: {{ agressor.cpf }}</p>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <p class="text-sm text-gray-400 italic">Nenhum participante registrado</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <!-- Observação -->
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                            <i class="fas fa-comment-alt text-sky-600"></i> Observação
+                        </h4>
+                        {% if grupo.avaliacao %}
+                            <p class="text-sm text-gray-600 bg-white rounded-lg p-3 shadow-sm leading-relaxed">
+                                {{ grupo.avaliacao }}
+                            </p>
+                        {% else %}
+                            <p class="text-sm text-gray-400 italic">Nenhuma observação registrada</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="flex flex-col items-center justify-center py-16">
+    <i class="fas fa-inbox text-5xl text-gray-300 mb-4"></i>
+    <h3 class="text-lg font-bold text-gray-500 mb-1">Nenhum atendimento encontrado</h3>
+    <p class="text-sm text-gray-400">Não há registros de grupos reflexivos com os filtros aplicados.</p>
+</div>
+{% endif %}
+
+<script>
+    function toggleDetalhe(id) {
+        const linha = document.getElementById('detalhe-' + id);
+        if (linha) {
+            linha.classList.toggle('hidden');
+        }
+    }
+</script>

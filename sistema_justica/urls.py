@@ -4,7 +4,7 @@ from .views.poder_judiciario import(
     cadastro_agressor_form, cadastro_agressor_submit,
     cadastro_municipio_form, cadastro_municipio_submit, chat_ia,
     listar_medidas_protetivas, form_alterar_periodo_mp,
-    alterar_periodo_mp, detalhe_medida_protetiva_jud,
+    alterar_periodo_mp, detalhe_medida_protetiva_jud, listar_grupos_reflexivos
 )
 from .views.ministerio_publico import ministerio_publico
 from .views.defensoria_publica import defensoria_publica, cadastro_mpu, listar_encaminhamentos
@@ -19,7 +19,7 @@ urlpatterns = [
     path('medida_protetiva/<int:medida_id>/alterar_periodo/', form_alterar_periodo_mp, name='form_alterar_periodo_mp'),
     path('medida_protetiva/<int:medida_id>/alterar_periodo/submit/', alterar_periodo_mp, name='alterar_periodo_mp'),
     path('medida_protetiva/<int:medida_id>/detalhe/', detalhe_medida_protetiva_jud, name='detalhe_medida_protetiva_jud'),
-
+    path('grupos_reflexivos/', listar_grupos_reflexivos, name='listar_grupos_reflexivos'),
 
 
     path('ministerio_publico/', ministerio_publico, name='ministerio_publico'), #Relacionado ao ministerio publico
