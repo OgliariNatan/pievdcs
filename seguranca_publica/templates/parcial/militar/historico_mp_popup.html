@@ -46,4 +46,27 @@
         }
         document.addEventListener('keydown', fecharModal);
     })();
+
+    if (typeof abrirDetalheMedida === 'undefined') {
+        function abrirDetalheMedida(medidaId) {
+            const url = "{% url 'seguranca_publica:detalhe_medida_protetiva' medida_id=0 %}".replace('/0/', '/' + medidaId + '/');
+            fetch(url, {
+                method: 'GET',
+                credentials: 'same-origin',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro HTTP: ' + response.status);
+                return response.text();
+            })
+            .then(html => {
+                const anterior = document.getElementById('modal-detalhe-medida');
+                if (anterior) anterior.remove();
+                document.body.insertAdjacentHTML('beforeend', html);
+            })
+            .catch(error => {
+                console.error('Erro ao carregar detalhes:', error);
+            });
+        }
+    }
 </script>
