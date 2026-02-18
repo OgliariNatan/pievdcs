@@ -628,3 +628,76 @@ def detalhe_medida_protetiva_jud(request, medida_id):
     return render(request, 'parcial/judiciario/detalhe_medida_protetiva_jud.html', {
         'medida': medida,
     })
+
+
+
+@checked_debug_decorador
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Poder Judiciário'])
+def listar_grupos_reflexivos(request):
+    """
+    Lista atendimentos de grupos reflexivos da Polícia Penal
+    para visualização pelo Poder Judiciário (somente leitura).
+    dir: sistema_justica/views/poder_judiciario.py
+    """
+    from seguranca_publica.models.penal import ModeloPenal
+    from django.utils import timezone
+
+    # Filtros
+    filtro_setor = request.GET.get('setor', '')
+    filtro_ordenar = request.GET.get('ordenar', '-data_atendimento')
+    filtro_busca = request.GET.get('busca', '').strip()
+
+    # Consulta otimizada
+    grupos = ModeloPenal.objects.select_related(
+        'usuario', 'atendimento'
+    ).prefetch_related(
+        'agressores_atendidos'
+    )
+
+    # Aplicar filtros
+    if filtro_setor:
+        grupos = grupos.filter(setor_atendimento=filtro_setor)
+
+    if filtro_busca:
+        grupos = grupos.filter(
+            Q(agressores_atendidos__nome__icontains=filtro_busca) |
+            Q(agressores_atendidos__cpf__icontains=filtro_busca)
+        ).distinct()
+
+    # Ordenação
+    if filtro_ordenar in ('data_atendimento', '-data_atendimento'):
+        grupos = grupos.order_by(filtro_ordenar)
+    else:
+        grupos = grupos.order_by('-data_atendimento')
+
+    # Estatísticas
+    hoje = timezone.now()
+    total_grupos = grupos.count()
+    total_grupos_mes = grupos.filter(
+        data_atendimento__month=hoje.month,
+        data_atendimento__year=hoje.year
+    ).count()
+    total_agressores = sum(g.agressores_atendidos.count() for g in grupos)
+
+    from sistema_justica.models.base import Agressor_dados
+    total_agressores_unicos = Agressor_dados.objects.filter(
+        agressores_atendidos__in=grupos
+    ).distinct().count()
+
+    contexto = {
+        'grupos': grupos,
+        'total_grupos': total_grupos,
+        'total_grupos_mes': total_grupos_mes,
+        'total_agressores': total_agressores,
+        'total_agressores_unicos': total_agressores_unicos,
+        'filtro_setor': filtro_setor,
+        'filtro_ordenar': filtro_ordenar,
+        'filtro_busca': filtro_busca,
+    }
+
+    # Se a requisição veio dos filtros internos, retorna só a tabela
+    if request.headers.get('HX-Target') == 'tabela-grupos-reflexivos':
+        return render(request, 'parcial/judiciario/tabela_grupos_reflexivos.html', contexto)
+
+    return render(request, 'parcial/judiciario/listar_grupos_reflexivos.html', contexto)
