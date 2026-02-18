@@ -34,13 +34,17 @@
             <!-- Badges de Alerta -->
             <div class="flex gap-2">
                 {% if item.outras_medidas_agressor > 0 %}
-                <button hx-get="{% url 'seguranca_publica:historico_mp_agressor' cpf_agressor=medida.agressor.cpf %}"
-                        hx-target="#modal-container"
-                        hx-swap="innerHTML"
-                        class="px-3 py-1 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition text-sm">
-                    <i class="fas fa-history mr-1"></i>
-                    Ver Histórico ({{ item.outras_medidas_agressor }})
-                </button>
+                <span class="badge-alerta bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                    Agressor: +{{ item.outras_medidas_agressor }} MP
+                </span>
+                {% endif %}
+                
+                {% if item.outras_medidas_vitima > 0 %}
+                <span class="badge-alerta bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                    <i class="fas fa-exclamation-circle mr-1"></i>
+                    Vítima: +{{ item.outras_medidas_vitima }} MP
+                </span>
                 {% endif %}
             </div>
         </div>
