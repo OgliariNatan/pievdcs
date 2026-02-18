@@ -1,0 +1,49 @@
+<!-- seguranca_publica/templates/parcial/militar/historico_mp_popup.html -->
+
+<div id="modal-historico-mp"
+     class="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-2 sm:p-4"
+     onclick="if(event.target===this) this.remove()">
+
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl animate-fade-in-up max-h-[90vh] overflow-hidden flex flex-col mx-4"
+         onclick="event.stopPropagation()">
+
+        <!-- Cabeçalho -->
+        <div class="bg-gradient-to-r {{ cor_gradiente }} px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between flex-shrink-0">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <i class="fas {{ icone }} text-white text-lg sm:text-xl"></i>
+                <div>
+                    <h2 class="text-white text-base sm:text-lg font-bold">{{ titulo }}</h2>
+                    <p class="text-white/70 text-xs sm:text-sm">CPF: {{ query }}</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="bg-white/20 text-white text-sm font-bold px-3 py-1 rounded-full">
+                    {{ total }} MP{{ total|pluralize }}
+                </span>
+                <button onclick="document.getElementById('modal-historico-mp').remove()"
+                        class="text-white/80 hover:text-white transition-colors text-2xl leading-none">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Conteúdo com resultados -->
+        <div class="overflow-y-auto flex-1 min-h-0 p-4 sm:p-6 bg-gray-50">
+            {% include 'parcial/resultados_busca_pm.html' %}
+        </div>
+    </div>
+</div>
+
+<!-- Fechar com ESC -->
+<script>
+    (function() {
+        function fecharModal(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('modal-historico-mp');
+                if (modal) modal.remove();
+                document.removeEventListener('keydown', fecharModal);
+            }
+        }
+        document.addEventListener('keydown', fecharModal);
+    })();
+</script>

@@ -343,3 +343,76 @@ def detalhe_medida_protetiva(request, medida_id):
     return render(request, 'parcial/militar/detalhe_medida_protetiva.html', {
         'medida': medida,
     })
+
+
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Polícia Militar'])
+@checked_debug_decorador
+def historico_mp_vitima(request, cpf_vitima):
+    """
+    Exibe histórico de MPs de uma vítima em popup autônomo.
+    dir: seguranca_publica/views/militar.py
+    """
+    medidas = FormularioMedidaProtetiva.objects.filter(
+        vitima__cpf=cpf_vitima
+    ).select_related(
+        'vitima', 'agressor',
+        'vitima__estado', 'vitima__municipio',
+        'agressor__estado', 'agressor__municipio',
+    ).prefetch_related('tipo_de_violencia').order_by('-data_solicitacao')
+
+    resultados = [
+        {
+            'medida': m,
+            'encontrado_vitima': True,
+            'encontrado_agressor': False,
+        }
+        for m in medidas
+    ]
+
+    nome = medidas.first().vitima.nome if medidas.exists() else cpf_vitima
+
+    return render(request, 'parcial/militar/historico_mp_popup.html', {
+        'resultados': resultados,
+        'total': medidas.count(),
+        'query': cpf_vitima,
+        'titulo': f'Histórico da Vítima — {nome}',
+        'cor_gradiente': 'from-purple-700 to-purple-500',
+        'icone': 'fa-user-injured',
+    })
+
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Polícia Militar'])
+@checked_debug_decorador
+def historico_mp_agressor(request, cpf_agressor):
+    """
+    Exibe histórico de MPs de um agressor em popup autônomo.
+    dir: seguranca_publica/views/militar.py
+    """
+    medidas = FormularioMedidaProtetiva.objects.filter(
+        agressor__cpf=cpf_agressor
+    ).select_related(
+        'vitima', 'agressor',
+        'vitima__estado', 'vitima__municipio',
+        'agressor__estado', 'agressor__municipio',
+    ).prefetch_related('tipo_de_violencia').order_by('-data_solicitacao')
+
+    resultados = [
+        {
+            'medida': m,
+            'encontrado_vitima': False,
+            'encontrado_agressor': True,
+        }
+        for m in medidas
+    ]
+
+    nome = medidas.first().agressor.nome if medidas.exists() else cpf_agressor
+
+    return render(request, 'parcial/militar/historico_mp_popup.html', {
+        'resultados': resultados,
+        'total': medidas.count(),
+        'query': cpf_agressor,
+        'titulo': f'Histórico do Agressor — {nome}',
+        'cor_gradiente': 'from-orange-600 to-orange-400',
+        'icone': 'fa-user-slash',
+    })
