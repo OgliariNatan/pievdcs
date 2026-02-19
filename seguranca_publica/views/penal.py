@@ -344,6 +344,7 @@ def edita_atendimento_pp(request, grupo_id):
         if form.is_valid():
             atendimento = form.save(commit=False)
             atendimento.usuario = request.user
+            atendimento.atualizado_por = request.user
             atendimento.save()
             form.save_m2m()
             
