@@ -21,6 +21,16 @@ from django.contrib.auth.models import Group as CustomGroup
 from django.utils import timezone
 from datetime import timedelta
 
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import cm
+from reportlab.lib import colors
+from reportlab.platypus import (
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
+)
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_RIGHT
+import io
+
 """ Configuraçao de decoradores para debug """
 import os
 
@@ -377,3 +387,611 @@ def edita_atendimento_pp(request, grupo_id):
         'user': request.user,
     }
     return render(request, 'parcial/penal/edita_atendimento.html', contexto)
+
+@checked_debug_decorador
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Polícia Penal'])
+def gerar_relatorio_atendimento(request, grupo_id):
+    """Gera relatório em PDF no formato de ofício usando ReportLab."""
+    try:
+        grupo = ModeloPenal.objects.select_related(
+            'usuario', 'atendimento', 'atualizado_por'
+        ).prefetch_related('agressores_atendidos').get(id=grupo_id)
+    except ModeloPenal.DoesNotExist:
+        return HttpResponse('Atendimento não encontrado.', status=404)
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        leftMargin=3 * cm,
+        rightMargin=2 * cm,
+        topMargin=2.5 * cm,
+        bottomMargin=2 * cm,
+    )
+
+    # Estilos
+    styles = getSampleStyleSheet()
+
+    estilo_cabecalho = ParagraphStyle(
+        'Cabecalho', parent=styles['Normal'],
+        fontName='Helvetica-Bold', fontSize=12,
+        alignment=TA_CENTER, spaceAfter=2,
+        textColor=colors.HexColor('#1e3a5f'),
+    )
+    estilo_subcabecalho = ParagraphStyle(
+        'SubCabecalho', parent=styles['Normal'],
+        fontName='Helvetica', fontSize=10,
+        alignment=TA_CENTER, textColor=colors.HexColor('#4a4a4a'),
+    )
+    estilo_subtitulo_cab = ParagraphStyle(
+        'SubtituloCab', parent=styles['Normal'],
+        fontName='Helvetica', fontSize=8,
+        alignment=TA_CENTER, textColor=colors.gray, spaceAfter=6,
+    )
+    estilo_oficio = ParagraphStyle(
+        'Oficio', parent=styles['Normal'],
+        fontName='Helvetica-Bold', fontSize=11,
+        alignment=TA_RIGHT, textColor=colors.HexColor('#1e3a5f'),
+    )
+    estilo_data = ParagraphStyle(
+        'Data', parent=styles['Normal'],
+        fontSize=10, alignment=TA_RIGHT, spaceAfter=12,
+    )
+    estilo_assunto = ParagraphStyle(
+        'Assunto', parent=styles['Normal'],
+        fontName='Helvetica-Bold', fontSize=10,
+        alignment=TA_CENTER, spaceAfter=4,
+        textColor=colors.HexColor('#1e3a5f'),
+    )
+    estilo_corpo = ParagraphStyle(
+        'Corpo', parent=styles['Normal'],
+        fontSize=11, alignment=TA_JUSTIFY,
+        firstLineIndent=2 * cm, spaceAfter=10, leading=16,
+    )
+    estilo_corpo_sem_recuo = ParagraphStyle(
+        'CorpoSemRecuo', parent=estilo_corpo,
+        firstLineIndent=0,
+    )
+    estilo_secao = ParagraphStyle(
+        'Secao', parent=styles['Normal'],
+        fontName='Helvetica-Bold', fontSize=9,
+        textColor=colors.HexColor('#1e3a5f'),
+        spaceAfter=6, spaceBefore=12,
+    )
+    estilo_assinatura = ParagraphStyle(
+        'Assinatura', parent=styles['Normal'],
+        fontName='Helvetica-Bold', fontSize=10,
+        alignment=TA_CENTER,
+    )
+    estilo_cargo = ParagraphStyle(
+        'Cargo', parent=styles['Normal'],
+        fontName='Helvetica', fontSize=8,
+        alignment=TA_CENTER, textColor=colors.gray,
+    )
+    estilo_rodape = ParagraphStyle(
+        'Rodape', parent=styles['Normal'],
+        fontName='Helvetica', fontSize=7,
+        alignment=TA_CENTER, textColor=colors.HexColor('#999999'),
+    )
+
+    # Elementos do documento
+    elementos = []
+
+    # === Cabeçalho institucional ===
+    elementos.append(Paragraph(
+        'PLATAFORMA INTEGRADA DE ENFRENTAMENTO À VIOLÊNCIA<br/>DOMÉSTICA E CRIMES SEXUAIS',
+        estilo_cabecalho
+    ))
+    elementos.append(Paragraph('Polícia Penal — Grupos Reflexivos', estilo_subcabecalho))
+    elementos.append(Paragraph('PIEVDCS — Sistema de Gestão Integrada', estilo_subtitulo_cab))
+    elementos.append(HRFlowable(
+        width='100%', thickness=2,
+        color=colors.HexColor('#1e3a5f'), spaceAfter=20,
+    ))
+
+    # === Identificação do ofício ===
+    agora = timezone.now()
+
+    meses = {
+        'January': 'janeiro', 'February': 'fevereiro', 'March': 'março',
+        'April': 'abril', 'May': 'maio', 'June': 'junho',
+        'July': 'julho', 'August': 'agosto', 'September': 'setembro',
+        'October': 'outubro', 'November': 'novembro', 'December': 'dezembro',
+    }
+    data_str = agora.strftime('%d de %B de %Y')
+    for eng, pt in meses.items():
+        data_str = data_str.replace(eng, pt)
+
+    estilo_id_esq = ParagraphStyle(
+        'IdEsq2', parent=styles['Normal'],
+        fontName='Helvetica-Bold', fontSize=11,
+        textColor=colors.HexColor('#1e3a5f'),
+    )
+    estilo_id_dir = ParagraphStyle(
+        'IdDir2', parent=styles['Normal'],
+        fontSize=10, alignment=TA_RIGHT,
+    )
+
+    tabela_id = Table(
+        [[
+            Paragraph(f'OFÍCIO Nº {grupo.id}/{agora.strftime("%Y")}', estilo_id_esq),
+            Paragraph(data_str, estilo_id_dir),
+        ]],
+        colWidths=[8 * cm, 7.7 * cm]
+    )
+    tabela_id.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+        ('TOPPADDING', (0, 0), (-1, -1), 0),
+    ]))
+    elementos.append(tabela_id)
+    elementos.append(Spacer(1, 12))
+
+    # === Assunto ===
+    elementos.append(HRFlowable(
+        width='100%', thickness=0.5, color=colors.HexColor('#ddd'),
+        spaceBefore=0, spaceAfter=4,
+    ))
+    elementos.append(Paragraph(
+        f'ASSUNTO: Relatório de Atendimento em Grupo Reflexivo — Registro nº {grupo.id}',
+        estilo_assunto
+    ))
+    elementos.append(HRFlowable(
+        width='100%', thickness=0.5, color=colors.HexColor('#ddd'),
+        spaceBefore=0, spaceAfter=16,
+    ))
+
+    # === Corpo do ofício ===
+    data_atend = grupo.data_atendimento.strftime('%d/%m/%Y')
+    hora_atend = grupo.data_atendimento.strftime('%H:%M')
+    tipo_texto = f', com a temática <b>{grupo.atendimento}</b>' if grupo.atendimento else ''
+    duracao_texto = f', com duração de <b>{grupo.tempo_atendimento}</b>' if grupo.tempo_atendimento else ''
+
+    elementos.append(Paragraph(
+        f'Comunicamos, para os devidos fins, que no dia <b>{data_atend}</b>, '
+        f'às <b>{hora_atend}</b>, foi realizado atendimento no setor de '
+        f'<b>{grupo.setor_atendimento}</b>{tipo_texto}{duracao_texto}.',
+        estilo_corpo
+    ))
+
+    participantes = grupo.agressores_atendidos.all()
+    qtd = participantes.count()
+
+    elementos.append(Paragraph(
+        f'O atendimento contou com a participação de <b>{qtd}</b> pessoa(s), '
+        f'conforme relação abaixo:',
+        estilo_corpo
+    ))
+    elementos.append(Spacer(1, 8))
+
+    # === Tabela de participantes ===
+    dados_tabela = [['#', 'Nome Completo', 'CPF']]
+    for i, ag in enumerate(participantes, 1):
+        dados_tabela.append([str(i), ag.nome, ag.cpf])
+
+    if qtd == 0:
+        dados_tabela.append(['', 'Nenhum participante registrado', ''])
+
+    tabela = Table(dados_tabela, colWidths=[1.2 * cm, 10 * cm, 4.5 * cm])
+    tabela.setStyle(TableStyle([
+        # Cabeçalho
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e3a5f')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 8),
+        ('ALIGN', (0, 0), (-1, 0), 'LEFT'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ('TOPPADDING', (0, 0), (-1, 0), 8),
+        # Corpo
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 9),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
+        ('TOPPADDING', (0, 1), (-1, -1), 6),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#dddddd')),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f9f9f9')]),
+        ('ALIGN', (0, 0), (0, -1), 'CENTER'),
+    ]))
+    elementos.append(tabela)
+    elementos.append(Spacer(1, 12))
+
+    # === Avaliação ===
+    if grupo.avaliacao:
+        elementos.append(Paragraph('AVALIAÇÃO DO ATENDIMENTO', estilo_secao))
+        elementos.append(Paragraph(grupo.avaliacao.replace('\n', '<br/>'), estilo_corpo_sem_recuo))
+        elementos.append(Spacer(1, 8))
+
+    # === Informações complementares ===
+    elementos.append(Paragraph('INFORMAÇÕES COMPLEMENTARES', estilo_secao))
+    profissional = grupo.usuario.get_full_name() or grupo.usuario.username if grupo.usuario else '—'
+    criado = grupo.criado_em.strftime('%d/%m/%Y %H:%M') if grupo.criado_em else '—'
+
+    info_dados = [
+        ['Profissional Responsável:', profissional],
+        ['Data de Registro:', criado],
+    ]
+    if grupo.atualizado_por:
+        atualizado_nome = grupo.atualizado_por.get_full_name() or grupo.atualizado_por.username
+        atualizado_data = grupo.atualizado_em.strftime('%d/%m/%Y %H:%M') if grupo.atualizado_em else ''
+        info_dados.append(['Última Atualização:', f'{atualizado_data} por {atualizado_nome}'])
+
+    info_tabela = Table(info_dados, colWidths=[5.5 * cm, 10.2 * cm])
+    info_tabela.setStyle(TableStyle([
+        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+        ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 9),
+        ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#555555')),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ('BOX', (0, 0), (-1, -1), 0.5, colors.HexColor('#dddddd')),
+        ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.HexColor('#eeeeee')),
+    ]))
+    elementos.append(info_tabela)
+    elementos.append(Spacer(1, 20))
+
+    # === Fechamento ===
+    elementos.append(Paragraph(
+        'Sem mais para o momento, colocamo-nos à disposição para '
+        'eventuais esclarecimentos que se façam necessários.',
+        estilo_corpo
+    ))
+    elementos.append(Paragraph('Atenciosamente,', estilo_corpo_sem_recuo))
+    elementos.append(Spacer(1, 40))
+
+    # === Assinatura ===
+    elementos.append(HRFlowable(width='50%', thickness=0.5, color=colors.black))
+    elementos.append(Paragraph(profissional, estilo_assinatura))
+    elementos.append(Paragraph('Polícia Penal — PIEVDCS', estilo_cargo))
+    elementos.append(Spacer(1, 20))
+
+    # === Marca d'água de geração ===
+    usuario_gerou = request.user.get_full_name() or request.user.username
+    elementos.append(HRFlowable(
+        width='100%', thickness=0.5, color=colors.HexColor('#ddd'), spaceAfter=4
+    ))
+    elementos.append(Paragraph(
+        f'Documento gerado em {agora.strftime("%d/%m/%Y %H:%M")} por {usuario_gerou}',
+        estilo_rodape
+    ))
+    elementos.append(Paragraph(
+        'PIEVDCS — Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais',
+        estilo_rodape
+    ))
+
+    # Gerar PDF
+    doc.build(elementos)
+    buffer.seek(0)
+
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="oficio_atendimento_{grupo_id}.pdf"'
+    return response
+
+@checked_debug_decorador
+@login_required(login_url=reverse_lazy('login'))
+def relatorio_por_cpf_popup(request):
+    """Renderiza o popup de busca por CPF/Nome para gerar relatório PDF."""
+    return render(request, 'parcial/penal/relatorio_por_cpf_popup.html')
+
+
+@checked_debug_decorador
+@login_required(login_url=reverse_lazy('login'))
+def gerar_relatorio_por_cpf(request):
+    """
+    Gera relatório PDF com todos os atendimentos de um agressor,
+    buscando por CPF ou nome.
+    """
+    busca = request.GET.get('busca', '').strip()
+    if not busca:
+        return HttpResponse('Nenhum termo informado.', status=400)
+
+    # Tenta buscar por CPF (remove pontuação)
+    busca_limpa = busca.replace('.', '').replace('-', '').replace(' ', '')
+
+    agressor = None
+    if busca_limpa.isdigit() and len(busca_limpa) == 11:
+        # Busca por CPF
+        agressor = Agressor_dados.objects.annotate(
+            cpf_limpo=Func(
+                Func(F('cpf'), Value('.'), Value(''), function='replace'),
+                Value('-'), Value(''),
+                function='replace', output_field=CharField()
+            )
+        ).filter(cpf_limpo=busca_limpa).first()
+    
+    if not agressor:
+        # Busca por nome (parcial, case-insensitive)
+        agressor = Agressor_dados.objects.filter(nome__icontains=busca).first()
+
+    if not agressor:
+        return HttpResponse(
+            f'Nenhum agressor encontrado para: "{busca}"', status=404
+        )
+
+    # Busca todos os atendimentos deste agressor
+    atendimentos = ModeloPenal.objects.filter(
+        agressores_atendidos=agressor
+    ).select_related(
+        'usuario', 'atendimento', 'atualizado_por'
+    ).order_by('-data_atendimento')
+
+    # === Geração do PDF ===
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buffer, pagesize=A4,
+        leftMargin=3 * cm, rightMargin=2 * cm,
+        topMargin=2.5 * cm, bottomMargin=2 * cm,
+    )
+
+    styles = getSampleStyleSheet()
+
+    estilo_cabecalho = ParagraphStyle(
+        'Cab', parent=styles['Normal'],
+        fontName='Helvetica-Bold', fontSize=12,
+        alignment=TA_CENTER, spaceAfter=2,
+        textColor=colors.HexColor('#1e3a5f'),
+    )
+    estilo_subcabecalho = ParagraphStyle(
+        'SubCab', parent=styles['Normal'],
+        fontName='Helvetica', fontSize=10,
+        alignment=TA_CENTER, textColor=colors.HexColor('#4a4a4a'),
+    )
+    estilo_subtitulo = ParagraphStyle(
+        'SubTit', parent=styles['Normal'],
+        fontName='Helvetica', fontSize=8,
+        alignment=TA_CENTER, textColor=colors.gray, spaceAfter=6,
+    )
+    estilo_oficio = ParagraphStyle(
+        'Oficio', parent=styles['Normal'],
+        fontName='Helvetica-Bold', fontSize=11,
+        alignment=TA_RIGHT, textColor=colors.HexColor('#1e3a5f'),
+    )
+    estilo_data = ParagraphStyle(
+        'Data', parent=styles['Normal'],
+        fontSize=10, alignment=TA_RIGHT, spaceAfter=12,
+    )
+    estilo_assunto = ParagraphStyle(
+        'Assunto', parent=styles['Normal'],
+        fontName='Helvetica-Bold', fontSize=10,
+        leftIndent=12, spaceAfter=16,
+        textColor=colors.HexColor('#1e3a5f'),
+    )
+    estilo_corpo = ParagraphStyle(
+        'Corpo', parent=styles['Normal'],
+        fontSize=11, alignment=TA_JUSTIFY,
+        firstLineIndent=2 * cm, spaceAfter=10, leading=16,
+    )
+    estilo_corpo_sem_recuo = ParagraphStyle(
+        'CorpoSR', parent=styles['Normal'],
+        fontSize=11, alignment=TA_JUSTIFY,
+        firstLineIndent=0, spaceAfter=10, leading=16,
+    )
+    estilo_secao = ParagraphStyle(
+        'Secao', parent=styles['Normal'],
+        fontName='Helvetica-Bold', fontSize=9,
+        textColor=colors.HexColor('#1e3a5f'),
+        spaceAfter=6, spaceBefore=12,
+    )
+    estilo_assinatura = ParagraphStyle(
+        'Assin', parent=styles['Normal'],
+        fontName='Helvetica-Bold', fontSize=10, alignment=TA_CENTER,
+    )
+    estilo_cargo = ParagraphStyle(
+        'Cargo', parent=styles['Normal'],
+        fontName='Helvetica', fontSize=8,
+        alignment=TA_CENTER, textColor=colors.gray,
+    )
+    estilo_rodape = ParagraphStyle(
+        'Rodape', parent=styles['Normal'],
+        fontName='Helvetica', fontSize=7,
+        alignment=TA_CENTER, textColor=colors.HexColor('#999999'),
+    )
+
+    elementos = []
+    agora = timezone.now()
+
+    # === Cabeçalho institucional ===
+    elementos.append(Paragraph(
+        'PLATAFORMA INTEGRADA DE ENFRENTAMENTO À VIOLÊNCIA<br/>'
+        'DOMÉSTICA E CRIMES SEXUAIS', estilo_cabecalho
+    ))
+    elementos.append(Paragraph(
+        'Polícia Penal — Relatório Individual de Atendimentos', estilo_subcabecalho
+    ))
+    elementos.append(Paragraph(
+        'PIEVDCS — Sistema de Gestão Integrada', estilo_subtitulo
+    ))
+    elementos.append(HRFlowable(
+        width='100%', thickness=2,
+        color=colors.HexColor('#1e3a5f'), spaceAfter=20,
+    ))
+
+    # === Identificação ===
+    meses = {
+        'January': 'janeiro', 'February': 'fevereiro', 'March': 'março',
+        'April': 'abril', 'May': 'maio', 'June': 'junho',
+        'July': 'julho', 'August': 'agosto', 'September': 'setembro',
+        'October': 'outubro', 'November': 'novembro', 'December': 'dezembro',
+    }
+    data_str = agora.strftime('%d de %B de %Y')
+    for eng, pt in meses.items():
+        data_str = data_str.replace(eng, pt)
+
+    estilo_id_esq = ParagraphStyle(
+        'IdEsq', parent=styles['Normal'],
+        fontName='Helvetica-Bold', fontSize=11,
+        textColor=colors.HexColor('#1e3a5f'),
+    )
+    estilo_id_dir = ParagraphStyle(
+        'IdDir', parent=styles['Normal'],
+        fontSize=10, alignment=TA_RIGHT,
+    )
+
+    tabela_id = Table(
+        [[
+            Paragraph(f'RELATÓRIO Nº {agressor.id}/{agora.strftime("%Y")}', estilo_id_esq),
+            Paragraph(data_str, estilo_id_dir),
+        ]],
+        colWidths=[8 * cm, 7.7 * cm]
+    )
+    tabela_id.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 0),
+        ('TOPPADDING', (0, 0), (-1, -1), 0),
+    ]))
+    elementos.append(tabela_id)
+    elementos.append(Spacer(1, 12))
+
+    # === Assunto ===
+    elementos.append(HRFlowable(
+        width='100%', thickness=0.5, color=colors.HexColor('#ddd'),
+        spaceBefore=0, spaceAfter=4,
+    ))
+    elementos.append(Paragraph(
+        f'ASSUNTO: Relatório de Atendimentos — {agressor.nome}', estilo_assunto
+    ))
+    elementos.append(HRFlowable(
+        width='100%', thickness=0.5, color=colors.HexColor('#ddd'),
+        spaceBefore=0, spaceAfter=16,
+    ))
+
+    # === Dados do agressor ===
+    elementos.append(Paragraph('DADOS DO ACOMPANHADO', estilo_secao))
+    dados_pessoa = [
+        ['Nome Completo:', agressor.nome],
+        ['CPF:', agressor.cpf],
+    ]
+    # Adiciona campos extras se existirem
+    if hasattr(agressor, 'data_nascimento') and agressor.data_nascimento:
+        dados_pessoa.append([
+            'Data de Nascimento:',
+            agressor.data_nascimento.strftime('%d/%m/%Y')
+        ])
+
+    tabela_pessoa = Table(dados_pessoa, colWidths=[5 * cm, 10.7 * cm])
+    tabela_pessoa.setStyle(TableStyle([
+        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+        ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 9),
+        ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#555555')),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('BOX', (0, 0), (-1, -1), 0.5, colors.HexColor('#dddddd')),
+        ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.HexColor('#eeeeee')),
+    ]))
+    elementos.append(tabela_pessoa)
+    elementos.append(Spacer(1, 16))
+
+    # === Corpo ===
+    qtd = atendimentos.count()
+    elementos.append(Paragraph(
+        f'Informamos que o(a) acompanhado(a) <b>{agressor.nome}</b>, '
+        f'CPF <b>{agressor.cpf}</b>, possui <b>{qtd}</b> atendimento(s) '
+        f'registrado(s) na plataforma, conforme detalhamento a seguir:',
+        estilo_corpo
+    ))
+    elementos.append(Spacer(1, 8))
+
+    # === Tabela de atendimentos ===
+    elementos.append(Paragraph('HISTÓRICO DE ATENDIMENTOS', estilo_secao))
+
+    cabecalho_tabela = ['#', 'Data', 'Setor', 'Tipo', 'Duração', 'Profissional']
+    dados_tabela = [cabecalho_tabela]
+
+    for i, atend in enumerate(atendimentos, 1):
+        data_fmt = atend.data_atendimento.strftime('%d/%m/%Y %H:%M')
+        tipo_txt = str(atend.atendimento) if atend.atendimento else '—'
+        duracao_txt = str(atend.tempo_atendimento) if atend.tempo_atendimento else '—'
+        prof = atend.usuario.get_full_name() if atend.usuario else '—'
+        dados_tabela.append([
+            str(i), data_fmt, atend.setor_atendimento,
+            tipo_txt, duracao_txt, prof
+        ])
+
+    if qtd == 0:
+        dados_tabela.append(['', '', 'Nenhum atendimento registrado', '', '', ''])
+
+    tabela_atend = Table(
+        dados_tabela,
+        colWidths=[0.8 * cm, 3 * cm, 3 * cm, 3.5 * cm, 2.2 * cm, 3.2 * cm]
+    )
+    tabela_atend.setStyle(TableStyle([
+        # Cabeçalho
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e3a5f')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 7),
+        ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ('TOPPADDING', (0, 0), (-1, 0), 8),
+        # Corpo
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 5),
+        ('TOPPADDING', (0, 1), (-1, -1), 5),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#dddddd')),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1),
+         [colors.white, colors.HexColor('#f9f9f9')]),
+        ('ALIGN', (0, 0), (0, -1), 'CENTER'),
+    ]))
+    elementos.append(tabela_atend)
+    elementos.append(Spacer(1, 12))
+
+    # === Avaliações individuais ===
+    atendimentos_com_avaliacao = atendimentos.exclude(
+        avaliacao__isnull=True
+    ).exclude(avaliacao='')
+
+    if atendimentos_com_avaliacao.exists():
+        elementos.append(Paragraph('AVALIAÇÕES DOS ATENDIMENTOS', estilo_secao))
+        for atend in atendimentos_com_avaliacao:
+            data_fmt = atend.data_atendimento.strftime('%d/%m/%Y')
+            elementos.append(Paragraph(
+                f'<b>Atendimento nº {atend.id} — {data_fmt}:</b>',
+                estilo_corpo_sem_recuo
+            ))
+            elementos.append(Paragraph(
+                atend.avaliacao.replace('\n', '<br/>'),
+                estilo_corpo_sem_recuo
+            ))
+        elementos.append(Spacer(1, 8))
+
+    # === Fechamento ===
+    elementos.append(Paragraph(
+        'Sem mais para o momento, colocamo-nos à disposição para '
+        'eventuais esclarecimentos que se façam necessários.',
+        estilo_corpo
+    ))
+    elementos.append(Paragraph('Atenciosamente,', estilo_corpo_sem_recuo))
+    elementos.append(Spacer(1, 40))
+
+    # === Assinatura ===
+    usuario_gerou = request.user.get_full_name() or request.user.username
+    elementos.append(HRFlowable(width='50%', thickness=0.5, color=colors.black))
+    elementos.append(Paragraph(usuario_gerou, estilo_assinatura))
+    elementos.append(Paragraph('Polícia Penal — PIEVDCS', estilo_cargo))
+    elementos.append(Spacer(1, 20))
+
+    # === Rodapé ===
+    elementos.append(HRFlowable(
+        width='100%', thickness=0.5,
+        color=colors.HexColor('#ddd'), spaceAfter=4,
+    ))
+    elementos.append(Paragraph(
+        f'Documento gerado em {agora.strftime("%d/%m/%Y %H:%M")} por {usuario_gerou}',
+        estilo_rodape
+    ))
+    elementos.append(Paragraph(
+        'PIEVDCS — Plataforma Integrada de Enfrentamento à '
+        'Violência Doméstica e Crimes Sexuais',
+        estilo_rodape
+    ))
+
+    doc.build(elementos)
+    buffer.seek(0)
+
+    nome_arquivo = agressor.cpf.replace('.', '').replace('-', '')
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = (
+        f'inline; filename="relatorio_atendimentos_{nome_arquivo}.pdf"'
+    )
+    return response

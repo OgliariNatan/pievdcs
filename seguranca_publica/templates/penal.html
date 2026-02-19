@@ -210,6 +210,21 @@
                         </div>
                     </button>
 
+                    <button
+                        class="bg-gradient-to-r from-sky-600 to-green-700 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 group"
+                        hx-get="{% url 'seguranca_publica:relatorio_por_cpf_popup' %}"
+                        hx-target="#modal-relatorio"
+                        hx-swap="innerHTML">
+                        <div class="flex flex-col items-center gap-3">
+                            <div
+                                class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i class="fas fa-file-pdf text-2xl"></i>
+                            </div>
+                            <span class="font-semibold">Relatório por CPF</span>
+                            <span class="text-sm text-sky-200">Relatório dos atendimentos por CPF</span>
+                        </div>
+                    </button>
+                    <div id="modal-relatorio"></div>
                 </div>
             </div>
             <!-- Indicadores rápidos -->

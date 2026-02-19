@@ -8,7 +8,8 @@ from .views.penal import (
     buscar_atendimentos_por_cpf_ajax, 
     buscar_atendimentos_por_cpf_modal,
     mostra_todos_grupos_penal,
-    edita_atendimento_pp,
+    edita_atendimento_pp, gerar_relatorio_atendimento,
+    relatorio_por_cpf_popup, gerar_relatorio_por_cpf,
 )
 from .views.militar import (
     militar,
@@ -32,7 +33,11 @@ urlpatterns = [
     path('buscar-atendimentos-modal/', buscar_atendimentos_por_cpf_modal, name='buscar_atendimentos_por_cpf_modal'),
     path('mostra_todos_grupos_penal/', mostra_todos_grupos_penal, name='mostra_todos_grupos_penal'),
     path('edita_atendimento_pp/<int:grupo_id>/', edita_atendimento_pp, name='edita_atendimento_pp'),
-    
+    path('relatorio_atendimento/<int:grupo_id>/', gerar_relatorio_atendimento, name='relatorio_atendimento'),
+    path('relatorio_por_cpf_popup/', relatorio_por_cpf_popup, name='relatorio_por_cpf_popup'),
+    path('gerar_relatorio_por_cpf/', gerar_relatorio_por_cpf, name='gerar_relatorio_por_cpf'),
+
+
     #Instituição Militar
     path('militar/', militar, name='militar'),
     path('consultas_PM/', consultas_informacao_vitima_agressor, name='consultas_PM'),
