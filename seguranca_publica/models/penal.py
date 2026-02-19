@@ -120,7 +120,19 @@ class ModeloPenal(models.Model):
         default=False, 
         verbose_name="Campo para teste"
     )
-
+    criado_em = models.DateTimeField(
+        auto_now_add=True, verbose_name="Criado em"
+    )
+    atualizado_em = models.DateTimeField(
+        auto_now=True, verbose_name="Atualizado em"
+    )
+    atualizado_por = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        verbose_name="Atualizado por",
+        related_name='atendimentos_penal_atualizados',
+        null=True, blank=True,
+    )
 
     def __str__(self):
         return f"{self.data_atendimento} - {self.setor_atendimento} - {self.atendimento} - {self.usuario}"

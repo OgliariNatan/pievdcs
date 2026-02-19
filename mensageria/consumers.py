@@ -52,6 +52,15 @@ class NotificacaoConsumer(AsyncWebsocketConsumer):
             )
     
     async def receive(self, text_data):
+        try:
+            data = json.loads(text_data)
+        except json.JSONDecodeError:
+            await self.send(text_data=json.dumps({
+                'type': 'erro', 'message': 'JSON inválido'
+            }))
+            return
+    
+    async def receive(self, text_data):
         data = json.loads(text_data)
         action = data.get('action')
         
