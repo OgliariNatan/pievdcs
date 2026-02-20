@@ -491,7 +491,7 @@ def gerar_relatorio_atendimento(request, grupo_id):
     ))
 
     # === Identificação do ofício ===
-    agora = timezone.now()
+    agora = timezone.localtime(timezone.now())
 
     meses = {
         'January': 'janeiro', 'February': 'fevereiro', 'March': 'março',
@@ -787,7 +787,7 @@ def gerar_relatorio_por_cpf(request):
     )
 
     elementos = []
-    agora = timezone.now()
+    agora = timezone.localtime(timezone.now())
 
     # === Cabeçalho institucional ===
     elementos.append(Paragraph(
