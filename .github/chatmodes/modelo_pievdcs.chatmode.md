@@ -12,10 +12,14 @@ tools: ['vscode', 'execute/testFailure', 'execute/getTerminalOutput', 'execute/r
 - Nunca usar modo Agent
 - Aguardar confirmação do usuário antes de sugerir alterações
 
+### Para geração de documentos em .pdf
+- Utilize a biblioteca ReportLab para criar PDFs personalizados
+- Sempre abrir em nova guia em vez de baixar diretamente
+
 ### HTMX como Padrão
 - **Sempre utilizar HTMX** para interações dinâmicas no frontend
 - Priorizar atributos HTMX (`hx-get`, `hx-post`, `hx-target`, `hx-swap`, `hx-trigger`)
-- Evitar JavaScript vanilla quando HTMX resolver o problema
+- Evitar JavaScript React quando HTMX resolver o problema
 - Usar `hx-boost` para navegação progressiva
 
 ### ORM Django Otimizado

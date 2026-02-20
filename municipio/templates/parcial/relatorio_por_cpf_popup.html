@@ -1,0 +1,37 @@
+{# municipio/templates/parcial/relatorio_por_cpf_popup.html #}
+{% load static %}
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+     id="popup-relatorio-cpf" onclick="if(event.target===this) this.remove()">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto"
+         onclick="event.stopPropagation()">
+        <form method="get" action="{% url 'municipio:gerar_relatorio_creas_por_cpf' %}" target="_blank">
+            <div class="flex items-center justify-between px-6 py-4 rounded-t-2xl bg-gradient-to-r from-green-600 to-green-400">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fas fa-file-pdf"></i> Relatório por CPF — {{ instituicao }}
+                </h2>
+                <button type="button" class="text-white hover:text-green-200 text-2xl font-bold transition"
+                        onclick="document.getElementById('popup-relatorio-cpf').remove()">&times;</button>
+            </div>
+            <div class="px-6 py-6 bg-green-50">
+                <label for="busca" class="block text-sm font-medium text-green-700 mb-2">
+                    <i class="fas fa-id-card mr-1"></i> CPF ou Nome
+                </label>
+                <input type="text" name="busca" id="busca" placeholder="CPF ou nome"
+                       class="w-full px-4 py-3 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500" required>
+                <p class="text-xs text-green-600 mt-1"><i class="fas fa-info-circle mr-1"></i>Informe CPF ou parte do nome.</p>
+            </div>
+            <div class="flex justify-end gap-2 px-6 py-4 rounded-b-2xl bg-gradient-to-r from-green-600 to-green-400">
+                <button type="button" class="px-4 py-2 rounded-lg bg-green-100 text-green-700 font-semibold hover:bg-green-200 transition"
+                        onclick="document.getElementById('popup-relatorio-cpf').remove()">Cancelar</button>
+                <button type="submit" class="px-4 py-2 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition">
+                    <i class="fas fa-file-pdf mr-1"></i> Gerar PDF
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    document.addEventListener('keydown', function h(e) {
+        if (e.key === 'Escape') { const p = document.getElementById('popup-relatorio-cpf'); if(p) p.remove(); document.removeEventListener('keydown', h); }
+    });
+</script>

@@ -19,6 +19,9 @@ setor_choices = (
     ('Psicóloga', 'Psicóloga'),
     ('Enfermagem', 'Enfermagem'),
     ('Grupo refletivo', 'Grupo refletivo'),
+    ('Pedagoga', 'Pedagoga'),
+    ('Terapeuta Ocupacional', 'Terapeuta Ocupacional'),
+    ('Coordenação', 'Coordenação'),
     ('Outros', 'Outros'),
 )
 
@@ -31,9 +34,11 @@ instituicao_choices = (
     ('Policia Penal', 'Policia Penal'),
     ('Policia Civil', 'Policia Civil'),
     ('Policia Militar', 'Policia Militar'),
+    ('CREAS', 'CREAS'),
+    ('CRAS', 'CRAS'),
+    ('CAPS', 'CAPS'),
+    ('Secretaria da Saúde', 'Secretaria da Saúde'),
     ('Centro de Atendimento Socioeducativo', 'Centro de Atendimento Socioeducativo'),
-    ('Centro de Referência Especializado de Assistência Social', 'Centro de Referência Especializado de Assistência Social'),
-    ('Centro de Atenção Psicossocial', 'Centro de Atenção Psicossocial'),
 )
 
 tematica_choices = (
