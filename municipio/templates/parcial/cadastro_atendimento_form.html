@@ -4,7 +4,7 @@
      onclick="if(event.target===this) document.getElementById('modal-atendimento').innerHTML = ''">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-4 animate-fade-in-up max-h-[90vh] overflow-y-auto"
          onclick="event.stopPropagation()">
-        <form hx-post="{% url 'municipio:cadastro_atendimento_creas_submit' %}"
+        <form hx-post="{% url url_cadastro_submit %}"
               hx-target="#modal-atendimento" hx-swap="innerHTML">
             {% csrf_token %}
             <!-- Cabeçalho -->

@@ -126,12 +126,12 @@
                     </div>
                 </div>
                 <div class="flex gap-2 mt-6 pt-4 border-t">
-                    <button hx-get="{% url 'municipio:edita_atendimento_creas' grupo_id=grupo.id %}"
+                    <button hx-get="{% url url_edita grupo_id=grupo.id %}"
                             hx-target="#modal-container" hx-swap="innerHTML"
                             class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold shadow-md">
                         <i class="fas fa-edit mr-2"></i>Editar
                     </button>
-                    <a href="{% url 'municipio:relatorio_atendimento_creas' grupo_id=grupo.id %}" target="_blank"
+                    <a href="{% url url_relatorio_atendimento grupo_id=grupo.id %}" target="_blank"
                        class="flex-1 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition font-semibold text-center">
                         <i class="fas fa-file-pdf mr-2"></i>Relatório
                     </a>
