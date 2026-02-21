@@ -3,11 +3,17 @@
 
 from django.contrib import admin
 from .models.creas import AtendimentoCREAS, TipoAtendimentoCREAS
+from .models.cras import AtendimentoCRAS, TipoAtendimentoCRAS
+from .models.caps import AtendimentoCAPS, TipoAtendimentoCAPS
+from .models.secretaria_saude import AtendimentoSecSaude, TipoAtendimentoSecSaude
 
 
-@admin.register(AtendimentoCREAS)
-class AtendimentoCREASAdmin(admin.ModelAdmin):
-    """Admin para atendimentos do CREAS."""
+# ──────────────────────────────────────────────
+# Classe base reutilizável para evitar repetição
+# ──────────────────────────────────────────────
+
+class BaseAtendimentoAdmin(admin.ModelAdmin):
+    """Admin base para atendimentos de todas as instituições."""
     list_display = (
         'data_atendimento',
         'setor_atendimento',
@@ -24,10 +30,6 @@ class AtendimentoCREASAdmin(admin.ModelAdmin):
     readonly_fields = ('criado_em', 'atualizado_em', 'atualizado_por')
     ordering = ('-data_atendimento',)
 
-    def get_queryset(self, request):
-        """Retorna apenas atendimentos vinculados ao CREAS."""
-        return super().get_queryset(request)
-
     def save_model(self, request, obj, form, change):
         """Registra o usuário que criou/atualizou."""
         if change:
@@ -37,17 +39,78 @@ class AtendimentoCREASAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-@admin.register(TipoAtendimentoCREAS)
-class TipoAtendimentoCREASAdmin(admin.ModelAdmin):
-    """Admin para tipos de atendimento do CREAS."""
+class BaseTipoAtendimentoAdmin(admin.ModelAdmin):
+    """Admin base para tipos de atendimento."""
     list_display = ('instituicao_responsavel', 'tematica')
     list_filter = ('tematica',)
-
-    def get_queryset(self, request):
-        """Retorna apenas tipos de atendimento do CREAS."""
-        return super().get_queryset(request)
+    instituicao = None  # Deve ser definido nas subclasses
 
     def save_model(self, request, obj, form, change):
-        """Força a instituição como CREAS ao salvar."""
-        obj.instituicao_responsavel = 'CREAS'
+        """Força a instituição ao salvar."""
+        if self.instituicao:
+            obj.instituicao_responsavel = self.instituicao
         super().save_model(request, obj, form, change)
+
+
+# ──────────────────────────────────────────────
+# CREAS
+# ──────────────────────────────────────────────
+
+@admin.register(AtendimentoCREAS)
+class AtendimentoCREASAdmin(BaseAtendimentoAdmin):
+    """Admin para atendimentos do CREAS."""
+    pass
+
+
+@admin.register(TipoAtendimentoCREAS)
+class TipoAtendimentoCREASAdmin(BaseTipoAtendimentoAdmin):
+    """Admin para tipos de atendimento do CREAS."""
+    instituicao = 'CREAS'
+
+
+# ──────────────────────────────────────────────
+# CRAS
+# ──────────────────────────────────────────────
+
+@admin.register(AtendimentoCRAS)
+class AtendimentoCRASAdmin(BaseAtendimentoAdmin):
+    """Admin para atendimentos do CRAS."""
+    pass
+
+
+@admin.register(TipoAtendimentoCRAS)
+class TipoAtendimentoCRASAdmin(BaseTipoAtendimentoAdmin):
+    """Admin para tipos de atendimento do CRAS."""
+    instituicao = 'CRAS'
+
+
+# ──────────────────────────────────────────────
+# CAPS
+# ──────────────────────────────────────────────
+
+@admin.register(AtendimentoCAPS)
+class AtendimentoCAPSAdmin(BaseAtendimentoAdmin):
+    """Admin para atendimentos do CAPS."""
+    pass
+
+
+@admin.register(TipoAtendimentoCAPS)
+class TipoAtendimentoCAPSAdmin(BaseTipoAtendimentoAdmin):
+    """Admin para tipos de atendimento do CAPS."""
+    instituicao = 'CAPS'
+
+
+# ──────────────────────────────────────────────
+# Secretaria da Saúde
+# ──────────────────────────────────────────────
+
+@admin.register(AtendimentoSecSaude)
+class AtendimentoSecSaudeAdmin(BaseAtendimentoAdmin):
+    """Admin para atendimentos da Secretaria da Saúde."""
+    pass
+
+
+@admin.register(TipoAtendimentoSecSaude)
+class TipoAtendimentoSecSaudeAdmin(BaseTipoAtendimentoAdmin):
+    """Admin para tipos de atendimento da Secretaria da Saúde."""
+    instituicao = 'Secretaria da Saúde'
