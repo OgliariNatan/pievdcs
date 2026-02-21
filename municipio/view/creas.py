@@ -28,12 +28,28 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_RIGHT
 import io
 
+""" Configuraçao de decoradores para debug """
+import os
+
+var_debug = os.getenv('DEBUG')
+
+if var_debug == 'True':
+    from MAIN.decoradores.calcula_tempo import calcula_tempo, calcula_tempo_fun
+    checked_debug_decorador = calcula_tempo
+    checked_debug_decorador_fun = calcula_tempo_fun
+    
+else:
+    checked_debug_decorador = None
+    checked_debug_decorador_fun = None
+
+""" Fim da configuraçao de decoradores para debug """
+
 # Constante da instituição
 INSTITUICAO = 'CREAS'
 GRUPO_PERMISSAO = 'CREAS'
 COR_PRIMARIA = 'teal'  # Cor do tema para templates
 
-
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos([GRUPO_PERMISSAO])
 def creas(request):
@@ -106,7 +122,7 @@ def creas(request):
     }
     return render(request, 'creas.html', contexto)
 
-
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos([GRUPO_PERMISSAO])
 def cadastro_atendimento_creas_form(request):
@@ -120,6 +136,7 @@ def cadastro_atendimento_creas_form(request):
 
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos([GRUPO_PERMISSAO])
+@checked_debug_decorador
 def cadastro_atendimento_creas_submit(request):
     """Salva atendimento CREAS."""
     if request.method == 'POST':
@@ -144,6 +161,7 @@ def cadastro_atendimento_creas_submit(request):
 
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos([GRUPO_PERMISSAO])
+@checked_debug_decorador
 def mostra_todos_atendimentos_creas(request):
     """Lista todos os atendimentos do CREAS."""
     grupos = ModeloPenal.objects.filter(
@@ -214,7 +232,7 @@ def edita_atendimento_creas(request, grupo_id):
     contexto = {'form': form, 'grupo': grupo, 'instituicao': INSTITUICAO, 'user': request.user}
     return render(request, 'parcial/edita_atendimento.html', contexto)
 
-
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 def buscar_atendimentos_creas_modal(request):
     """Modal de busca por CPF."""
@@ -263,7 +281,7 @@ def buscar_atendimentos_creas_modal(request):
     }, request)
     return HttpResponse(html)
 
-
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 def relatorio_por_cpf_creas_popup(request):
     """Popup de busca para relatório PDF."""
@@ -271,7 +289,7 @@ def relatorio_por_cpf_creas_popup(request):
         'instituicao': INSTITUICAO,
     })
 
-
+@checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
 def gerar_relatorio_creas_por_cpf(request):
     """Gera relatório PDF por CPF/nome filtrado pelo CREAS."""
