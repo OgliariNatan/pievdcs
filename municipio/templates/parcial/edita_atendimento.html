@@ -12,7 +12,7 @@
                     class="text-white hover:text-teal-200 text-2xl font-bold">&times;</button>
         </div>
         <form method="POST"
-              hx-post="{% url 'municipio:edita_atendimento_creas' grupo_id=grupo.id %}"
+              hx-post="{% url url_edita grupo_id=grupo.id %}"
               hx-target="#modal-container" hx-swap="innerHTML" class="p-6 bg-gray-50">
             {% csrf_token %}
             <div class="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">

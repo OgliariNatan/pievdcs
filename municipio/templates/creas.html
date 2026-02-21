@@ -111,7 +111,7 @@
                     <!-- Novo Atendimento -->
                     <button
                         class="bg-gradient-to-r from-teal-600 to-teal-700 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 group"
-                        hx-get="{% url 'municipio:cadastro_atendimento_creas_form' %}"
+                        hx-get="{% url url_cadastro_form %}"
                         hx-target="#modal-atendimento" hx-swap="innerHTML">
                         <div class="flex flex-col items-center gap-3">
                             <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -156,7 +156,7 @@
                                 </div>
                                 {% endfor %}
                             </div>
-                            <a href="{% url 'municipio:mostra_todos_atendimentos_creas' %}"
+                            <a href="{% url url_mostra_todos %}"
                                class="mt-auto text-center text-xs bg-white/10 hover:bg-white/20 transition-colors rounded-lg py-2 px-3 mt-3">
                                 Ver todos os atendimentos
                             </a>
@@ -166,7 +166,7 @@
                     <!-- Buscar por CPF -->
                     <button
                         class="bg-gradient-to-r from-green-600 to-green-700 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 group"
-                        hx-get="{% url 'municipio:buscar_atendimentos_creas_modal' %}"
+                        hx-get="{% url url_buscar_cpf %}"
                         hx-target="#modal-consulta-cpf" hx-swap="innerHTML">
                         <div class="flex flex-col items-center gap-3">
                             <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -180,7 +180,7 @@
                     <!-- Relatório por CPF -->
                     <button
                         class="bg-gradient-to-r from-green-600 to-green-700 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 group"
-                        hx-get="{% url 'municipio:relatorio_por_cpf_creas_popup' %}"
+                        hx-get="{% url url_relatorio_cpf_popup %}"
                         hx-target="#modal-relatorio" hx-swap="innerHTML">
                         <div class="flex flex-col items-center gap-3">
                             <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
