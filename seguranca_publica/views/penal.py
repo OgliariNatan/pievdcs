@@ -185,45 +185,6 @@ def cadastro_atendimento_penal_submit(request):
 
 @checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
-def buscar_atendimentos_por_cpf_ajax(request):
-    """Busca quantidade de atendimentos por CPF via AJAX"""
-    #print("Buscando atendimentos por CPF via AJAX...")
-    cpf = request.GET.get('cpf', '').replace('.', '').replace('-', '').strip()
-    if not cpf:
-        return JsonResponse({'sucesso': False, 'erro': 'CPF não informado.'})
-    
-    try:
-        # Remove pontos e traço do CPF no banco para comparar
-        agressor = Agressor_dados.objects.annotate(
-            cpf_limpo=Func(
-                Func(
-                    F('cpf'),
-                    Value('.'),
-                    Value(''),
-                    function='replace'
-                ),
-                Value('-'),
-                Value(''),
-                function='replace',
-                output_field=CharField()
-            )
-        ).get(cpf_limpo=cpf)
-        
-        # CORREÇÃO: Usar o relacionamento correto
-        qtd = agressor.agressores_atendidos.count()
-        
-        return JsonResponse({
-            'sucesso': True, 
-            'qtd': qtd,
-            'nome': agressor.nome,
-            'cpf': agressor.cpf
-        })
-    except Agressor_dados.DoesNotExist:
-        return JsonResponse({'sucesso': False, 'erro': 'CPF não encontrado.'})
-
-
-@checked_debug_decorador
-@login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Polícia Penal'])
 def buscar_atendimentos_por_cpf_modal(request):
     """Busca atendimentos por CPF e exibe no modal com visualização detalhada."""

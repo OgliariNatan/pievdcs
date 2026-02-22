@@ -538,32 +538,5 @@
             if (modal) modal.remove();
         }
     });
-
-
-    // Submeter busca via AJAX
-    document.addEventListener('DOMContentLoaded', function () {
-        const formBusca = document.getElementById('form-busca-cpf');
-        if (formBusca) {
-            formBusca.addEventListener('submit', function (e) {
-                e.preventDefault();
-                const cpf = document.getElementById('input-cpf').value;
-                const resultado = document.getElementById('resultado-busca-cpf');
-                resultado.innerHTML = 'Consultando...';
-
-                fetch("{% url 'seguranca_publica:buscar_atendimentos_por_cpf_ajax' %}?cpf=" + encodeURIComponent(cpf))
-                    .then(resp => resp.json())
-                    .then(data => {
-                        if (data.sucesso) {
-                            resultado.innerHTML = `<span class="text-green-700 font-semibold">Total de atendimentos: ${data.qtd}</span>`;
-                        } else {
-                            resultado.innerHTML = `<span class="text-red-600">${data.erro}</span>`;
-                        }
-                    })
-                    .catch(() => {
-                        resultado.innerHTML = '<span class="text-red-600">Erro ao consultar.</span>';
-                    });
-            });
-        }
-    }); 
 </script>
 {% endblock %}
