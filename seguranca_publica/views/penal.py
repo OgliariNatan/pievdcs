@@ -892,9 +892,12 @@ def gerar_relatorio_por_cpf(request):
     elementos.append(Spacer(1, 8))
 
     # === Tabela de atendimentos ===
+    estilo_celula = ParagraphStyle(
+    'celula_tabela', fontName='Helvetica', fontSize=8, leading=10
+    )
     elementos.append(Paragraph('HISTÓRICO DE ATENDIMENTOS', estilo_secao))
 
-    cabecalho_tabela = ['#', 'Data', 'Setor', 'Tipo', 'Duração', 'Profissional']
+    cabecalho_tabela = ['id', 'Data', 'Setor', 'Tipo', 'Duração', 'Profissional']
     dados_tabela = [cabecalho_tabela]
 
     for i, atend in enumerate(atendimentos, 1):
@@ -903,8 +906,12 @@ def gerar_relatorio_por_cpf(request):
         duracao_txt = str(atend.tempo_atendimento) if atend.tempo_atendimento else '—'
         prof = atend.usuario.get_full_name() if atend.usuario else '—'
         dados_tabela.append([
-            str(i), data_fmt, atend.setor_atendimento,
-            tipo_txt, duracao_txt, prof
+            str(i),
+            data_fmt,
+            Paragraph(atend.setor_atendimento or '—', estilo_celula),
+            Paragraph(tipo_txt, estilo_celula),
+            duracao_txt,
+            Paragraph(prof, estilo_celula),
         ])
 
     if qtd == 0:
