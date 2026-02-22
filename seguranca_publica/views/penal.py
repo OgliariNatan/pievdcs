@@ -185,105 +185,51 @@ def cadastro_atendimento_penal_submit(request):
 
 @checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
-def buscar_atendimentos_por_cpf_ajax(request):
-    """Busca quantidade de atendimentos por CPF via AJAX"""
-    #print("Buscando atendimentos por CPF via AJAX...")
-    cpf = request.GET.get('cpf', '').replace('.', '').replace('-', '').strip()
-    if not cpf:
-        return JsonResponse({'sucesso': False, 'erro': 'CPF não informado.'})
-    
-    try:
-        # Remove pontos e traço do CPF no banco para comparar
-        agressor = Agressor_dados.objects.annotate(
-            cpf_limpo=Func(
-                Func(
-                    F('cpf'),
-                    Value('.'),
-                    Value(''),
-                    function='replace'
-                ),
-                Value('-'),
-                Value(''),
-                function='replace',
-                output_field=CharField()
-            )
-        ).get(cpf_limpo=cpf)
-        
-        # CORREÇÃO: Usar o relacionamento correto
-        qtd = agressor.agressores_atendidos.count()
-        
-        return JsonResponse({
-            'sucesso': True, 
-            'qtd': qtd,
-            'nome': agressor.nome,
-            'cpf': agressor.cpf
-        })
-    except Agressor_dados.DoesNotExist:
-        return JsonResponse({'sucesso': False, 'erro': 'CPF não encontrado.'})
-
-
-@checked_debug_decorador
-@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Polícia Penal'])
 def buscar_atendimentos_por_cpf_modal(request):
-    """Busca atendimentos por CPF no modal"""
-    print("Buscando atendimentos por CPF no modal...")
-    resultado = ""
-    
+    """Busca atendimentos por CPF e exibe no modal com visualização detalhada."""
+    if var_debug == 'True':
+        print("Buscando atendimentos por CPF no modal...")
+
+    agressor = None
+    atendimentos = None
+    qtd = 0
+    erro = ""
+
     if request.method == "POST":
         cpf = request.POST.get('cpf', '').replace('.', '').replace('-', '').strip()
         if not cpf:
-            resultado = '<span class="text-red-600">CPF não informado.</span>'
+            erro = "CPF não informado."
         else:
             try:
                 agressor = Agressor_dados.objects.annotate(
                     cpf_limpo=Func(
-                        Func(
-                            F('cpf'),
-                            Value('.'),
-                            Value(''),
-                            function='replace'
-                        ),
-                        Value('-'),
-                        Value(''),
-                        function='replace',
-                        output_field=CharField()
+                        Func(F('cpf'), Value('.'), Value(''), function='replace'),
+                        Value('-'), Value(''),
+                        function='replace', output_field=CharField()
                     )
                 ).get(cpf_limpo=cpf)
-                
-                # CORREÇÃO: Usar o relacionamento correto
-                atendimentos = agressor.agressores_atendidos.all().order_by('-data_atendimento')
-                qtd = atendimentos.count()
-                
-                if qtd > 0:
-                    resultado = f'''
-                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                        <span class="text-green-700 font-semibold">
-                            Agressor: {agressor.nome}<br>
-                            CPF: {agressor.cpf}<br>
-                            Total de atendimentos: {qtd}
-                        </span>
-                        <div class="mt-2 text-sm text-green-600">
-                            Último atendimento: {atendimentos.first().data_atendimento.strftime("%d/%m/%Y %H:%M")}
-                        </div>
-                    </div>
-                    '''
-                else:
-                    resultado = f'''
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                        <span class="text-yellow-700">
-                            Agressor encontrado: {agressor.nome}<br>
-                            CPF: {agressor.cpf}<br>
-                            Nenhum atendimento registrado.
-                        </span>
-                    </div>
-                    '''
-                    
-            except Agressor_dados.DoesNotExist:
-                resultado = '<span class="text-red-600">CPF não encontrado na base de dados.</span>'
-    
-    html = render_to_string('parcial/modal_busca_cpf.html', {'resultado': resultado}, request)
-    return HttpResponse(html)
 
+                atendimentos = ModeloPenal.objects.filter(
+                    agressores_atendidos=agressor
+                ).select_related(
+                    'usuario', 'atendimento'
+                ).prefetch_related(
+                    'agressores_atendidos'
+                ).order_by('-data_atendimento')
+
+                qtd = atendimentos.count()
+
+            except Agressor_dados.DoesNotExist:
+                erro = "CPF não encontrado na base de dados."
+
+    contexto = {
+        'agressor': agressor,
+        'atendimentos': atendimentos,
+        'qtd': qtd,
+        'erro': erro,
+    }
+    return render(request, 'parcial/modal_busca_cpf.html', contexto)
 
 @checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
@@ -892,9 +838,12 @@ def gerar_relatorio_por_cpf(request):
     elementos.append(Spacer(1, 8))
 
     # === Tabela de atendimentos ===
+    estilo_celula = ParagraphStyle(
+    'celula_tabela', fontName='Helvetica', fontSize=8, leading=10
+    )
     elementos.append(Paragraph('HISTÓRICO DE ATENDIMENTOS', estilo_secao))
 
-    cabecalho_tabela = ['#', 'Data', 'Setor', 'Tipo', 'Duração', 'Profissional']
+    cabecalho_tabela = ['id', 'Data', 'Setor', 'Tipo', 'Duração', 'Profissional']
     dados_tabela = [cabecalho_tabela]
 
     for i, atend in enumerate(atendimentos, 1):
@@ -903,8 +852,12 @@ def gerar_relatorio_por_cpf(request):
         duracao_txt = str(atend.tempo_atendimento) if atend.tempo_atendimento else '—'
         prof = atend.usuario.get_full_name() if atend.usuario else '—'
         dados_tabela.append([
-            str(i), data_fmt, atend.setor_atendimento,
-            tipo_txt, duracao_txt, prof
+            str(i),
+            data_fmt,
+            Paragraph(atend.setor_atendimento or '—', estilo_celula),
+            Paragraph(tipo_txt, estilo_celula),
+            duracao_txt,
+            Paragraph(prof, estilo_celula),
         ])
 
     if qtd == 0:

@@ -478,16 +478,19 @@ def gerar_relatorio_por_cpf(request, config):
     el.append(Spacer(1, 8))
 
     # Tabela de atendimentos
+    estilo_celula = ParagraphStyle(
+    'celula_tabela', fontName='Helvetica', fontSize=8, leading=10
+    )
     el.append(Paragraph('HISTÓRICO DE ATENDIMENTOS', est['secao']))
-    linhas = [['#', 'Data', 'Setor', 'Tipo', 'Duração', 'Profissional']]
+    linhas = [['id', 'Data', 'Setor', 'Tipo', 'Duração', 'Profissional']]
     for i, at in enumerate(atendimentos, 1):
         linhas.append([
             str(i),
             at.data_atendimento.strftime('%d/%m/%Y %H:%M'),
-            at.setor_atendimento,
-            str(at.atendimento) if at.atendimento else '—',
+            Paragraph(at.setor_atendimento or '—', estilo_celula),
+            Paragraph(str(at.atendimento) if at.atendimento else '—', estilo_celula),
             str(at.tempo_atendimento) if at.tempo_atendimento else '—',
-            at.usuario.get_full_name() if at.usuario else '—',
+            Paragraph(at.usuario.get_full_name() if at.usuario else '—', estilo_celula),
         ])
     if qtd == 0:
         linhas.append(['', '', 'Nenhum atendimento registrado', '', '', ''])

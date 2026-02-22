@@ -5,7 +5,7 @@ from .views.penal import (
     cadastro_tipo_atendimento_submit, 
     cadastro_atendimento_penal_form, 
     cadastro_atendimento_penal_submit, 
-    buscar_atendimentos_por_cpf_ajax, 
+    
     buscar_atendimentos_por_cpf_modal,
     mostra_todos_grupos_penal,
     edita_atendimento_pp, gerar_relatorio_atendimento,
@@ -29,7 +29,6 @@ urlpatterns = [
     path('cadastro_tipo_atendimento_submit/', cadastro_tipo_atendimento_submit, name='cadastro_tipo_atendimento_submit'),
     path('cadastro_atendimento_penal_form/', cadastro_atendimento_penal_form, name='cadastro_atendimento_penal_form'),
     path('cadastro_atendimento_penal_submit/', cadastro_atendimento_penal_submit, name='cadastro_atendimento_penal_submit'),
-    path('buscar-atendimentos-ajax/', buscar_atendimentos_por_cpf_ajax, name='buscar_atendimentos_por_cpf_ajax'),
     path('buscar-atendimentos-modal/', buscar_atendimentos_por_cpf_modal, name='buscar_atendimentos_por_cpf_modal'),
     path('mostra_todos_grupos_penal/', mostra_todos_grupos_penal, name='mostra_todos_grupos_penal'),
     path('edita_atendimento_pp/<int:grupo_id>/', edita_atendimento_pp, name='edita_atendimento_pp'),
