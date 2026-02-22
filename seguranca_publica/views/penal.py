@@ -224,17 +224,21 @@ def buscar_atendimentos_por_cpf_ajax(request):
 
 @checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
-#@grupos_permitidos(['Polícia Penal'])
+@grupos_permitidos(['Polícia Penal'])
 def buscar_atendimentos_por_cpf_modal(request):
-    """Busca atendimentos por CPF no modal"""
+    """Busca atendimentos por CPF e exibe no modal com visualização detalhada."""
     if var_debug == 'True':
         print("Buscando atendimentos por CPF no modal...")
-    resultado = ""
+
+    agressor = None
+    atendimentos = None
+    qtd = 0
+    erro = ""
 
     if request.method == "POST":
         cpf = request.POST.get('cpf', '').replace('.', '').replace('-', '').strip()
         if not cpf:
-            resultado = '<span class="text-red-600">CPF não informado.</span>'
+            erro = "CPF não informado."
         else:
             try:
                 agressor = Agressor_dados.objects.annotate(
@@ -245,36 +249,26 @@ def buscar_atendimentos_por_cpf_modal(request):
                     )
                 ).get(cpf_limpo=cpf)
 
-                atendimentos = agressor.agressores_atendidos.all().order_by('-data_atendimento')
+                atendimentos = ModeloPenal.objects.filter(
+                    agressores_atendidos=agressor
+                ).select_related(
+                    'usuario', 'atendimento'
+                ).prefetch_related(
+                    'agressores_atendidos'
+                ).order_by('-data_atendimento')
+
                 qtd = atendimentos.count()
 
-                if qtd > 0:
-                    resultado = f'''
-                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                        <span class="text-green-700 font-semibold">
-                            Agressor: {agressor.nome}<br>
-                            CPF: {agressor.cpf}<br>
-                            Total de atendimentos: {qtd}
-                        </span>
-                        <div class="mt-2 text-sm text-green-600">
-                            Último atendimento: {atendimentos.first().data_atendimento.strftime("%d/%m/%Y %H:%M")}
-                        </div>
-                    </div>
-                    '''
-                else:
-                    resultado = f'''
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                        <span class="text-yellow-700">
-                            Agressor encontrado: {agressor.nome}<br>
-                            CPF: {agressor.cpf}<br>
-                            Nenhum atendimento registrado.
-                        </span>
-                    </div>
-                    '''
             except Agressor_dados.DoesNotExist:
-                resultado = '<span class="text-red-600">CPF não encontrado na base de dados.</span>'
+                erro = "CPF não encontrado na base de dados."
 
-    return render(request, 'parcial/modal_busca_cpf.html', {'resultado': resultado})
+    contexto = {
+        'agressor': agressor,
+        'atendimentos': atendimentos,
+        'qtd': qtd,
+        'erro': erro,
+    }
+    return render(request, 'parcial/modal_busca_cpf.html', contexto)
 
 @checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
