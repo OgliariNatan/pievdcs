@@ -121,11 +121,6 @@
                 </div>
             </div>
 
-            <!-- Modais -->
-            <div id="modal-atendimento-penal"></div>
-            <div id="modal-consulta-cpf"></div>
-            <!-- <div id="modal-tipo-atendimento"></div> -->
-
             <!-- Seção de Botões de Ação Rápida -->
             <div class="mb-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
@@ -199,7 +194,7 @@
                     <button
                         class="bg-gradient-to-r from-green-600 to-green-700 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 group"
                         hx-get="{% url 'seguranca_publica:buscar_atendimentos_por_cpf_modal' %}"
-                        hx-target="#modal-consulta-cpf" hx-swap="innerHTML">
+                        hx-target="body" hx-swap="beforeend" >
                         <div class="flex flex-col items-center gap-3">
                             <div
                                 class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -224,7 +219,6 @@
                             <span class="text-sm text-sky-200">Relatório dos atendimentos por CPF</span>
                         </div>
                     </button>
-                    <div id="modal-relatorio"></div>
                 </div>
             </div>
             <!-- Indicadores rápidos -->
@@ -328,6 +322,10 @@
         </div>
     </main>
 </div>
+<!-- Modais -->
+<div id="modal-atendimento-penal"></div>
+<div id="modal-relatorio"></div>
+<!-- <div id="modal-tipo-atendimento"></div> -->
 
 <!-- Overlay para mobile quando sidebar estiver expandido -->
 <div class="fixed inset-0 bg-black/50 z-5 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"

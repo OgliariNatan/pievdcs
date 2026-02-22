@@ -143,7 +143,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             os.path.join(BASE_DIR, "MAIN/templates"),
-            os.path.join(BASE_DIR, "Seguranca_publica/templates"),
+            os.path.join(BASE_DIR, "seguranca_publica/templates"),
             os.path.join(BASE_DIR, "sistema_justica/templates"),
             os.path.join(BASE_DIR, "municipio/templates"),
         ],

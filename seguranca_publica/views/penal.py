@@ -224,11 +224,13 @@ def buscar_atendimentos_por_cpf_ajax(request):
 
 @checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
+#@grupos_permitidos(['Polícia Penal'])
 def buscar_atendimentos_por_cpf_modal(request):
     """Busca atendimentos por CPF no modal"""
-    print("Buscando atendimentos por CPF no modal...")
+    if var_debug == 'True':
+        print("Buscando atendimentos por CPF no modal...")
     resultado = ""
-    
+
     if request.method == "POST":
         cpf = request.POST.get('cpf', '').replace('.', '').replace('-', '').strip()
         if not cpf:
@@ -237,23 +239,15 @@ def buscar_atendimentos_por_cpf_modal(request):
             try:
                 agressor = Agressor_dados.objects.annotate(
                     cpf_limpo=Func(
-                        Func(
-                            F('cpf'),
-                            Value('.'),
-                            Value(''),
-                            function='replace'
-                        ),
-                        Value('-'),
-                        Value(''),
-                        function='replace',
-                        output_field=CharField()
+                        Func(F('cpf'), Value('.'), Value(''), function='replace'),
+                        Value('-'), Value(''),
+                        function='replace', output_field=CharField()
                     )
                 ).get(cpf_limpo=cpf)
-                
-                # CORREÇÃO: Usar o relacionamento correto
+
                 atendimentos = agressor.agressores_atendidos.all().order_by('-data_atendimento')
                 qtd = atendimentos.count()
-                
+
                 if qtd > 0:
                     resultado = f'''
                     <div class="bg-green-50 border border-green-200 rounded-lg p-4">
@@ -277,13 +271,10 @@ def buscar_atendimentos_por_cpf_modal(request):
                         </span>
                     </div>
                     '''
-                    
             except Agressor_dados.DoesNotExist:
                 resultado = '<span class="text-red-600">CPF não encontrado na base de dados.</span>'
-    
-    html = render_to_string('parcial/modal_busca_cpf.html', {'resultado': resultado}, request)
-    return HttpResponse(html)
 
+    return render(request, 'parcial/modal_busca_cpf.html', {'resultado': resultado})
 
 @checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
