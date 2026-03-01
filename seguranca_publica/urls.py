@@ -5,7 +5,7 @@ from .views.penal import (
     cadastro_tipo_atendimento_submit, 
     cadastro_atendimento_penal_form, 
     cadastro_atendimento_penal_submit, 
-    
+    consultar_mp_penal,
     buscar_atendimentos_por_cpf_modal,
     mostra_todos_grupos_penal,
     edita_atendimento_pp, gerar_relatorio_atendimento,
@@ -35,6 +35,7 @@ urlpatterns = [
     path('relatorio_atendimento/<int:grupo_id>/', gerar_relatorio_atendimento, name='relatorio_atendimento'),
     path('relatorio_por_cpf_popup/', relatorio_por_cpf_popup, name='relatorio_por_cpf_popup'),
     path('gerar_relatorio_por_cpf/', gerar_relatorio_por_cpf, name='gerar_relatorio_por_cpf'),
+    path('consultar_mp_penal/', consultar_mp_penal, name='consultar_mp_penal'),
 
 
     #Instituição Militar
