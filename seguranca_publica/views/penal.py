@@ -10,7 +10,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from .permission_group import grupos_permitidos
 from django.template.loader import render_to_string
-from django.db.models import Func, F, Value, CharField
+from django.db.models import Func, F, Value, CharField, Q
 from ..forms.penal import TipoAtendimentoForm, ModeloPenalForm
 from ..models.penal import tipo_atendimento, ModeloPenal
 from sistema_justica.models.base import Agressor_dados
@@ -19,7 +19,7 @@ from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grup
 from usuarios.models import CustomUser
 from django.contrib.auth.models import Group as CustomGroup
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, date
 
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
@@ -948,3 +948,73 @@ def gerar_relatorio_por_cpf(request):
         f'inline; filename="relatorio_atendimentos_{nome_arquivo}.pdf"'
     )
     return response
+
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Polícia Penal'])
+def consultar_mp_penal(request):
+    """
+    Lista medidas protetivas com filtros para consulta da Polícia Penal (somente leitura).
+    dir: seguranca_publica/views/penal.py
+    """
+    from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
+    from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
+
+    filtro_status = request.GET.get('status', 'todas')
+    filtro_ordenar = request.GET.get('ordenar', 'periodo_mp')
+    filtro_busca = request.GET.get('busca', '').strip()
+    filtro_comarca = request.GET.get('comarca', '')
+
+    qs = FormularioMedidaProtetiva.objects.select_related(
+        'vitima', 'agressor', 'comarca_competente'
+    )
+
+    hoje = date.today()
+
+    # Filtro por status
+    if filtro_status == 'ativas':
+        qs = qs.filter(periodo_mp__gte=hoje)
+    elif filtro_status == 'vencidas':
+        qs = qs.filter(periodo_mp__lt=hoje)
+
+    # Filtro por comarca
+    if filtro_comarca:
+        qs = qs.filter(comarca_competente_id=filtro_comarca)
+
+    # Filtro por busca (nome ou CPF da vítima/agressor)
+    if filtro_busca:
+        qs = qs.filter(
+            Q(vitima__nome__icontains=filtro_busca) |
+            Q(vitima__cpf__icontains=filtro_busca) |
+            Q(agressor__nome__icontains=filtro_busca) |
+            Q(agressor__cpf__icontains=filtro_busca)
+        )
+
+    # Ordenação
+    ordenacoes_permitidas = ['periodo_mp', '-periodo_mp', '-data_solicitacao']
+    if filtro_ordenar not in ordenacoes_permitidas:
+        filtro_ordenar = 'periodo_mp'
+    qs = qs.order_by(filtro_ordenar)
+
+    # Propriedades dinâmicas - ativos primeiro
+    medidas = list(qs)
+    for mp in medidas:
+        mp.ativa = mp.periodo_mp >= hoje
+        mp.dias_restantes = (mp.periodo_mp - hoje).days if mp.ativa else 0
+    medidas.sort(key=lambda mp: (not mp.ativa,))
+
+    comarcas = ComarcasPoderJudiciario.objects.order_by('nome')
+
+    contexto = {
+        'medidas': medidas,
+        'filtro_status': filtro_status,
+        'filtro_ordenar': filtro_ordenar,
+        'filtro_busca': filtro_busca,
+        'filtro_comarca': filtro_comarca,
+        'comarcas': comarcas,
+    }
+
+    # Requisição HTMX com filtro → retorna só a tabela
+    if request.headers.get('HX-Target') == 'tabela-mp-penal':
+        return render(request, 'parcial/penal/tabela_mp_penal.html', contexto)
+
+    return render(request, 'parcial/penal/consultar_mp.html', contexto)
