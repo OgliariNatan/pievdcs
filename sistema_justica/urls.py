@@ -7,7 +7,10 @@ from .views.poder_judiciario import(
     alterar_periodo_mp, detalhe_medida_protetiva_jud, listar_grupos_reflexivos
 )
 from .views.ministerio_publico import ministerio_publico
-from .views.defensoria_publica import defensoria_publica, cadastro_mpu, listar_encaminhamentos
+from .views.defensoria_publica import(
+    defensoria_publica, cadastro_mpu, listar_encaminhamentos,
+    consultar_mp,
+)
 from sistema_justica.forms.cadastros import CadastroVitimaForm, CadastroAgressorForm, CadastroMunicipioForm
 
 app_name = 'sistema_justica'
@@ -36,4 +39,5 @@ urlpatterns = [
 
 
     path('cadastro_mpu/', cadastro_mpu, name='cadastro_mpu'), #Cadastro MPU
+    path('consultar_mp/', consultar_mp, name='consultar_mp'), #Consulta de MPUs para Defensoria Pública e Ministério Público
 ]
