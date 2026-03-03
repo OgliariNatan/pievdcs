@@ -5,6 +5,8 @@ from django.urls import reverse_lazy
 from .permission_group import grupos_permitidos
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
+from django.db.models import Func, F, Value, CharField, Q
+from datetime import date
 from mensageria.models import Notificacao, StatusNotificacao
 from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
 from sistema_justica.forms.cadastro_mpu import CadastroMedidaProtetiva
@@ -190,3 +192,104 @@ def notificar_solicitacao_mpu(request, vitima, solicitante=None):
         )
     except CustomGroup.DoesNotExist:
         pass
+
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Defensoria Pública', 'Ministério Público'])
+def consultar_mp(request):
+    """
+    Lista medidas protetivas com filtros para consulta do Ministério Público e Defensoria Pública (somente leitura).
+    dir: sistema_justica/views/defensoria_publica.py
+    """
+    from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
+    from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
+
+    filtro_status = request.GET.get('status', 'todas')
+    filtro_ordenar = request.GET.get('ordenar', 'periodo_mp')
+    filtro_busca = request.GET.get('busca', '').strip()
+    filtro_comarca = request.GET.get('comarca', '')
+
+    qs = FormularioMedidaProtetiva.objects.select_related(
+        'vitima', 'agressor', 'comarca_competente'
+    )
+
+    hoje = date.today()
+
+    # Filtro por status
+    if filtro_status == 'ativas':
+        qs = qs.filter(periodo_mp__gte=hoje)
+    elif filtro_status == 'vencidas':
+        qs = qs.filter(periodo_mp__lt=hoje)
+
+    # Filtro por comarca
+    if filtro_comarca:
+        qs = qs.filter(comarca_competente_id=filtro_comarca)
+
+    # Filtro por busca (nome ou CPF da vítima/agressor)
+    if filtro_busca:
+        qs = qs.filter(
+            Q(vitima__nome__icontains=filtro_busca) |
+            Q(vitima__cpf__icontains=filtro_busca) |
+            Q(agressor__nome__icontains=filtro_busca) |
+            Q(agressor__cpf__icontains=filtro_busca)
+        )
+
+    # Ordenação
+    ordenacoes_permitidas = ['periodo_mp', '-periodo_mp', '-data_solicitacao']
+    if filtro_ordenar not in ordenacoes_permitidas:
+        filtro_ordenar = 'periodo_mp'
+    qs = qs.order_by(filtro_ordenar)
+
+    # Propriedades dinâmicas - ativos primeiro
+    medidas = list(qs)
+    for mp in medidas:
+        mp.ativa = mp.periodo_mp >= hoje
+        mp.dias_restantes = (mp.periodo_mp - hoje).days if mp.ativa else 0
+    medidas.sort(key=lambda mp: (not mp.ativa,))
+
+    comarcas = ComarcasPoderJudiciario.objects.order_by('nome')
+
+    contexto = {
+        'medidas': medidas,
+        'filtro_status': filtro_status,
+        'filtro_ordenar': filtro_ordenar,
+        'filtro_busca': filtro_busca,
+        'filtro_comarca': filtro_comarca,
+        'comarcas': comarcas,
+    }
+
+    # Requisição HTMX com filtro → retorna só a tabela
+    if request.headers.get('HX-Target') == 'tabela-mp-penal':
+        return render(request, 'parcial/defensoria_publica/tabela_mp.html', contexto)
+
+    return render(request, 'parcial/defensoria_publica/consultar_mp.html', contexto)
+
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Defensoria Pública', 'Ministério Público'])
+def editar_mpu(request, mpu_id):
+    """
+    Edita uma Medida Protetiva existente (preenchimento posterior do formulário).
+    dir: sistema_justica/views/defensoria_publica.py
+    """
+    from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
+    from sistema_justica.forms.cadastro_mpu import CadastroMedidaProtetiva
+
+    mpu = FormularioMedidaProtetiva.objects.select_related(
+        'vitima', 'agressor', 'comarca_competente'
+    ).get(ID=mpu_id)
+
+    if request.method == 'POST':
+        form = CadastroMedidaProtetiva(request.POST, instance=mpu)
+        if form.is_valid():
+            form.save()
+            response = HttpResponse('<div id="modal-editar-mpu"></div>')
+            response['HX-Trigger'] = '{"mpuEditada": "MPU #' + str(mpu.ID) + ' atualizada com sucesso!"}'
+            return response
+        # Formulário inválido: re-renderiza com erros
+        return render(request, 'parcial/defensoria_publica/editar_mpu.html', {
+            'form': form, 'mpu': mpu
+        })
+
+    form = CadastroMedidaProtetiva(instance=mpu)
+    return render(request, 'parcial/defensoria_publica/editar_mpu.html', {
+        'form': form, 'mpu': mpu
+    })

@@ -161,6 +161,17 @@
                     </div>
                     <span class="font-medium">Cadastrar Agressor</span>
                 </button>
+
+                <button
+                    class="group bg-sky-600 hover:bg-sky-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
+                    hx-get="{% url 'sistema_justica:consultar_mp' %}" 
+                    hx-target="body"
+                    hx-swap="beforeend">
+                    <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-gavel text-2xl"></i>
+                    </div>
+                    <span class="font-medium">Consultar MP</span>
+                </button>
             </div>
 
 
@@ -190,22 +201,11 @@
                 <div class="bg-gray-50 rounded-xl p-6">
                     <h4 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
                         <i class="fas fa-file-alt text-primary"></i>
-                        Informações Gerais
+                        Cards Informativos
                     </h4>
                     <div class="text-gray-600 text-sm leading-relaxed">
-                        <p class="text-red-400">O botão de 'Cadastrar Vitíma', já esta funcionado. Podes cadastrar
-                            fictício.</p>
-                        <p class="text-yellow-400">O botão de 'Solicitar MPU', já esta funcionado. Podes cadastrar
-                            fictício.</p>
-                        <p class="text-pink-500"><a href="/admin/">http://10.40.22.46:8000/admin/</a> <<-- possui
-                                algumas funcionalidades para testes, podes usufruir à vontade. </p> <br>
-
-                                <p class="text-green-600">Iniciei o<a href="/admin/sistema_justica/" class="text-4xl">
-                                        formulário para a
-                                        solicitação da Medida
-                                        Protetiva</a>, <br> Inserido formulario da violência psicológica. atualizado em: 14/02/2026 às 19h23min</p>
-                                <br>
-                                
+                        <p class="text-red-400">Cards informativos</p>
+                        
                     </div>
                 </div>
             </div>
@@ -404,7 +404,15 @@
         }
     }
 
-
+    // Escutar evento de edição de MPU
+    document.body.addEventListener('mpuEditada', function(e) {
+        const modal = document.getElementById('modal-editar-mpu');
+        if (modal) modal.remove();
+        // Recarregar tabela de consulta se estiver aberta
+        const tabela = document.getElementById('tabela-mp-penal');
+        if (tabela) htmx.trigger(tabela, 'revealed');
+        exibirPopupSucesso(e.detail.value, 'sucesso');
+    });
     //const ws = new WebSocket('ws://10.40.22.46:8000/ws/notifications/');
     
 </script>

@@ -452,7 +452,7 @@ def gerar_relatorio_atendimento(request, grupo_id):
     estilo_id_esq = ParagraphStyle(
         'IdEsq2', parent=styles['Normal'],
         fontName='Helvetica-Bold', fontSize=11,
-        textColor=colors.HexColor('#1e3a5f'),
+        textColor=colors.HexColor('#122239'),
     )
     estilo_id_dir = ParagraphStyle(
         'IdDir2', parent=styles['Normal'],
@@ -480,7 +480,7 @@ def gerar_relatorio_atendimento(request, grupo_id):
         spaceBefore=0, spaceAfter=4,
     ))
     elementos.append(Paragraph(
-        f'ASSUNTO: Relatório de Atendimento em Grupo Reflexivo — Registro nº {grupo.id}',
+        f'ASSUNTO: Relatório de Atendimento em Grupo/Individual Reflexivo — Registro nº {grupo.id}',
         estilo_assunto
     ))
     elementos.append(HRFlowable(
@@ -512,7 +512,7 @@ def gerar_relatorio_atendimento(request, grupo_id):
     elementos.append(Spacer(1, 8))
 
     # === Tabela de participantes ===
-    dados_tabela = [['#', 'Nome Completo', 'CPF']]
+    dados_tabela = [['ID', 'Nome Completo', 'CPF']]
     for i, ag in enumerate(participantes, 1):
         dados_tabela.append([str(i), ag.nome, ag.cpf])
 
@@ -522,7 +522,7 @@ def gerar_relatorio_atendimento(request, grupo_id):
     tabela = Table(dados_tabela, colWidths=[1.2 * cm, 10 * cm, 4.5 * cm])
     tabela.setStyle(TableStyle([
         # Cabeçalho
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e3a5f')),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#5d5d5d')),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, 0), 8),
@@ -587,7 +587,7 @@ def gerar_relatorio_atendimento(request, grupo_id):
     # === Assinatura ===
     elementos.append(HRFlowable(width='50%', thickness=0.5, color=colors.black))
     elementos.append(Paragraph(profissional, estilo_assinatura))
-    elementos.append(Paragraph('Polícia Penal — PIEVDCS', estilo_cargo))
+    elementos.append(Paragraph('Instituição: Polícia Penal', estilo_cargo))
     elementos.append(Spacer(1, 20))
 
     # === Marca d'água de geração ===
@@ -793,7 +793,7 @@ def gerar_relatorio_por_cpf(request):
         spaceBefore=0, spaceAfter=4,
     ))
     elementos.append(Paragraph(
-        f'ASSUNTO: Relatório de Atendimentos — {agressor.nome}', estilo_assunto
+        f'ASSUNTO: Relatório de Atendimentos individual — {agressor.nome}', estilo_assunto
     ))
     elementos.append(HRFlowable(
         width='100%', thickness=0.5, color=colors.HexColor('#ddd'),
@@ -830,7 +830,7 @@ def gerar_relatorio_por_cpf(request):
     # === Corpo ===
     qtd = atendimentos.count()
     elementos.append(Paragraph(
-        f'Informamos que o(a) acompanhado(a) <b>{agressor.nome}</b>, '
+        f'Informamos que o acompanhado <b>{agressor.nome}</b>, '
         f'CPF <b>{agressor.cpf}</b>, possui <b>{qtd}</b> atendimento(s) '
         f'registrado(s) na plataforma, conforme detalhamento a seguir:',
         estilo_corpo
@@ -869,7 +869,7 @@ def gerar_relatorio_por_cpf(request):
     )
     tabela_atend.setStyle(TableStyle([
         # Cabeçalho
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1e3a5f')),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#5b5b5b')),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, 0), 7),
@@ -921,7 +921,7 @@ def gerar_relatorio_por_cpf(request):
     usuario_gerou = request.user.get_full_name() or request.user.username
     elementos.append(HRFlowable(width='50%', thickness=0.5, color=colors.black))
     elementos.append(Paragraph(usuario_gerou, estilo_assinatura))
-    elementos.append(Paragraph('Polícia Penal — PIEVDCS', estilo_cargo))
+    elementos.append(Paragraph('Instituição: Polícia Penal', estilo_cargo))
     elementos.append(Spacer(1, 20))
 
     # === Rodapé ===
