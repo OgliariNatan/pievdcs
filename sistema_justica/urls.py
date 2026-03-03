@@ -9,7 +9,7 @@ from .views.poder_judiciario import(
 from .views.ministerio_publico import ministerio_publico
 from .views.defensoria_publica import(
     defensoria_publica, cadastro_mpu, listar_encaminhamentos,
-    consultar_mp,
+    consultar_mp, editar_mpu,
 )
 from sistema_justica.forms.cadastros import CadastroVitimaForm, CadastroAgressorForm, CadastroMunicipioForm
 
@@ -40,4 +40,5 @@ urlpatterns = [
 
     path('cadastro_mpu/', cadastro_mpu, name='cadastro_mpu'), #Cadastro MPU
     path('consultar_mp/', consultar_mp, name='consultar_mp'), #Consulta de MPUs para Defensoria Pública e Ministério Público
+    path('editar_mpu/<int:mpu_id>/', editar_mpu, name='editar_mpu'), #Editar MPU
 ]

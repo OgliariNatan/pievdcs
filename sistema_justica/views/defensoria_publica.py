@@ -262,3 +262,34 @@ def consultar_mp(request):
         return render(request, 'parcial/defensoria_publica/tabela_mp.html', contexto)
 
     return render(request, 'parcial/defensoria_publica/consultar_mp.html', contexto)
+
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Defensoria Pública', 'Ministério Público'])
+def editar_mpu(request, mpu_id):
+    """
+    Edita uma Medida Protetiva existente (preenchimento posterior do formulário).
+    dir: sistema_justica/views/defensoria_publica.py
+    """
+    from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
+    from sistema_justica.forms.cadastro_mpu import CadastroMedidaProtetiva
+
+    mpu = FormularioMedidaProtetiva.objects.select_related(
+        'vitima', 'agressor', 'comarca_competente'
+    ).get(ID=mpu_id)
+
+    if request.method == 'POST':
+        form = CadastroMedidaProtetiva(request.POST, instance=mpu)
+        if form.is_valid():
+            form.save()
+            response = HttpResponse('<div id="modal-editar-mpu"></div>')
+            response['HX-Trigger'] = '{"mpuEditada": "MPU #' + str(mpu.ID) + ' atualizada com sucesso!"}'
+            return response
+        # Formulário inválido: re-renderiza com erros
+        return render(request, 'parcial/defensoria_publica/editar_mpu.html', {
+            'form': form, 'mpu': mpu
+        })
+
+    form = CadastroMedidaProtetiva(instance=mpu)
+    return render(request, 'parcial/defensoria_publica/editar_mpu.html', {
+        'form': form, 'mpu': mpu
+    })

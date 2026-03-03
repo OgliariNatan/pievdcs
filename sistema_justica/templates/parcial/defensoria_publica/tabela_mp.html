@@ -12,6 +12,7 @@
             <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase">Vencimento</th>
             <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase">Dias Restantes</th>
             <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase">Status</th>
+            <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase">Ações</th>
         </tr>
     </thead>
     <tbody class="divide-y divide-gray-100">
@@ -52,6 +53,16 @@
                 {% else %}
                     <span class="bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded-full">Vencida</span>
                 {% endif %}
+            </td>
+            <td class="px-4 py-3 text-center">
+                <button
+                    hx-get="{% url 'sistema_justica:editar_mpu' mp.ID %}"
+                    hx-target="body"
+                    hx-swap="beforeend"
+                    class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition inline-flex items-center gap-1"
+                    title="Editar formulário da MPU #{{ mp.ID }}">
+                    <i class="fas fa-pen text-xs"></i> Atualizar Formulário
+                </button>
             </td>
         </tr>
         {% endfor %}
