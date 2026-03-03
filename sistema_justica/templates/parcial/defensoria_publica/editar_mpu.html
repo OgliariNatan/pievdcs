@@ -10,9 +10,10 @@
 
         <form hx-post="{% url 'sistema_justica:editar_mpu' mpu.ID %}"
               hx-target="#modal-editar-mpu"
-              hx-swap="outerHTML">
+              hx-swap="outerHTML"
+              class="flex flex-col flex-1 min-h-0 overflow-hidden">
+
             {% csrf_token %}
-            {{ form.media }}
 
             <!-- Cabeçalho -->
             <div class="flex items-center justify-between px-6 py-4 rounded-t-2xl bg-gradient-to-r from-amber-500 to-orange-500 flex-shrink-0">
@@ -68,7 +69,6 @@
                     </div>
                     {% endif %}
 
-                    <!-- Subseção: Humilhação e Ridicularização -->
                     {% if field.name == 'ridicularizava_sozinha' %}
                     <div class="sm:col-span-2 mt-4">
                         <h3 class="text-lg font-semibold text-amber-600 mb-3 border-l-4 border-amber-400 pl-3">
@@ -77,7 +77,6 @@
                     </div>
                     {% endif %}
 
-                    <!-- Subseção: Manipulação -->
                     {% if field.name == 'perdia_cabeca_culpava' %}
                     <div class="sm:col-span-2 mt-4">
                         <h3 class="text-lg font-semibold text-amber-600 mb-3 border-l-4 border-amber-400 pl-3">
@@ -86,7 +85,6 @@
                     </div>
                     {% endif %}
 
-                    <!-- Subseção: Isolamento ou Limitação -->
                     {% if field.name == 'dificula_contato_familia' %}
                     <div class="sm:col-span-2 mt-4">
                         <h3 class="text-lg font-semibold text-amber-600 mb-3 border-l-4 border-amber-400 pl-3">
@@ -95,7 +93,6 @@
                     </div>
                     {% endif %}
 
-                    <!-- Subseção: Condutas Ameaçadoras -->
                     {% if field.name == 'gritava_qualquer_coisa' %}
                     <div class="sm:col-span-2 mt-4">
                         <h3 class="text-lg font-semibold text-amber-600 mb-3 border-l-4 border-amber-400 pl-3">
@@ -104,7 +101,6 @@
                     </div>
                     {% endif %}
 
-                    <!-- Subseção: Violência Psicológica Digital -->
                     {% if field.name == 'manipulado_IA_BOOL' %}
                     <div class="sm:col-span-2 mt-4">
                         <h3 class="text-lg font-semibold text-amber-600 mb-3 border-l-4 border-amber-400 pl-3">
@@ -113,7 +109,6 @@
                     </div>
                     {% endif %}
 
-                    <!-- Subseção: Violência Vicária -->
                     {% if field.name == 'guarda_filhos' %}
                     <div class="sm:col-span-2 mt-4">
                         <h3 class="text-lg font-semibold text-amber-600 mb-3 border-l-4 border-amber-400 pl-3">
@@ -122,7 +117,6 @@
                     </div>
                     {% endif %}
 
-                    <!-- PARTE 2: Dano Emocional -->
                     {% if field.name == 'evita_pessoas_locais' %}
                     <div class="sm:col-span-2 border-t-4 border-amber-500 pt-4 mt-6">
                         <h2 class="text-xl font-bold text-amber-700 mb-4 flex items-center gap-2">
@@ -132,34 +126,11 @@
                     {% endif %}
 
                     <!-- Renderização do campo -->
-                    <div class="{% if field.name == 'tipo_de_violencia' or field.name == 'comarca_competente' or field.name == 'municipio_mp' or field.name == 'comentario_situacao' or field.name == 'relato_constrangida' or field.name == 'detalhes_coisas' or field.name == 'info_situa_isola' or field.name == 'detalhes_medo' or field.name == 'manipula_IA' or field.name == 'outras_condutas_vicaria' or field.name == 'sintomas_persistem' or field.name == 'observacoes_profissional' %}sm:col-span-2{% endif %}">
+                    <div class="{% if field.name == 'comentario_situacao' or field.name == 'relato_constrangida' or field.name == 'detalhes_coisas' or field.name == 'info_situa_isola' or field.name == 'detalhes_medo' or field.name == 'manipula_IA' or field.name == 'outras_condutas_vicaria' or field.name == 'sintomas_persistem' or field.name == 'observacoes_profissional' or field.name == 'frequencia_condutas' %}sm:col-span-2{% endif %}">
                         <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-amber-700 mb-2">
                             {{ field.label }}
-                            {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
                         </label>
-
-                        <!-- Renderização especial para tipo_de_violencia -->
-                        {% if field.name == 'tipo_de_violencia' %}
-                        <div class="grid grid-cols-5 sm:grid-cols-3 gap-2 p-3 bg-white rounded-lg border border-amber-300">
-                            {% for choice in field %}
-                            <label class="flex items-start gap-2 text-sm text-gray-700 cursor-pointer hover:bg-amber-50 p-2 rounded transition">
-                                <input type="checkbox"
-                                    name="{{ field.name }}"
-                                    value="{{ choice.data.value }}"
-                                    id="{{ choice.id_for_label }}"
-                                    {% if choice.data.selected %}checked{% endif %}
-                                    class="mt-1 h-4 w-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500">
-                                <span class="flex-1">{{ choice.choice_label }}</span>
-                            </label>
-                            {% endfor %}
-                        </div>
-                        {% else %}
                         {{ field }}
-                        {% endif %}
-
-                        {% if field.help_text %}
-                        <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>
-                        {% endif %}
                         {% if field.errors %}
                         <p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>
                         {% endif %}
