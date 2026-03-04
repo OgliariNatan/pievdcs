@@ -21,6 +21,8 @@ from django.db.models.functions import Cast
 # 
 from MAIN.decoradores.calcula_tempo import calcula_tempo
 
+ANO_CORRENTE = date.today().year
+
 """ Configuraçao de decoradores para debug """
 import os
 
@@ -97,6 +99,7 @@ def poder_judiciario(request):
     contexto = {
         'title': 'Poder Judiciário',
         'description': 'Informações e ações pertinentes ao poder Judiciário.',
+        'ano_corrente': ANO_CORRENTE,
         'encaminhamentos': encaminhamentos_count,
         'notificacoes': notificacoes_nao_lidas,
         'user': request.user,

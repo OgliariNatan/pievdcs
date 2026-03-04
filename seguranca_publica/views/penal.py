@@ -31,6 +31,8 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_RIGHT
 import io
 
+ANO_CORRENTE = date.today().year
+
 """ Configuraçao de decoradores para debug """
 import os
 
@@ -113,6 +115,7 @@ def penal(request):
     contexto = {
         'title': 'Polícia Penal',
         'description': 'This page provides information about the penal system.',
+        'ano_corrente': ANO_CORRENTE,
         'encaminhamentos': 5,
         'alert': notificacao_nao_lida,
         'qtd_atendimentos': atendimentos_mes,
@@ -267,6 +270,7 @@ def mostra_todos_grupos_penal(request):
     contexto = {
         'title': 'Todos os Atendimentos - Polícia Penal',
         'description': 'Lista completa de todos os atendimentos registrados pela Polícia Penal.',
+        'ano_corrente': ANO_CORRENTE,
         'grupos': grupos,
         'qtd_de_grupos': qtd_de_grupos,
         'qtd_de_grupos_mes': qtd_de_grupos_mes,
