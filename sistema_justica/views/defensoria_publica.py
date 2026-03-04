@@ -51,10 +51,12 @@ def defensoria_publica(request):
         tipo='MEDIDA_PROTETIVA'
     ).count()
 
+    casos_ativos = 985
 
     contexto = {
         'title': 'Defensoria Pública',
         'ano_corrente': ANO_CORRENTE,
+        'casos_ativos': casos_ativos,
         'description': 'Portal da Defensoria Pública - Sistema PIEVDCS',
         'encaminhamentos': encaminhamentos_mensais,
         'notificacoes': notificacoes_nao_lidas,
