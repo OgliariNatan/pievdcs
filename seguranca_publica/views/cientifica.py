@@ -6,6 +6,9 @@ from mensageria.models import Notificacao, StatusNotificacao
 from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
 from usuarios.models import CustomUser
 from django.contrib.auth.models import Group
+from datetime import date, timedelta
+
+ANO_CORRENTE = date.today().year
 
 
 """ Configuraçao de decoradores para debug """
@@ -35,6 +38,7 @@ def cientifica(request):
 
     contexto = {
         'title': 'Polícia Cientifica',
+        'ano_corrente': ANO_CORRENTE,
         'encaminhamentos': 5,
         'alert': notificacoes_nao_lidas,
         'description': 'This page provides information about the cientifica system.',
