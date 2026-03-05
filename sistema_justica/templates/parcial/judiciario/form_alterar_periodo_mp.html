@@ -69,6 +69,13 @@
                                 class="bg-green-100 hover:bg-green-200 text-green-700 text-xs font-semibold px-3 py-2 rounded-lg transition">
                             +120 dias
                         </button>
+                        <button type="button" onclick="ajustarPeriodoIndeterminado()"
+                                class="bg-purple-100 hover:bg-purple-200 text-purple-700 text-xs font-semibold px-3 py-2 rounded-lg transition">
+                            Indeterminada
+                            <span class="block text-[10px] text-gray-400 font-normal">100 anos</span>
+                        </button>
+
+                        </button>
                     </div>
                 </div>
 
@@ -107,5 +114,15 @@
         const dataAtual = input.value ? new Date(input.value) : new Date();
         dataAtual.setDate(dataAtual.getDate() + dias);
         input.value = dataAtual.toISOString().split('T')[0];
+
+       
+    }
+
+    function ajustarPeriodoIndeterminado() {
+        const input = document.querySelector('#modal-alterar-periodo-popup input[name="novo_periodo"]');
+        if (!input) return;
+        const hoje = new Date();
+        hoje.setFullYear(hoje.getFullYear() + 100);
+        input.value = hoje.toISOString().split('T')[0];
     }
 </script>

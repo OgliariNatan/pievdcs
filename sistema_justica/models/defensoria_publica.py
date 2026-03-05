@@ -7,6 +7,7 @@
 
 from django.db import models
 from datetime import datetime, timedelta, timezone
+from dateutil.relativedelta import relativedelta
 from usuarios.models import CustomUser
 from sistema_justica.models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado, TipoDeViolencia
 from seguranca_publica.models.base import grau_parentesco_agressor_choices
@@ -18,9 +19,11 @@ from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
 def default_periodo_mp():
     '''
     Função para definir o período padrão da medida protetiva
-    que será de 120 dias a partir da data atual
+    que será de 100 anos a partir da data atual
     '''
-    return datetime.now().date()  + timedelta(days=120)
+    #verificar_data = datetime.now().date() + relativedelta(years=100)
+    #print(f'Data futura: {verificar_data}')
+    return datetime.now().date() + relativedelta(years=100)
 
 
 
