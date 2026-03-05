@@ -35,11 +35,12 @@ else:
 def cientifica(request):
 
     notificacoes_nao_lidas = Notificacao.contar_nao_lidas_usuario(request.user)
+    encaminhamentos_nao_lidos = Notificacao.contar_encaminhamentos_nao_lidos(request.user)
 
     contexto = {
         'title': 'Polícia Cientifica',
         'ano_corrente': ANO_CORRENTE,
-        'encaminhamentos': 5,
+        'encaminhamentos': encaminhamentos_nao_lidos,
         'alert': notificacoes_nao_lidas,
         'description': 'This page provides information about the cientifica system.',
         'user' : request.user,

@@ -32,10 +32,12 @@ else:
 @checked_debug_decorador
 def civil(request):
     notificacoes_nao_lidas = Notificacao.contar_nao_lidas_usuario(request.user)
+    encaminhamentos_nao_lidos = Notificacao.contar_encaminhamentos_nao_lidos(request.user)
+
 
     contexto = {
         'title': 'Polícia civil',
-        'encaminhamentos': 5,
+        'encaminhamentos': encaminhamentos_nao_lidos,
         'notificacoes': notificacoes_nao_lidas,
         'description': 'This page provides information about the civil system.',
         'user' : request.user,

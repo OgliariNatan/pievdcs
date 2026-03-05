@@ -1,11 +1,13 @@
 <!-- mensageria/templates/parcial/enviar_notificacao.html -->
 <!-- dir: mensageria/templates/parcial/enviar_notificacao.html -->
 
-<!-- Overlay -->
+{% if not is_swap %}
+<!-- Overlay (apenas no carregamento inicial GET) -->
 <div id="overlay-enviar-notificacao"
      class="fixed inset-0 bg-black bg-opacity-50 z-[998]"
      onclick="document.getElementById('overlay-enviar-notificacao').remove(); document.getElementById('modal-enviar-notificacao').remove();">
 </div>
+{% endif %}
 
 <!-- Modal -->
 <div id="modal-enviar-notificacao"
@@ -33,6 +35,25 @@
             {% csrf_token %}
 
             <div class="overflow-y-auto flex-1 min-h-0 px-5 py-4 space-y-4">
+
+                <!-- Aviso de envio com sucesso -->
+                {% if enviado %}
+                <div id="aviso-sucesso"
+                     class="bg-green-50 border border-green-300 text-green-800 text-sm rounded-lg px-4 py-3 flex items-center gap-2">
+                    <i class="fas fa-check-circle text-green-500 text-lg"></i>
+                    <span class="font-medium">Notificação enviada com sucesso!</span>
+                </div>
+                <script>
+                    setTimeout(function() {
+                        var aviso = document.getElementById('aviso-sucesso');
+                        if (aviso) {
+                            aviso.style.transition = 'opacity 0.5s';
+                            aviso.style.opacity = '0';
+                            setTimeout(function() { aviso.remove(); }, 500);
+                        }
+                    }, 4000);
+                </script>
+                {% endif %}
 
                 <!-- Erros gerais -->
                 {% if form.non_field_errors %}

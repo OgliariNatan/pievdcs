@@ -15,12 +15,13 @@ ANO_CORRENTE = date.today().year
 @grupos_permitidos(['Ministério Público',])
 def ministerio_publico(request):
     notificacoes_nao_lidas = Notificacao.contar_nao_lidas_usuario(request.user)
+    encaminhamentos_nao_lidos = Notificacao.contar_encaminhamentos_nao_lidos(request.user)
 
     contexto = {
         'title': 'Ministério Público',
         'description': 'Página do Ministério Público - Sistema PIEVDCS',
         'ano_corrente': ANO_CORRENTE,
-        'encaminhamentos': 5,
+        'encaminhamentos': encaminhamentos_nao_lidos,
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
         'user': request.user,
     }

@@ -322,6 +322,13 @@ class Notificacao(models.Model):
         """Conta notificações não lidas para um usuário"""
         return cls.get_nao_lidas_usuario(usuario).count()
     
+    @classmethod
+    def contar_encaminhamentos_nao_lidos(cls, usuario):
+        """Conta encaminhamentos (tipo ENCAMINHAMENTO) não lidos para um usuário."""
+        return cls.get_nao_lidas_usuario(usuario).filter(
+            tipo=TipoNotificacao.ENCAMINHAMENTO
+        ).count()
+    
     def get_cor_prioridade(self):
         """Retorna a cor CSS baseada na prioridade"""
         cores = {

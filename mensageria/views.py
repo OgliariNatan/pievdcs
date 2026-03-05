@@ -160,11 +160,19 @@ def enviar_notificacao_view(request):
                     **kwargs
                 )
 
-            response = HttpResponse('<div id="modal-enviar-notificacao"></div>')
-            response['HX-Trigger'] = '{"notificacaoEnviada": "Notificação enviada com sucesso!"}'
-            return response
+            # Formulário limpo + aviso de sucesso
+            form = EnviarNotificacaoForm()
+            return render(request, 'parcial/enviar_notificacao.html', {
+                'form': form,
+                'enviado': True,
+                'is_swap': True,
+            })
 
-        return render(request, 'parcial/enviar_notificacao.html', {'form': form})
+        # Formulário com erros
+        return render(request, 'parcial/enviar_notificacao.html', {
+            'form': form,
+            'is_swap': True,
+        })
 
     form = EnviarNotificacaoForm()
     return render(request, 'parcial/enviar_notificacao.html', {'form': form})
