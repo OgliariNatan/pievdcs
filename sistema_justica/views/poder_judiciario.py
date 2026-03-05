@@ -11,6 +11,7 @@ from django.urls import reverse_lazy
 from .permission_group import grupos_permitidos
 from ..forms.cadastros import CadastroVitimaForm, CadastroAgressorForm, CadastroMunicipioForm
 from ..models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
+from ..models.defensoria_publica import FormularioMedidaProtetiva
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from mensageria.models import Notificacao, StatusNotificacao
@@ -52,10 +53,10 @@ OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'qwen2.5:7B')  # ou 'mixtral:la
 @grupos_permitidos(['Poder Judiciário',])
 def poder_judiciario(request):
     """Renderiza o dashboard do Poder Judiciário com métricas reais do banco."""
-    from ..models.defensoria_publica import FormularioMedidaProtetiva
-
+    
     hoje = date.today()
     notificacoes_nao_lidas = Notificacao.contar_nao_lidas_usuario(request.user)
+    encaminhamentos_nao_lidos = Notificacao.contar_encaminhamentos_nao_lidos(request.user)
 
     # Total de MPs (casos)
     total_mp = FormularioMedidaProtetiva.objects.count()
@@ -93,14 +94,13 @@ def poder_judiciario(request):
         data_solicitacao__date=hoje
     ).order_by('-data_solicitacao').values_list('data_solicitacao', flat=True).first()
 
-    # Encaminhamentos pendentes (notificações não lidas do usuário)
-    encaminhamentos_count = Notificacao.contar_nao_lidas_usuario(request.user)
+   
 
     contexto = {
         'title': 'Poder Judiciário',
         'description': 'Informações e ações pertinentes ao poder Judiciário.',
         'ano_corrente': ANO_CORRENTE,
-        'encaminhamentos': encaminhamentos_count,
+        'encaminhamentos': encaminhamentos_nao_lidos,
         'notificacoes': notificacoes_nao_lidas,
         'user': request.user,
         'total_mp': total_mp,

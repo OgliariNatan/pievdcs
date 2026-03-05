@@ -193,8 +193,10 @@ def dashboard_instituicao(request, config):
     inst = config['instituicao']
     try:
         notif = Notificacao.contar_nao_lidas_usuario(request.user)
+        encaminhamentos = Notificacao.contar_encaminhamentos_nao_lidos(request.user)
     except Exception:
         notif = 0
+        encaminhamentos = 0
 
     now = timezone.now()
     inicio_mes = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -240,7 +242,7 @@ def dashboard_instituicao(request, config):
 
     return render(request, config['template_principal'], _ctx(config, {
         'title': config['titulo'],
-        'encaminhamentos': 2,
+        'encaminhamentos': encaminhamentos,
         'notificacao': notif,
         'qtd_atendimentos': qtd_mes,
         'variacao_atendimentos': variacao,

@@ -35,10 +35,11 @@ else:
 def militar(request):
     """Página principal da Polícia Militar"""
     notificacoes_nao_lidas = Notificacao.contar_nao_lidas_usuario(request.user)
+    encaminhamentos_nao_lidos = Notificacao.contar_encaminhamentos_nao_lidos(request.user)
 
     contexto = {
         'title': 'Polícia Militar',
-        'encaminhamentos': 5,
+        'encaminhamentos': encaminhamentos_nao_lidos,
         'alert': notificacoes_nao_lidas,
         'description': 'Informações sobre o sistema da Polícia Militar',
         'user': request.user,

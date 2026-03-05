@@ -44,12 +44,9 @@ def defensoria_publica(request):
 
     # Contar notificações não lidas do usuário
     notificacoes_nao_lidas = Notificacao.contar_nao_lidas_usuario(request.user)
+    encaminhamentos_nao_lidos = Notificacao.contar_encaminhamentos_nao_lidos(request.user)
 
-    # Encaminhamentos mensais (exemplo - substituir com lógica real)
-    encaminhamentos_mensais = Notificacao.objects.filter(
-        destinatario_usuario=request.user,
-        tipo='MEDIDA_PROTETIVA'
-    ).count()
+    
 
     casos_ativos = 985
 
@@ -58,7 +55,7 @@ def defensoria_publica(request):
         'ano_corrente': ANO_CORRENTE,
         'casos_ativos': casos_ativos,
         'description': 'Portal da Defensoria Pública - Sistema PIEVDCS',
-        'encaminhamentos': encaminhamentos_mensais,
+        'encaminhamentos': encaminhamentos_nao_lidos,
         'notificacoes': notificacoes_nao_lidas,
         'user': request.user,
     }
@@ -97,6 +94,7 @@ def listar_notificacoes(request):
     
     # Buscar notificações do usuário
     notificacoes = Notificacao.get_todas_usuario(request.user)
+    
     
     context = {
         'title': 'Notificações - Defensoria Pública',

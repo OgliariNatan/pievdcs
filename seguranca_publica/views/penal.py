@@ -56,11 +56,13 @@ def penal(request):
 
     try:
         notificacao_nao_lida = Notificacao.contar_nao_lidas_usuario(request.user)
+        encaminhamentos_nao_lidos = Notificacao.contar_encaminhamentos_nao_lidos(request.user)
     except Exception as e:
         if var_debug == 'True':
             print(f'Tipo de erro:{type(e).__name__}')
             print(f"Erro ao contar notificações não lidas: {e}")
         notificacao_nao_lida = 0
+        encaminhamentos_nao_lidos = 0
 
     now = timezone.now()
     first_day_this_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -116,7 +118,7 @@ def penal(request):
         'title': 'Polícia Penal',
         'description': 'This page provides information about the penal system.',
         'ano_corrente': ANO_CORRENTE,
-        'encaminhamentos': 5,
+        'encaminhamentos': encaminhamentos_nao_lidos,
         'alert': notificacao_nao_lida,
         'qtd_atendimentos': atendimentos_mes,
         'qtd_atendimentos_anterior': atendimentos_mes_anterior,
