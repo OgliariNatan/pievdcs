@@ -1,6 +1,6 @@
 from django import forms
 from sistema_justica.models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
-from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
+from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva, default_periodo_mp
 
 from sistema_justica.django_toggle_switch import ToggleSwitchWidget
 from django.forms.widgets import DateTimeInput, DateInput, SelectDateWidget, CheckboxInput
@@ -14,10 +14,13 @@ class CadastroMedidaProtetiva(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'data_solicitacao': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'periodo_mp': forms.SelectDateWidget(attrs={
-                'type': 'date',
-                'class': 'form-control form-control-sm border border-gray-400 rounded-xl'
-            }),
+            'periodo_mp': forms.DateInput(
+                attrs={
+                    'type': 'date',
+                    'class': 'form-control form-control-sm border border-gray-400 rounded-xl',
+                },
+                format='%Y-%m-%d',
+            ),
             
             'tipo_de_violencia': forms.CheckboxSelectMultiple(
                 attrs={'class': 'form-check-input'}
@@ -456,10 +459,9 @@ class CadastroMedidaProtetiva(forms.ModelForm):
         
         # Customizações específicas para campos (exceto solicitada_mpu)
         self.fields['data_solicitacao'].widget.attrs.update({'type': 'datetime-local'})
-        self.fields['periodo_mp'].widget.attrs.update({
-            'type': 'date',
-            'class': 'form-control form-control-sm border border-gray-400 rounded-xl'
-        })
+        if not self.instance.pk:
+            self.initial['periodo_mp'] = default_periodo_mp().strftime('%Y-%m-%d')  # Define a data padrão para o campo período_mp
+
         
         self.fields['comarca_competente'].widget.attrs.update({
             'id': 'id_comarca_competente',
