@@ -1,3 +1,4 @@
+# dir: mensageria/urls.py
 from django.urls import path
 from . import views
 
@@ -10,4 +11,6 @@ urlpatterns = [
     path('marcar-todas-lidas/', views.marcar_todas_lidas, name='marcar_todas_lidas'),
     path('api/contador/', views.api_contador_notificacoes, name='api_contador_notificacoes'),
     path('api/recentes/', views.api_notificacoes_recentes, name='api_notificacoes_recentes'),
+    path('popup/', views.popup_notificacoes, name='popup_notificacoes'),
+    path('enviar/', views.enviar_notificacao_view, name='enviar_notificacao'),
 ]

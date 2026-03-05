@@ -24,6 +24,19 @@
                         <i class="fas fa-user mr-1"></i>
                         Olá, {{ user.first_name|default:user.username }}
                     </span>
+                    <div class="relative">
+                        <button id="btn-notificacoes"
+                                hx-get="{% url 'mensageria:popup_notificacoes' %}"
+                                hx-target="body"
+                                hx-swap="beforeend"
+                                class="text-white hover:text-accent transition-colors duration-200 relative">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span id="notif-badge-nav"
+                                class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold hidden">
+                                0
+                            </span>
+                        </button>
+                    </div>
 
                     <button type="button" onclick="window.location.href='{% url 'home' %}'"
                         class="text-white hover:text-accent transition-colors duration-200 flex items-center space-x-1">
@@ -67,7 +80,15 @@
                         <i class="fas fa-user mr-2"></i>
                         {{ user.first_name|default:user.username }}
                     </div>
-
+                    <button hx-get="{% url 'mensageria:popup_notificacoes' %}"
+                            hx-target="body"
+                            hx-swap="beforeend"
+                            class="text-white hover:text-accent py-2 text-left flex items-center space-x-2">
+                        <i class="fas fa-bell"></i>
+                        <span>Notificações</span>
+                        <span id="notif-badge-mobile"
+                            class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full hidden">0</span>
+                    </button>
                     <button type="button" onclick="window.location.href='{% url 'home' %}'"
                         class="text-white hover:text-accent py-2 text-left flex items-center space-x-2">
                         <i class="fas fa-home"></i>

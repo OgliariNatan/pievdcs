@@ -1,0 +1,170 @@
+<!-- mensageria/templates/parcial/enviar_notificacao.html -->
+<!-- dir: mensageria/templates/parcial/enviar_notificacao.html -->
+
+<!-- Overlay -->
+<div id="overlay-enviar-notificacao"
+     class="fixed inset-0 bg-black bg-opacity-50 z-[998]"
+     onclick="document.getElementById('overlay-enviar-notificacao').remove(); document.getElementById('modal-enviar-notificacao').remove();">
+</div>
+
+<!-- Modal -->
+<div id="modal-enviar-notificacao"
+     class="fixed inset-0 z-[999] flex items-center justify-center p-4"
+     tabindex="0">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg flex flex-col max-h-[85vh]"
+         onclick="event.stopPropagation();">
+
+        <!-- Cabeçalho -->
+        <div class="flex justify-between items-center px-5 py-3 border-b bg-gradient-to-r from-purple-600 to-purple-400 rounded-t-xl">
+            <h3 class="text-white font-semibold text-sm">
+                <i class="fas fa-paper-plane mr-2"></i>Enviar Notificação
+            </h3>
+            <button onclick="document.getElementById('overlay-enviar-notificacao').remove(); document.getElementById('modal-enviar-notificacao').remove();"
+                    class="text-white hover:text-gray-200 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Formulário -->
+        <form hx-post="{% url 'mensageria:enviar_notificacao' %}"
+              hx-target="#modal-enviar-notificacao"
+              hx-swap="outerHTML"
+              class="flex flex-col flex-1 min-h-0 overflow-hidden">
+            {% csrf_token %}
+
+            <div class="overflow-y-auto flex-1 min-h-0 px-5 py-4 space-y-4">
+
+                <!-- Erros gerais -->
+                {% if form.non_field_errors %}
+                <div class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-3 py-2">
+                    {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Tipo de destinatário (radio) -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ form.tipo_destinatario.label }}</label>
+                    <div class="flex gap-4">
+                        {% for radio in form.tipo_destinatario %}
+                        <label class="flex items-center gap-1 text-sm text-gray-600 cursor-pointer">
+                            {{ radio.tag }}
+                            {{ radio.choice_label }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                    {% if form.tipo_destinatario.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.tipo_destinatario.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Destinatário Grupo -->
+                <div id="campo-grupo">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.destinatario_grupo.label }}</label>
+                    {{ form.destinatario_grupo }}
+                    {% if form.destinatario_grupo.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.destinatario_grupo.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Destinatário Usuário -->
+                <div id="campo-usuario" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.destinatario_usuario.label }}</label>
+                    {{ form.destinatario_usuario }}
+                    {% if form.destinatario_usuario.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.destinatario_usuario.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Título -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.titulo.label }}</label>
+                    {{ form.titulo }}
+                    {% if form.titulo.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.titulo.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Mensagem -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.mensagem.label }}</label>
+                    {{ form.mensagem }}
+                    {% if form.mensagem.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.mensagem.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Tipo e Prioridade lado a lado -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.tipo.label }}</label>
+                        {{ form.tipo }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.prioridade.label }}</label>
+                        {{ form.prioridade }}
+                    </div>
+                </div>
+
+                <!-- Importante -->
+                <div class="flex items-center gap-2">
+                    {{ form.importante }}
+                    <label class="text-sm text-gray-700">{{ form.importante.label }}</label>
+                </div>
+            </div>
+
+            <!-- Rodapé -->
+            <div class="flex justify-end gap-3 px-5 py-3 border-t bg-gray-50 rounded-b-xl">
+                <button type="button"
+                        onclick="document.getElementById('overlay-enviar-notificacao').remove(); document.getElementById('modal-enviar-notificacao').remove();"
+                        class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 text-sm text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors font-semibold">
+                    <i class="fas fa-paper-plane mr-1"></i> Enviar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Toggle grupo/usuário + fechar com ESC -->
+<script>
+(function() {
+    const modal = document.getElementById('modal-enviar-notificacao');
+    const overlay = document.getElementById('overlay-enviar-notificacao');
+
+    /* Fechar com ESC */
+    function fecharESC(e) {
+        if (e.key === 'Escape') {
+            if (overlay) overlay.remove();
+            if (modal) modal.remove();
+            document.removeEventListener('keydown', fecharESC);
+        }
+    }
+    document.addEventListener('keydown', fecharESC);
+
+    /* Alternar campos grupo/usuário */
+    const radios = document.querySelectorAll('input[name="tipo_destinatario"]');
+    const campoGrupo = document.getElementById('campo-grupo');
+    const campoUsuario = document.getElementById('campo-usuario');
+
+    function alternarCampos() {
+        const selecionado = document.querySelector('input[name="tipo_destinatario"]:checked');
+        if (selecionado && selecionado.value === 'usuario') {
+            campoGrupo.classList.add('hidden');
+            campoUsuario.classList.remove('hidden');
+        } else {
+            campoGrupo.classList.remove('hidden');
+            campoUsuario.classList.add('hidden');
+        }
+    }
+
+    radios.forEach(r => r.addEventListener('change', alternarCampos));
+    alternarCampos();
+
+    if (modal) modal.focus();
+})();
+</script>

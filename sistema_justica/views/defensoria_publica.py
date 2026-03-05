@@ -83,6 +83,7 @@ def listar_encaminhamentos(request):
     context = {
         'title': 'Encaminhamentos - Defensoria Pública',
         'description': 'Lista de encaminhamentos e notificações',
+        'ano_corrente': ANO_CORRENTE,
         'encaminhamentos': encaminhamentos,
         'user': request.user,
     }
@@ -99,6 +100,7 @@ def listar_notificacoes(request):
     
     context = {
         'title': 'Notificações - Defensoria Pública',
+        'ano_corrente': ANO_CORRENTE,
         'notificacoes': notificacoes,
         'user': request.user,
     }

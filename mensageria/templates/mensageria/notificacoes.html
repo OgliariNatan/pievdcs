@@ -1,0 +1,214 @@
+<!-- mensageria/templates/mensageria/notificacoes.html -->
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block titulo %}Notificações{% endblock %}
+
+{% block main_content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+
+    <!-- Cabeçalho -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">
+            <i class="fas fa-bell mr-2 text-purple-600"></i>Notificações
+        </h1>
+        <div class="flex items-center gap-3">
+            <span id="badge-total" class="bg-red-500 text-white text-sm px-3 py-1 rounded-full font-semibold">
+                {{ total_nao_lidas }}
+            </span>
+            <button onclick="marcarTodasLidas()"
+                class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold py-2 px-4 rounded-lg transition-colors">
+                <i class="fas fa-check-double mr-1"></i> Marcar todas como lidas
+            </button>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="flex gap-2 mb-6 flex-wrap">
+        <a href="?filtro=todas"
+           class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
+                  {% if filtro == 'todas' or not filtro %}bg-purple-600 text-white{% else %}bg-gray-200 text-gray-700 hover:bg-gray-300{% endif %}">
+            Todas
+        </a>
+        <a href="?filtro=nao_lidas"
+           class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
+                  {% if filtro == 'nao_lidas' %}bg-purple-600 text-white{% else %}bg-gray-200 text-gray-700 hover:bg-gray-300{% endif %}">
+            Não Lidas
+        </a>
+        <a href="?filtro=prioritarias"
+           class="px-4 py-2 rounded-lg text-sm font-medium transition-colors
+                  {% if filtro == 'prioritarias' %}bg-purple-600 text-white{% else %}bg-gray-200 text-gray-700 hover:bg-gray-300{% endif %}">
+            Prioritárias
+        </a>
+    </div>
+
+    <!-- Lista de notificações -->
+    <div class="space-y-3" id="lista-notificacoes">
+        {% for notif in notificacoes %}
+        <div id="notif-{{ notif.id }}"
+             class="bg-white rounded-lg shadow p-4 border-l-4 transition-all
+                    {% if notif.prioridade == 'URGENTE' %}border-red-500
+                    {% elif notif.prioridade == 'ALTA' %}border-orange-500
+                    {% elif notif.prioridade == 'NORMAL' %}border-blue-500
+                    {% else %}border-gray-300{% endif %}
+                    {% if notif.status == 'NAO_LIDA' %}bg-purple-50{% endif %}">
+
+            <div class="flex justify-between items-start">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas {{ notif.get_icone_tipo }} text-{{ notif.get_cor_prioridade }}-500"></i>
+                        <h3 class="font-semibold text-gray-800">{{ notif.titulo }}</h3>
+                        {% if notif.importante %}
+                        <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full">Importante</span>
+                        {% endif %}
+                    </div>
+                    <p class="text-gray-600 text-sm mb-2">{{ notif.mensagem|truncatewords:30 }}</p>
+                    <div class="flex items-center gap-4 text-xs text-gray-400">
+                        <span><i class="fas fa-user mr-1"></i>{{ notif.remetente.get_full_name|default:"Sistema" }}</span>
+                        <span><i class="fas fa-clock mr-1"></i>{{ notif.data_criacao|timesince }} atrás</span>
+                        <span class="px-2 py-0.5 rounded-full
+                            {% if notif.prioridade == 'URGENTE' %}bg-red-100 text-red-700
+                            {% elif notif.prioridade == 'ALTA' %}bg-orange-100 text-orange-700
+                            {% else %}bg-gray-100 text-gray-600{% endif %}">
+                            {{ notif.get_prioridade_display }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Ações -->
+                <div class="flex items-center gap-2 ml-4">
+                    {% if notif.status == 'NAO_LIDA' %}
+                    <button onclick="marcarLida({{ notif.id }})"
+                        class="text-blue-500 hover:text-blue-700 text-sm" title="Marcar como lida">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    {% endif %}
+                    <button onclick="arquivarNotificacao({{ notif.id }})"
+                        class="text-gray-400 hover:text-red-500 text-sm" title="Arquivar">
+                        <i class="fas fa-archive"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-12 text-gray-400">
+            <i class="fas fa-bell-slash text-4xl mb-3"></i>
+            <p class="text-lg">Nenhuma notificação encontrada</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Paginação -->
+    {% if notificacoes.has_other_pages %}
+    <div class="flex justify-center mt-8 gap-2">
+        {% if notificacoes.has_previous %}
+        <a href="?page={{ notificacoes.previous_page_number }}&filtro={{ filtro }}"
+           class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 text-sm">Anterior</a>
+        {% endif %}
+        <span class="px-4 py-2 text-sm text-gray-600">
+            Página {{ notificacoes.number }} de {{ notificacoes.paginator.num_pages }}
+        </span>
+        {% if notificacoes.has_next %}
+        <a href="?page={{ notificacoes.next_page_number }}&filtro={{ filtro }}"
+           class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 text-sm">Próxima</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    /* Conexão WebSocket para atualização em tempo real */
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    const wsUrl = wsProtocol + window.location.host + '/ws/notificacoes/';
+    let notifSocket = null;
+
+    function conectarWebSocket() {
+        notifSocket = new WebSocket(wsUrl);
+
+        notifSocket.onopen = () => console.log('[WS] Conectado às notificações');
+
+        notifSocket.onmessage = (e) => {
+            const data = JSON.parse(e.data);
+
+            if (data.type === 'nova_notificacao') {
+                // Recarregar via HTMX ou inserir no topo
+                location.reload();
+            } else if (data.type === 'contador_atualizado') {
+                const badge = document.getElementById('badge-total');
+                if (badge) badge.textContent = data.count;
+                // Atualiza badge do cabeçalho também
+                const badgeNav = document.getElementById('notif-badge-nav');
+                if (badgeNav) {
+                    badgeNav.textContent = data.count;
+                    badgeNav.classList.toggle('hidden', data.count === 0);
+                }
+            }
+        };
+
+        notifSocket.onclose = () => {
+            console.log('[WS] Desconectado. Reconectando em 3s...');
+            setTimeout(conectarWebSocket, 3000);
+        };
+    }
+
+    conectarWebSocket();
+
+    /* Ações via fetch (REST) com fallback */
+    function marcarLida(id) {
+        fetch(`/mensageria/marcar-lida/${id}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/json'
+            }
+        }).then(r => r.json()).then(data => {
+            if (data.status === 'success') {
+                const el = document.getElementById(`notif-${id}`);
+                if (el) el.classList.remove('bg-purple-50');
+                // Solicitar atualização do contador via WS
+                if (notifSocket && notifSocket.readyState === WebSocket.OPEN) {
+                    notifSocket.send(JSON.stringify({ action: 'obter_contador' }));
+                }
+            }
+        });
+    }
+
+    function arquivarNotificacao(id) {
+        fetch(`/mensageria/arquivar/${id}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/json'
+            }
+        }).then(r => r.json()).then(data => {
+            if (data.status === 'success') {
+                const el = document.getElementById(`notif-${id}`);
+                if (el) el.remove();
+                if (notifSocket && notifSocket.readyState === WebSocket.OPEN) {
+                    notifSocket.send(JSON.stringify({ action: 'obter_contador' }));
+                }
+            }
+        });
+    }
+
+    function marcarTodasLidas() {
+        fetch('/mensageria/marcar-todas-lidas/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCsrfToken(),
+                'Content-Type': 'application/json'
+            }
+        }).then(r => r.json()).then(data => {
+            if (data.status === 'success') location.reload();
+        });
+    }
+
+    function getCsrfToken() {
+        return document.querySelector('[name=csrfmiddlewaretoken]')?.value
+            || document.cookie.match(/csrftoken=([^;]+)/)?.[1]
+            || '';
+    }
+</script>
+{% endblock %}
