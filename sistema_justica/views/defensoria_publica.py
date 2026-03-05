@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
 from django.urls import reverse_lazy
 from .permission_group import grupos_permitidos
 from django.http import JsonResponse, HttpResponse
@@ -34,7 +35,7 @@ else:
 
 
 
-
+ANO_CORRENTE = date.today().year
 
 @checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
@@ -50,8 +51,12 @@ def defensoria_publica(request):
         tipo='MEDIDA_PROTETIVA'
     ).count()
 
+    casos_ativos = 985
+
     contexto = {
         'title': 'Defensoria Pública',
+        'ano_corrente': ANO_CORRENTE,
+        'casos_ativos': casos_ativos,
         'description': 'Portal da Defensoria Pública - Sistema PIEVDCS',
         'encaminhamentos': encaminhamentos_mensais,
         'notificacoes': notificacoes_nao_lidas,
@@ -262,7 +267,7 @@ def consultar_mp(request):
         return render(request, 'parcial/defensoria_publica/tabela_mp.html', contexto)
 
     return render(request, 'parcial/defensoria_publica/consultar_mp.html', contexto)
-
+@csrf_protect
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Defensoria Pública', 'Ministério Público'])
 def editar_mpu(request, mpu_id):

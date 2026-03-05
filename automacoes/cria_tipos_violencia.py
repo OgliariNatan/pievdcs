@@ -39,6 +39,10 @@ def criar_tipos_violencia():
             "Sexual",
             "Trata-se de qualquer conduta que constranja a presenciar, a manter ou a participar de relação sexual não desejada mediante intimidação, ameaça, coação ou uso da força."
         ),
+        (
+            "Vicária",
+            "Na violência vicária, o agressor atinge filhos ou pessoas próximas da mulher com o objetivo de causar sofrimento, punição ou controle sobre ela."
+        )
     ]
 
     for nome, descricao in tipos_violencia:

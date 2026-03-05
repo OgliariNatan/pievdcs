@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from django.utils import timezone
 from sistema_justica.models.base import Vitima_dados, TipoDeViolencia
 from seguranca_publica.models.militar import OcorrenciaMilitar
@@ -28,6 +28,7 @@ from .calculo_variaveis import *
 import random
 import time
 
+ANO_CORRENTE = date.today().year
 
 """ Configuraçao de decoradores para debug """
 import os
@@ -101,6 +102,7 @@ def index_tailwind(request):
         "title": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais",
         "description": "Página Inicial",
         'medidas_protetivas_solicitadas_ocorrencias': medidas_protetivas_solicitadas_ocorrencias,
+        'ano_corrente': ANO_CORRENTE,
         'encaminhamentos': random.randint(1,100),  # Criar variaveis para encaminhamentos
         'casos_mediados': random.randint(1,100),  # Criar variavel para casos mediados
         'atendimentos': grupos_atendidos
@@ -143,6 +145,7 @@ def home(request):
     context = {
         "title": "Página Inicial pós Login",
         "welcome_message": "Bem-vindo à Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais!",
+        'ano_corrente': ANO_CORRENTE,
         
     }
     return render(request, "home.html", context)
@@ -493,7 +496,7 @@ def relatorios(request):
         val_count_porcentagem = 0
         val_count = 0
 
-    ano_atual = time.localtime().tm_year
+    
     
     try:
         comarcas_pj = list(ComarcasPoderJudiciario.objects.values_list('nome', flat=True).order_by('nome'))
@@ -512,7 +515,7 @@ def relatorios(request):
     context = {
         "title": "Painel Informativo",
         "description": "Visualize o painel informativo estatístico gerados na plataforma.",
-        "ano_atual": ano_atual,
+        'ano_corrente': ANO_CORRENTE,
         "periodo": ['Todos', 'Semanal', 'Mensal', 'Anual'],
         "periodo_selecionado": periodo_selecionado,
         "comarca_selecionada": comarca_selecionada,

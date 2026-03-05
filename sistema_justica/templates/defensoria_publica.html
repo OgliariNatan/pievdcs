@@ -170,7 +170,7 @@
                     <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                         <i class="fas fa-gavel text-2xl"></i>
                     </div>
-                    <span class="font-medium">Consultar MP</span>
+                    <span class="font-medium">Consultar MPU</span>
                 </button>
             </div>
 
@@ -203,9 +203,56 @@
                         <i class="fas fa-file-alt text-primary"></i>
                         Cards Informativos
                     </h4>
-                    <div class="text-gray-600 text-sm leading-relaxed">
-                        <p class="text-red-400">Cards informativos</p>
-                        
+                    <!-- Métricas de Violência Doméstica -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6 mb-8">
+                        <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-purple-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-600">Casos Ativos</h3>
+                                    <p class="text-2xl font-bold text-gray-900 mt-1">{{ 4598 }}</p>
+                                    <p class="text-sm text-green-600 mt-1">{{ 85 }}% este mês</p>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-folder-open text-purple-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-red-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-600">Acompanhados</h3>
+                                    <p class="text-2xl font-bold text-gray-900 mt-1">23</p>
+                                    <!--<p class="text-sm text-red-600 mt-1">pela PP</p> -->
+                                </div>
+                                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-green-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-600">Medidas Protetivas</h3>
+                                    <p class="text-2xl font-bold text-gray-900 mt-1">{{ casos_ativos }}</p>
+                                    <p class="text-sm text-green-600 mt-1">Em vigência</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-shield-alt text-green-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-amber-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-600">Atendimentos Hoje</h3>
+                                    <p class="text-2xl font-bold text-gray-900 mt-1">1</p>
+                                    <!-- <p class="text-sm text-amber-600 mt-1">Última: 14:23</p> -->
+                                </div>
+                                <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-clock text-amber-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
