@@ -13,16 +13,12 @@
     <meta property="og:description" content="Sistema integrado para forças de segurança pública, sistema de justiça e serviços municipais no combate à violência doméstica e crimes sexuais no Brasil.">
     <meta property="og:image" content="{% static 'img/logo-enfrentamento-a-violencia-de-genero.png' %}">
     <meta property="og:locale" content="pt_BR">
-    <!-- <meta name="robots" content="noindex, nofollow">
-    <meta name="googlebot" content="noindex, nofollow">
-    <meta name="bingbot" content="noindex, nofollow"> -->
     <meta name="theme-color" content="#B19CD9">
     <meta name="author" content="OgliariNatan">
     <link rel="icon" href="{% static 'img/logo-enfrentamento-a-violencia-de-genero.png' %}">
     <link rel="apple-touch-icon" href="{% static 'img/logo-enfrentamento-a-violencia-de-genero.png' %}">
     <link rel="shortcut icon" href="{% static 'img/logo-enfrentamento-a-violencia-de-genero.png' %}">
     <title>{% block titulo %}{% endblock %}</title>
-    <!-- <link rel="canonical" href="https://www.redecontraaviolencia.org/"/> -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/cabecalho_rodape.css' %}">
     <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
@@ -34,7 +30,7 @@
 </head>
 
 <body>
-    <!-- Cabeçalho, implementado no header -->
+    <!-- Cabeçalho -->
     {% include 'base/cabecalho.html' %}
 
     <!-- Conteúdo principal -->
@@ -51,7 +47,7 @@
         {% block article_content %}{% endblock %}
     </article>
 
-    <!-- Rodapé, implementado no footer -->
+    <!-- Rodapé -->
     {% include 'base/rodape.html' %}
 
     {% block script %}{% endblock %}
@@ -59,12 +55,88 @@
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script> <!-- Para HTMX -->
-
-    <!-- Para smart-selects -->
+    <!-- Smart-selects -->
     <script src="{% static 'smart-selects/admin/js/chainedfk.js' %}"></script>
     <script src="{% static 'smart-selects/admin/js/bindfields.js' %}"></script>
-</body>
 
+    <!-- WebSocket de Notificações em Tempo Real (DENTRO do body) -->
+    {% if user.is_authenticated %}
+    <script>
+    (function() {
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        const wsUrl = wsProtocol + window.location.host + '/ws/notificacoes/';
+        let ws = null;
+        let tentativas = 0;
+
+        function conectar() {
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                tentativas = 0;
+                ws.send(JSON.stringify({ action: 'obter_contador' }));
+            };
+
+            ws.onmessage = (e) => {
+                const data = JSON.parse(e.data);
+                if (data.type === 'contador_atualizado') {
+                    atualizarBadges(data.count);
+                } else if (data.type === 'nova_notificacao') {
+                    mostrarToastNotificacao(data.notificacao);
+                    ws.send(JSON.stringify({ action: 'obter_contador' }));
+                }
+            };
+
+            ws.onclose = () => {
+                tentativas++;
+                const delay = Math.min(3000 * tentativas, 30000);
+                setTimeout(conectar, delay);
+            };
+        }
+
+        function atualizarBadges(count) {
+            ['notif-badge-nav', 'notif-badge-mobile'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.textContent = count;
+                    el.classList.toggle('hidden', count === 0);
+                }
+            });
+        }
+
+        function mostrarToastNotificacao(notif) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-white border-l-4 border-purple-500 shadow-2xl rounded-lg p-4 z-[9999] max-w-sm animate-slide-in';
+            toast.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <i class="fas ${notif.icone || 'fa-bell'} text-purple-500 mt-1"></i>
+                    <div class="flex-1">
+                        <p class="font-semibold text-sm text-gray-800">${notif.titulo}</p>
+                        <p class="text-xs text-gray-500 mt-1">${notif.mensagem?.substring(0, 80) || ''}</p>
+                        <p class="text-xs text-gray-400 mt-1">${notif.remetente || 'Sistema'}</p>
+                    </div>
+                    <button onclick="this.closest('div.fixed').remove()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 8000);
+        }
+
+        conectar();
+        window.notifWS = { getSocket: () => ws };
+    })();
+    </script>
+
+    <style>
+        @keyframes slide-in {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .animate-slide-in { animation: slide-in 0.3s ease-out; }
+    </style>
+    {% endif %}
+</body>
 </html>
