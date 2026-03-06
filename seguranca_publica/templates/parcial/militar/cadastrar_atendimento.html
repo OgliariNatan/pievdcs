@@ -29,16 +29,16 @@
             <span><i class="fas fa-user-slash text-orange-500 mr-1"></i><b>Agressor:</b> {{ medida.agressor.nome }}</span>
         </div>
 
-        <!-- Formulário -->
+        <!-- Formulário com enctype para upload -->
         <form hx-post="{% url 'seguranca_publica:cadastrar_atendimento' medida_id=medida.ID %}"
               hx-target="#modal-cadastrar-atendimento"
               hx-swap="outerHTML"
+              hx-encoding="multipart/form-data"
               class="flex flex-col flex-1 min-h-0 overflow-hidden">
             {% csrf_token %}
 
             <div class="overflow-y-auto flex-1 min-h-0 px-5 py-4 space-y-4">
 
-                <!-- Aviso de sucesso -->
                 {% if enviado %}
                 <div id="aviso-sucesso-atendimento"
                      class="bg-green-50 border border-green-300 text-green-800 text-sm rounded-lg px-4 py-3 flex items-center gap-2">
@@ -47,14 +47,11 @@
                 </div>
                 {% endif %}
 
-                <!-- Aviso de descumprimento notificado -->
                 {% if descumprimento_notificado %}
                 <div id="aviso-descumprimento"
                      class="bg-amber-50 border border-amber-300 text-amber-800 text-sm rounded-lg px-4 py-3 flex items-center gap-2">
                     <i class="fas fa-exclamation-triangle text-amber-500 text-lg"></i>
-                    <span class="font-medium">
-                        Descumprimento notificado ao Poder Judiciário, Ministério Público e Defensoria Pública.
-                    </span>
+                    <span class="font-medium">Descumprimento notificado ao Poder Judiciário, Ministério Público e Defensoria Pública.</span>
                 </div>
                 {% endif %}
 
@@ -63,22 +60,15 @@
                     setTimeout(function() {
                         ['aviso-sucesso-atendimento', 'aviso-descumprimento'].forEach(function(id) {
                             var el = document.getElementById(id);
-                            if (el) {
-                                el.style.transition = 'opacity 0.5s';
-                                el.style.opacity = '0';
-                                setTimeout(function() { el.remove(); }, 500);
-                            }
+                            if (el) { el.style.transition='opacity 0.5s'; el.style.opacity='0'; setTimeout(function(){el.remove();},500); }
                         });
                     }, 5000);
                 </script>
                 {% endif %}
 
-                <!-- Erros -->
                 {% if form.non_field_errors %}
                 <div class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-3 py-2">
-                    {% for error in form.non_field_errors %}
-                    <p>{{ error }}</p>
-                    {% endfor %}
+                    {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
                 </div>
                 {% endif %}
 
@@ -87,33 +77,25 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.tipo_patrulha.label }}</label>
                         {{ form.tipo_patrulha }}
-                        {% if form.tipo_patrulha.errors %}
-                        <p class="text-red-500 text-xs mt-1">{{ form.tipo_patrulha.errors.0 }}</p>
-                        {% endif %}
+                        {% if form.tipo_patrulha.errors %}<p class="text-red-500 text-xs mt-1">{{ form.tipo_patrulha.errors.0 }}</p>{% endif %}
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.equipe.label }}</label>
                         {{ form.equipe }}
-                        {% if form.equipe.errors %}
-                        <p class="text-red-500 text-xs mt-1">{{ form.equipe.errors.0 }}</p>
-                        {% endif %}
+                        {% if form.equipe.errors %}<p class="text-red-500 text-xs mt-1">{{ form.equipe.errors.0 }}</p>{% endif %}
                     </div>
                 </div>
 
-                <!-- Data do atendimento -->
+                <!-- Data -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.data_atendimento.label }}</label>
                     {{ form.data_atendimento }}
-                    {% if form.data_atendimento.errors %}
-                    <p class="text-red-500 text-xs mt-1">{{ form.data_atendimento.errors.0 }}</p>
-                    {% endif %}
+                    {% if form.data_atendimento.errors %}<p class="text-red-500 text-xs mt-1">{{ form.data_atendimento.errors.0 }}</p>{% endif %}
                 </div>
 
-                <!-- Toggle Switches -->
+                <!-- Toggles -->
                 <div class="bg-gray-50 rounded-lg p-4 space-y-4">
                     <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Situação do Atendimento</h4>
-
-                    <!-- Toggle: Contato com a vítima -->
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <i class="fas fa-phone-alt text-green-500 w-5 text-center"></i>
@@ -121,8 +103,6 @@
                         </div>
                         {{ form.houve_contato_vitima }}
                     </div>
-
-                    <!-- Toggle: Agressor presente -->
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <i class="fas fa-user-slash text-orange-500 w-5 text-center"></i>
@@ -130,8 +110,6 @@
                         </div>
                         {{ form.agressor_presente }}
                     </div>
-
-                    <!-- Situação da vítima -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">
                             <i class="fas fa-heart text-pink-500 mr-1"></i>{{ form.situacao_vitima.label }}
@@ -140,7 +118,7 @@
                     </div>
                 </div>
 
-                <!-- Bloco de descumprimento -->
+                <!-- Descumprimento -->
                 <div class="bg-red-50 border border-red-200 rounded-lg p-4 space-y-3">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
@@ -153,20 +131,17 @@
                         <i class="fas fa-info-circle mr-1"></i>
                         Ao ativar, as autoridades competentes serão notificadas automaticamente.
                     </p>
-
                     <div id="campo-descricao-descumprimento" class="hidden">
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.descricao_descumprimento.label }}</label>
                         {{ form.descricao_descumprimento }}
                     </div>
                 </div>
 
-                <!-- Descrição do atendimento -->
+                <!-- Descrição -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.descricao_atendimento.label }}</label>
                     {{ form.descricao_atendimento }}
-                    {% if form.descricao_atendimento.errors %}
-                    <p class="text-red-500 text-xs mt-1">{{ form.descricao_atendimento.errors.0 }}</p>
-                    {% endif %}
+                    {% if form.descricao_atendimento.errors %}<p class="text-red-500 text-xs mt-1">{{ form.descricao_atendimento.errors.0 }}</p>{% endif %}
                 </div>
 
                 <!-- Providências -->
@@ -174,6 +149,50 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.providencias_tomadas.label }}</label>
                     {{ form.providencias_tomadas }}
                 </div>
+
+                <!-- ========== UPLOAD DE ANEXOS ========== -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-4">
+                    <h4 class="text-xs font-bold text-blue-600 uppercase tracking-wide flex items-center gap-2">
+                        <i class="fas fa-paperclip"></i> Anexos / Provas
+                    </h4>
+
+                    {% if erros_anexos %}
+                    <div class="bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg px-3 py-2 space-y-1">
+                        {% for err in erros_anexos %}<p><i class="fas fa-times-circle mr-1"></i>{{ err }}</p>{% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Imagens -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-image text-blue-500 mr-1"></i>Imagens (JPG, PNG, WEBP)
+                        </label>
+                        <p class="text-xs text-gray-500 mb-2">Máx. 10MB por arquivo.</p>
+                        <label class="flex flex-col items-center justify-center w-full h-20 border-2 border-blue-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-blue-50 transition">
+                            <i class="fas fa-cloud-upload-alt text-blue-400 text-lg mb-1"></i>
+                            <span class="text-xs text-blue-500 font-medium">Selecionar imagens</span>
+                            <input type="file" name="imagens" accept="image/*" multiple
+                                   class="hidden">
+                        </label>
+                        <div id="preview-imagens" class="grid grid-cols-4 gap-2 mt-2"></div>
+                    </div>
+
+                    <!-- Vídeos -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-video text-purple-500 mr-1"></i>Vídeos (MP4, AVI, MOV, MKV, WEBM)
+                        </label>
+                        <p class="text-xs text-gray-500 mb-2">Máx. 100MB por arquivo.</p>
+                        <label class="flex flex-col items-center justify-center w-full h-20 border-2 border-purple-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-purple-50 transition">
+                            <i class="fas fa-cloud-upload-alt text-purple-400 text-lg mb-1"></i>
+                            <span class="text-xs text-purple-500 font-medium">Selecionar vídeos</span>
+                            <input type="file" name="videos" accept="video/*" multiple
+                                   class="hidden">
+                        </label>
+                        <div id="preview-videos" class="space-y-1 mt-2"></div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Rodapé -->
@@ -192,13 +211,11 @@
     </div>
 </div>
 
-<!-- Toggle descumprimento + ESC -->
 <script>
 (function() {
     const modal = document.getElementById('modal-cadastrar-atendimento');
     const overlay = document.getElementById('overlay-cadastrar-atendimento');
 
-    /* Fechar com ESC */
     function fecharESC(e) {
         if (e.key === 'Escape') {
             if (overlay) overlay.remove();
@@ -208,18 +225,55 @@
     }
     document.addEventListener('keydown', fecharESC);
 
-    /* Toggle campo descumprimento: mostra/oculta textarea */
+    /* Toggle descumprimento */
     const chkDesc = modal.querySelector('input[name="vitima_relatou_descumprimento"]');
     const campoDesc = document.getElementById('campo-descricao-descumprimento');
-
     function toggleDescumprimento() {
-        if (chkDesc && campoDesc) {
-            campoDesc.classList.toggle('hidden', !chkDesc.checked);
-        }
+        if (chkDesc && campoDesc) campoDesc.classList.toggle('hidden', !chkDesc.checked);
     }
     if (chkDesc) {
         chkDesc.addEventListener('change', toggleDescumprimento);
         toggleDescumprimento();
+    }
+
+    /* Preview imagens */
+    const inputImgs = modal.querySelector('input[name="imagens"]');
+    const previewImgs = document.getElementById('preview-imagens');
+    if (inputImgs && previewImgs) {
+        inputImgs.addEventListener('change', function() {
+            previewImgs.innerHTML = '';
+            Array.from(this.files).forEach(function(file) {
+                if (!file.type.startsWith('image/')) return;
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var div = document.createElement('div');
+                    div.className = 'relative rounded-lg overflow-hidden border border-gray-200';
+                    div.innerHTML = '<img src="' + e.target.result + '" class="w-full h-20 object-cover">' +
+                        '<p class="text-[9px] text-gray-500 text-center truncate px-1">' + file.name + '</p>';
+                    previewImgs.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+    }
+
+    /* Preview vídeos */
+    const inputVids = modal.querySelector('input[name="videos"]');
+    const previewVids = document.getElementById('preview-videos');
+    if (inputVids && previewVids) {
+        inputVids.addEventListener('change', function() {
+            previewVids.innerHTML = '';
+            Array.from(this.files).forEach(function(file) {
+                if (!file.type.startsWith('video/')) return;
+                var sizeMB = (file.size / 1024 / 1024).toFixed(1);
+                var div = document.createElement('div');
+                div.className = 'flex items-center gap-2 px-3 py-2 bg-purple-50 rounded-lg border border-purple-200 text-xs';
+                div.innerHTML = '<i class="fas fa-film text-purple-500"></i>' +
+                    '<span class="truncate flex-1 text-gray-700">' + file.name + '</span>' +
+                    '<span class="text-gray-400 whitespace-nowrap">' + sizeMB + ' MB</span>';
+                previewVids.appendChild(div);
+            });
+        });
     }
 
     if (modal) modal.focus();

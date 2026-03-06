@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
@@ -10,8 +11,8 @@ import io
 from datetime import datetime, date
 from dotenv import load_dotenv
 from django.shortcuts import get_object_or_404
-from seguranca_publica.models.militar import AtendimentosRedeCatarina
-from seguranca_publica.forms.atendimento_rede_catarina import AtendimentoRedeCatarinaForm
+from seguranca_publica.models.militar import AtendimentosRedeCatarina, AnexoAtendimento
+from seguranca_publica.forms.atendimento_rede_catarina import AtendimentoRedeCatarinaForm, validar_anexos
 from django.contrib.auth.models import Group
 from .permission_group import grupos_permitidos
 from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
@@ -24,6 +25,7 @@ from django.contrib.auth.models import Group
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import cm
+from reportlab.platypus import Image as RLImage
 from reportlab.platypus import (
         SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, HRFlowable
 )
@@ -478,19 +480,39 @@ def _notificar_descumprimento(atendimento):
             continue
 
 
+
+def _salvar_anexos(imagens_validas, videos_validos, atendimento):
+    """Salva imagens e vídeos já validados no banco."""
+    for arq in imagens_validas:
+        AnexoAtendimento.objects.create(
+            atendimento=atendimento,
+            tipo='imagem',
+            imagem=arq,
+        )
+    for arq in videos_validos:
+        AnexoAtendimento.objects.create(
+            atendimento=atendimento,
+            tipo='video',
+            video=arq,
+        )
+
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Polícia Militar'])
 def cadastrar_atendimento(request, medida_id):
-    """Exibe/processa formulário de novo atendimento da Rede Catarina via HTMX."""
+    """Cadastra atendimento da Rede Catarina com anexos de imagem e vídeo."""
     medida = get_object_or_404(FormularioMedidaProtetiva, ID=medida_id)
 
     if request.method == 'POST':
         form = AtendimentoRedeCatarinaForm(request.POST)
-        if form.is_valid():
+        imagens_validas, videos_validos, erros_anexos = validar_anexos(request)
+
+        if form.is_valid() and not erros_anexos:
             atendimento = form.save(commit=False)
             atendimento.medida_protetiva = medida
             atendimento.responsavel = request.user
             atendimento.save()
+
+            _salvar_anexos(imagens_validas, videos_validos, atendimento)
 
             descumprimento_notificado = False
             if atendimento.vitima_relatou_descumprimento:
@@ -510,24 +532,25 @@ def cadastrar_atendimento(request, medida_id):
         return render(request, 'parcial/militar/cadastrar_atendimento.html', {
             'form': form,
             'medida': medida,
+            'erros_anexos': erros_anexos,
             'is_swap': True,
         })
 
-    form = AtendimentoRedeCatarinaForm()
     return render(request, 'parcial/militar/cadastrar_atendimento.html', {
-        'form': form,
+        'form': AtendimentoRedeCatarinaForm(),
         'medida': medida,
     })
+
 
 
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Polícia Militar'])
 def listar_atendimentos(request, medida_id):
-    """Lista atendimentos de uma medida protetiva via HTMX."""
+    """Lista atendimentos com anexos de uma medida protetiva."""
     medida = get_object_or_404(FormularioMedidaProtetiva, ID=medida_id)
     atendimentos = AtendimentosRedeCatarina.objects.filter(
         medida_protetiva=medida
-    ).select_related('responsavel').order_by('-data_atendimento')
+    ).select_related('responsavel').prefetch_related('anexos').order_by('-data_atendimento')
 
     return render(request, 'parcial/militar/listar_atendimento.html', {
         'medida': medida,
@@ -538,23 +561,29 @@ def listar_atendimentos(request, medida_id):
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Polícia Militar'])
 def editar_atendimento(request, atendimento_id):
-    """Edita um atendimento existente via HTMX."""
-    atendimento = get_object_or_404(AtendimentosRedeCatarina, id=atendimento_id)
+    """Edita atendimento existente e permite adicionar novos anexos."""
+    atendimento = get_object_or_404(
+        AtendimentosRedeCatarina.objects.prefetch_related('anexos'),
+        id=atendimento_id,
+    )
     medida = atendimento.medida_protetiva
 
     if request.method == 'POST':
         form = AtendimentoRedeCatarinaForm(request.POST, instance=atendimento)
-        if form.is_valid():
+        imagens_validas, videos_validos, erros_anexos = validar_anexos(request)
+
+        if form.is_valid() and not erros_anexos:
             atendimento = form.save()
+            _salvar_anexos(imagens_validas, videos_validos, atendimento)
 
             if atendimento.vitima_relatou_descumprimento and not atendimento.notificacao_enviada:
                 _notificar_descumprimento(atendimento)
                 atendimento.notificacao_enviada = True
                 atendimento.save(update_fields=['notificacao_enviada'])
 
-            form = AtendimentoRedeCatarinaForm(instance=atendimento)
+            atendimento.refresh_from_db()
             return render(request, 'parcial/militar/editar_atendimento.html', {
-                'form': form,
+                'form': AtendimentoRedeCatarinaForm(instance=atendimento),
                 'atendimento': atendimento,
                 'medida': medida,
                 'enviado': True,
@@ -565,14 +594,38 @@ def editar_atendimento(request, atendimento_id):
             'form': form,
             'atendimento': atendimento,
             'medida': medida,
+            'erros_anexos': erros_anexos,
             'is_swap': True,
         })
 
-    form = AtendimentoRedeCatarinaForm(instance=atendimento)
     return render(request, 'parcial/militar/editar_atendimento.html', {
-        'form': form,
+        'form': AtendimentoRedeCatarinaForm(instance=atendimento),
         'atendimento': atendimento,
         'medida': medida,
+    })
+
+
+
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Polícia Militar'])
+def excluir_anexo_atendimento(request, anexo_id):
+    """Exclui um anexo (imagem ou vídeo) de atendimento via HTMX."""
+    anexo = get_object_or_404(AnexoAtendimento, id=anexo_id)
+    atendimento = anexo.atendimento
+
+    if request.method == 'DELETE':
+        # Remove arquivo do disco
+        if anexo.tipo == 'imagem' and anexo.imagem:
+            anexo.imagem.delete(save=False)
+        elif anexo.tipo == 'video' and anexo.video:
+            anexo.video.delete(save=False)
+        anexo.delete()
+
+    atendimento.refresh_from_db()
+    return render(request, 'parcial/militar/galeria_anexos.html', {
+        'atendimento': atendimento,
+        'anexos': atendimento.anexos.all(),
+        'pode_excluir': True,
     })
 
 
@@ -580,13 +633,11 @@ def editar_atendimento(request, atendimento_id):
 @grupos_permitidos(['Polícia Militar'])
 def relatorio_atendimentos_pdf(request, medida_id):
     """Gera relatório PDF dos atendimentos no formato de ofício institucional."""
-    from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_RIGHT
-    from reportlab.platypus import HRFlowable
 
     medida = get_object_or_404(FormularioMedidaProtetiva, ID=medida_id)
     atendimentos = AtendimentosRedeCatarina.objects.filter(
         medida_protetiva=medida
-    ).select_related('responsavel').order_by('data_atendimento')
+    ).select_related('responsavel').prefetch_related('anexos').order_by('data_atendimento')
 
     buf = io.BytesIO()
     doc = SimpleDocTemplate(
@@ -660,6 +711,24 @@ def relatorio_atendimentos_pdf(request, medida_id):
         fontName='Helvetica-Bold', fontSize=10,
         textColor=colors.HexColor('#dc2626'),
         spaceAfter=6, spaceBefore=8,
+    )
+    estilo_anexo_titulo = ParagraphStyle(
+        'AnexoTitulo', parent=styles['Normal'],
+        fontName='Helvetica-Bold', fontSize=8,
+        textColor=colors.HexColor('#2563eb'),
+        spaceAfter=4, spaceBefore=8,
+    )
+    estilo_anexo_desc = ParagraphStyle(
+        'AnexoDesc', parent=styles['Normal'],
+        fontName='Helvetica', fontSize=7,
+        textColor=colors.HexColor('#6b7280'),
+        alignment=TA_CENTER, spaceAfter=4,
+    )
+    estilo_video_ref = ParagraphStyle(
+        'VideoRef', parent=styles['Normal'],
+        fontName='Helvetica-Oblique', fontSize=8,
+        textColor=colors.HexColor('#7c3aed'),
+        spaceAfter=4,
     )
 
     elementos = []
@@ -805,10 +874,21 @@ def relatorio_atendimentos_pdf(request, medida_id):
     elementos.append(Paragraph('HISTÓRICO DE ATENDIMENTOS', estilo_secao))
 
     if atendimentos.exists():
-        cabecalho = ['#', 'Data', 'Equipe', 'Contato', 'Agressor', 'Situação', 'Descumpr.']
+        cabecalho = ['#', 'Data', 'Equipe', 'Contato', 'Agressor', 'Situação', 'Descumpr.', 'Anexos']
         dados_tabela = [cabecalho]
 
         for i, a in enumerate(atendimentos, 1):
+            # Contar anexos por tipo
+            anexos_atend = a.anexos.all()
+            qtd_imgs = sum(1 for x in anexos_atend if x.tipo == 'imagem')
+            qtd_vids = sum(1 for x in anexos_atend if x.tipo == 'video')
+            anexos_txt = []
+            if qtd_imgs:
+                anexos_txt.append(f'{qtd_imgs} img')
+            if qtd_vids:
+                anexos_txt.append(f'{qtd_vids} víd')
+            anexos_str = ', '.join(anexos_txt) if anexos_txt else '—'
+
             dados_tabela.append([
                 str(i),
                 a.data_atendimento.strftime('%d/%m/%Y %H:%M'),
@@ -817,11 +897,12 @@ def relatorio_atendimentos_pdf(request, medida_id):
                 'Sim' if a.agressor_presente else 'Não',
                 Paragraph(a.get_situacao_vitima_display(), estilo_celula),
                 'SIM' if a.vitima_relatou_descumprimento else 'Não',
+                Paragraph(anexos_str, estilo_celula),
             ])
 
         t_atend = Table(
             dados_tabela,
-            colWidths=[0.8 * cm, 3 * cm, 2.8 * cm, 1.8 * cm, 1.8 * cm, 2.8 * cm, 2.7 * cm],
+            colWidths=[0.7 * cm, 2.7 * cm, 2.4 * cm, 1.5 * cm, 1.5 * cm, 2.4 * cm, 2 * cm, 2.5 * cm],
         )
         t_atend.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#dc2626')),
@@ -909,6 +990,95 @@ def relatorio_atendimentos_pdf(request, medida_id):
                     f'<b>Providências tomadas:</b> {a.providencias_tomadas}',
                     estilo_corpo_sem_recuo,
                 ))
+
+            # === ANEXOS DO ATENDIMENTO ===
+            anexos_atend = a.anexos.all()
+            imagens_anexo = [x for x in anexos_atend if x.tipo == 'imagem']
+            videos_anexo = [x for x in anexos_atend if x.tipo == 'video']
+
+            if imagens_anexo or videos_anexo:
+                elementos.append(Paragraph(
+                    f'ANEXOS DO ATENDIMENTO Nº {i}',
+                    estilo_anexo_titulo,
+                ))
+
+                # Inserir imagens no PDF
+                if imagens_anexo:
+                    elementos.append(Paragraph(
+                        f'Imagens anexadas ({len(imagens_anexo)}):',
+                        estilo_anexo_titulo,
+                    ))
+
+                    # Agrupar imagens em linhas de 3
+                    linha_imgs = []
+                    for idx_img, img_anexo in enumerate(imagens_anexo):
+                        try:
+                            caminho = os.path.join(
+                                settings.MEDIA_ROOT,
+                                str(img_anexo.imagem),
+                            )
+                            if os.path.exists(caminho):
+                                rl_img = RLImage(
+                                    caminho,
+                                    width=4.5 * cm,
+                                    height=3.5 * cm,
+                                )
+                                desc_txt = img_anexo.descricao or f'Imagem {idx_img + 1}'
+                                celula = [rl_img, Paragraph(desc_txt, estilo_anexo_desc)]
+                                linha_imgs.append(celula)
+
+                                # A cada 3 imagens ou na última, criar tabela
+                                if len(linha_imgs) == 3 or idx_img == len(imagens_anexo) - 1:
+                                    # Preencher com células vazias se necessário
+                                    while len(linha_imgs) < 3:
+                                        linha_imgs.append(['', ''])
+
+                                    t_imgs = Table(
+                                        [
+                                            [c[0] for c in linha_imgs],
+                                            [c[1] for c in linha_imgs],
+                                        ],
+                                        colWidths=[5.2 * cm, 5.2 * cm, 5.2 * cm],
+                                    )
+                                    t_imgs.setStyle(TableStyle([
+                                        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                                        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                                        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+                                        ('TOPPADDING', (0, 0), (-1, -1), 4),
+                                        ('BOX', (0, 0), (-1, -1), 0.25, colors.HexColor('#e5e7eb')),
+                                    ]))
+                                    elementos.append(t_imgs)
+                                    elementos.append(Spacer(1, 4))
+                                    linha_imgs = []
+                            else:
+                                elementos.append(Paragraph(
+                                    f'[Imagem não encontrada: {img_anexo.descricao or "sem descrição"}]',
+                                    estilo_anexo_desc,
+                                ))
+                        except Exception:
+                            elementos.append(Paragraph(
+                                f'[Erro ao carregar imagem: {img_anexo.descricao or "sem descrição"}]',
+                                estilo_anexo_desc,
+                            ))
+
+                # Referenciar vídeos no PDF
+                if videos_anexo:
+                    elementos.append(Paragraph(
+                        f'Vídeos anexados ({len(videos_anexo)}):',
+                        estilo_anexo_titulo,
+                    ))
+                    for idx_vid, vid_anexo in enumerate(videos_anexo, 1):
+                        nome_arquivo = os.path.basename(str(vid_anexo.video)) if vid_anexo.video else '—'
+                        desc = vid_anexo.descricao or 'Sem descrição'
+                        upload_dt = vid_anexo.data_upload.strftime('%d/%m/%Y %H:%M') if vid_anexo.data_upload else '—'
+                        elementos.append(Paragraph(
+                            f'🎬 Vídeo {idx_vid}: <b>{nome_arquivo}</b> — {desc} '
+                            f'(upload: {upload_dt}) — '
+                            f'<i>Disponível para consulta no sistema PIEVDCS.</i>',
+                            estilo_video_ref,
+                        ))
+
+                elementos.append(Spacer(1, 4))
 
             elementos.append(HRFlowable(
                 width='100%', thickness=0.3,

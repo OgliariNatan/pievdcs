@@ -29,6 +29,11 @@ SITUACAO_VITIMA_CHOICES = [
     ('nao_encontrada', 'Não encontrada'),
 ]
 
+TIPO_ANEXO_CHOICES = [
+    ('imagem', 'Imagem'),
+    ('video', 'Vídeo'),
+    #('documento', 'Documento'),
+]
 
 class Patrulhamento(models.Model):
     """Modelo de patrulhamento da Polícia Militar."""
@@ -157,3 +162,67 @@ class AtendimentosRedeCatarina(models.Model):
         verbose_name = "Atendimento da Rede Catarina"
         verbose_name_plural = "Atendimentos da Rede Catarina"
         ordering = ['-data_atendimento']
+
+def _upload_path_imagem(instance, filename):
+    """Gera caminho de upload para imagens: anexos/sistema_justica/PM/IMG/<atendimento_pk>/"""
+    return f'sistema_justica/PM/IMG/{instance.atendimento.pk}/{filename}'
+
+
+def _upload_path_video(instance, filename):
+    """Gera caminho de upload para vídeos: anexos/sistema_justica/PM/Video/<atendimento_pk>/"""
+    return f'sistema_justica/PM/Video/{instance.atendimento.pk}/{filename}'
+
+
+class AnexoAtendimento(models.Model):
+    """Imagem ou vídeo anexado como prova a um atendimento da Rede Catarina."""
+
+    atendimento = models.ForeignKey(
+        AtendimentosRedeCatarina,
+        on_delete=models.CASCADE,
+        related_name='anexos',
+        verbose_name="Atendimento",
+    )
+
+    tipo = models.CharField(
+        max_length=10,
+        choices=TIPO_ANEXO_CHOICES,
+        verbose_name="Tipo de anexo",
+    )
+
+    imagem = models.ImageField(
+        upload_to=_upload_path_imagem,
+        blank=True,
+        null=True,
+        verbose_name="Imagem",
+    )
+
+    video = models.FileField(
+        upload_to=_upload_path_video,
+        blank=True,
+        null=True,
+        verbose_name="Vídeo",
+    )
+
+    descricao = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name="Descrição do anexo",
+    )
+
+    data_upload = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Data do upload",
+    )
+
+    def __str__(self):
+        return f"{self.get_tipo_display()} #{self.pk} — Atendimento #{self.atendimento.pk}"
+
+    @property
+    def arquivo(self):
+        """Retorna o campo de arquivo ativo (imagem ou vídeo)."""
+        return self.imagem if self.tipo == 'imagem' else self.video
+
+    class Meta:
+        verbose_name = "Anexo do Atendimento"
+        verbose_name_plural = "Anexos do Atendimento"
+        ordering = ['-data_upload']

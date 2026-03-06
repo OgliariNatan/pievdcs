@@ -99,6 +99,84 @@
                         <i class="fas fa-user-shield mr-1"></i>{{ a.responsavel.get_full_name }}
                     </p>
                     {% endif %}
+
+                    <!-- ========== ANEXOS (Imagens e Vídeos) ========== -->
+                    {% with imagens_list=a.anexos.all %}
+                    {% if imagens_list %}
+                    <div class="mt-3 pt-3 border-t border-gray-100">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
+                            <i class="fas fa-paperclip mr-1"></i>Anexos ({{ imagens_list|length }})
+                        </p>
+
+                        <!-- Imagens -->
+                        {% for anexo in imagens_list %}
+                        {% if anexo.tipo == "imagem" and forloop.first or anexo.tipo == "imagem" and prev_tipo != "imagem" %}
+                        <div class="mb-2">
+                            <p class="text-[10px] text-blue-600 font-semibold mb-1">
+                                <i class="fas fa-image mr-1"></i>Imagens
+                            </p>
+                            <div class="grid grid-cols-5 gap-1.5">
+                        {% endif %}
+
+                        {% if anexo.tipo == "imagem" %}
+                                <div class="relative group rounded-md overflow-hidden border border-gray-200 cursor-pointer"
+                                     onclick="window.open('{{ anexo.imagem.url }}', '_blank');"
+                                     title="Clique para ampliar">
+                                    <img src="{{ anexo.imagem.url }}"
+                                         alt="{{ anexo.descricao|default:'Prova fotográfica' }}"
+                                         loading="lazy"
+                                         class="w-full h-16 object-cover hover:opacity-80 transition">
+                                    {% if anexo.descricao %}
+                                    <div class="absolute bottom-0 inset-x-0 bg-black/50 px-1 py-0.5">
+                                        <p class="text-white text-[8px] truncate">{{ anexo.descricao }}</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                        {% endif %}
+                        {% endfor %}
+
+                        {# Fecha grid de imagens se existirem #}
+                        {% for anexo in imagens_list %}
+                            {% if anexo.tipo == "imagem" and forloop.last %}
+                            </div>
+                        </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <!-- Vídeos -->
+                        {% for anexo in imagens_list %}
+                        {% if anexo.tipo == "video" and forloop.first or anexo.tipo == "video" and prev_tipo_v != "video" %}
+                        <div class="mb-2">
+                            <p class="text-[10px] text-purple-600 font-semibold mb-1">
+                                <i class="fas fa-video mr-1"></i>Vídeos
+                            </p>
+                            <div class="grid grid-cols-2 gap-2">
+                        {% endif %}
+
+                        {% if anexo.tipo == "video" %}
+                                <div class="rounded-md overflow-hidden border border-gray-200 bg-black">
+                                    <video class="w-full h-24 object-cover" preload="metadata" controls>
+                                        <source src="{{ anexo.video.url }}">
+                                    </video>
+                                    {% if anexo.descricao %}
+                                    <p class="text-[8px] text-gray-500 px-1 py-0.5 bg-gray-50 truncate">{{ anexo.descricao }}</p>
+                                    {% endif %}
+                                </div>
+                        {% endif %}
+                        {% endfor %}
+
+                        {# Fecha grid de vídeos se existirem #}
+                        {% for anexo in imagens_list %}
+                            {% if anexo.tipo == "video" and forloop.last %}
+                            </div>
+                        </div>
+                            {% endif %}
+                        {% endfor %}
+
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+
                 </div>
                 {% endfor %}
             {% else %}

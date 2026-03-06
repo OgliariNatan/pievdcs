@@ -1,10 +1,10 @@
 from django.urls import path
 from .views.penal import (
-    penal, 
-    cadastro_tipo_atendimento_form, 
-    cadastro_tipo_atendimento_submit, 
-    cadastro_atendimento_penal_form, 
-    cadastro_atendimento_penal_submit, 
+    penal,
+    cadastro_tipo_atendimento_form,
+    cadastro_tipo_atendimento_submit,
+    cadastro_atendimento_penal_form,
+    cadastro_atendimento_penal_submit,
     consultar_mp_penal,
     buscar_atendimentos_por_cpf_modal,
     mostra_todos_grupos_penal,
@@ -16,7 +16,7 @@ from .views.militar import (
     buscar_vitimas,
     detalhe_medida_protetiva, historico_mp_vitima, historico_mp_agressor,
     cadastrar_atendimento, listar_atendimentos,
-    editar_atendimento, relatorio_atendimentos_pdf,
+    editar_atendimento, relatorio_atendimentos_pdf, excluir_anexo_atendimento,
 )
 from .views.civil import civil
 from .views.cientifica import cientifica
@@ -24,7 +24,7 @@ from .views.cientifica import cientifica
 app_name = 'seguranca_publica'
 
 urlpatterns = [
-    #Instituição Penal
+    # Instituição Penal
     path('penal/', penal, name='penal'),
     path('cadastro_tipo_atendimento_form/', cadastro_tipo_atendimento_form, name='cadastro_tipo_atendimento_form'),
     path('cadastro_tipo_atendimento_submit/', cadastro_tipo_atendimento_submit, name='cadastro_tipo_atendimento_submit'),
@@ -38,8 +38,7 @@ urlpatterns = [
     path('gerar_relatorio_por_cpf/', gerar_relatorio_por_cpf, name='gerar_relatorio_por_cpf'),
     path('consultar_mp_penal/', consultar_mp_penal, name='consultar_mp_penal'),
 
-
-    #Instituição Militar
+    # Instituição Militar
     path('militar/', militar, name='militar'),
     path('consultas_PM/', consultas_informacao_vitima_agressor, name='consultas_PM'),
     path('buscar_vitimas/', buscar_vitimas, name='buscar_vitimas'),
@@ -50,7 +49,11 @@ urlpatterns = [
     path('atendimento/<int:medida_id>/listar/', listar_atendimentos, name='listar_atendimentos'),
     path('atendimento/<int:atendimento_id>/editar/', editar_atendimento, name='editar_atendimento'),
     path('atendimento/<int:medida_id>/relatorio/', relatorio_atendimentos_pdf, name='relatorio_atendimentos_pdf'),
-    
+    path('atendimento/anexo/<int:anexo_id>/excluir/', excluir_anexo_atendimento, name='excluir_anexo_atendimento'),
+
+    # Instituição Civil
     path('civil/', civil, name='civil'),
-    path('cientifica/', cientifica, name='cientifica')
+
+    # Instituição Científica
+    path('cientifica/', cientifica, name='cientifica'),
 ]
