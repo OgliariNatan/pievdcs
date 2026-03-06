@@ -1,0 +1,86 @@
+<div id="galeria-anexos-{{ atendimento.pk }}" class="space-y-3">
+    {% if anexos %}
+
+    {% with imgs_list=anexos.all %}
+    <!-- Imagens -->
+    {% for anexo in imgs_list %}
+    {% if anexo.tipo == "imagem" and forloop.first %}
+    <div>
+        <h5 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
+            <i class="fas fa-image text-blue-500 mr-1"></i>Imagens
+        </h5>
+        <div class="grid grid-cols-4 gap-2">
+    {% endif %}
+
+    {% if anexo.tipo == "imagem" %}
+            <div class="relative group rounded-lg overflow-hidden border border-gray-200">
+                <img src="{{ anexo.imagem.url }}"
+                     alt="{{ anexo.descricao|default:'Prova fotográfica' }}"
+                     loading="lazy"
+                     class="w-full h-24 object-cover cursor-pointer hover:opacity-90 transition"
+                     onclick="window.open('{{ anexo.imagem.url }}', '_blank');"
+                     title="Clique para ampliar">
+                <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1">
+                    <p class="text-white text-[10px] truncate">{{ anexo.descricao|default:"Sem descrição" }}</p>
+                </div>
+                {% if pode_excluir %}
+                <button hx-delete="{% url 'seguranca_publica:excluir_anexo_atendimento' anexo_id=anexo.pk %}"
+                        hx-target="#galeria-anexos-{{ atendimento.pk }}"
+                        hx-swap="outerHTML"
+                        hx-confirm="Excluir esta imagem?"
+                        class="absolute top-1 right-1 w-5 h-5 bg-red-600 text-white rounded-full text-[10px]
+                               flex items-center justify-center opacity-0 group-hover:opacity-100 transition hover:bg-red-700">
+                    <i class="fas fa-times"></i>
+                </button>
+                {% endif %}
+            </div>
+    {% endif %}
+
+    {% if anexo.tipo == "imagem" and forloop.last %}
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+    <!-- Vídeos -->
+    {% for anexo in imgs_list %}
+    {% if anexo.tipo == "video" and forloop.first %}
+    <div>
+        <h5 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
+            <i class="fas fa-video text-purple-500 mr-1"></i>Vídeos
+        </h5>
+        <div class="grid grid-cols-2 gap-2">
+    {% endif %}
+
+    {% if anexo.tipo == "video" %}
+            <div class="relative group rounded-lg overflow-hidden border border-gray-200 bg-black">
+                <video class="w-full h-32 object-cover" preload="metadata" controls>
+                    <source src="{{ anexo.video.url }}">
+                </video>
+                <div class="absolute top-0 inset-x-0 bg-gradient-to-b from-black/40 to-transparent px-2 py-1">
+                    <p class="text-white text-[10px] truncate">{{ anexo.descricao|default:"Sem descrição" }}</p>
+                </div>
+                {% if pode_excluir %}
+                <button hx-delete="{% url 'seguranca_publica:excluir_anexo_atendimento' anexo_id=anexo.pk %}"
+                        hx-target="#galeria-anexos-{{ atendimento.pk }}"
+                        hx-swap="outerHTML"
+                        hx-confirm="Excluir este vídeo?"
+                        class="absolute top-1 right-1 w-5 h-5 bg-red-600 text-white rounded-full text-[10px]
+                               flex items-center justify-center opacity-0 group-hover:opacity-100 transition hover:bg-red-700">
+                    <i class="fas fa-times"></i>
+                </button>
+                {% endif %}
+            </div>
+    {% endif %}
+
+    {% if anexo.tipo == "video" and forloop.last %}
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endwith %}
+
+    {% else %}
+    <p class="text-xs text-gray-400 italic">Nenhum anexo.</p>
+    {% endif %}
+</div>
