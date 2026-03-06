@@ -212,19 +212,24 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                         id="news-grid-{{ secao|slugify }}">
                         {% if itens %}
-                        {% for conteudo in itens %}
+                                                {% for conteudo in itens %}
                         <article
-                            class="news-item bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1"
+                            class="news-item bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 cursor-pointer"
                             data-index="{{ forloop.counter0 }}"
+                            hx-get="{% url 'popup_conteudo' conteudo.pk %}"
+                            hx-target="body"
+                            hx-swap="beforeend"
                             style="{% if forloop.counter0 >= 3 %}display: none;{% endif %}">
                             {% if conteudo.video %}
                             <div class="h-48 flex items-center justify-center bg-gray-50">
-                                <video controls class="max-h-44 w-full object-contain">
+                                <video class="max-h-44 w-full object-contain pointer-events-none">
                                     <source src="{{ conteudo.video.url }}" type="video/mp4">
-                                    <source src="{{ conteudo.video.url }}" type="video/avi">
-                                    <source src="{{ conteudo.video.url }}" type="video/quicktime">
-                                    Seu navegador não suporta a reprodução de vídeos.
                                 </video>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-12 h-12 bg-black/40 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-play text-white text-lg ml-1"></i>
+                                    </div>
+                                </div>
                             </div>
                             {% elif conteudo.imagem %}
                             <div class="h-48 flex items-center justify-center bg-gray-50">
@@ -240,12 +245,9 @@
                                         <i class="far fa-clock mr-1"></i>
                                         {{ conteudo.data_publicacao|date:"d/m/Y" }}
                                     </span>
-                                    {% if conteudo.link %}
-                                    <a href="{{ conteudo.link }}"
-                                        class="text-primary hover:text-secondary font-semibold" target="_blank">
+                                    <span class="text-primary font-semibold text-sm">
                                         Ler mais <i class="fas fa-arrow-right ml-1"></i>
-                                    </a>
-                                    {% endif %}
+                                    </span>
                                 </div>
                             </div>
                         </article>

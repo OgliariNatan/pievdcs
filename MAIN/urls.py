@@ -17,7 +17,8 @@ from MAIN.views import(
     relatorios, 
     encaminhamentos, notificacoes, pre_visualizacao_conteudo, 
     index_tailwind, CustomLoginView, api_tendencia_temporal,
-    chat_ia_publico, inserir_noticia_form, inserir_noticia_submit
+    chat_ia_publico, inserir_noticia_form, inserir_noticia_submit,
+    popup_conteudo
 )
 
 app_name = 'MAIN'
@@ -44,7 +45,7 @@ urlpatterns = [
     path("chat-ia-publico/", chat_ia_publico, name="chat_ia_publico"),
     path("noticia/inserir/", inserir_noticia_form, name="inserir_noticia_form"),
     path("noticia/inserir/submit/", inserir_noticia_submit, name="inserir_noticia_submit"),
-
+    path("conteudo/<int:pk>/popup/", popup_conteudo, name="popup_conteudo"),
     
     path("admin/", admin.site.urls, name="admin"),  # Rota para o admin do Django
     path('seguranca/', include('seguranca_publica.urls')), #destinados a segurança publica
