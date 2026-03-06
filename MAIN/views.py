@@ -763,3 +763,8 @@ def inserir_noticia_submit(request):
         'form': form,
         'is_swap': True,
     })
+
+def popup_conteudo(request, pk):
+    """Retorna popup com conteúdo completo de uma notícia via HTMX."""
+    conteudo = get_object_or_404(ConteudoHome, pk=pk)
+    return render(request, 'partials/popup_conteudo.html', {'conteudo': conteudo})
