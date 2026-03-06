@@ -1,1 +1,2 @@
 from .penal import TipoAtendimentoForm, ModeloPenalForm
+from .atendimento_rede_catarina import AtendimentoRedeCatarinaForm

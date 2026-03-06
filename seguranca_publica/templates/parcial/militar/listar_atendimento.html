@@ -1,0 +1,152 @@
+<div id="overlay-listar-atendimentos"
+     class="fixed inset-0 bg-black bg-opacity-50 z-[998]"
+     onclick="document.getElementById('overlay-listar-atendimentos').remove(); document.getElementById('modal-listar-atendimentos').remove();">
+</div>
+
+<div id="modal-listar-atendimentos"
+     class="fixed inset-0 z-[999] flex items-center justify-center p-4"
+     tabindex="0">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[90vh]"
+         onclick="event.stopPropagation();">
+
+        <!-- Cabeçalho -->
+        <div class="flex justify-between items-center px-5 py-3 border-b bg-gradient-to-r from-blue-600 to-blue-400 rounded-t-xl">
+            <h3 class="text-white font-semibold text-sm">
+                <i class="fas fa-list-alt mr-2"></i>
+                Atendimentos — MP #{{ medida.ID }}
+            </h3>
+            <button onclick="document.getElementById('overlay-listar-atendimentos').remove(); document.getElementById('modal-listar-atendimentos').remove();"
+                    class="text-white hover:text-gray-200 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Resumo -->
+        <div class="px-5 py-3 bg-gray-50 border-b text-xs text-gray-600 flex gap-6">
+            <span><i class="fas fa-user-injured text-purple-500 mr-1"></i><b>Vítima:</b> {{ medida.vitima.nome }}</span>
+            <span><i class="fas fa-user-slash text-orange-500 mr-1"></i><b>Agressor:</b> {{ medida.agressor.nome }}</span>
+            <span><i class="fas fa-clipboard-list text-blue-500 mr-1"></i><b>Total:</b> {{ atendimentos.count }}</span>
+        </div>
+
+        <!-- Lista -->
+        <div class="overflow-y-auto flex-1 min-h-0">
+            {% if atendimentos %}
+                {% for a in atendimentos %}
+                <div class="px-5 py-4 border-b hover:bg-gray-50 transition-colors">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-3">
+                            <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
+                                #{{ a.pk }}
+                            </span>
+                            <div>
+                                <span class="text-sm font-semibold text-gray-800">
+                                    {{ a.data_atendimento|date:"d/m/Y H:i" }}
+                                </span>
+                                <span class="text-xs text-gray-500 ml-2">
+                                    {{ a.get_tipo_patrulha_display }} — {{ a.equipe|default:"Sem equipe" }}
+                                </span>
+                            </div>
+                        </div>
+                        <button hx-get="{% url 'seguranca_publica:editar_atendimento' atendimento_id=a.pk %}"
+                                hx-target="body"
+                                hx-swap="beforeend"
+                                class="px-3 py-1 text-xs bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                            <i class="fas fa-edit mr-1"></i>Editar
+                        </button>
+                    </div>
+
+                    <!-- Badges -->
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
+                            {% if a.houve_contato_vitima %}bg-green-100 text-green-700{% else %}bg-gray-100 text-gray-500{% endif %}">
+                            <i class="fas fa-phone-alt mr-1"></i>
+                            Contato: {{ a.houve_contato_vitima|yesno:"Sim,Não" }}
+                        </span>
+
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
+                            {% if a.agressor_presente %}bg-orange-100 text-orange-700{% else %}bg-gray-100 text-gray-500{% endif %}">
+                            <i class="fas fa-user-slash mr-1"></i>
+                            Agressor: {{ a.agressor_presente|yesno:"Presente,Ausente" }}
+                        </span>
+
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
+                            {% if a.situacao_vitima == 'risco' %}bg-red-100 text-red-700
+                            {% elif a.situacao_vitima == 'apreensiva' %}bg-yellow-100 text-yellow-700
+                            {% elif a.situacao_vitima == 'nao_encontrada' %}bg-gray-100 text-gray-600
+                            {% else %}bg-green-100 text-green-700{% endif %}">
+                            <i class="fas fa-heart mr-1"></i>
+                            {{ a.get_situacao_vitima_display }}
+                        </span>
+
+                        {% if a.vitima_relatou_descumprimento %}
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            Descumprimento
+                            {% if a.notificacao_enviada %}
+                            <i class="fas fa-bell ml-1 text-red-500" title="Notificação enviada"></i>
+                            {% endif %}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Descrição resumida -->
+                    <p class="text-xs text-gray-600 line-clamp-2">
+                        {{ a.descricao_atendimento|truncatechars:150 }}
+                    </p>
+
+                    {% if a.responsavel %}
+                    <p class="text-xs text-gray-400 mt-1">
+                        <i class="fas fa-user-shield mr-1"></i>{{ a.responsavel.get_full_name }}
+                    </p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="px-5 py-12 text-center">
+                    <i class="fas fa-inbox text-gray-300 text-4xl mb-3"></i>
+                    <p class="text-gray-500 text-sm">Nenhum atendimento registrado para esta medida protetiva.</p>
+                    <button hx-get="{% url 'seguranca_publica:cadastrar_atendimento' medida_id=medida.ID %}"
+                            hx-target="body"
+                            hx-swap="beforeend"
+                            class="mt-3 px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold">
+                        <i class="fas fa-plus mr-1"></i>Cadastrar Primeiro Atendimento
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Rodapé -->
+        <div class="flex justify-between items-center px-5 py-3 border-t bg-gray-50 rounded-b-xl">
+            <span class="text-xs text-gray-500">
+                {{ atendimentos.count }} atendimento{{ atendimentos.count|pluralize }}
+            </span>
+            <div class="flex gap-2">
+                <a href="{% url 'seguranca_publica:relatorio_atendimentos_pdf' medida_id=medida.ID %}"
+                   target="_blank"
+                   class="px-3 py-1.5 text-xs bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-semibold">
+                    <i class="fas fa-file-pdf mr-1"></i>PDF
+                </a>
+                <button onclick="document.getElementById('overlay-listar-atendimentos').remove(); document.getElementById('modal-listar-atendimentos').remove();"
+                        class="px-4 py-1.5 text-xs text-gray-600 bg-gray-200 hover:bg-gray-300 rounded-lg transition">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const modal = document.getElementById('modal-listar-atendimentos');
+    const overlay = document.getElementById('overlay-listar-atendimentos');
+    function fecharESC(e) {
+        if (e.key === 'Escape') {
+            if (overlay) overlay.remove();
+            if (modal) modal.remove();
+            document.removeEventListener('keydown', fecharESC);
+        }
+    }
+    document.addEventListener('keydown', fecharESC);
+    if (modal) modal.focus();
+})();
+</script>
