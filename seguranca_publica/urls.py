@@ -12,10 +12,11 @@ from .views.penal import (
     relatorio_por_cpf_popup, gerar_relatorio_por_cpf,
 )
 from .views.militar import (
-    militar,
-    consultas_informacao_vitima_agressor,
+    militar, consultas_informacao_vitima_agressor,
     buscar_vitimas,
-    detalhe_medida_protetiva, historico_mp_vitima, historico_mp_agressor
+    detalhe_medida_protetiva, historico_mp_vitima, historico_mp_agressor,
+    cadastrar_atendimento, listar_atendimentos,
+    editar_atendimento, relatorio_atendimentos_pdf,
 )
 from .views.civil import civil
 from .views.cientifica import cientifica
@@ -45,6 +46,10 @@ urlpatterns = [
     path('detalhe_medida_protetiva/<int:medida_id>/', detalhe_medida_protetiva, name='detalhe_medida_protetiva'),
     path('historico_mp_vitima/<str:cpf_vitima>/', historico_mp_vitima, name='historico_mp_vitima'),
     path('historico_mp_agressor/<str:cpf_agressor>/', historico_mp_agressor, name='historico_mp_agressor'),
+    path('atendimento/<int:medida_id>/cadastrar/', cadastrar_atendimento, name='cadastrar_atendimento'),
+    path('atendimento/<int:medida_id>/listar/', listar_atendimentos, name='listar_atendimentos'),
+    path('atendimento/<int:atendimento_id>/editar/', editar_atendimento, name='editar_atendimento'),
+    path('atendimento/<int:medida_id>/relatorio/', relatorio_atendimentos_pdf, name='relatorio_atendimentos_pdf'),
     
     path('civil/', civil, name='civil'),
     path('cientifica/', cientifica, name='cientifica')

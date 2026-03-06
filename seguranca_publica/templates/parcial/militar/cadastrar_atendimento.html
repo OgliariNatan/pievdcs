@@ -1,0 +1,227 @@
+{% if not is_swap %}
+<div id="overlay-cadastrar-atendimento"
+     class="fixed inset-0 bg-black bg-opacity-50 z-[998]"
+     onclick="document.getElementById('overlay-cadastrar-atendimento').remove(); document.getElementById('modal-cadastrar-atendimento').remove();">
+</div>
+{% endif %}
+
+<div id="modal-cadastrar-atendimento"
+     class="fixed inset-0 z-[999] flex items-center justify-center p-4"
+     tabindex="0">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh]"
+         onclick="event.stopPropagation();">
+
+        <!-- Cabeçalho -->
+        <div class="flex justify-between items-center px-5 py-3 border-b bg-gradient-to-r from-red-600 to-red-400 rounded-t-xl">
+            <h3 class="text-white font-semibold text-sm">
+                <i class="fas fa-clipboard-check mr-2"></i>
+                Cadastrar Atendimento — MP #{{ medida.ID }}
+            </h3>
+            <button onclick="document.getElementById('overlay-cadastrar-atendimento').remove(); document.getElementById('modal-cadastrar-atendimento').remove();"
+                    class="text-white hover:text-gray-200 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Resumo da MP -->
+        <div class="px-5 py-3 bg-gray-50 border-b text-xs text-gray-600 flex gap-6">
+            <span><i class="fas fa-user-injured text-purple-500 mr-1"></i><b>Vítima:</b> {{ medida.vitima.nome }}</span>
+            <span><i class="fas fa-user-slash text-orange-500 mr-1"></i><b>Agressor:</b> {{ medida.agressor.nome }}</span>
+        </div>
+
+        <!-- Formulário -->
+        <form hx-post="{% url 'seguranca_publica:cadastrar_atendimento' medida_id=medida.ID %}"
+              hx-target="#modal-cadastrar-atendimento"
+              hx-swap="outerHTML"
+              class="flex flex-col flex-1 min-h-0 overflow-hidden">
+            {% csrf_token %}
+
+            <div class="overflow-y-auto flex-1 min-h-0 px-5 py-4 space-y-4">
+
+                <!-- Aviso de sucesso -->
+                {% if enviado %}
+                <div id="aviso-sucesso-atendimento"
+                     class="bg-green-50 border border-green-300 text-green-800 text-sm rounded-lg px-4 py-3 flex items-center gap-2">
+                    <i class="fas fa-check-circle text-green-500 text-lg"></i>
+                    <span class="font-medium">Atendimento cadastrado com sucesso!</span>
+                </div>
+                {% endif %}
+
+                <!-- Aviso de descumprimento notificado -->
+                {% if descumprimento_notificado %}
+                <div id="aviso-descumprimento"
+                     class="bg-amber-50 border border-amber-300 text-amber-800 text-sm rounded-lg px-4 py-3 flex items-center gap-2">
+                    <i class="fas fa-exclamation-triangle text-amber-500 text-lg"></i>
+                    <span class="font-medium">
+                        Descumprimento notificado ao Poder Judiciário, Ministério Público e Defensoria Pública.
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if enviado or descumprimento_notificado %}
+                <script>
+                    setTimeout(function() {
+                        ['aviso-sucesso-atendimento', 'aviso-descumprimento'].forEach(function(id) {
+                            var el = document.getElementById(id);
+                            if (el) {
+                                el.style.transition = 'opacity 0.5s';
+                                el.style.opacity = '0';
+                                setTimeout(function() { el.remove(); }, 500);
+                            }
+                        });
+                    }, 5000);
+                </script>
+                {% endif %}
+
+                <!-- Erros -->
+                {% if form.non_field_errors %}
+                <div class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-3 py-2">
+                    {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Patrulha e Equipe -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.tipo_patrulha.label }}</label>
+                        {{ form.tipo_patrulha }}
+                        {% if form.tipo_patrulha.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.tipo_patrulha.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.equipe.label }}</label>
+                        {{ form.equipe }}
+                        {% if form.equipe.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.equipe.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Data do atendimento -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.data_atendimento.label }}</label>
+                    {{ form.data_atendimento }}
+                    {% if form.data_atendimento.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.data_atendimento.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Toggle Switches -->
+                <div class="bg-gray-50 rounded-lg p-4 space-y-4">
+                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Situação do Atendimento</h4>
+
+                    <!-- Toggle: Contato com a vítima -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-phone-alt text-green-500 w-5 text-center"></i>
+                            <span class="text-sm text-gray-700">{{ form.houve_contato_vitima.label }}</span>
+                        </div>
+                        {{ form.houve_contato_vitima }}
+                    </div>
+
+                    <!-- Toggle: Agressor presente -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-user-slash text-orange-500 w-5 text-center"></i>
+                            <span class="text-sm text-gray-700">{{ form.agressor_presente.label }}</span>
+                        </div>
+                        {{ form.agressor_presente }}
+                    </div>
+
+                    <!-- Situação da vítima -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-heart text-pink-500 mr-1"></i>{{ form.situacao_vitima.label }}
+                        </label>
+                        {{ form.situacao_vitima }}
+                    </div>
+                </div>
+
+                <!-- Bloco de descumprimento -->
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-exclamation-triangle text-red-500 w-5 text-center"></i>
+                            <span class="text-sm font-semibold text-red-700">{{ form.vitima_relatou_descumprimento.label }}</span>
+                        </div>
+                        {{ form.vitima_relatou_descumprimento }}
+                    </div>
+                    <p class="text-xs text-red-600 ml-8">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Ao ativar, as autoridades competentes serão notificadas automaticamente.
+                    </p>
+
+                    <div id="campo-descricao-descumprimento" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.descricao_descumprimento.label }}</label>
+                        {{ form.descricao_descumprimento }}
+                    </div>
+                </div>
+
+                <!-- Descrição do atendimento -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.descricao_atendimento.label }}</label>
+                    {{ form.descricao_atendimento }}
+                    {% if form.descricao_atendimento.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.descricao_atendimento.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Providências -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.providencias_tomadas.label }}</label>
+                    {{ form.providencias_tomadas }}
+                </div>
+            </div>
+
+            <!-- Rodapé -->
+            <div class="flex justify-end gap-3 px-5 py-3 border-t bg-gray-50 rounded-b-xl">
+                <button type="button"
+                        onclick="document.getElementById('overlay-cadastrar-atendimento').remove(); document.getElementById('modal-cadastrar-atendimento').remove();"
+                        class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors font-semibold">
+                    <i class="fas fa-save mr-1"></i> Salvar Atendimento
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Toggle descumprimento + ESC -->
+<script>
+(function() {
+    const modal = document.getElementById('modal-cadastrar-atendimento');
+    const overlay = document.getElementById('overlay-cadastrar-atendimento');
+
+    /* Fechar com ESC */
+    function fecharESC(e) {
+        if (e.key === 'Escape') {
+            if (overlay) overlay.remove();
+            if (modal) modal.remove();
+            document.removeEventListener('keydown', fecharESC);
+        }
+    }
+    document.addEventListener('keydown', fecharESC);
+
+    /* Toggle campo descumprimento: mostra/oculta textarea */
+    const chkDesc = modal.querySelector('input[name="vitima_relatou_descumprimento"]');
+    const campoDesc = document.getElementById('campo-descricao-descumprimento');
+
+    function toggleDescumprimento() {
+        if (chkDesc && campoDesc) {
+            campoDesc.classList.toggle('hidden', !chkDesc.checked);
+        }
+    }
+    if (chkDesc) {
+        chkDesc.addEventListener('change', toggleDescumprimento);
+        toggleDescumprimento();
+    }
+
+    if (modal) modal.focus();
+})();
+</script>
