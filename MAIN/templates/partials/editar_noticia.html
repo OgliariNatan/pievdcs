@@ -1,35 +1,35 @@
-<!-- MAIN/templates/partials/inserir_noticia.html -->
-<!-- dir: MAIN/templates/partials/inserir_noticia.html -->
+<!-- MAIN/templates/partials/editar_noticia.html -->
+<!-- dir: MAIN/templates/partials/editar_noticia.html -->
 
 {% if not is_swap %}
 <!-- Overlay -->
-<div id="overlay-inserir-noticia"
-     class="fixed inset-0 bg-black bg-opacity-50 z-[998]"
-     onclick="document.getElementById('overlay-inserir-noticia').remove(); document.getElementById('modal-inserir-noticia').remove();">
+<div id="overlay-editar-noticia"
+     class="fixed inset-0 bg-black bg-opacity-50 z-[1002]"
+     onclick="document.getElementById('overlay-editar-noticia').remove(); document.getElementById('modal-editar-noticia').remove();">
 </div>
 {% endif %}
 
 <!-- Modal -->
-<div id="modal-inserir-noticia"
-     class="fixed inset-0 z-[999] flex items-center justify-center p-4"
+<div id="modal-editar-noticia"
+     class="fixed inset-0 z-[1003] flex items-center justify-center p-4"
      tabindex="0">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg flex flex-col max-h-[85vh]"
          onclick="event.stopPropagation();">
 
         <!-- Cabeçalho -->
-        <div class="flex justify-between items-center px-5 py-3 border-b bg-gradient-to-r from-purple-600 to-purple-400 rounded-t-xl">
-            <h3 class="text-white font-semibold text-xl">
-                <i class="fas fa-newspaper mr-2"></i>Inserir Notícia
+        <div class="flex justify-between items-center px-5 py-3 border-b bg-gradient-to-r from-blue-600 to-blue-400 rounded-t-xl">
+            <h3 class="text-white font-semibold text-base">
+                <i class="fas fa-edit mr-2"></i>Editar Notícia
             </h3>
-            <button onclick="document.getElementById('overlay-inserir-noticia').remove(); document.getElementById('modal-inserir-noticia').remove();"
+            <button onclick="document.getElementById('overlay-editar-noticia').remove(); document.getElementById('modal-editar-noticia').remove();"
                     class="text-white hover:text-gray-200 transition-colors">
                 <i class="fas fa-times"></i>
             </button>
         </div>
 
         <!-- Formulário -->
-        <form hx-post="{% url 'inserir_noticia_submit' %}"
-              hx-target="#modal-inserir-noticia"
+        <form hx-post="{% url 'editar_noticia' noticia.pk %}"
+              hx-target="#modal-editar-noticia"
               hx-swap="outerHTML"
               hx-encoding="multipart/form-data"
               class="flex flex-col flex-1 min-h-0 overflow-hidden">
@@ -37,16 +37,16 @@
 
             <div class="overflow-y-auto flex-1 min-h-0 px-5 py-4 space-y-4">
 
-                <!-- Aviso de envio com sucesso -->
+                <!-- Aviso de sucesso -->
                 {% if enviado %}
-                <div id="aviso-sucesso-noticia"
+                <div id="aviso-sucesso-editar"
                      class="bg-green-50 border border-green-300 text-green-800 text-sm rounded-lg px-4 py-3 flex items-center gap-2">
                     <i class="fas fa-check-circle text-green-500 text-lg"></i>
-                    <span class="font-medium">Notícia publicada com sucesso!</span>
+                    <span class="font-medium">Notícia atualizada com sucesso!</span>
                 </div>
                 <script>
                     setTimeout(function() {
-                        var aviso = document.getElementById('aviso-sucesso-noticia');
+                        var aviso = document.getElementById('aviso-sucesso-editar');
                         if (aviso) {
                             aviso.style.transition = 'opacity 0.5s';
                             aviso.style.opacity = '0';
@@ -92,7 +92,7 @@
                     {% endif %}
                 </div>
 
-                <!-- Imagem e Vídeo lado a lado -->
+                <!-- Imagem e Vídeo -->
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.imagem.label }}</label>
@@ -119,7 +119,7 @@
                     {% endif %}
                 </div>
 
-                <!-- Expiração e Publicado lado a lado -->
+                <!-- Expiração e Publicado -->
                 <div class="grid grid-cols-2 gap-3 items-end">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.data_expiracao.label }}</label>
@@ -137,25 +137,15 @@
 
             <!-- Rodapé -->
             <div class="flex justify-end gap-3 px-5 py-3 border-t bg-gray-50 rounded-b-xl">
-                <div class="flex justify-left items-center gap-2 text-sm text-gray-500">
-                    <a  hx-get="{% url 'gerenciar_noticias' %}"
-                        hx-target="body"
-                        hx-swap="beforeend"
-                        class="px-4 py-2 text-sm/2 text-purple-600 bg-purple-100 hover:bg-purple-200 rounded-lg transition-colors font-medium cursor-pointer">
-                        <i class="fas fa-cog mr-1"></i> Gerenciar Notícias
-                    </a>
-                </div>
-                <div class="flex justify-right items-center gap-2">
-                    <button type="button"
-                            onclick="document.getElementById('overlay-inserir-noticia').remove(); document.getElementById('modal-inserir-noticia').remove();"
-                            class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors">
-                        Cancelar
-                    </button>
-                    <button type="submit"
-                            class="px-4 py-2 text-sm text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors font-semibold">
-                        <i class="fas fa-paper-plane mr-1"></i> Publicar
-                    </button>
-                </div>
+                <button type="button"
+                        onclick="document.getElementById('overlay-editar-noticia').remove(); document.getElementById('modal-editar-noticia').remove();"
+                        class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors font-semibold">
+                    <i class="fas fa-save mr-1"></i> Salvar
+                </button>
             </div>
         </form>
     </div>
@@ -164,8 +154,8 @@
 <!-- Fechar com ESC -->
 <script>
 (function() {
-    const modal = document.getElementById('modal-inserir-noticia');
-    const overlay = document.getElementById('overlay-inserir-noticia');
+    const modal = document.getElementById('modal-editar-noticia');
+    const overlay = document.getElementById('overlay-editar-noticia');
 
     function fecharESC(e) {
         if (e.key === 'Escape') {

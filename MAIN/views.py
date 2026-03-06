@@ -768,3 +768,55 @@ def popup_conteudo(request, pk):
     """Retorna popup com conteúdo completo de uma notícia via HTMX."""
     conteudo = get_object_or_404(ConteudoHome, pk=pk)
     return render(request, 'partials/popup_conteudo.html', {'conteudo': conteudo})
+
+@login_required
+def gerenciar_noticias(request):
+    """Lista todas as notícias para gerenciamento via popup HTMX."""
+    noticias = ConteudoHome.objects.select_related('autor').order_by('-data_publicacao')
+    return render(request, 'partials/gerenciar_noticias.html', {'noticias': noticias})
+
+
+@login_required
+def editar_noticia(request, pk):
+    """Exibe/processa edição de notícia via HTMX."""
+    from .forms import ConteudoHomeForm
+
+    noticia = get_object_or_404(ConteudoHome, pk=pk)
+
+    if request.method == 'POST':
+        form = ConteudoHomeForm(request.POST, request.FILES, instance=noticia)
+        if form.is_valid():
+            form.save()
+            form = ConteudoHomeForm(instance=noticia)
+            return render(request, 'partials/editar_noticia.html', {
+                'form': form,
+                'noticia': noticia,
+                'enviado': True,
+                'is_swap': True,
+            })
+        return render(request, 'partials/editar_noticia.html', {
+            'form': form,
+            'noticia': noticia,
+            'is_swap': True,
+        })
+
+    form = ConteudoHomeForm(instance=noticia)
+    return render(request, 'partials/editar_noticia.html', {
+        'form': form,
+        'noticia': noticia,
+    })
+
+
+@login_required
+def excluir_noticia(request, pk):
+    """Exclui notícia e retorna lista atualizada via HTMX."""
+    noticia = get_object_or_404(ConteudoHome, pk=pk)
+    if request.method == 'DELETE' or request.method == 'POST':
+        noticia.delete()
+        noticias = ConteudoHome.objects.select_related('autor').order_by('-data_publicacao')
+        return render(request, 'partials/gerenciar_noticias.html', {
+            'noticias': noticias,
+            'is_swap': True,
+            'excluido': True,
+        })
+    return HttpResponse(status=405)
