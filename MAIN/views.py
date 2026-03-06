@@ -728,3 +728,38 @@ def chat_ia_publico(request):
         """
         return HttpResponse(html_response)
     return HttpResponse("")
+
+@login_required
+def inserir_noticia_form(request):
+    """Exibe popup com formulário para inserir notícia via HTMX."""
+    from .forms import ConteudoHomeForm
+    form = ConteudoHomeForm()
+    return render(request, 'partials/inserir_noticia.html', {'form': form})
+
+
+@login_required
+def inserir_noticia_submit(request):
+    """Processa o envio do formulário de notícia via HTMX."""
+    from .forms import ConteudoHomeForm
+
+    if request.method != 'POST':
+        return HttpResponse(status=405)
+
+    form = ConteudoHomeForm(request.POST, request.FILES)
+    if form.is_valid():
+        noticia = form.save(commit=False)
+        noticia.autor = request.user
+        noticia.save()
+        # Retorna formulário limpo com aviso de sucesso
+        form = ConteudoHomeForm()
+        return render(request, 'partials/inserir_noticia.html', {
+            'form': form,
+            'enviado': True,
+            'is_swap': True,
+        })
+
+    # Formulário com erros
+    return render(request, 'partials/inserir_noticia.html', {
+        'form': form,
+        'is_swap': True,
+    })

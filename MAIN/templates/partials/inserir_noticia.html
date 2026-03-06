@@ -1,0 +1,170 @@
+<!-- MAIN/templates/partials/inserir_noticia.html -->
+<!-- dir: MAIN/templates/partials/inserir_noticia.html -->
+
+{% if not is_swap %}
+<!-- Overlay -->
+<div id="overlay-inserir-noticia"
+     class="fixed inset-0 bg-black bg-opacity-50 z-[998]"
+     onclick="document.getElementById('overlay-inserir-noticia').remove(); document.getElementById('modal-inserir-noticia').remove();">
+</div>
+{% endif %}
+
+<!-- Modal -->
+<div id="modal-inserir-noticia"
+     class="fixed inset-0 z-[999] flex items-center justify-center p-4"
+     tabindex="0">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg flex flex-col max-h-[85vh]"
+         onclick="event.stopPropagation();">
+
+        <!-- Cabeçalho -->
+        <div class="flex justify-between items-center px-5 py-3 border-b bg-gradient-to-r from-purple-600 to-purple-400 rounded-t-xl">
+            <h3 class="text-white font-semibold text-sm">
+                <i class="fas fa-newspaper mr-2"></i>Inserir Notícia
+            </h3>
+            <button onclick="document.getElementById('overlay-inserir-noticia').remove(); document.getElementById('modal-inserir-noticia').remove();"
+                    class="text-white hover:text-gray-200 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Formulário -->
+        <form hx-post="{% url 'inserir_noticia_submit' %}"
+              hx-target="#modal-inserir-noticia"
+              hx-swap="outerHTML"
+              hx-encoding="multipart/form-data"
+              class="flex flex-col flex-1 min-h-0 overflow-hidden">
+            {% csrf_token %}
+
+            <div class="overflow-y-auto flex-1 min-h-0 px-5 py-4 space-y-4">
+
+                <!-- Aviso de envio com sucesso -->
+                {% if enviado %}
+                <div id="aviso-sucesso-noticia"
+                     class="bg-green-50 border border-green-300 text-green-800 text-sm rounded-lg px-4 py-3 flex items-center gap-2">
+                    <i class="fas fa-check-circle text-green-500 text-lg"></i>
+                    <span class="font-medium">Notícia publicada com sucesso!</span>
+                </div>
+                <script>
+                    setTimeout(function() {
+                        var aviso = document.getElementById('aviso-sucesso-noticia');
+                        if (aviso) {
+                            aviso.style.transition = 'opacity 0.5s';
+                            aviso.style.opacity = '0';
+                            setTimeout(function() { aviso.remove(); }, 500);
+                        }
+                    }, 4000);
+                </script>
+                {% endif %}
+
+                <!-- Erros gerais -->
+                {% if form.non_field_errors %}
+                <div class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-3 py-2">
+                    {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Título -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.titulo.label }}</label>
+                    {{ form.titulo }}
+                    {% if form.titulo.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.titulo.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Texto -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.texto.label }}</label>
+                    {{ form.texto }}
+                    {% if form.texto.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.texto.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Seção -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.secao.label }}</label>
+                    {{ form.secao }}
+                    {% if form.secao.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.secao.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Imagem e Vídeo lado a lado -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.imagem.label }}</label>
+                        {{ form.imagem }}
+                        {% if form.imagem.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.imagem.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.video.label }}</label>
+                        {{ form.video }}
+                        {% if form.video.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.video.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Link -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.link.label }}</label>
+                    {{ form.link }}
+                    {% if form.link.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.link.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Expiração e Publicado lado a lado -->
+                <div class="grid grid-cols-2 gap-3 items-end">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.data_expiracao.label }}</label>
+                        {{ form.data_expiracao }}
+                        {% if form.data_expiracao.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.data_expiracao.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="flex items-center gap-2 pb-2">
+                        {{ form.publicado }}
+                        <label class="text-sm text-gray-700">{{ form.publicado.label }}</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rodapé -->
+            <div class="flex justify-end gap-3 px-5 py-3 border-t bg-gray-50 rounded-b-xl">
+                <button type="button"
+                        onclick="document.getElementById('overlay-inserir-noticia').remove(); document.getElementById('modal-inserir-noticia').remove();"
+                        class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors">
+                    Cancelar
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 text-sm text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors font-semibold">
+                    <i class="fas fa-paper-plane mr-1"></i> Publicar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Fechar com ESC -->
+<script>
+(function() {
+    const modal = document.getElementById('modal-inserir-noticia');
+    const overlay = document.getElementById('overlay-inserir-noticia');
+
+    function fecharESC(e) {
+        if (e.key === 'Escape') {
+            if (overlay) overlay.remove();
+            if (modal) modal.remove();
+            document.removeEventListener('keydown', fecharESC);
+        }
+    }
+    document.addEventListener('keydown', fecharESC);
+    if (modal) modal.focus();
+})();
+</script>
