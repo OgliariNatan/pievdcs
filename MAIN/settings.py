@@ -34,8 +34,8 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 # Application definition
 
 INSTALLED_APPS = [
-    'django_htmx', #Para usar HTMX
-    "daphne",  
+    "daphne", # Para ASGI e WebSockets
+    'django_htmx', #Para usar HTMX  
     "channels",
     "django.contrib.admin",
     "django.contrib.auth",
