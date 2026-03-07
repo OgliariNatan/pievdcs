@@ -35,55 +35,45 @@
 
         <!-- Menu items -->
         <nav class="flex flex-col gap-2 flex-1">
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item">
-                <div class="w-6 h-6 flex items-center justify-center">
-                    <i
-                        class="fas fa-clipboard-check text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
-                </div>
-                <span
-                    class="sidebar-label opacity-0 group-hover/sidebar:opacity-100 transition-all duration-300 delay-100 whitespace-nowrap font-medium">
-                    Atendimentos Realizados
-                </span>
-            </a>
-
-            <a href="{% url 'encaminhamentos' %}"
+            <a  hx-get="{% url 'inserir_noticia_form' %}"
+                hx-target="body"
+                hx-swap="beforeend"
                 class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item relative">
                 <div class="w-6 h-6 flex items-center justify-center">
-                    <i
-                        class="fas fa-share-square text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                    <i class="fas fa-newspaper text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
                 </div>
-                <span
-                    class="sidebar-label opacity-0 group-hover/sidebar:opacity-100 transition-all duration-300 delay-100 whitespace-nowrap font-medium">
-                    Encaminhamentos
+                <span class="sidebar-label whitespace-nowrap font-medium">
+                     Inserir Notícias
                 </span>
-                {% if encaminhamentos %}
-                <span
-                    class="ml-auto bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded-full sidebar-label opacity-0 group-hover/sidebar:opacity-100 transition-all duration-300 delay-150 min-w-[1.5rem] text-center"
-                    id="span_encaminhamentos">{{ encaminhamentos }}</span>
-                <span
-                    class="absolute -top-1 -right-1 bg-amber-400 text-amber-900 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center group-hover/sidebar:opacity-0 transition-opacity duration-200"
-                    style="font-size: 10px;">{{ encaminhamentos }}</span>
-                {% endif %}
             </a>
 
-            <a href="#"
+            <a  hx-get="{% url 'mensageria:popup_notificacoes' %}"
+                hx-target="body"
+                hx-swap="beforeend"
                 class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item relative">
                 <div class="w-6 h-6 flex items-center justify-center">
                     <i class="fas fa-bell text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
                 </div>
-                <span
-                    class="sidebar-label opacity-0 group-hover/sidebar:opacity-100 transition-all duration-300 delay-100 whitespace-nowrap font-medium">
+                <span class="sidebar-label whitespace-nowrap font-medium">
                     Notificações
                 </span>
-                {% if notificacoes %}
-                <span
-                    class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full sidebar-label opacity-0 group-hover/sidebar:opacity-100 transition-all duration-300 delay-150 min-w-[1.5rem] text-center"
-                    id="span_alert">{{ notificacoes }}</span>
-                <span
-                    class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center group-hover/sidebar:opacity-0 transition-opacity duration-200"
-                    style="font-size: 10px;">{{ notificacoes }}</span>
-                {% endif %}
+                    {% if notificacoes_nao_lidas %}
+                    <span
+                        class="sidebar-badge bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full min-w-[1.5rem] text-center"
+                            id="sidebar-notif-badge">{{ notificacoes_nao_lidas }}</span>
+                    {% endif %}
+            </a>
+
+            <a  hx-get="{% url 'mensageria:enviar_notificacao' %}"
+                hx-target="body"
+                hx-swap="beforeend"
+                class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item relative">
+                <div class="w-6 h-6 flex items-center justify-center">
+                    <i class="fas fa-share-square text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
+                </div>
+                <span class="sidebar-label whitespace-nowrap font-medium">
+                            Encaminhamentos
+                </span>
             </a>
 
             <a href="{% url 'relatorios' %}"

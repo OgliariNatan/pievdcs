@@ -56,7 +56,7 @@ def defensoria_publica(request):
         'casos_ativos': casos_ativos,
         'description': 'Portal da Defensoria Pública - Sistema PIEVDCS',
         'encaminhamentos': encaminhamentos_nao_lidos,
-        'notificacoes': notificacoes_nao_lidas,
+        'notificacoes_nao_lidas': notificacoes_nao_lidas,
         'user': request.user,
     }
     return render(request, "defensoria_publica.html", contexto)

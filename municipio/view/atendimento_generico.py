@@ -243,7 +243,7 @@ def dashboard_instituicao(request, config):
     return render(request, config['template_principal'], _ctx(config, {
         'title': config['titulo'],
         'encaminhamentos': encaminhamentos,
-        'notificacao': notif,
+        'notificacoes_nao_lidas': notif,
         'qtd_atendimentos': qtd_mes,
         'variacao_atendimentos': variacao,
         'tipo_atendimentos': tipo_count,
