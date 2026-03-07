@@ -59,7 +59,7 @@ def militar(request):
     contexto = {
         'title': 'Polícia Militar',
         'ano_corrente': ANO_CORRENTE,
-        'encaminhamentos': encaminhamentos_nao_lidos,
+        'encaminhamentos_nao_lidos': encaminhamentos_nao_lidos,
         'alert': notificacoes_nao_lidas,
         'description': 'Informações sobre o sistema da Polícia Militar',
         'user': request.user,

@@ -114,12 +114,14 @@ def penal(request):
     casos_ativos= (256, '+12')
     tipo_atendimentos = tipo_atendimento.objects.count()
 
+    print(f'Notificações não lidas: {notificacao_nao_lida}')
+
     contexto = {
         'title': 'Polícia Penal',
         'description': 'This page provides information about the penal system.',
         'ano_corrente': ANO_CORRENTE,
-        'encaminhamentos': encaminhamentos_nao_lidos,
-        'alert': notificacao_nao_lida,
+        'encaminhamentos_nao_lidos': encaminhamentos_nao_lidos,
+        'notificacoes_nao_lidas': notificacao_nao_lida,
         'qtd_atendimentos': atendimentos_mes,
         'qtd_atendimentos_anterior': atendimentos_mes_anterior,
         'variacao_atendimentos': variacao,

@@ -40,7 +40,7 @@ def cientifica(request):
     contexto = {
         'title': 'Polícia Cientifica',
         'ano_corrente': ANO_CORRENTE,
-        'encaminhamentos': encaminhamentos_nao_lidos,
+        'encaminhamentos_nao_lidos': encaminhamentos_nao_lidos,
         'alert': notificacoes_nao_lidas,
         'description': 'This page provides information about the cientifica system.',
         'user' : request.user,

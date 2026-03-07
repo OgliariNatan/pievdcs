@@ -12,6 +12,7 @@ from .permission_group import grupos_permitidos
 from ..forms.cadastros import CadastroVitimaForm, CadastroAgressorForm, CadastroMunicipioForm
 from ..models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
 from ..models.defensoria_publica import FormularioMedidaProtetiva
+from ..models.poder_judiciario import ComarcasPoderJudiciario
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from mensageria.models import Notificacao, StatusNotificacao
@@ -19,7 +20,8 @@ from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grup
 from datetime import date, datetime, timedelta
 from django.db.models import Q, F, Value, BooleanField, IntegerField, ExpressionWrapper
 from django.db.models.functions import Cast
-# 
+
+ 
 from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 ANO_CORRENTE = date.today().year
@@ -101,7 +103,7 @@ def poder_judiciario(request):
         'description': 'Informações e ações pertinentes ao poder Judiciário.',
         'ano_corrente': ANO_CORRENTE,
         'encaminhamentos': encaminhamentos_nao_lidos,
-        'notificacoes': notificacoes_nao_lidas,
+        'notificacoes_nao_lidas': notificacoes_nao_lidas,
         'user': request.user,
         'total_mp': total_mp,
         'mp_vencer_15dias': mp_vencer_15dias,
@@ -494,8 +496,7 @@ def chat_ia(request):
 @grupos_permitidos(['Poder Judiciário'])
 def listar_medidas_protetivas(request):
     """Lista as medidas protetivas com filtros de status, comarca, busca e ordenação."""
-    from ..models.defensoria_publica import FormularioMedidaProtetiva
-    from ..models.poder_judiciario import ComarcasPoderJudiciario
+    
 
     filtro_status = request.GET.get('status', 'todas')
     filtro_ordenar = request.GET.get('ordenar', 'periodo_mp')
