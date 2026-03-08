@@ -164,6 +164,16 @@
         </button>
 
         <button
+            class="group bg-lime-600 hover:bg-lime-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
+            hx-get="#" hx-target="#modal-consulta-mpu" hx-swap="innerHTML"
+            hx-indicator="#spinner">
+            <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                <i class="fas fa-file-alt text-2xl"></i>
+            </div>
+            <span class="font-medium">Consultar MPU</span>
+        </button>
+
+        <button
             class="group p-6 bg-gradient-to-r from-[#bdb76b] to-[#767247] text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
             hx-get="{% url 'sistema_justica:listar_atendimentos_rede_catarina' %}"
             hx-target="#modal-rede-catarina"
@@ -223,6 +233,7 @@
         <div id="modal-content1"> </div>
         <div id="modal-grupos-reflexivos-container"></div> 
         <div id="modal-rede-catarina"></div>
+        <div id="modal-consulta-mpu"></div>
 
         <!-- Conteúdo lorem ipsum -->
         <div class="bg-gray-50 rounded-xl p-6">
