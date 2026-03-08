@@ -13,6 +13,7 @@ from ..forms.cadastros import CadastroVitimaForm, CadastroAgressorForm, Cadastro
 from ..models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
 from ..models.defensoria_publica import FormularioMedidaProtetiva
 from ..models.poder_judiciario import ComarcasPoderJudiciario
+from seguranca_publica.models.militar import AtendimentosRedeCatarina
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from mensageria.models import Notificacao, StatusNotificacao
@@ -20,6 +21,8 @@ from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grup
 from datetime import date, datetime, timedelta
 from django.db.models import Q, F, Value, BooleanField, IntegerField, ExpressionWrapper
 from django.db.models.functions import Cast
+
+from urllib.parse import urlencode
 
  
 from MAIN.decoradores.calcula_tempo import calcula_tempo
@@ -705,3 +708,64 @@ def listar_grupos_reflexivos(request):
         return render(request, 'parcial/judiciario/tabela_grupos_reflexivos.html', contexto)
 
     return render(request, 'parcial/judiciario/listar_grupos_reflexivos.html', contexto)
+
+def _filtrar_atendimentos_rede_catarina(request):
+    """Aplica filtros de busca e ordenação para atendimentos da Rede Catarina."""
+    filtro_ordenar = request.GET.get('ordenar', '-data_atendimento')
+    filtro_busca = request.GET.get('busca', '').strip()
+
+    atendimentos = AtendimentosRedeCatarina.objects.select_related(
+        'medida_protetiva',
+        'medida_protetiva__vitima',
+        'medida_protetiva__agressor',
+        'responsavel',
+    )
+
+    if filtro_busca:
+        atendimentos = atendimentos.filter(
+            Q(medida_protetiva__vitima__nome__icontains=filtro_busca) |
+            Q(medida_protetiva__vitima__cpf__icontains=filtro_busca) |
+            Q(medida_protetiva__agressor__nome__icontains=filtro_busca) |
+            Q(medida_protetiva__agressor__cpf__icontains=filtro_busca)
+        )
+
+    if filtro_ordenar in ('data_atendimento', '-data_atendimento'):
+        atendimentos = atendimentos.order_by(filtro_ordenar)
+    else:
+        filtro_ordenar = '-data_atendimento'
+        atendimentos = atendimentos.order_by(filtro_ordenar)
+
+    return atendimentos, filtro_ordenar, filtro_busca
+
+
+@checked_debug_decorador
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Poder Judiciário'])
+def listar_atendimentos_rede_catarina(request):
+    """Lista atendimentos da Rede Catarina para visualização pelo Poder Judiciário."""
+    atendimentos, filtro_ordenar, filtro_busca = _filtrar_atendimentos_rede_catarina(request)
+
+    query_string_pdf = urlencode({
+        'ordenar': filtro_ordenar,
+        'busca': filtro_busca,
+    })
+
+    contexto = {
+        'atendimentos': atendimentos,
+        'filtro_ordenar': filtro_ordenar,
+        'filtro_busca': filtro_busca,
+        'query_string_pdf': query_string_pdf,
+    }
+
+    if request.headers.get('HX-Target') == 'tabela-atendimentos-rede-catarina':
+        return render(
+            request,
+            'parcial/judiciario/tabela_atendimentos_rede_catarina.html',
+            contexto
+        )
+
+    return render(
+        request,
+        'parcial/judiciario/lista_atendimento_rede_catarina.html',
+        contexto
+    )

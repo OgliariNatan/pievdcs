@@ -630,7 +630,7 @@ def excluir_anexo_atendimento(request, anexo_id):
 
 
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['Polícia Militar'])
+@grupos_permitidos(['Polícia Militar', 'Poder Judiciário'])
 def relatorio_atendimentos_pdf(request, medida_id):
     """Gera relatório PDF dos atendimentos no formato de ofício institucional."""
 

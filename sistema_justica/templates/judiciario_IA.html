@@ -288,7 +288,8 @@
 
                 <button
                     class="group p-6 bg-gradient-to-r from-[#bdb76b] to-[#767247] text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
-                    hx-get="#" hx-target="#modal-rede-catarina"
+                    hx-get="{% url 'sistema_justica:listar_atendimentos_rede_catarina' %}"
+                    hx-target="#modal-rede-catarina"
                     hx-swap="innerHTML">
                     <div class="flex items-center gap-4">
                         <div

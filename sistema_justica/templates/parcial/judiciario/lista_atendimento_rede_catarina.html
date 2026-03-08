@@ -1,0 +1,52 @@
+
+<!-- filepath: /media/ogliari/backup_ssd/GitHub/pievdcs/sistema_justica/templates/parcial/judiciario/lista_atendimento_rede_catarina.html -->
+<div id="overlay-rede-catarina"
+     class="fixed inset-0 bg-black bg-opacity-50 z-[998]"
+     onclick="document.getElementById('overlay-rede-catarina').remove(); document.getElementById('modal-rede-catarina-conteudo').remove();">
+</div>
+
+<div id="modal-rede-catarina-conteudo"
+     class="fixed inset-0 z-[999] flex items-center justify-center p-4"
+     tabindex="0">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-6xl flex flex-col max-h-[90vh]"
+         onclick="event.stopPropagation();">
+
+        <div class="flex justify-between items-center px-5 py-3 border-b bg-gradient-to-r from-[#bdb76b] to-[#767247] rounded-t-xl">
+            <h3 class="text-white font-semibold text-sm">
+                Atendimentos da Rede Catarina
+            </h3>
+            <button class="text-white"
+                    onclick="document.getElementById('overlay-rede-catarina').remove(); document.getElementById('modal-rede-catarina-conteudo').remove();">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="px-5 py-3 border-b bg-gray-50">
+            <form class="grid grid-cols-1 md:grid-cols-4 gap-2"
+                  hx-get="{% url 'sistema_justica:listar_atendimentos_rede_catarina' %}"
+                  hx-target="#tabela-atendimentos-rede-catarina"
+                  hx-swap="innerHTML">
+                <input type="text"
+                       name="busca"
+                       value="{{ filtro_busca }}"
+                       placeholder="Buscar vítima/agressor/CPF..."
+                       class="col-span-2 px-3 py-2 border rounded-lg text-sm">
+
+                <select name="ordenar" class="px-3 py-2 border rounded-lg text-sm">
+                    <option value="-data_atendimento" {% if filtro_ordenar == '-data_atendimento' %}selected{% endif %}>Mais recentes</option>
+                    <option value="data_atendimento" {% if filtro_ordenar == 'data_atendimento' %}selected{% endif %}>Mais antigos</option>
+                </select>
+
+                <button type="submit" class="bg-[#767247] text-white rounded-lg px-3 py-2 text-sm">
+                    Filtrar
+                </button>
+            </form>
+
+            
+        </div>
+
+        <div id="tabela-atendimentos-rede-catarina" class="overflow-y-auto flex-1 min-h-0">
+            {% include 'parcial/judiciario/tabela_atendimentos_rede_catarina.html' %}
+        </div>
+    </div>
+</div>
