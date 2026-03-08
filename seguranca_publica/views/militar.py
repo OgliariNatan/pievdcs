@@ -471,7 +471,7 @@ def _notificar_descumprimento(atendimento):
                 grupo_destinatario=grupo,
                 titulo=titulo,
                 mensagem=mensagem,
-                tipo='DESCUMPRIMENTO',
+                tipo='MEDIDA_PROTETIVA',
                 prioridade='URGENTE',
                 importante=True,
                 remetente=atendimento.responsavel,
