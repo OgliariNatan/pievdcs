@@ -25,12 +25,11 @@ if var_debug == 'True':
     from MAIN.decoradores.calcula_tempo import calcula_tempo, calcula_tempo_fun
     checked_debug_decorador = calcula_tempo
     checked_debug_decorador_fun = calcula_tempo_fun
-    #raise Exception("Debug ativado - interrompendo a execução para evitar lentidão.")
+    
     
 else:
-    checked_debug_decorador = None
-    checked_debug_decorador_fun = None
-
+    checked_debug_decorador = lambda x: x  
+    checked_debug_decorador_fun = lambda x: x  
 """ Fim da configuraçao de decoradores para debug """
 
 

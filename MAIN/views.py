@@ -49,8 +49,9 @@ if var_debug == 'True':
     #raise Exception("Debug ativado - interrompendo a execução para evitar lentidão.")
     
 else:
-    checked_debug_decorador = None
-    checked_debug_decorador_fun = None
+    checked_debug_decorador = lambda x: x
+    checked_debug_decorador_fun = lambda x: x
+   
 
 """ Fim da configuraçao de decoradores para debug """
 
