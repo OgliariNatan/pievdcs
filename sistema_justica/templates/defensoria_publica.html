@@ -133,16 +133,6 @@
                 </button>
 
                 <button
-                    class="group bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
-                    hx-get="{% url 'sistema_justica:cadastro_mpu' %}" hx-target="#modal-mpu" hx-swap="innerHTML"
-                    hx-indicator="#spinner">
-                    <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
-                        <i class="fas fa-thin fa-hands-holding-child"></i>
-                    </div>
-                    <span class="font-medium">Solicitar MPU</span>
-                </button>
-
-                <button
                     class="group bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
                     hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-content1"
                     hx-swap="innerHTML">
@@ -153,6 +143,18 @@
                 </button>
 
                 <button
+                    class="group bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
+                    hx-get="{% url 'sistema_justica:cadastro_mpu' %}" hx-target="#modal-mpu" hx-swap="innerHTML"
+                    hx-indicator="#spinner">
+                    <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-thin fa-hands-holding-child"></i>
+                    </div>
+                    <span class="font-medium">Solicitar MPU</span>
+                </button>
+
+                
+
+                <button
                     class="group bg-sky-600 hover:bg-sky-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
                     hx-get="{% url 'sistema_justica:consultar_mp' %}" 
                     hx-target="body"
@@ -160,7 +162,10 @@
                     <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                         <i class="fas fa-gavel text-2xl"></i>
                     </div>
-                    <span class="font-medium">Consultar MPU</span>
+                    <div class="text-left">
+                        <span class="font-medium">Atualizar MPU</span>
+                        <p class="text-sm text-gray-300">Atualizar formulário </p>
+                    </div>  
                 </button>
 
                 <button
