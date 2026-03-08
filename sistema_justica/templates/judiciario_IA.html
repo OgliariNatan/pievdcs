@@ -285,6 +285,26 @@
                         </div>
                     </div>
                 </button>
+
+                <button
+                    class="group p-6 bg-gradient-to-r from-[#bdb76b] to-[#767247] text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
+                    hx-get="#" hx-target="#modal-rede-catarina"
+                    hx-swap="innerHTML">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 transition">
+                            <img
+                                src="{% static 'img/brasao_pmsc.svg' %}"
+                                alt="Polícia"
+                                class="w-10 h-10 object-contain"
+                            />
+                        </div>
+                        <div class="text-left">
+                            <h3 class="font-semibold">Atendimentos da Rede Catarina</h3>
+                            <p class="text-sm text-pink-100">Registro completo</p>
+                        </div>
+                    </div>
+                </button>
             </div>
         </section>
 
@@ -293,6 +313,7 @@
         <div id="modal-agressor"></div>
         <div id="modal-medidas-protetivas-container"></div> 
         <div id="modal-grupos-reflexivos-container"></div> 
+        <div id="modal-rede-catarina"></div>
     </main>
 </div>
 
