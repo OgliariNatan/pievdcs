@@ -1,0 +1,38 @@
+<!-- filepath: /media/ogliari/backup_ssd/GitHub/pievdcs/sistema_justica/templates/parcial/judiciario/tabela_atendimentos_rede_catarina.html -->
+<div class="p-4">
+    <table class="w-full text-sm">
+        <thead>
+            <tr class="text-left border-b">
+                <th class="py-2">Data</th>
+                <th class="py-2">Vítima</th>
+                <th class="py-2">Agressor</th>
+                <th class="py-2">Situação</th>
+                <th class="py-2 text-center">Relatório</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for atendimento in atendimentos %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="py-2">{{ atendimento.data_atendimento|date:"d/m/Y H:i" }}</td>
+                <td class="py-2">{{ atendimento.medida_protetiva.vitima.nome|default:"N/I" }}</td>
+                <td class="py-2">{{ atendimento.medida_protetiva.agressor.nome|default:"N/I" }}</td>
+                <td class="py-2">{{ atendimento.get_situacao_vitima_display|default:"N/I" }}</td>
+                <td class="py-2">{{ atendimento.get_situacao_vitima_display|default:"N/I" }}</td>
+                <td class="py-2 text-center">
+                    <a href="{% url 'seguranca_publica:relatorio_atendimentos_pdf' atendimento.medida_protetiva.ID %}"
+                    target="_blank"
+                    class="inline-flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white text-xs px-2 py-1 rounded">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="py-8 text-center text-gray-500">
+                    Nenhum atendimento encontrado.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
