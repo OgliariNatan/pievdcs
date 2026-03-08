@@ -37,8 +37,8 @@ if var_debug == 'True':
     checked_debug_decorador_fun = calcula_tempo_fun
     
 else:
-    checked_debug_decorador = None
-    checked_debug_decorador_fun = None
+    checked_debug_decorador = lambda x: x
+    checked_debug_decorador_fun = lambda x: x
 
 """ Fim da configuraçao de decoradores para debug """
 

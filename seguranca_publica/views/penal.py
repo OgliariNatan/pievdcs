@@ -45,7 +45,7 @@ if var_debug == 'True':
     
 else:
     checked_debug_decorador = lambda x: x
-    checked_debug_decorador_fun = lambda x: x
+    checked_debug_decorador_fun = lambda x: x 
 
 """ Fim da configuraçao de decoradores para debug """
 

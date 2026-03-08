@@ -44,8 +44,8 @@ if var_debug == 'True':
     checked_debug_decorador = calcula_tempo
     checked_debug_decorador_fun = calcula_tempo_fun
 else:
-    checked_debug_decorador = None
-    checked_debug_decorador_fun = None
+    checked_debug_decorador = lambda x: x
+    checked_debug_decorador_fun = lambda x: x
 
 
 @login_required(login_url=reverse_lazy('login'))
