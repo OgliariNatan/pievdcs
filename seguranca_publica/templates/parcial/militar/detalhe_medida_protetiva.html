@@ -29,7 +29,7 @@
         <div class="overflow-y-auto max-h-[calc(90vh-64px)] p-6 space-y-6">
 
             <!-- Informações Gerais -->
-            <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="bg-purple-50 rounded-xl p-4 text-center">
                     <p class="text-xs text-purple-600 font-semibold uppercase">Data da Solicitação</p>
                     <p class="text-lg font-bold text-gray-800 mt-1">{{ medida.data_solicitacao|date:"d/m/Y" }}</p>
@@ -38,6 +38,12 @@
                 <div class="bg-blue-50 rounded-xl p-4 text-center">
                     <p class="text-xs text-blue-600 font-semibold uppercase">Período da MP</p>
                     <p class="text-lg font-bold text-gray-800 mt-1">{{ medida.periodo_mp|date:"d/m/Y" }}</p>
+                </div>
+                <div class="bg-orange-50 rounded-xl p-4 text-center">
+                    <p class="text-xs text-orange-600 font-semibold uppercase">Dias Restantes</p>
+                    <p class="text-lg font-bold text-gray-800 mt-1">
+                        {% if medida.ativa %}{{ medida.dias_restantes }}{% else %}0{% endif %}
+                    </p>
                 </div>
                 <div class="bg-orange-50 rounded-xl p-4 text-center">
                     <p class="text-xs text-orange-600 font-semibold uppercase">Comarca</p>
