@@ -239,12 +239,13 @@
                                 hx-trigger="keyup[keyCode==13]"
                                 hx-include="this">
                         </div>
-                        <button type="button"
+                        <button title="Buscar Medidas Protetivas"
+                                type="button"
                                 class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl
                                     transition shadow flex items-center justify-center gap-2 text-sm whitespace-nowrap"
                                 onclick="htmx.ajax('GET', '{% url 'sistema_justica:listar_medidas_protetivas' %}?busca=' + encodeURIComponent(document.getElementById('campo-busca-mp').value), {target:'#modal-medidas-protetivas-container', swap:'innerHTML'})">
                             <i class="fas fa-search"></i>
-                            <span>Buscar MP</span>
+                            <span>Buscar MPU</span>
                         </button>
                     </div>
                     <p class="text-xs text-blue-400 mt-2">

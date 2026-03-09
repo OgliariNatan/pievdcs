@@ -58,14 +58,17 @@
             </td>
             <td class="px-4 py-3 text-center">
                 <div class="flex items-center justify-center gap-1">
+                    {% if pode_alterar_periodo %}
                     <!-- Botão Estender Período -->
-                    <button title="Estender período"
-                            hx-get="{% url 'sistema_justica:form_alterar_periodo_mp' mp.ID %}"
-                            hx-target="#modal-alterar-periodo"
-                            hx-swap="innerHTML"
-                            class="bg-green-100 hover:bg-green-200 text-green-700 p-2 rounded-lg transition text-xs">
-                        <i class="fas fa-calendar-plus"></i>
-                    </button>
+                        <button title="Estender período"
+                                hx-get="{% url 'sistema_justica:form_alterar_periodo_mp' mp.ID %}"
+                                hx-target="#modal-alterar-periodo"
+                                hx-swap="innerHTML"
+                                class="bg-green-100 hover:bg-green-200 text-green-700 p-2 rounded-lg transition text-xs">
+                            <i class="fas fa-calendar-plus"></i>
+                        </button>
+                    {% endif %}
+                    
                     <!-- Botão Detalhes -->
                     <button title="Ver detalhes"
                             hx-get="{% url 'sistema_justica:detalhe_medida_protetiva_jud' mp.ID %}"

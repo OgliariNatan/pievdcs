@@ -496,7 +496,7 @@ def chat_ia(request):
 
 @checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['Poder Judiciário'])
+@grupos_permitidos(['Poder Judiciário', 'Defensoria Pública', 'Ministério Público'])
 def listar_medidas_protetivas(request):
     """Lista as medidas protetivas com filtros de status, comarca, busca e ordenação."""
     
@@ -556,6 +556,7 @@ def listar_medidas_protetivas(request):
         'filtro_busca': filtro_busca,
         'filtro_comarca': filtro_comarca,
         'comarcas': comarcas,
+        'pode_alterar_periodo': request.user.groups.filter(name='Poder Judiciário').exists(),
     }
 
     # Se é requisição HTMX com filtro, retorna só a tabela
@@ -613,7 +614,7 @@ def alterar_periodo_mp(request, medida_id):
 
 
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['Poder Judiciário'])
+@grupos_permitidos(['Poder Judiciário', 'Defensoria Pública', 'Ministério Público'])
 @checked_debug_decorador
 def detalhe_medida_protetiva_jud(request, medida_id):
     """Retorna popup com detalhes da medida protetiva para o Judiciário."""
@@ -640,7 +641,7 @@ def detalhe_medida_protetiva_jud(request, medida_id):
 
 @checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['Poder Judiciário'])
+@grupos_permitidos(['Poder Judiciário', 'Defensoria Pública', 'Ministério Público'])
 def listar_grupos_reflexivos(request):
     """
     Lista atendimentos de grupos reflexivos da Polícia Penal
@@ -740,7 +741,7 @@ def _filtrar_atendimentos_rede_catarina(request):
 
 @checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['Poder Judiciário'])
+@grupos_permitidos(['Poder Judiciário', 'Defensoria Pública', 'Ministério Público'])
 def listar_atendimentos_rede_catarina(request):
     """Lista atendimentos da Rede Catarina para visualização pelo Poder Judiciário."""
     atendimentos, filtro_ordenar, filtro_busca = _filtrar_atendimentos_rede_catarina(request)
