@@ -128,6 +128,16 @@
         </button>
 
         <button
+            class="group bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
+            hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-content1"
+            hx-swap="innerHTML">
+            <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                <i class="fas fa-thin fa-circle-info"></i>
+            </div>
+            <span class="font-medium">Cadastrar Agressor</span>
+        </button>
+        
+        <button
             class="group bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
             hx-get="{% url 'sistema_justica:cadastro_mpu' %}" hx-target="#modal-mpu" hx-swap="innerHTML"
             hx-indicator="#spinner">
@@ -137,15 +147,7 @@
             <span class="font-medium">Solicitar MPU</span>
         </button>
 
-        <button
-            class="group bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
-            hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-content1"
-            hx-swap="innerHTML">
-            <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
-                <i class="fas fa-thin fa-circle-info"></i>
-            </div>
-            <span class="font-medium">Cadastrar Agressor</span>
-        </button>
+        
 
         <button
             class="group bg-sky-600 hover:bg-sky-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
@@ -154,6 +156,19 @@
             hx-swap="beforeend">
             <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                 <i class="fas fa-gavel text-2xl"></i>
+            </div>
+            <div class="text-left">
+              <h3 class="font-medium">Atualizar MPU</h3>
+              <p class="text-sm text-gray-300">Atualizar formulário </p>
+            </div>  
+        </button>
+
+        <button
+            class="group bg-lime-600 hover:bg-lime-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
+            hx-get="#" hx-target="#modal-consulta-mpu" hx-swap="innerHTML"
+            hx-indicator="#spinner">
+            <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                <i class="fas fa-file-alt text-2xl"></i>
             </div>
             <span class="font-medium">Consultar MPU</span>
         </button>
@@ -218,6 +233,7 @@
         <div id="modal-content1"> </div>
         <div id="modal-grupos-reflexivos-container"></div> 
         <div id="modal-rede-catarina"></div>
+        <div id="modal-consulta-mpu"></div>
 
         <!-- Conteúdo lorem ipsum -->
         <div class="bg-gray-50 rounded-xl p-6">
