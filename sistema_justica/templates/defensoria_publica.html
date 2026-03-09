@@ -171,7 +171,7 @@
 
                 <button
                     class="group bg-lime-600 hover:bg-lime-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
-                    hx-get="#" hx-target="#modal-consulta-mpu" hx-swap="innerHTML"
+                    hx-get="{% url 'sistema_justica:listar_medidas_protetivas' %}" hx-target="#modal-medidas-protetivas-container" hx-swap="innerHTML"
                     hx-indicator="#spinner">
                     <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                         <i class="fas fa-file-alt text-2xl"></i>
@@ -243,7 +243,7 @@
                 <div id="modal-consulta-mpu"></div>
                 <div id="modal-grupos-reflexivos-container"></div> 
                 <div id="modal-rede-catarina"></div>
-                <div id="modal-consulta-mpu"></div>
+                <div id="modal-medidas-protetivas-container"></div> 
 
                 <!-- Conteúdo lorem ipsum -->
                 <div class="bg-gray-50 rounded-xl p-6">
