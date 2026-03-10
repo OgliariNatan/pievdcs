@@ -449,7 +449,7 @@ def _notificar_descumprimento(atendimento):
     vitima_nome = mp.vitima.nome if mp.vitima else "N/I"
     agressor_nome = mp.agressor.nome if mp.agressor else "N/I"
 
-    titulo = f"⚠️ Descumprimento de Medida Protetiva - MP #{mp.ID}"
+    titulo = f"Descumprimento de Medida Protetiva - MP #{mp.ID}"
     mensagem = (
         f"Descumprimento relatado durante atendimento da Rede Catarina.\n\n"
         f"Medida Protetiva: #{mp.ID}\n"
@@ -650,6 +650,14 @@ def relatorio_atendimentos_pdf(request, medida_id):
     agora = timezone.localtime(timezone.now())
 
     # === Estilos ===
+    estilo_valor_mp = ParagraphStyle(
+        'ValorMP', fontName='Helvetica', fontSize=9, leading=11,
+    )
+    estilo_rotulo_mp = ParagraphStyle(
+        'RotuloMP', fontName='Helvetica-Bold', fontSize=9, leading=11,
+        textColor=colors.HexColor('#555555'),
+    )
+
     estilo_cabecalho = ParagraphStyle(
         'Cabecalho', parent=styles['Normal'],
         fontName='Helvetica-Bold', fontSize=12,
@@ -811,37 +819,63 @@ def relatorio_atendimentos_pdf(request, medida_id):
     agressor_nome = medida.agressor.nome if medida.agressor else "N/I"
     vitima_cpf = medida.vitima.cpf if medida.vitima else "N/I"
     agressor_cpf = medida.agressor.cpf if medida.agressor else "N/I"
+    data_solic = (
+        medida.data_solicitacao.strftime('%d/%m/%Y')
+        if hasattr(medida, 'data_solicitacao') and medida.data_solicitacao
+        else '—'
+    )
+    periodo = (
+        medida.periodo_mp.strftime('%d/%m/%Y')
+        if hasattr(medida, 'periodo_mp') and medida.periodo_mp
+        else '—'
+    )
 
     elementos.append(Paragraph('DADOS DA MEDIDA PROTETIVA', estilo_secao))
 
     dados_mp = [
-        ['Nº da Medida Protetiva:', str(medida.ID)],
-        ['Vítima:', vitima_nome],
-        ['CPF da Vítima:', vitima_cpf],
-        ['Agressor:', agressor_nome],
-        ['CPF do Agressor:', agressor_cpf],
+        # Linha 0: nº da MP — col 1 mesclada via SPAN
+        [
+            Paragraph('Nº da Medida Protetiva:', estilo_rotulo_mp),
+            Paragraph(str(medida.ID), estilo_valor_mp),
+            '', '',
+        ],
+        # Linha 1: vítima + CPF na mesma linha
+        [
+            Paragraph('Vítima:', estilo_rotulo_mp),
+            Paragraph(vitima_nome, estilo_valor_mp),
+            Paragraph('CPF da Vítima:', estilo_rotulo_mp),
+            Paragraph(vitima_cpf, estilo_valor_mp),
+        ],
+        # Linha 2: agressor + CPF na mesma linha
+        [
+            Paragraph('Agressor:', estilo_rotulo_mp),
+            Paragraph(agressor_nome, estilo_valor_mp),
+            Paragraph('CPF do Agressor:', estilo_rotulo_mp),
+            Paragraph(agressor_cpf, estilo_valor_mp),
+        ],
+        # Linha 3: datas na mesma linha
+        [
+            Paragraph('Data da Solicitação:', estilo_rotulo_mp),
+            Paragraph(data_solic, estilo_valor_mp),
+            Paragraph('Vigência até:', estilo_rotulo_mp),
+            Paragraph(periodo, estilo_valor_mp),
+        ],
     ]
-    if hasattr(medida, 'data_solicitacao') and medida.data_solicitacao:
-        dados_mp.append([
-            'Data da Solicitação:',
-            medida.data_solicitacao.strftime('%d/%m/%Y'),
-        ])
-    if hasattr(medida, 'periodo_mp') and medida.periodo_mp:
-        dados_mp.append([
-            'Vigência até:',
-            medida.periodo_mp.strftime('%d/%m/%Y'),
-        ])
 
-    t_mp = Table(dados_mp, colWidths=[5.5 * cm, 10.2 * cm])
+    # Col 0: rótulos  | Col 1: valores longos | Col 2: rótulos | Col 3: valores curtos
+    # 4cm             | 5.85cm                | 3.15cm         | 2.7cm  → total 15.7cm
+    t_mp = Table(dados_mp, colWidths=[4 * cm, 5.85 * cm, 3.15 * cm, 2.7 * cm])
     t_mp.setStyle(TableStyle([
-        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-        ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
         ('FONTSIZE', (0, 0), (-1, -1), 9),
-        ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#555555')),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
         ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('LEFTPADDING', (0, 0), (-1, -1), 4),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('BOX', (0, 0), (-1, -1), 0.5, colors.HexColor('#dddddd')),
         ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.HexColor('#eeeeee')),
+        # Mescla colunas 1, 2 e 3 apenas na linha do nº da MP
+        ('SPAN', (1, 0), (3, 0)),
     ]))
     elementos.append(t_mp)
     elementos.append(Spacer(1, 16))
@@ -874,7 +908,7 @@ def relatorio_atendimentos_pdf(request, medida_id):
     elementos.append(Paragraph('HISTÓRICO DE ATENDIMENTOS', estilo_secao))
 
     if atendimentos.exists():
-        cabecalho = ['#', 'Data', 'Equipe', 'Contato', 'Agressor', 'Situação', 'Descumpr.', 'Anexos']
+        cabecalho = ['ID', 'Data', 'Equipe', 'Contato', 'Agressor', 'Situação', 'Descumpr.', 'Anexos']
         dados_tabela = [cabecalho]
 
         for i, a in enumerate(atendimentos, 1):
@@ -905,7 +939,7 @@ def relatorio_atendimentos_pdf(request, medida_id):
             colWidths=[0.7 * cm, 2.7 * cm, 2.4 * cm, 1.5 * cm, 1.5 * cm, 2.4 * cm, 2 * cm, 2.5 * cm],
         )
         t_atend.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#dc2626')),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#636363")),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('FONTSIZE', (0, 0), (-1, 0), 7),
