@@ -53,7 +53,56 @@
             <!-- Corpo do formulário (scrollável) -->
             <div class="px-6 py-6 bg-orange-50 overflow-y-auto flex-1 min-h-0">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                    <!-- Campo eProc (CNJ) — renderizado fora do loop -->
+                    {% with field=form.eproc %}
+                    <div class="sm:col-span-2"
+                         x-data="{
+                             eproc: '{{ mpu.eproc|default:'' }}',
+                             get erro() {
+                                 if (!this.eproc) return '';
+                                 if (this.eproc.length < 20) return `Faltam ${20 - this.eproc.length} dígito(s).`;
+                                 return '';
+                             },
+                             get preview() {
+                                 if (this.eproc.length !== 20) return '';
+                                 const n = this.eproc;
+                                 return `${n.slice(0,7)}-${n.slice(7,9)}.${n.slice(9,13)}.${n.slice(13,14)}.${n.slice(14,16)}.${n.slice(16)}`;
+                             }
+                         }">
+                        <label for="{{ field.id_for_label }}"
+                               class="block text-sm font-semibold text-amber-700 mb-1">
+                            <i class="fas fa-gavel mr-1"></i> Nº e-Proc
+                        </label>
+                        <input type="text"
+                               id="{{ field.id_for_label }}"
+                               name="{{ field.html_name }}"
+                               inputmode="numeric"
+                               maxlength="20"
+                               placeholder="Ex: 80000764420228240042"
+                               x-model="eproc"
+                               x-on:input="eproc = eproc.replace(/\D/g, '').slice(0, 20)"
+                               :class="eproc.length > 0 && eproc.length < 20
+                                   ? 'border-red-400 ring-1 ring-red-300'
+                                   : eproc.length === 20
+                                       ? 'border-green-500 ring-1 ring-green-300'
+                                       : 'border-gray-300'"
+                               class="w-full rounded-lg border px-3 py-2 text-sm shadow-sm focus:outline-none transition font-mono">
+                        <p class="text-xs text-gray-400 mt-1" x-show="eproc.length > 0">
+                            <span x-text="eproc.length"></span>/20 dígitos
+                        </p>
+                        <p class="text-xs text-red-600 mt-1" x-show="erro" x-text="erro"></p>
+                        <p class="text-xs text-green-600 mt-1 font-mono" x-show="preview">
+                            ✔ <span x-text="preview"></span>
+                        </p>
+                        {% if field.errors %}
+                        <p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>
+                        {% endif %}
+                    </div>
+                    {% endwith %}
+
                     {% for field in form.visible_fields %}
+                    {% if field.name != 'eproc' %}
 
                     <!-- PARTE 1: Condutas de Violência Psicológica -->
                     {% if field.name == 'critica_aparencia' %}
@@ -135,7 +184,10 @@
                         <p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>
                         {% endif %}
                     </div>
+
+                    {% endif %}{# fecha {% if field.name != 'eproc' %} #}
                     {% endfor %}
+
                 </div>
             </div>
 

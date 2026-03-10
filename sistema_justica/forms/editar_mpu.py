@@ -4,6 +4,7 @@
 from django import forms
 from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
 from sistema_justica.django_toggle_switch import ToggleSwitchWidget
+from sistema_justica.forms.utils import validar_eproc
 
 cor_ativa = '#d97706'   # Âmbar
 cor_inativa = '#4a4343'  # Cinza
@@ -29,6 +30,7 @@ class EditarFormularioMPU(forms.ModelForm):
         model = FormularioMedidaProtetiva
         # Somente campos editáveis pós-cadastro
         fields = [
+            'eproc',  # Campo de processo judicial eletrônico
             # Parte 1: Condutas de Violência Psicológica — Gerais
             'critica_aparencia', 'proibia_make_roupas',
             'constrangia_frente_outras_pessoas', 'obrigava_pedir_desculpas',
@@ -76,6 +78,12 @@ class EditarFormularioMPU(forms.ModelForm):
             'sintomas_persistem', 'observacoes_profissional',
         ]
         widgets = {
+            'eproc': forms.TextInput(attrs={
+                'inputmode': 'numeric',
+                'maxlength': '20',
+                'placeholder': 'Ex: 20000764420548240002',
+                'class': 'form-control form-control-sm border border-gray-400 rounded-xl',
+            }),
             # Condutas Gerais
             'critica_aparencia': _toggle(),
             'proibia_make_roupas': _toggle(),
@@ -166,3 +174,6 @@ class EditarFormularioMPU(forms.ModelForm):
                 widget.attrs.setdefault('class', '')
                 widget.attrs['class'] += ' form-control form-control-sm border border-gray-400 rounded-xl'
                 widget.attrs['class'] = widget.attrs['class'].strip()
+        
+        def clean_eproc(self):
+            return validar_eproc(self.cleaned_data.get('eproc'))

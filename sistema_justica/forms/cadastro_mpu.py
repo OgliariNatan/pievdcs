@@ -4,6 +4,7 @@ from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva,
 
 from sistema_justica.django_toggle_switch import ToggleSwitchWidget
 from django.forms.widgets import DateTimeInput, DateInput, SelectDateWidget, CheckboxInput
+from sistema_justica.forms.utils import validar_eproc
 
 cor_ativa_toggle = '#9333ea'  # Roxo
 cor_inativa_toggle = '#4a4343'  # Cinza
@@ -32,6 +33,12 @@ class CadastroMedidaProtetiva(forms.ModelForm):
                 active_text='Solicitada',
                 inactive_text='Não Solicitada'
             ),  # Widget personalizado
+            'eproc': forms.TextInput(attrs={
+                'inputmode': 'numeric',
+                'maxlength': '20',
+                'placeholder': 'Ex: 80000764420228240042',
+                'class': 'form-control form-control-sm border border-gray-400 rounded-xl',
+            }),
             #parte 1: Condutas de violência psicológica
             'critica_aparencia': ToggleSwitchWidget(size='xs',
                 active_color=cor_ativa_toggle,
@@ -471,3 +478,7 @@ class CadastroMedidaProtetiva(forms.ModelForm):
             'id': 'id_municipio_mp',
             'class': 'form-control form-control-sm border border-gray-400 rounded-xl'
         })
+    
+    def clean_eproc(self):
+        """Valida que o campo eproc contém exatamente 20 dígitos numéricos."""
+        return validar_eproc(self.cleaned_data.get('eproc'))
