@@ -183,7 +183,7 @@ DATABASES = {
             "application_name": "pievdcs",
             "connect_timeout": 30,
             "client_encoding": "utf8",
-            'timezone': 'America/Sao_Paulo',
+            #'timezone': 'America/Sao_Paulo',
         }
     }
 }
