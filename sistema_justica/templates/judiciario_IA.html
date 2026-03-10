@@ -119,9 +119,21 @@
     <!-- Conteúdo principal -->
     <main class="flex-1 p-4 sm:p-6 lg:p-8 transition-all duration-300">
         <!-- Cabeçalho removido pois agora está integrado no conteúdo -->
-
+        <!-- Header da página -->
+        <div class="mb-6">
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#495e2c] mb-3 flex items-center gap-3">
+                <div class="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-balance-scale text-sm"></i>
+                </div>
+                {{ title }}
+                </h1>
+                
+            </div>
         <!-- Métricas de Violência Doméstica -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-6 gap-6 mb-8">
+            
+            
+            
             <div class="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-purple-500">
                 <div class="flex items-center justify-between">
                     <div>
@@ -271,7 +283,7 @@
                 </button>
 
                 <button
-                    class="group p-6 bg-gradient-to-r from-sky-700 to-blue-300 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
+                    class="group p-6 bg-gradient-to-r from-[#495e2c] to-[#597036] text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
                     hx-get="{% url 'sistema_justica:listar_grupos_reflexivos' %}"
                     hx-target="#modal-grupos-reflexivos-container"
                     hx-swap="innerHTML">

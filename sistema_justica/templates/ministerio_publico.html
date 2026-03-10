@@ -48,8 +48,10 @@
       </a>
 
       <a  hx-get="{% url 'mensageria:popup_notificacoes' %}"
-          hx-target="body"
-          hx-swap="beforeend"
+          hx-target="#global-popups"
+          hx-swap="innerHTML"
+          hx-push-url="false"
+          hx-on:click="document.getElementById('global-popups').innerHTML=''"
           class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group/item relative">
           <div class="w-6 h-6 flex items-center justify-center">
             <i class="fas fa-bell text-lg group-hover/item:scale-110 transition-transform duration-200"></i>
@@ -234,6 +236,7 @@
         <div id="modal-grupos-reflexivos-container"></div> 
         <div id="modal-rede-catarina"></div>
         <div id="modal-medidas-protetivas-container"></div>
+        
 
         <!-- Conteúdo lorem ipsum -->
         <div class="bg-gray-50 rounded-xl p-6">

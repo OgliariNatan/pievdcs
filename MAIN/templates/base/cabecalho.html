@@ -25,10 +25,12 @@
                         Olá, {{ user.first_name|default:user.username }}
                     </span>
                     <div class="relative">
-                        <button id="btn-notificacoes"
+                        <button title="Ver notificações"
+                                id="btn-notificacoes"
                                 hx-get="{% url 'mensageria:popup_notificacoes' %}"
-                                hx-target="body"
-                                hx-swap="beforeend"
+                                hx-target="#global-popups"
+                                hx-swap="innerHTML" hx-push-url="false"
+                                hx-on:click="document.getElementById('global-popups').innerHTML=''"
                                 class="text-white hover:text-accent transition-colors duration-200 relative">
                             <i class="fas fa-bell text-lg"></i>
                             <span id="notif-badge-nav"
@@ -80,9 +82,11 @@
                         <i class="fas fa-user mr-2"></i>
                         {{ user.first_name|default:user.username }}
                     </div>
-                    <button hx-get="{% url 'mensageria:popup_notificacoes' %}"
-                            hx-target="body"
-                            hx-swap="beforeend"
+                    <button title="Ver notificações"
+                            hx-get="{% url 'mensageria:popup_notificacoes' %}"
+                            hx-target="#global-popups"
+                            hx-swap="innerHTML" hx-push-url="false"
+                            hx-on:click="document.getElementById('global-popups').innerHTML=''"
                             class="text-white hover:text-accent py-2 text-left flex items-center space-x-2">
                         <i class="fas fa-bell"></i>
                         <span>Notificações</span>
