@@ -63,8 +63,28 @@
     <script src="{% static 'smart-selects/admin/js/chainedfk.js' %}"></script>
     <script src="{% static 'smart-selects/admin/js/bindfields.js' %}"></script>
 
-    <!-- WebSocket de Notificações em Tempo Real (DENTRO do body) -->
+        <!-- WebSocket de Notificações em Tempo Real -->
     {% if user.is_authenticated %}
+
+    <!-- Banner de permissão de notificações (Firefox exige interação do usuário) -->
+    <div id="banner-notif"
+         class="hidden fixed top-0 left-0 right-0 z-[10000] bg-purple-700 text-white text-sm px-4 py-2 flex items-center justify-between gap-3 shadow-md">
+        <span>
+            <i class="fas fa-bell mr-2"></i>
+            Ative as notificações para ser alertado sobre medidas protetivas e descumprimentos em tempo real.
+        </span>
+        <div class="flex gap-2 flex-shrink-0">
+            <button id="btn-ativar-notif"
+                    class="bg-white text-purple-700 font-semibold px-3 py-1 rounded-lg text-xs hover:bg-purple-100 transition">
+                Ativar notificações
+            </button>
+            <button onclick="document.getElementById('banner-notif').remove(); localStorage.setItem('notif-banner-dispensado', '1')"
+                    class="text-purple-200 hover:text-white text-xs px-2">
+                Dispensar
+            </button>
+        </div>
+    </div>
+
     <script>
     (function() {
         const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
@@ -72,12 +92,37 @@
         let ws = null;
         let tentativas = 0;
 
+        // Exibe o banner se ainda não tem permissão e o usuário não dispensou
+        function verificarBannerPermissao() {
+            if (
+                'Notification' in window
+                && Notification.permission === 'default'
+                && !localStorage.getItem('notif-banner-dispensado')
+            ) {
+                document.getElementById('banner-notif').classList.remove('hidden');
+            }
+        }
+
+        // Botão de ativar — Firefox aceita requestPermission a partir de clique
+        document.getElementById('btn-ativar-notif').addEventListener('click', () => {
+            Notification.requestPermission().then(permission => {
+                document.getElementById('banner-notif').remove();
+                if (permission === 'granted') {
+                    new Notification('PIEVDCS — Notificações ativadas', {
+                        body: 'Você será alertado sobre eventos importantes.',
+                        icon: '{% static "img/logo-enfrentamento-a-violencia-de-genero.png" %}',
+                    });
+                }
+            });
+        });
+
         function conectar() {
             ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
                 tentativas = 0;
                 ws.send(JSON.stringify({ action: 'obter_contador' }));
+                verificarBannerPermissao();
             };
 
             ws.onmessage = (e) => {
@@ -108,6 +153,7 @@
         }
 
         function mostrarToastNotificacao(notif) {
+            // Toast interno
             const toast = document.createElement('div');
             toast.className = 'fixed bottom-4 right-4 bg-white border-l-4 border-purple-500 shadow-2xl rounded-lg p-4 z-[9999] max-w-sm animate-slide-in';
             toast.innerHTML = `
@@ -125,6 +171,22 @@
             `;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 8000);
+
+            // Notificação nativa do SO
+            if ('Notification' in window && Notification.permission === 'granted') {
+                const n = new Notification(notif.titulo, {
+                    body: (notif.mensagem || '').substring(0, 100),
+                    icon: '{% static "img/logo-enfrentamento-a-violencia-de-genero.png" %}',
+                    badge: '{% static "img/logo-enfrentamento-a-violencia-de-genero.png" %}',
+                    tag: `notif-${notif.id}`,
+                    requireInteraction: notif.prioridade === 'URGENTE',
+                });
+                n.onclick = () => {
+                    window.focus();
+                    if (notif.url_acao) window.location.href = notif.url_acao;
+                    n.close();
+                };
+            }
         }
 
         conectar();
