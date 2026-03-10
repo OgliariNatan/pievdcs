@@ -13,8 +13,12 @@ from sistema_justica.models.base import Vitima_dados, Agressor_dados, Filhos_dad
 from seguranca_publica.models.base import grau_parentesco_agressor_choices
 from smart_selects.db_fields import ChainedForeignKey, ChainedManyToManyField, GroupedForeignKey
 from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
+from django.core.validators import RegexValidator
 
-
+validador_eproc = RegexValidator(
+    regex=r'^\d{20}$',
+    message='Digite exatamente 20 dígitos numéricos.',
+)
 
 def default_periodo_mp():
     '''
@@ -143,6 +147,13 @@ class FormularioMedidaProtetiva(models.Model):
         verbose_name='Filhos',
         blank=True,
         #null=True
+    )
+    eproc = models.CharField(
+        verbose_name='Nº e-Proc',
+        null=True,
+        blank=True,
+        validators=[validador_eproc]
+        #help_text='Apenas números. Ex: 80000764420228240042',
     )
 
     #Relacionado a parte 1: Condutas de violência psicológica
@@ -508,5 +519,13 @@ class FormularioMedidaProtetiva(models.Model):
         verbose_name = 'Formulario MP'
         verbose_name_plural = 'Formularios MP'
         ordering = ['data_solicitacao']
+
     def __str__(self):
         return f'Solicitação: {self.vitima} - ID: {self.ID}'
+
+    def eproc_formatado(self):
+        """Retorna o nº eProc formatado no padrão CNJ: 8000076-44.2022.8.24.0042"""
+        if not self.eproc:
+            return '—'
+        n = str(self.eproc).zfill(20)
+        return f'{n[:7]}-{n[7:9]}.{n[9:13]}.{n[13]}.{n[14:16]}.{n[16:]}'
