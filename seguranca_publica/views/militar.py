@@ -17,7 +17,7 @@ from django.contrib.auth.models import Group
 from .permission_group import grupos_permitidos
 from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
 from sistema_justica.models.base import Vitima_dados, Agressor_dados
-from mensageria.models import Notificacao, StatusNotificacao
+from mensageria.models import Notificacao, StatusNotificacao, TipoNotificacao, PrioridadeNotificacao
 from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
 from usuarios.models import CustomUser
 from django.contrib.auth.models import Group
@@ -443,7 +443,7 @@ def historico_mp_agressor(request, cpf_agressor):
 # Views de Atendimentos da Rede Catarina
 # =============================================================================
 
-def _notificar_descumprimento(atendimento):
+def _notificar_descumprimento(atendimento, request):
     """Envia notificação de descumprimento para autoridades competentes."""
     mp = atendimento.medida_protetiva
     vitima_nome = mp.vitima.nome if mp.vitima else "N/I"
@@ -467,17 +467,17 @@ def _notificar_descumprimento(atendimento):
         try:
             grupo = Group.objects.get(name=nome_grupo)
             enviar_notificacao_grupo(
-                request=None,
+                request=request,
                 grupo_destinatario=grupo,
                 titulo=titulo,
                 mensagem=mensagem,
-                tipo='MEDIDA_PROTETIVA',
-                prioridade='URGENTE',
+                tipo=TipoNotificacao.MEDIDA_PROTETIVA,
+                prioridade=PrioridadeNotificacao.URGENTE,
                 importante=True,
-                remetente=atendimento.responsavel,
             )
         except Group.DoesNotExist:
             continue
+
 
 
 
@@ -516,7 +516,7 @@ def cadastrar_atendimento(request, medida_id):
 
             descumprimento_notificado = False
             if atendimento.vitima_relatou_descumprimento:
-                _notificar_descumprimento(atendimento)
+                _notificar_descumprimento(atendimento, request)
                 atendimento.notificacao_enviada = True
                 atendimento.save(update_fields=['notificacao_enviada'])
                 descumprimento_notificado = True
@@ -577,7 +577,7 @@ def editar_atendimento(request, atendimento_id):
             _salvar_anexos(imagens_validas, videos_validos, atendimento)
 
             if atendimento.vitima_relatou_descumprimento and not atendimento.notificacao_enviada:
-                _notificar_descumprimento(atendimento)
+                _notificar_descumprimento(atendimento, request)
                 atendimento.notificacao_enviada = True
                 atendimento.save(update_fields=['notificacao_enviada'])
 

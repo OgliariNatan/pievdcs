@@ -175,5 +175,5 @@ class EditarFormularioMPU(forms.ModelForm):
                 widget.attrs['class'] += ' form-control form-control-sm border border-gray-400 rounded-xl'
                 widget.attrs['class'] = widget.attrs['class'].strip()
         
-        def clean_eproc(self):
-            return validar_eproc(self.cleaned_data.get('eproc'))
+    def clean_eproc(self):
+        return validar_eproc(self.cleaned_data.get('eproc'))
