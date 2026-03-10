@@ -958,7 +958,7 @@ def gerar_relatorio_por_cpf(request):
     return response
 
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['Polícia Penal'])
+@grupos_permitidos(['Polícia Penal', 'CREAS'])
 def consultar_mp_penal(request):
     """
     Lista medidas protetivas com filtros para consulta da Polícia Penal (somente leitura).
