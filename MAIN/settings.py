@@ -69,6 +69,7 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Middleware para CORS
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -76,10 +77,16 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'corsheaders.middleware.CorsMiddleware',  # Middleware para CORS
     'MAIN.middleware.logs_pers.APILogMiddleware',  # Middleware personalizado para logs
     'django_htmx.middleware.HtmxMiddleware', # Middleware para HTMX
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    'https://www.redecontraaviolencia.org',
+    'https://redecontraaviolencia.org',
+    'http://10.40.22.46',
+]
+CORS_ALLOW_CREDENTIALS = True
 
 # define aonde sera armagenado as mensagens
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
@@ -136,7 +143,7 @@ CHANNEL_LAYERS = {
 }
 
 # WebSocket configuration
-WEBSOCKET_sURL = '/ws/'
+WEBSOCKET_URL = '/ws/'
 
 TEMPLATES = [
     {
