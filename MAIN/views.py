@@ -195,7 +195,7 @@ def notificacoes(request, notificacoes=0):
     return render(request, "notificacoes.html", context)
 
 
-def calcular_tendencia_temporal():
+def calcular_tendencia_temporal(comarca_filtrada=''):
     """
     Calcula dados de tendência temporal dos últimos 24 meses.
     Retorna labels (meses) e dados (quantidade de casos).
@@ -216,32 +216,29 @@ def calcular_tendencia_temporal():
         7: 'Jul', 8: 'Ago', 9: 'Set', 10: 'Out', 11: 'Nov', 12: 'Dez'
     }
     
+    # Querysets base — sem filtro de período (tendência sempre exibe 24 meses)
+    qs_pm_base = OcorrenciaMilitar.objects.all()
+    qs_pc_base = OcorrenciaCivil.objects.all()
+    qs_mp_base = FormularioMedidaProtetiva.objects.all()
+
+    # Aplica filtro de comarca se informado
+    if comarca_filtrada and comarca_filtrada != 'Todas':
+        qs_mp_base = qs_mp_base.filter(comarca_competente__nome=comarca_filtrada)
+        qs_pc_base = qs_pc_base.filter(
+            Q(comarca_competente__nome=comarca_filtrada) | Q(comarca_competente__isnull=True)
+        )
+
     for mes in meses:
         inicio = mes
-        if mes.month == 12:
-            fim = mes.replace(year=mes.year + 1, month=1)
-        else:
-            fim = mes.replace(month=mes.month + 1)
-        
-        # Contagem por modelo
-        count_pm = OcorrenciaMilitar.objects.filter(
-            data__gte=inicio, data__lt=fim
-        ).count()
-        
-        count_pc = OcorrenciaCivil.objects.filter(
-            data__gte=inicio, data__lt=fim
-        ).count()
-        
-        count_mp = FormularioMedidaProtetiva.objects.filter(
-            data_solicitacao__gte=inicio, data_solicitacao__lt=fim
-        ).count()
-        
-        total = count_pm + count_pc + count_mp
-        
-        label = f"{meses_pt[mes.month]}/{mes.year}"
-        labels.append(label)
-        dados.append(total)
-    
+        fim = mes.replace(year=mes.year + 1, month=1) if mes.month == 12 else mes.replace(month=mes.month + 1)
+
+        count_pm = qs_pm_base.filter(data__gte=inicio, data__lt=fim).count()
+        count_pc = qs_pc_base.filter(data__gte=inicio, data__lt=fim).count()
+        count_mp = qs_mp_base.filter(data_solicitacao__gte=inicio, data_solicitacao__lt=fim).count()
+
+        labels.append(f"{meses_pt[mes.month]}/{mes.year}")
+        dados.append(count_pm + count_pc + count_mp)
+
     return {"labels": labels, "data": dados}
 
 
@@ -541,7 +538,7 @@ def relatorios(request):
     dados_graficos = calcular_dados_graficos(qs_pm, qs_pc, qs_mp, comarca_selecionada)
     
     # Tendência temporal (últimos 24 meses)
-    tendencia_data = calcular_tendencia_temporal()
+    tendencia_data = calcular_tendencia_temporal(comarca_selecionada)
     
     # Estatísticas gerais
     try:
