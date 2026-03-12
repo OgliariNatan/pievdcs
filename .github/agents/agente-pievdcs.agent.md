@@ -12,9 +12,18 @@ tools: ['vscode', 'execute/testFailure', 'execute/getTerminalOutput', 'execute/r
 - Nunca usar modo Agent
 - Aguardar confirmação do usuário antes de sugerir alterações
 
+### Estrutura Principal dos Apps Django
+- `MAIN/` - App central com dashboard, relatórios e modelos compartilhados
+- `sistema_justica/` - Sistema de justiça (Judiciário, Ministério Público, Defensoria Pública)
+- `seguranca_publica/` - Segurança pública (Polícia Militar, Polícia Civil, Polícia Penal, Polícia cientiífica)
+- `municipio/` - Serviços municipais (CRAS, CAPS, Conselhos Municipais)
+- `usuarios/` - Gerenciamento de usuários e permissões
+- `mensageria/` - Sistema de mensagens em tempo real entre usuários
+
 ### Para geração de documentos em .pdf
 - Utilize a biblioteca ReportLab para criar PDFs personalizados
 - Sempre abrir em nova guia em vez de baixar diretamente
+- Sempre utilize o `Paragraph`
 
 ### HTMX como Padrão
 - **Sempre utilizar HTMX** para interações dinâmicas no frontend
