@@ -291,7 +291,7 @@ def aplicar_filtros_queryset(request):
     return qs_pm, qs_pc, qs_mp, periodo, comarca
 
 
-def calcular_dados_graficos(qs_pm, qs_pc, qs_mp):
+def calcular_dados_graficos(qs_pm, qs_pc, qs_mp, comarca_filtrada=''):
     """
     Calcula todos os dados para os gráficos baseado nos querysets filtrados.
     """
@@ -415,15 +415,29 @@ def calcular_dados_graficos(qs_pm, qs_pc, qs_mp):
         ]
     }
     
-    # Comarcas com MP - CORRIGIDO: usar 'ID' maiúsculo para FormularioMedidaProtetiva
-    comarcas_mp = qs_mp.values('comarca_competente__nome').annotate(
-        total=Count('ID')  # Corrigido: 'ID' maiúsculo
-    ).order_by('-total')
-    
-    comarcas_data = {
-        "labels": [c['comarca_competente__nome'] or 'N/A' for c in comarcas_mp],
-        "data": [c['total'] for c in comarcas_mp]
-    }
+    # Comarcas ou Municípios (depende do filtro ativo)
+    if comarca_filtrada and comarca_filtrada != 'Todas':
+        # Comarca selecionada → mostra distribuição por municípios da comarca
+        agrupamento = qs_mp.values('municipio_mp__nome').annotate(
+            total=Count('ID')
+        ).order_by('-total')
+        comarcas_data = {
+            "labels": [c['municipio_mp__nome'] or 'N/A' for c in agrupamento],
+            "data": [c['total'] for c in agrupamento],
+            "titulo": f"Municípios — Comarca {comarca_filtrada}",
+            "eixo_x": "Municípios",
+        }
+    else:
+        # Sem filtro → mostra todas as comarcas
+        agrupamento = qs_mp.values('comarca_competente__nome').annotate(
+            total=Count('ID')
+        ).order_by('-total')
+        comarcas_data = {
+            "labels": [c['comarca_competente__nome'] or 'N/A' for c in agrupamento],
+            "data": [c['total'] for c in agrupamento],
+            "titulo": "Distribuição por Comarcas",
+            "eixo_x": "Comarcas",
+        }
     
     return {
         "violencia": {"labels": label_violencia, "data": dados_violencia},
@@ -524,7 +538,7 @@ def relatorios(request):
     is_htmx = request.headers.get('HX-Request') == 'true'
     
     # Calcular dados dos gráficos
-    dados_graficos = calcular_dados_graficos(qs_pm, qs_pc, qs_mp)
+    dados_graficos = calcular_dados_graficos(qs_pm, qs_pc, qs_mp, comarca_selecionada)
     
     # Tendência temporal (últimos 24 meses)
     tendencia_data = calcular_tendencia_temporal()
@@ -576,14 +590,6 @@ def relatorios(request):
     except:
         comarcas_pj = []
 
-    # Bairros para mapa -> Remover depois que integrar com dados reais do banco
-    bairros = [
-        {"nome": "Novo Bairro", "lat": -26.771567, "lng": -53.190010, "casos": 10, "tipo_violencia": "Física"},
-        {"nome": "Centro", "lat": -26.7670, "lng": -53.1850, "casos": 20, "tipo_violencia": "Psicológica"},
-        {"nome": "Morada do Sol", "lat": -26.7690, "lng": -53.1700, "casos": 15, "tipo_violencia": "Sexual"},
-        {"nome": "Padre Antonio", "lat": -26.7630, "lng": -53.1870, "casos": 25, "tipo_violencia": "Patrimonial"},
-        {"nome": "Linha Sanga Silva", "lat": -26.73157, "lng": -53.19992, "casos": 1, "tipo_violencia": "Moral"},
-    ]
     # Municípios com limites geográficos para o mapa
     municipios_mapa = calcular_municipios_mapa(qs_pm, qs_pc, qs_mp)
        
@@ -622,7 +628,7 @@ def relatorios(request):
         
         # Mapa
         'municipios_mapa': municipios_mapa,
-        "bairros": [],
+      
         
         # Cidades (estático por enquanto)
         "cidades": {
