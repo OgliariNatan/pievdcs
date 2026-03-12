@@ -302,24 +302,22 @@
 
     <!-- Mapa Interativo -->
     <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
-        <h2 class="text-lg font-semibold mb-4 text-primary">
-            <i class="fas fa-map-marked-alt mr-2"></i>
-            Mapa de Ocorrências
-        </h2>
-        <div id="map" class="w-full h-96 rounded-lg"></div>
-        
-        <!-- Legenda do Mapa -->
-        <div class="mt-4 p-4 bg-gray-50 rounded-lg">
-            <h3 class="text-sm font-semibold text-gray-700 mb-2">Legenda:</h3>
-            <div class="flex flex-wrap gap-4">
-                <span class="flex items-center"><span class="w-4 h-4 rounded-full bg-red-500 mr-2"></span>Física</span>
-                <span class="flex items-center"><span class="w-4 h-4 rounded-full bg-orange-500 mr-2"></span>Psicológica</span>
-                <span class="flex items-center"><span class="w-4 h-4 rounded-full bg-purple-600 mr-2"></span>Sexual</span>
-                <span class="flex items-center"><span class="w-4 h-4 rounded-full bg-blue-500 mr-2"></span>Patrimonial</span>
-                <span class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-500 mr-2"></span>Moral</span>
-            </div>
-        </div>
+    <h2 class="text-lg font-semibold mb-4 text-primary">
+        <i class="fas fa-map-marked-alt mr-2"></i>
+        Mapa de Ocorrências por Município
+    </h2>
+    <div id="map" class="w-full rounded-lg" style="height: 500px;"></div>
+
+    <!-- Legenda dinâmica -->
+    <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Legenda — Tipo de Violência Predominante:</h3>
+        <div id="legenda-mapa" class="flex flex-wrap gap-4 text-sm"></div>
+        <p class="text-xs text-gray-400 mt-2">
+            * A cor representa o tipo de violência com maior incidência no município.
+            Clique no município para ver o detalhamento completo.
+        </p>
     </div>
+</div>
 </div>
 
 <!-- Botão Voltar ao Topo -->
@@ -346,6 +344,7 @@
 {{ parentesco_do_agressor|json_script:"parentesco-data" }}
 {{ Tipos_de_Violência|json_script:"violencia-data" }}
 {{ bairros|json_script:"bairros-data" }}
+{{ municipios_mapa|json_script:"municipios-mapa-data" }}
 
 <script>
     // ========================================
@@ -595,39 +594,122 @@
     };
     
     // ========================================
-    // MAPA
-    // ========================================
-    function inicializarMapa() {
-        const dados = carregarDados();
-        
-        const map = L.map('map').setView([-26.77, -53.19], 10);
-        
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18
-        }).addTo(map);
-        
-        const cores = {
-            'Física': '#FF4444',
-            'Psicológica': '#FF8800',
-            'Sexual': '#8B00FF',
-            'Patrimonial': '#0088FF',
-            'Moral': '#00AA44'
-        };
-        
-        dados.bairros.forEach(bairro => {
-            const cor = cores[bairro.tipo_violencia] || '#666';
-            L.circleMarker([bairro.lat, bairro.lng], {
-                radius: 8 + bairro.casos,
-                fillColor: cor,
-                color: '#fff',
-                weight: 2,
-                fillOpacity: 0.8
-            })
-            .bindPopup(`<b>${bairro.nome}</b><br>Casos: ${bairro.casos}<br>Tipo: ${bairro.tipo_violencia}`)
-            .addTo(map);
-        });
+// MAPA — Municípios com polígonos GeoJSON
+// ========================================
+function inicializarMapa() {
+    const dadosMunicipios = JSON.parse(
+        document.getElementById('municipios-mapa-data')?.textContent || '[]'
+    );
+
+    const map = L.map('map').setView([-26.77, -53.19], 18);
+    //map.setMaxBounds([[-35.0, -75.0], [6.0, -28.0]]);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: ''
+    }).addTo(map);
+
+    // Paleta de cores por tipo de violência
+    const CORES = {
+        'Física':        '#EF4444',
+        'Psicológica':   '#F97316',
+        'Sexual':        '#7C3AED',
+        'Patrimonial':   '#3B82F6',
+        'Moral':         '#16A34A',
+        'Sem tipo':      '#9CA3AF',
+        'Sem registro':  '#D1D5DB',
+    };
+
+    function getCor(tipo) {
+        return CORES[tipo] || '#6B7280';
     }
-    
+
+    const tiposPresentes = new Set();
+    const bounds = [];
+
+    dadosMunicipios.forEach(mun => {
+        if (!mun.limites) return;
+
+        // Normaliza para GeoJSON Feature se necessário
+        let geojson = mun.limites;
+        if (geojson.type !== 'Feature' && geojson.type !== 'FeatureCollection') {
+            geojson = { type: 'Feature', geometry: geojson, properties: {} };
+        }
+
+        const cor = getCor(mun.tipo_principal);
+        tiposPresentes.add(mun.tipo_principal);
+
+        // HTML do popup com detalhamento por tipo
+        const linhasTipos = Object.entries(mun.tipos)
+            .sort((a, b) => b[1] - a[1])
+            .map(([tipo, qtd]) =>
+                `<div class="flex items-center gap-1 py-0.5">
+                    <span style="width:10px;height:10px;border-radius:50%;background:${getCor(tipo)};display:inline-block;flex-shrink:0"></span>
+                    <span>${tipo}: <strong>${qtd}</strong></span>
+                </div>`
+            ).join('');
+
+        try {
+            const layer = L.geoJSON(geojson, {
+                style: {
+                    fillColor: cor,
+                    weight: 1.5,
+                    opacity: 0.9,
+                    color: '#ffffff',
+                    fillOpacity: 0.6,
+                },
+                onEachFeature: (feature, layer) => {
+                    layer.on('mouseover', function (e) {
+                        this.setStyle({ fillOpacity: 0.85, weight: 2.5 });
+                    });
+                    layer.on('mouseout', function (e) {
+                        this.setStyle({ fillOpacity: 0.6, weight: 1.5 });
+                    });
+                }
+            }).bindPopup(`
+                <div style="min-width:200px; font-family: sans-serif;">
+                    <p class="font-bold text-base mb-1" style="font-size:14px; font-weight:700; margin-bottom:6px;">
+                        ${mun.nome}
+                    </p>
+                    <p style="font-size:12px; color:#6B7280; margin-bottom:8px;">
+                        Total: <strong>${mun.total}</strong> ocorrência(s)
+                    </p>
+                    <div style="font-size:12px;">${linhasTipos}</div>
+                </div>
+            `).addTo(map);
+
+            // Coleta bounds para ajuste automático
+            const layerBounds = layer.getBounds();
+            if (layerBounds.isValid()) {
+                bounds.push(layerBounds);
+            }
+        } catch (err) {
+            console.warn(`Erro ao renderizar município ${mun.nome}:`, err);
+        }
+    });
+
+    // Ajusta zoom para cobrir todos os municípios
+    if (bounds.length > 0) {
+        const combined = bounds.reduce((acc, b) => acc.extend(b));
+        map.fitBounds(combined, { padding: [20, 20] });
+    }
+
+    // Gera legenda dinâmica com apenas os tipos presentes
+    const legendaEl = document.getElementById('legenda-mapa');
+    if (legendaEl) {
+        if (tiposPresentes.size === 0) {
+            legendaEl.innerHTML = '<span class="text-gray-400 text-xs">Nenhuma ocorrência com município cadastrado encontrada.</span>';
+        } else {
+            legendaEl.innerHTML = Array.from(tiposPresentes)
+                .sort()
+                .map(tipo => `
+                    <span class="flex items-center gap-2">
+                        <span style="width:14px;height:14px;border-radius:3px;background:${getCor(tipo)};display:inline-block;flex-shrink:0;"></span>
+                        <span>${tipo}</span>
+                    </span>
+                `).join('');
+        }
+    }
+}
     // ========================================
     // FRASES MOTIVACIONAIS
     // ========================================

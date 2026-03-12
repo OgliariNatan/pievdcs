@@ -435,7 +435,78 @@ def calcular_dados_graficos(qs_pm, qs_pc, qs_mp):
         "comarcas": comarcas_data,
     }
 
+def calcular_municipios_mapa(qs_pm, qs_pc, qs_mp):
+    """
+    Agrega ocorrências por município com limites geográficos e tipos de violência.
+    Retorna lista de dicts prontos para serialização JSON no mapa Leaflet.
+    """
+    municipios = {}
 
+    # PM e Civil usam municipio_ocorrencia (campo direto na OcorrenciaBase)
+    for qs in [qs_pm, qs_pc]:
+        resultados = (
+            qs.filter(municipio_ocorrencia__limites__isnull=False)
+            .values(
+                'municipio_ocorrencia__id',
+                'municipio_ocorrencia__nome',
+                'municipio_ocorrencia__limites',
+                'tipo_de_violencia__nome',
+            )
+            .annotate(total=Count('id'))
+        )
+        for r in resultados:
+            mid = r['municipio_ocorrencia__id']
+            if mid is None:
+                continue
+            if mid not in municipios:
+                municipios[mid] = {
+                    'id': mid,
+                    'nome': r['municipio_ocorrencia__nome'],
+                    'limites': r['municipio_ocorrencia__limites'],
+                    'tipos': {},
+                    'total': 0,
+                }
+            tipo = r['tipo_de_violencia__nome'] or 'Sem tipo'
+            municipios[mid]['tipos'][tipo] = municipios[mid]['tipos'].get(tipo, 0) + r['total']
+            municipios[mid]['total'] += r['total']
+
+    # FormularioMedidaProtetiva usa vitima__municipio
+    resultados_mp = (
+        qs_mp.filter(vitima__municipio__limites__isnull=False)
+        .values(
+            'vitima__municipio__id',
+            'vitima__municipio__nome',
+            'vitima__municipio__limites',
+            'tipo_de_violencia__nome',
+        )
+        .annotate(total=Count('ID'))
+    )
+    for r in resultados_mp:
+        mid = r['vitima__municipio__id']
+        if mid is None:
+            continue
+        if mid not in municipios:
+            municipios[mid] = {
+                'id': mid,
+                'nome': r['vitima__municipio__nome'],
+                'limites': r['vitima__municipio__limites'],
+                'tipos': {},
+                'total': 0,
+            }
+        tipo = r['tipo_de_violencia__nome'] or 'Sem tipo'
+        municipios[mid]['tipos'][tipo] = municipios[mid]['tipos'].get(tipo, 0) + r['total']
+        municipios[mid]['total'] += r['total']
+
+    # Determina o tipo dominante por município
+    resultado = []
+    for dados in municipios.values():
+        dados['tipo_principal'] = (
+            max(dados['tipos'], key=dados['tipos'].get)
+            if dados['tipos'] else 'Sem registro'
+        )
+        resultado.append(dados)
+
+    return resultado
 
 
 @checked_debug_decorador
@@ -504,7 +575,7 @@ def relatorios(request):
     except:
         comarcas_pj = []
 
-    # Bairros para mapa
+    # Bairros para mapa -> Remover depois que integrar com dados reais do banco
     bairros = [
         {"nome": "Novo Bairro", "lat": -26.771567, "lng": -53.190010, "casos": 10, "tipo_violencia": "Física"},
         {"nome": "Centro", "lat": -26.7670, "lng": -53.1850, "casos": 20, "tipo_violencia": "Psicológica"},
@@ -512,6 +583,10 @@ def relatorios(request):
         {"nome": "Padre Antonio", "lat": -26.7630, "lng": -53.1870, "casos": 25, "tipo_violencia": "Patrimonial"},
         {"nome": "Linha Sanga Silva", "lat": -26.73157, "lng": -53.19992, "casos": 1, "tipo_violencia": "Moral"},
     ]
+    # Municípios com limites geográficos para o mapa
+    municipios_mapa = calcular_municipios_mapa(qs_pm, qs_pc, qs_mp)
+       
+
 
     context = {
         "title": "Painel Informativo",
@@ -545,7 +620,8 @@ def relatorios(request):
         "Tipos_de_Violência": dados_graficos["violencia"],
         
         # Mapa
-        "bairros": bairros,
+        'municipios_mapa': municipios_mapa,
+        "bairros": [],
         
         # Cidades (estático por enquanto)
         "cidades": {
