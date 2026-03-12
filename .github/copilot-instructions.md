@@ -1,27 +1,18 @@
 # PIEVDCS - Instruções do Copilot
 
-## Visão Geral do Projeto
-**PIEVDCS** (Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais) é uma plataforma SaaS baseada em Django para combater violência doméstica e crimes sexuais no Brasil. Integra forças de segurança pública, núcleos municipais de atenção à família, Ministério Público, Defensoria Pública e Poder Judiciário.
+---
+description: 'Modo de desenvolvimento PIEVDCS - Sempre usa Ask mode, HTMX e ORM otimizado'
+tools: ['vscode', 'execute/testFailure', 'execute/getTerminalOutput', 'execute/runTask', 'execute/createAndRunTask', 'execute/runInTerminal', 'execute/runTests', 'read/problems', 'read/readFile', 'read/terminalSelection', 'read/terminalLastCommand', 'read/getTaskOutput', 'search', 'web', 'pylance-mcp-server/pylanceDocuments', 'pylance-mcp-server/pylanceFileSyntaxErrors', 'ms-python.python/getPythonEnvironmentInfo', 'ms-python.python/getPythonExecutableCommand', 'ms-python.python/installPythonPackage', 'ms-python.python/configurePythonEnvironment']
+---
 
-## Arquitetura e Organização
+# Modo de Desenvolvimento PIEVDCS
 
-### instrucoes para PR
-- Nunca crie pull requests
-- Para verifiação de código, use a branch `63-ogliari
-- Nunca use o modo `Agent`
-- Sempre responda em português brasileiro
+## Comportamento Obrigatório
 
-
-### Convenção de decodificação Python/Django
-- Segue PEP 8 para estilo de código Python
-- Segue PEP 257 para estilo de docstrings Python
-- Escreve comentarios claros e concisos em português brasileiro para cada funçao e classe
-- divida o código em funções e classes pequenas e reutilizáveis
-- sempre priorize a legibilidade e a clareza do código
-- sempre priorize um codigo curto e simples
-- Use linhas em branco para separar funções, classes e blocos de código, quando apropriado.
-
-
+### Modo de Operação
+- **Sempre operar no modo "Ask"**: responder perguntas e fornecer orientações sem executar ações automaticamente
+- Nunca usar modo Agent
+- Aguardar confirmação do usuário antes de sugerir alterações
 
 ### Estrutura Principal dos Apps Django
 - `MAIN/` - App central com dashboard, relatórios e modelos compartilhados
@@ -29,119 +20,50 @@
 - `seguranca_publica/` - Segurança pública (Polícia Militar, Polícia Civil, Polícia Penal, Polícia cientiífica)
 - `municipio/` - Serviços municipais (CRAS, CAPS, Conselhos Municipais)
 - `usuarios/` - Gerenciamento de usuários e permissões
+- `mensageria/` - Sistema de mensagens em tempo real entre usuários
 
-### Padrões de Design do Banco de Dados
-- **PostgreSQL** com locale brasileiro UTF-8 (`pt_BR.UTF-8`)
-- Modelos orientados por domínio em arquivos separados (ex: `sistema_justica/models/base.py`, `poder_judiciario.py`)
-- Chaves estrangeiras encadeadas usando `smart_selects` para relacionamentos Estado→Município
-- Tuplas de escolhas padronizadas: `sexo_choices`, `escolaridade_choices`, `etnia_choices`, `classeEconomica_choices`
+### Para geração de documentos em .pdf
+- Utilize a biblioteca ReportLab para criar PDFs personalizados
+- Sempre abrir em nova guia em vez de baixar diretamente
+- Sempre utilize o `Paragraph`
 
-### Modelos de Dados Principais
-```python
-# Estrutura principal de dados da vítima em sistema_justica/models/base.py
-class Vitima_dados(models.Model):  # Nomenclatura em português brasileiro
-    nome = models.CharField(max_length=250, verbose_name="Nome Completo*")
-    cpf = models.CharField(max_length=14, verbose_name="CPF*")
-    data_nascimento = models.DateField(verbose_name="Data de Nascimento*")
-    # Usa ForeignKeys encadeadas Estado/Município
-```
+### HTMX como Padrão
+- **Sempre utilizar HTMX** para interações dinâmicas no frontend
+- Priorizar atributos HTMX (`hx-get`, `hx-post`, `hx-target`, `hx-swap`, `hx-trigger`)
+- Evitar JavaScript React quando HTMX resolver o problema
+- Usar `hx-boost` para navegação progressiva
 
-### Configuração do Ambiente
-```bash
-# Criar ambiente virtual
-python -m venv env
-# Atualizar requirements após novos pacotes
-pip freeze > requirements.txt
-```
+### ORM Django Otimizado
+- **Sempre usar consultas otimizadas** com Django ORM:
+  - `select_related()` para ForeignKey (evita N+1)
+  - `prefetch_related()` para ManyToMany e reverse FK
+  - `only()` e `defer()` para limitar campos
+  - `values()` e `values_list()` quando não precisa de objetos
+  - `annotate()` e `aggregate()` para cálculos no banco
+  - `Q()` objects para consultas complexas
+  - `F()` expressions para operações no banco
+  - Índices em campos frequentemente filtrados
 
-### Operações do Banco de Dados
-```bash
-python manage.py makemigrations
-python manage.py migrate
-# Carregar dados iniciais usando scripts de automação
-python manage.py shell < automacoes/inserir_dados.py
-```
+## Estilo de Resposta
+- Respostas em português brasileiro
+- Código curto, limpo e legível
+- Comentários claros em português
+- Seguir PEP 8 e PEP 257
 
-### Servidor de Desenvolvimento*
-```bash
-python manage.py runserver 10.40.22.46:8000 # Padrão: http://127.0.0.1:8000
-```
+## Foco do Projeto
+- Django 5.2.6
+- PostgreSQL com locale pt_BR.UTF-8
+- TailwindCSS para estilização
+- Chart.js e Leaflet.js para visualizações
+- Segurança e LGPD
 
-## Convenções Específicas do Projeto
+## Restrições
+- Nunca criar Pull Requests
+- Verificar código na branch `63-ogliari`
+- Não usar modo Agent
 
-### Localização Brasileira
-- Todos os modelos usam nomes de campos em português brasileiro (`nome`, `cpf`, `data_nascimento`)
-- Nomes verbosos em português: `verbose_name="Nome Completo*"`
-- Fuso horário: `America/Sao_Paulo`
-- Locale: `pt_BR.UTF-8`
-
-### Estrutura de Templates
-- Estende padrão `base/base.html`
-- Usa TailwindCSS para estilização com configuração customizada nos templates
-- Interações dinâmicas com jQuery e HTMX
-- Gráficos JavaScript com Chart.js e mapas Leaflet.js
-- Herança de templates: `{% extends "base/base.html" %}` → `{% block main_content %}` ... `{% block article_content %}`...`{% block script %}`
-
-### Organização de Arquivos Estáticos
-```
-staticfiles/
-├── admin/
-├── css/
-├── estados_municipio/  # Dados geográficos
-├── img/
-├── js/
-└── rest_framework/
-```
-
-### Segurança e Configuração
-- Usa `python-decouple` para variáveis de ambiente
-- Middleware personalizado de logging em `MAIN/middleware/logs_pers.py`
-- Gerenciamento de sessão: timeout de 150min, expiração ao fechar navegador
-- Proteção CSRF com `CSRF_COOKIE_HTTPONLY = True`
-
-### Padrões de Visualização de Dados
-- Dashboard em `relatorios.html` com múltiplas visualizações Chart.js
-- Mapas Leaflet.js com marcadores coloridos por tipo de violência
-- Funções personalizadas de cor: `getCorPorTipoViolencia()`, `criarIconeColorido()`
-- Geração de cores para gráficos: `gerarCoresHSL(qtd)` para paletas dinâmicas
-
-## Pontos de Integração
-
-### Fluxo de Dados Geográficos
-- Estados/Municípios carregados via scripts de automação a partir de GeoJSON
-- Smart selects para dropdowns dependentes (Estado→Município)
-- Coordenadas de mapa armazenadas para visualizações do dashboard
-- Coordenadas de bairro para mapas detalhados
-
-### Comunicação Entre Aplicações
-- Modelos compartilhados em `sistema_justica.models.base`
-- Roteamento de URL delegado para `urls.py` específicos de cada app
-- Diretórios de templates configurados por app em `TEMPLATES.DIRS`
-
-### Endpoints da API
-- Django REST Framework configurado com renderização apenas JSON
-- CORS habilitado para requisições cross-domain
-- Logging personalizado de API via middleware
-
-## Arquivos Críticos para Compreensão da IA
-- `sistema_justica/models/base.py` - Modelos de domínio principais e escolhas
-- `MAIN/templates/relatorios.html` - Dashboard com visualizações complexas
-- `MAIN/settings.py` - Configuração completa do Django
-- `automacoes/` - Scripts de carregamento de dados para configuração inicial
-- `requirements.txt` - Dependências da pilha tecnológica
-- `usuarios` - Cadastro de usuarios e permissões baseadas em instituições
-- `mensageria/` - Sistema de mensagens em tempo real entre usuários com uso do Django Channels, daphne e Redis
-   
-
-## Notas de Desenvolvimento
-- Projeto usa GitHub Projects para rastreamento de issues
-- Desenvolvimento baseado em branches (sem commits diretos na main)
-- Cada área (ex: segurança pública, sistema de justiça, município, usuário) deve ter sua própria aplicação Django
-- Todos os apps devem incluir um `README.md`
-- Autenticação personalizada de usuário com permissões baseadas em instituição
-
-
-## Versão do Django e dependências
-- Projeto utiliza Django 5.2.6
-- Certifique-se de usar recursos compatíveis com esta versão
-- Dependências principais: TailwindCSS, jQuery, Chart.js, Leaflet.js, HTMX
+## Comportamento 
+- Desejo que as informações a serem exibidas em consultas ou cadastros sejam exibidas em um popup, sempre criando um template especifico para cada popup. (APP/TEMPLATES/PARCIAL/INSTITUICAO/NOME_DO_TEMPLATE.html)
+- Deverá fechar o popup ao clicar fora dele, em um botão de fechar ou com a tecla ESC
+- Inclua no inicio do arquivo o diretorio do documento 
+- Sempre que for necessário criar um template, crie um template base para os popups (APP/TEMPLATES/PARCIAL/INSTITUICAO/BASE_POPUP.html) e faça os outros templates herdarem desse template base
