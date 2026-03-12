@@ -615,6 +615,7 @@ function inicializarMapa() {
         'Sexual':        '#7C3AED',
         'Patrimonial':   '#3B82F6',
         'Moral':         '#16A34A',
+        'Vicária':       '#a80c93',
         'Sem tipo':      '#9CA3AF',
         'Sem registro':  '#D1D5DB',
     };
@@ -637,14 +638,15 @@ function inicializarMapa() {
 
         const cor = getCor(mun.tipo_principal);
         tiposPresentes.add(mun.tipo_principal);
+        Object.keys(mun.tipos).forEach(t => tiposPresentes.add(t));
 
         // HTML do popup com detalhamento por tipo
         const linhasTipos = Object.entries(mun.tipos)
             .sort((a, b) => b[1] - a[1])
             .map(([tipo, qtd]) =>
-                `<div class="flex items-center gap-1 py-0.5">
-                    <span style="width:10px;height:10px;border-radius:50%;background:${getCor(tipo)};display:inline-block;flex-shrink:0"></span>
-                    <span>${tipo}: <strong>${qtd}</strong></span>
+                `<div style="display:flex;align-items:center;gap:6px;padding:2px 0;">
+                    <span style="width:10px;height:10px;border-radius:50%;background:${getCor(tipo)};display:inline-block;flex-shrink:0;"></span>
+                    <span style="font-size:12px;">${tipo}: <strong>${qtd}</strong></span>
                 </div>`
             ).join('');
 

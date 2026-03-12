@@ -472,14 +472,15 @@ def calcular_municipios_mapa(qs_pm, qs_pc, qs_mp):
 
     # FormularioMedidaProtetiva usa municipio_mp
     resultados_mp = (
-        qs_mp.filter(vitima__municipio__limites__isnull=False)
+        # DEPOIS:
+        qs_mp.filter(municipio_mp__limites__isnull=False)
         .values(
             'municipio_mp__id',
             'municipio_mp__nome',
             'municipio_mp__limites',
             'tipo_de_violencia__nome',
         )
-        .annotate(total=Count('ID'))
+        .annotate(total=Count('ID', distinct=True))
     )
     for r in resultados_mp:
         mid = r['municipio_mp__id']
