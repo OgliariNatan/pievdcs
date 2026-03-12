@@ -470,26 +470,26 @@ def calcular_municipios_mapa(qs_pm, qs_pc, qs_mp):
             municipios[mid]['tipos'][tipo] = municipios[mid]['tipos'].get(tipo, 0) + r['total']
             municipios[mid]['total'] += r['total']
 
-    # FormularioMedidaProtetiva usa vitima__municipio
+    # FormularioMedidaProtetiva usa municipio_mp
     resultados_mp = (
         qs_mp.filter(vitima__municipio__limites__isnull=False)
         .values(
-            'vitima__municipio__id',
-            'vitima__municipio__nome',
-            'vitima__municipio__limites',
+            'municipio_mp__id',
+            'municipio_mp__nome',
+            'municipio_mp__limites',
             'tipo_de_violencia__nome',
         )
         .annotate(total=Count('ID'))
     )
     for r in resultados_mp:
-        mid = r['vitima__municipio__id']
+        mid = r['municipio_mp__id']
         if mid is None:
             continue
         if mid not in municipios:
             municipios[mid] = {
                 'id': mid,
-                'nome': r['vitima__municipio__nome'],
-                'limites': r['vitima__municipio__limites'],
+                'nome': r['municipio_mp__nome'],
+                'limites': r['municipio_mp__limites'],
                 'tipos': {},
                 'total': 0,
             }
