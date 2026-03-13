@@ -5,7 +5,7 @@ from .views.poder_judiciario import(
     cadastro_municipio_form, cadastro_municipio_submit, chat_ia,
     listar_medidas_protetivas, form_alterar_periodo_mp,
     alterar_periodo_mp, detalhe_medida_protetiva_jud, listar_grupos_reflexivos,
-    listar_atendimentos_rede_catarina, 
+    listar_atendimentos_rede_catarina, toggle_medida_concedida
 )
 from .views.ministerio_publico import ministerio_publico
 from .views.defensoria_publica import(
@@ -25,6 +25,7 @@ urlpatterns = [
     path('medida_protetiva/<int:medida_id>/detalhe/', detalhe_medida_protetiva_jud, name='detalhe_medida_protetiva_jud'),
     path('grupos_reflexivos/', listar_grupos_reflexivos, name='listar_grupos_reflexivos'),
     path('judiciario/atendimentos-rede-catarina/', listar_atendimentos_rede_catarina,name='listar_atendimentos_rede_catarina'),
+    path('medida_protetiva/<int:medida_id>/toggle-concedida/', toggle_medida_concedida, name='toggle_medida_concedida'),
 
 
 

@@ -2,12 +2,12 @@
 #import openai #Precisa PAGAR
 import ollama
 from django.conf import settings
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 import requests
 import traceback
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from .permission_group import grupos_permitidos
 from ..forms.cadastros import CadastroVitimaForm, CadastroAgressorForm, CadastroMunicipioForm
 from ..models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
@@ -21,7 +21,7 @@ from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grup
 from datetime import date, datetime, timedelta
 from django.db.models import Q, F, Value, BooleanField, IntegerField, ExpressionWrapper
 from django.db.models.functions import Cast
-
+from django.contrib.auth.models import Group
 from urllib.parse import urlencode
 
  
@@ -770,3 +770,54 @@ def listar_atendimentos_rede_catarina(request):
         'parcial/judiciario/lista_atendimento_rede_catarina.html',
         contexto
     )
+
+@checked_debug_decorador
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Poder Judiciário'])
+def toggle_medida_concedida(request, medida_id):
+    """Alterna o campo medida_protetiva_concedida. Exclusivo do Poder Judiciário."""
+    if request.method != 'POST':
+        return HttpResponse(status=405)
+
+    medida = get_object_or_404(FormularioMedidaProtetiva, ID=medida_id)
+    medida.medida_protetiva_concedida = not medida.medida_protetiva_concedida
+    medida.save(update_fields=['medida_protetiva_concedida'])
+
+    # Notifica a Polícia Militar apenas ao CONCEDER (não ao revogar)
+    if medida.medida_protetiva_concedida:
+        try:
+            grupo_pm = Group.objects.get(name='Polícia Militar')
+            nome_vitima = medida.vitima.nome if medida.vitima else f'ID {medida_id}'
+            enviar_notificacao_grupo(
+                request=request,
+                grupo_destinatario=grupo_pm,
+                titulo='Medida Protetiva Concedida — Rede Catarina',
+                mensagem=(
+                    f'O Poder Judiciário concedeu a Medida Protetiva #{medida_id} '
+                    f'para {nome_vitima}. Solicitamos acompanhamento via Rede Catarina.'
+                ),
+                tipo='MEDIDA_PROTETIVA',
+                prioridade='ALTA',
+                objeto_relacionado_tipo='FormularioMedidaProtetiva',
+                objeto_relacionado_id=medida_id,
+                importante=True,
+            )
+        except Group.DoesNotExist:
+            pass
+
+    url_toggle = reverse('sistema_justica:toggle_medida_concedida', args=[medida_id])
+    icone = 'fa-check-circle' if medida.medida_protetiva_concedida else 'fa-times-circle'
+    cor = 'text-green-600 hover:text-green-800' if medida.medida_protetiva_concedida else 'text-red-500 hover:text-red-700'
+    label = 'Concedida' if medida.medida_protetiva_concedida else 'Não Concedida'
+
+    return HttpResponse(f"""
+        <span id="badge-concedida-{medida_id}"
+              hx-post="{url_toggle}"
+              hx-target="#badge-concedida-{medida_id}"
+              hx-swap="outerHTML"
+              title="Clique para alternar"
+              class="inline-flex items-center gap-1 text-xs font-semibold cursor-pointer select-none {cor}">
+            <i class="fas {icone}"></i>
+            {label}
+        </span>
+    """)

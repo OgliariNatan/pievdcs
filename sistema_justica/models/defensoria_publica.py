@@ -110,6 +110,11 @@ class FormularioMedidaProtetiva(models.Model):
         blank=True  # Permita campo em branco para evitar erro de validação
     )
     
+    medida_protetiva_concedida = models.BooleanField(
+        default=False,
+        verbose_name='Medida Protetiva Concedida'
+    )
+
     bairro_mp = models.CharField(
         max_length=100,
         verbose_name='Bairro:',
