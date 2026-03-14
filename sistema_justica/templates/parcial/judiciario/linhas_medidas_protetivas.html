@@ -42,15 +42,15 @@
     <td class="px-4 py-3 text-center">
         {% if pode_alterar_periodo %}
             <span id="badge-concedida-{{ mp.ID }}"
-                  hx-post="{% url 'sistema_justica:toggle_medida_concedida' mp.ID %}"
-                  hx-target="#badge-concedida-{{ mp.ID }}"
-                  hx-swap="outerHTML"
-                  title="Clique para alternar"
-                  class="inline-flex items-center gap-1 text-xs font-semibold cursor-pointer select-none
-                      {% if mp.medida_protetiva_concedida %}text-green-600 hover:text-green-800
-                      {% else %}text-red-500 hover:text-red-700{% endif %}">
+                class="inline-flex items-center gap-1 text-xs font-semibold
+                    {% if mp.medida_protetiva_concedida %}text-green-600{% else %}text-red-500{% endif %}">
                 <i class="fas {% if mp.medida_protetiva_concedida %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
                 {% if mp.medida_protetiva_concedida %}Concedida{% else %}Não Concedida{% endif %}
+                <button onclick="solicitarConfirmacaoConcessao({{ mp.ID }}, this)"
+                        title="Alterar concessão"
+                        class="ml-1 text-gray-400 hover:text-orange-500 transition">
+                    <i class="fas fa-pen text-xs"></i>
+                </button>
             </span>
         {% else %}
             <span class="inline-flex items-center gap-1 text-xs font-semibold
@@ -96,3 +96,18 @@
     </td>
 </tr>
 {% endif %}
+
+<script>
+    function solicitarConfirmacaoConcessao(id, btn) {
+        if (confirm('Deseja alterar o estado de concessão desta medida protetiva?')) {
+            executarToggleConcessao(id);
+        }
+    }
+
+    function executarToggleConcessao(id) {
+        htmx.ajax('POST',
+            `/justica/medida_protetiva/${id}/toggle-concedida/`,
+            { target: '#badge-concedida-' + id, swap: 'innerHTML' }
+        );
+    }
+</script>
