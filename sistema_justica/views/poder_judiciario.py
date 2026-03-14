@@ -9,11 +9,14 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy, reverse
 from .permission_group import grupos_permitidos
+from django.core.paginator import Paginator
+from django.db.models import Case, When, IntegerField as IntField
 from ..forms.cadastros import CadastroVitimaForm, CadastroAgressorForm, CadastroMunicipioForm
 from ..models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
 from ..models.defensoria_publica import FormularioMedidaProtetiva
 from ..models.poder_judiciario import ComarcasPoderJudiciario
 from seguranca_publica.models.militar import AtendimentosRedeCatarina
+from seguranca_publica.models.penal import ModeloPenal
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from mensageria.models import Notificacao, StatusNotificacao
@@ -23,8 +26,8 @@ from django.db.models import Q, F, Value, BooleanField, IntegerField, Expression
 from django.db.models.functions import Cast
 from django.contrib.auth.models import Group
 from urllib.parse import urlencode
+from django.utils import timezone
 
- 
 from MAIN.decoradores.calcula_tempo import calcula_tempo
 
 ANO_CORRENTE = date.today().year
@@ -498,31 +501,30 @@ def chat_ia(request):
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Poder Judiciário', 'Defensoria Pública', 'Ministério Público'])
 def listar_medidas_protetivas(request):
-    """Lista as medidas protetivas com filtros de status, comarca, busca e ordenação."""
+    """Lista medidas protetivas com paginação de 50 registros e scroll infinito."""
     
 
-    filtro_status = request.GET.get('status', 'todas')
+    filtro_status  = request.GET.get('status', 'todas')
     filtro_ordenar = request.GET.get('ordenar', 'periodo_mp')
-    filtro_busca = request.GET.get('busca', '').strip()
+    filtro_busca   = request.GET.get('busca', '').strip()
     filtro_comarca = request.GET.get('comarca', '')
+    pagina         = max(int(request.GET.get('pagina', 1)), 1)
+
+    hoje = date.today()
 
     qs = FormularioMedidaProtetiva.objects.select_related(
         'vitima', 'agressor', 'comarca_competente'
     )
 
-    hoje = date.today()
-
-    # Filtro por status
+    # Filtros aplicados no banco
     if filtro_status == 'ativas':
         qs = qs.filter(periodo_mp__gte=hoje)
     elif filtro_status == 'vencidas':
         qs = qs.filter(periodo_mp__lt=hoje)
 
-    # Filtro por comarca
     if filtro_comarca:
         qs = qs.filter(comarca_competente_id=filtro_comarca)
 
-    # Filtro por busca (nome ou CPF da vítima)
     if filtro_busca:
         qs = qs.filter(
             Q(vitima__nome__icontains=filtro_busca) |
@@ -531,35 +533,58 @@ def listar_medidas_protetivas(request):
             Q(agressor__cpf__icontains=filtro_busca)
         )
 
-    # Ordenação
+    # Ordenação no banco: ativas primeiro, depois pelo campo escolhido
     ordenacoes_permitidas = ['periodo_mp', '-periodo_mp', '-data_solicitacao']
     if filtro_ordenar not in ordenacoes_permitidas:
         filtro_ordenar = 'periodo_mp'
-    qs = qs.order_by(filtro_ordenar)
 
-    # Calcula propriedades dinâmicas e separa ativos primeiro
-    medidas = list(qs)
-    for mp in medidas:
+    qs = qs.annotate(
+        _ativa=Case(
+            When(periodo_mp__gte=hoje, then=0),
+            default=1,
+            output_field=IntField(),
+        )
+    ).order_by('_ativa', filtro_ordenar)
+
+    # Paginação
+    paginator  = Paginator(qs, 50)
+    pagina_obj = paginator.get_page(pagina)
+
+    # Calcula propriedades apenas nos 50 registros da página
+    for mp in pagina_obj:
         mp.ativa = mp.periodo_mp >= hoje
         mp.dias_restantes = (mp.periodo_mp - hoje).days if mp.ativa else 0
 
-    # Ordena: ativos primeiro, depois inativos (mantendo a sub-ordenação escolhida)
-    medidas.sort(key=lambda mp: (not mp.ativa,))
+    # Query string dos filtros para o sentinela de scroll
+    filtros_qs = urlencode({k: v for k, v in {
+        'status':  filtro_status,
+        'ordenar': filtro_ordenar,
+        'busca':   filtro_busca,
+        'comarca': filtro_comarca,
+    }.items() if v and v != 'todas'})
 
-    # Comarcas disponíveis para o filtro
-    comarcas = ComarcasPoderJudiciario.objects.order_by('nome')
+    comarcas = ComarcasPoderJudiciario.objects.only('id', 'nome').order_by('nome')
 
     contexto = {
-        'medidas': medidas,
-        'filtro_status': filtro_status,
-        'filtro_ordenar': filtro_ordenar,
-        'filtro_busca': filtro_busca,
-        'filtro_comarca': filtro_comarca,
-        'comarcas': comarcas,
+        'medidas':           pagina_obj,
+        'pagina_obj':        pagina_obj,
+        'tem_proxima':       pagina_obj.has_next(),
+        'proxima_pagina':    pagina_obj.next_page_number() if pagina_obj.has_next() else None,
+        'total':             paginator.count,
+        'filtros_qs':        filtros_qs,
+        'filtro_status':     filtro_status,
+        'filtro_ordenar':    filtro_ordenar,
+        'filtro_busca':      filtro_busca,
+        'filtro_comarca':    filtro_comarca,
+        'comarcas':          comarcas,
         'pode_alterar_periodo': request.user.groups.filter(name='Poder Judiciário').exists(),
     }
 
-    # Se é requisição HTMX com filtro, retorna só a tabela
+    # Scroll infinito → retorna apenas as novas linhas + novo sentinela
+    if request.headers.get('HX-Target') == 'sentinela-mp':
+        return render(request, 'parcial/judiciario/linhas_medidas_protetivas.html', contexto)
+
+    # Filtro HTMX → retorna tabela completa (reinicia página 1)
     if request.headers.get('HX-Target') == 'tabela-medidas':
         return render(request, 'parcial/judiciario/tabela_medidas_protetivas.html', contexto)
 
@@ -570,7 +595,6 @@ def listar_medidas_protetivas(request):
 @grupos_permitidos(['Poder Judiciário'])
 def form_alterar_periodo_mp(request, medida_id):
     """Retorna o formulário popup para alterar o período da MP."""
-    from ..models.defensoria_publica import FormularioMedidaProtetiva
 
     hoje = date.today()
     medida = FormularioMedidaProtetiva.objects.select_related('vitima').get(ID=medida_id)
@@ -586,7 +610,6 @@ def form_alterar_periodo_mp(request, medida_id):
 @grupos_permitidos(['Poder Judiciário'])
 def alterar_periodo_mp(request, medida_id):
     """Processa a alteração do período da medida protetiva."""
-    from ..models.defensoria_publica import FormularioMedidaProtetiva
 
     if request.method != 'POST':
         return HttpResponse(status=405)
@@ -618,7 +641,7 @@ def alterar_periodo_mp(request, medida_id):
 @checked_debug_decorador
 def detalhe_medida_protetiva_jud(request, medida_id):
     """Retorna popup com detalhes da medida protetiva para o Judiciário."""
-    from ..models.defensoria_publica import FormularioMedidaProtetiva
+    
 
     hoje = date.today()
     medida = FormularioMedidaProtetiva.objects.select_related(
@@ -648,8 +671,7 @@ def listar_grupos_reflexivos(request):
     para visualização pelo Poder Judiciário (somente leitura).
     dir: sistema_justica/views/poder_judiciario.py
     """
-    from seguranca_publica.models.penal import ModeloPenal
-    from django.utils import timezone
+    
 
     # Filtros
     filtro_setor = request.GET.get('setor', '')
@@ -688,7 +710,7 @@ def listar_grupos_reflexivos(request):
     ).count()
     total_agressores = sum(g.agressores_atendidos.count() for g in grupos)
 
-    from sistema_justica.models.base import Agressor_dados
+    
     total_agressores_unicos = Agressor_dados.objects.filter(
         agressores_atendidos__in=grupos
     ).distinct().count()
