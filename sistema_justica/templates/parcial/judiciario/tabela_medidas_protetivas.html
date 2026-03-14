@@ -1,10 +1,12 @@
 <!-- sistema_justica/templates/parcial/judiciario/tabela_medidas_protetivas.html -->
-
 {% load static %}
 
 {% if medidas %}
+<div class="text-xs text-gray-400 px-4 py-2 text-right">
+    {{ total }} registro{{ total|pluralize }} encontrado{{ total|pluralize }}
+</div>
 <table class="w-full text-sm">
-    <thead class="bg-gray-100 sticky top-0">
+    <thead class="bg-gray-100 sticky top-0 z-10">
         <tr>
             <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Registro</th>
             <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase">Vítima</th>
@@ -18,100 +20,48 @@
             <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase">Ações</th>
         </tr>
     </thead>
-    <tbody class="divide-y divide-gray-100">
-        {% for mp in medidas %}
-        <tr class="hover:bg-gray-50 transition" id="linha-mp-{{ mp.ID }}">
-            <td class="px-4 py-3 font-mono text-gray-500">{{ mp.ID }}</td>
-            <td class="px-4 py-3">
-                <p class="font-semibold text-gray-800">{{ mp.vitima.nome|default:"—" }}</p>
-                <p class="text-xs text-gray-400">{{ mp.vitima.cpf|default:"" }}</p>
-            </td>
-            <td class="px-4 py-3">
-                <p class="font-semibold text-gray-800">{{ mp.agressor.nome|default:"—" }}</p>
-            </td>
-            <td class="px-4 py-3 text-gray-600">{{ mp.comarca_competente|default:"—" }}</td>
-            <td class="px-4 py-3 text-center text-gray-600">{{ mp.data_solicitacao|date:"d/m/Y" }}</td>
-            <td class="px-4 py-3 text-center font-semibold
-                {% if mp.ativa %}text-green-700{% else %}text-red-600{% endif %}">
-                {{ mp.periodo_mp|date:"d/m/Y" }}
-            </td>
-            <td class="px-4 py-3 text-center">
-                {% if mp.ativa %}
-                    <span class="inline-flex items-center gap-1 text-sm font-bold
-                        {% if mp.dias_restantes <= 15 %}text-orange-600
-                        {% elif mp.dias_restantes <= 30 %}text-yellow-600
-                        {% else %}text-green-600{% endif %}">
-                        <i class="fas fa-clock text-xs"></i>
-                        {{ mp.dias_restantes }} dia{{ mp.dias_restantes|pluralize }}
-                    </span>
-                {% else %}
-                    <span class="text-red-500 font-bold text-sm">
-                        <i class="fas fa-times-circle text-xs mr-1"></i>Expirada
-                    </span>
-                {% endif %}
-            </td>
-            <td class="px-4 py-3 text-center">
-                {% if mp.ativa %}
-                    <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full">Ativa</span>
-                {% else %}
-                    <span class="bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded-full">Vencida</span>
-                {% endif %}
-            </td>
-
-            <!-- Coluna Concessão: editável somente pelo Poder Judiciário -->
-            <td class="px-4 py-3 text-center">
-                {% if pode_alterar_periodo %}
-                    <span id="badge-concedida-{{ mp.ID }}"
-                          hx-post="{% url 'sistema_justica:toggle_medida_concedida' mp.ID %}"
-                          hx-target="#badge-concedida-{{ mp.ID }}"
-                          hx-swap="outerHTML"
-                          title="Clique para alternar"
-                          class="inline-flex items-center gap-1 text-xs font-semibold cursor-pointer select-none
-                              {% if mp.medida_protetiva_concedida %}text-green-600 hover:text-green-800
-                              {% else %}text-red-500 hover:text-red-700{% endif %}">
-                        <i class="fas {% if mp.medida_protetiva_concedida %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
-                        {% if mp.medida_protetiva_concedida %}Concedida{% else %}Não Concedida{% endif %}
-                    </span>
-                {% else %}
-                    <span class="inline-flex items-center gap-1 text-xs font-semibold
-                        {% if mp.medida_protetiva_concedida %}text-green-600{% else %}text-gray-400{% endif %}">
-                        <i class="fas {% if mp.medida_protetiva_concedida %}fa-check-circle{% else %}fa-minus-circle{% endif %}"></i>
-                        {% if mp.medida_protetiva_concedida %}Concedida{% else %}Não Concedida{% endif %}
-                    </span>
-                {% endif %}
-            </td>
-
-            <td class="px-4 py-3 text-center">
-                <div class="flex items-center justify-center gap-1">
-                    {% if pode_alterar_periodo %}
-                    <!-- Botão Estender Período -->
-                        <button title="Estender período"
-                                hx-get="{% url 'sistema_justica:form_alterar_periodo_mp' mp.ID %}"
-                                hx-target="#modal-alterar-periodo"
-                                hx-swap="innerHTML"
-                                class="bg-green-100 hover:bg-green-200 text-green-700 p-2 rounded-lg transition text-xs">
-                            <i class="fas fa-calendar-plus"></i>
-                        </button>
-                    {% endif %}
-                    
-                    <!-- Botão Detalhes -->
-                    <button title="Ver detalhes"
-                            hx-get="{% url 'sistema_justica:detalhe_medida_protetiva_jud' mp.ID %}"
-                            hx-target="#modal-detalhe-mp"
-                            hx-swap="innerHTML"
-                            class="bg-blue-100 hover:bg-blue-200 text-blue-700 p-2 rounded-lg transition text-xs">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-        {% endfor %}
+    <tbody class="divide-y divide-gray-100" id="corpo-tabela">
+        {% include "parcial/judiciario/linhas_medidas_protetivas.html" %}
     </tbody>
 </table>
 
-<!-- Containers para modais secundários -->
 <div id="modal-alterar-periodo"></div>
 <div id="modal-detalhe-mp"></div>
+
+<!-- Scroll infinito com overflow container como root do IntersectionObserver -->
+<script>
+(function () {
+    function observarSentinela() {
+        if (window._mpObserver) {
+            window._mpObserver.disconnect();
+            window._mpObserver = null;
+        }
+        const sentinela = document.getElementById('sentinela-mp');
+        const container = document.getElementById('tabela-medidas');
+        if (!sentinela || !container) return;
+
+        window._mpObserver = new IntersectionObserver(function (entries) {
+            if (entries[0].isIntersecting) {
+                window._mpObserver.disconnect();
+                window._mpObserver = null;
+                htmx.trigger(sentinela, 'revealed');
+            }
+        }, { root: container, rootMargin: '200px', threshold: 0 });
+
+        window._mpObserver.observe(sentinela);
+    }
+
+    // Inicia imediatamente (cobre o primeiro scroll)
+    observarSentinela();
+
+    // Remove e re-registra o listener para evitar acúmulo em filtros
+    if (window._mpAfterSettle) {
+        document.body.removeEventListener('htmx:afterSettle', window._mpAfterSettle);
+    }
+    window._mpAfterSettle = function () { observarSentinela(); };
+    document.body.addEventListener('htmx:afterSettle', window._mpAfterSettle);
+})();
+</script>
 
 {% else %}
 <div class="flex flex-col items-center justify-center py-16 text-gray-400">
@@ -120,13 +70,3 @@
     <p class="text-sm">Ajuste os filtros e tente novamente.</p>
 </div>
 {% endif %}
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-
-    <!-- CSRF automático para todos os POSTs do HTMX -->
-    <script>
-        document.addEventListener('htmx:configRequest', function(evt) {
-            if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(evt.detail.verb.toUpperCase())) {
-                evt.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
-            }
-        });
-    </script>
