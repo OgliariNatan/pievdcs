@@ -28,6 +28,7 @@ class EditarFormularioMPU(forms.ModelForm):
     """
     class Meta:
         model = FormularioMedidaProtetiva
+        exclude = ['medida_protetiva_concedida',]  # Campo não editável
         # Somente campos editáveis pós-cadastro
         fields = [
             'eproc',  # Campo de processo judicial eletrônico
