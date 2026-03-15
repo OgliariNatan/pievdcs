@@ -13,6 +13,7 @@ class CadastroMedidaProtetiva(forms.ModelForm):
     class Meta:
         model = FormularioMedidaProtetiva
         fields = '__all__'
+        exclude = ['medida_protetiva_concedida',]
         widgets = {
             'data_solicitacao': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'periodo_mp': forms.DateInput(
