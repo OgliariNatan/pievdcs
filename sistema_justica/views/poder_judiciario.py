@@ -810,6 +810,7 @@ def toggle_medida_concedida(request, medida_id):
         try:
             grupo_pm = Group.objects.get(name='Polícia Militar')
             nome_vitima = medida.vitima.nome if medida.vitima else f'ID {medida_id}'
+            # Notifica Polícia Militar
             enviar_notificacao_grupo(
                 request=request,
                 grupo_destinatario=grupo_pm,
@@ -819,6 +820,44 @@ def toggle_medida_concedida(request, medida_id):
                     f'para {nome_vitima}. Solicitamos acompanhamento via Rede Catarina.'
                 ),
                 tipo='MEDIDA_PROTETIVA',
+                prioridade='ALTA',
+                objeto_relacionado_tipo='FormularioMedidaProtetiva',
+                objeto_relacionado_id=medida_id,
+                importante=True,
+            )
+
+
+            grupo_creas = Group.objects.get(name='CREAS')
+            grupo_policia_penal = Group.objects.get(name='Polícia Penal')
+            nome_agressor = medida.agressor.nome if medida.agressor else f'ID {medida_id}'
+
+            # Notifica CREAS
+            enviar_notificacao_grupo(
+                request=request,
+                grupo_destinatario=grupo_creas,
+                titulo='Medida Protetiva Concedida — Grupo Reflexivo',
+                mensagem=(
+                    f'O Poder Judiciário concedeu a Medida Protetiva #{medida_id} '
+                    f'para {nome_vitima}. Solicitamos acompanhamento do agressor {nome_agressor}.'
+                ),
+                tipo='ENCAMINHAMENTO',
+                prioridade='ALTA',
+                objeto_relacionado_tipo='FormularioMedidaProtetiva',
+                objeto_relacionado_id=medida_id,
+                importante=True,
+            )
+
+            # Notifica Polícia Penal
+            enviar_notificacao_grupo(
+                request=request,
+                grupo_destinatario=grupo_policia_penal,
+                titulo='Medida Protetiva Concedida — Grupo Reflexivo',
+                mensagem=(
+                    f'O Poder Judiciário concedeu a Medida Protetiva #{medida_id} '
+                    f'para {nome_vitima}. Solicitamos acompanhamento do agressor {nome_agressor} '
+                    f'nos grupos reflexivos.'
+                ),
+                tipo='ENCAMINHAMENTO',
                 prioridade='ALTA',
                 objeto_relacionado_tipo='FormularioMedidaProtetiva',
                 objeto_relacionado_id=medida_id,
