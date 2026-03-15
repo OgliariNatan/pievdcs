@@ -263,6 +263,7 @@ class Notificacao(models.Model):
                 'FormularioMedidaProtetiva': f'/sistema_justica/mpu/{self.objeto_relacionado_id}/',
                 'Vitima_dados': f'/sistema_justica/vitima/{self.objeto_relacionado_id}/',
                 'Agressor_dados': f'/sistema_justica/agressor/{self.objeto_relacionado_id}/',
+                'Encaminhamento': f'/mensageria/encaminhamento/{self.objeto_relacionado_id}/popup/',
             }
             return urls_map.get(self.objeto_relacionado_tipo, '#')
         return '#'

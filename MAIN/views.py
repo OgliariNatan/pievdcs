@@ -14,11 +14,12 @@ from collections import defaultdict
 from datetime import datetime, timedelta, date
 from django.utils import timezone
 from sistema_justica.models.base import Vitima_dados, TipoDeViolencia
-from seguranca_publica.models.militar import OcorrenciaMilitar
+from seguranca_publica.models.militar import OcorrenciaMilitar, AtendimentosRedeCatarina
 from seguranca_publica.models.civil import OcorrenciaCivil
 from seguranca_publica.models.penal import ModeloPenal
 from sistema_justica.models.poder_judiciario import ComarcasPoderJudiciario
 from sistema_justica.models.defensoria_publica import FormularioMedidaProtetiva
+from municipio.models.creas import AtendimentoCREAS
 from django.db import connection
 from django.db.models import Prefetch, Count, Q
 from django.db.models.functions import TruncMonth, ExtractMonth, ExtractYear
@@ -90,13 +91,21 @@ def index_tailwind(request):
 
     
     try:
-        grupos_atendidos = ModeloPenal.objects.all().count()
+        grupos_atendidos = ModeloPenal.objects.all().count() + AtendimentoCREAS.objects.all().count()
     except Exception as e:
         if var_debug == 'True':
             print(f'Tipo de erro:{type(e).__name__}')
             print(f"Erro ao contar grupos atendidos: {e}")
         grupos_atendidos = 0
 
+    try:
+        casos_mediados = AtendimentosRedeCatarina.objects.values('id').count()
+        
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+            print(f"Erro ao contar casos mediados: {e}")
+        casos_mediados = 0
 
     context = {
         "conteudos": conteudos,
@@ -104,9 +113,9 @@ def index_tailwind(request):
         "description": "Página Inicial",
         'medidas_protetivas_solicitadas_ocorrencias': medidas_protetivas_solicitadas_ocorrencias,
         'ano_corrente': ANO_CORRENTE,
-        'encaminhamentos': random.randint(1,100),  # Criar variaveis para encaminhamentos
-        'casos_mediados': random.randint(1,100),  # Criar variavel para casos mediados
-        'atendimentos': grupos_atendidos
+        'encaminhamentos': grupos_atendidos,  # Criar variaveis para encaminhamentos
+        'casos_mediados': casos_mediados,  # Criar variavel para casos mediados
+        'atendimentos': casos_mediados + grupos_atendidos,
     }
     return render(request, "index_tailwind.html", context)
 
