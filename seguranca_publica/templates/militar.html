@@ -247,18 +247,12 @@
         <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8 mb-6 border border-gray-100">
             <!-- Header da página -->
             <div class="mb-6">
-                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-purple-600 mb-3 flex items-center gap-3">
-                    <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-solid fa-building-shield text-purple-300"></i>
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#7a7649] mb-3 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-[#7a7649]-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-solid fa-building-shield text-[#7a7649]"></i>
                     </div>
                     {{ title }}
                 </h1>
-                <div class="space-y-1 text-sm sm:text-base">
-                    <p class="text-gray-700">
-                        <span class="font-medium">Usuário:</span>
-                        <span class="text-purple-600 font-semibold">{{ user.first_name }} {{ user.last_name }}</span>
-                    </p>
-                </div>
             </div>
 
             <!-- Barra de pesquisa moderna com HTMX para POPUP -->
@@ -321,10 +315,13 @@
                             <div class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center">
                                 <i class="fas fa-hand-holding-heart text-white"></i>
                             </div>
-                            <h4 class="font-semibold text-purple-800">Atendimentos</h4>
+                            <h4 class="font-semibold text-purple-800">Atendimentos 
+                                <span
+                        class="bg-[#7a7649] text-white text-xs font-bold px-2 py-1 rounded-full min-w-[1.5rem] text-center">{{ atendimentos_rede_catarina }}</span>
+                            </h4>
                         </div>
                         <p class="text-gray-600 text-2xl leading-relaxed">
-                            10 <span class="text-gray-400 text-xs">este mês.</span>
+                            {{ atendimentos_rede_catarina_mes }} <span class="text-gray-400 text-xs">este mês.</span>
                         </p>
                     </div>
 
@@ -333,11 +330,14 @@
                             <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center">
                                 <i class="fas fa-share-square text-white"></i>
                             </div>
-                            <h4 class="font-semibold text-amber-800">Encaminhamentos</h4>
+                            <h4 class="font-semibold text-amber-800">Acompanhamentos Rede Catarina <span class='font-normal text-xs text-gray-400'>Últimos dois</span></h4>
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Maria lucia <span>526.369.258-98</span> <br>
-                            Jaqueline Sebben <span>123.456.789-00</span>
+                            {% for atendimento in dois_ultimo_atendimentos %}
+                                {{ atendimento.medida_protetiva.vitima.nome }} - {{ atendimento.medida_protetiva.vitima.cpf }} <br>
+                            {% endfor %}
+
+                            
                         </p>
                     </div>
 
