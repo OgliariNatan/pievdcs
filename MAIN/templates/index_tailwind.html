@@ -805,6 +805,38 @@
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
         new window.VLibras.Widget('https://vlibras.gov.br/app');
+        
+        (function forceHozanaWhenAvailable() {
+            function ensureHozana() {
+            const selected = document.querySelector('[vp-change-avatar] .vp-button-change-avatar.vp-selected');
+            const selectedName = selected?.getAttribute('avatar-name');
+
+            if (selectedName === 'Hosana') return true;
+
+            // Em algumas versões o nome do atributo/classe pode variar;
+            // aqui usamos o avatar-name para ser mais tolerante.
+            const buttons = document.querySelectorAll('[vp-change-avatar] .vp-button-change-avatar');
+            const btnHozana = [...buttons].find(b => (b.getAttribute('avatar-name') || '').toLowerCase().includes('hos'));
+
+            if (btnHozana) {
+                btnHozana.click();
+                return true;
+            }
+            return false;
+            }
+
+            // Observa até conseguir setar (depois pode desconectar)
+            const obs = new MutationObserver(() => {
+            if (ensureHozana()) obs.disconnect();
+            });
+
+            obs.observe(document.documentElement, { childList: true, subtree: true });
+
+            // tentativa extra caso já esteja no DOM
+            ensureHozana();
+        })();
+
+
     </script>
 </body>
 
