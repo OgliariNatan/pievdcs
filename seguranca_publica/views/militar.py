@@ -53,16 +53,51 @@ else:
 @checked_debug_decorador
 def militar(request):
     """Página principal da Polícia Militar"""
+
+    try:
+        atendimentos_rede_catarina = AtendimentosRedeCatarina.objects.all().count()
+        atendimentos_rede_catarina_mes = AtendimentosRedeCatarina.objects.filter(
+            data_atendimento__month=timezone.now().month,
+            data_atendimento__year=timezone.now().year,
+        ).count()
+        
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+        atendimentos_rede_catarina = 0
+        atendimentos_rede_catarina_mes = 0
+
+    try:
+        dois_ultimo_atendimentos = (AtendimentosRedeCatarina.objects.select_related('medida_protetiva__vitima')
+        .order_by('-data_atendimento')[:2]
+)
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Tipo de erro:{type(e).__name__}')
+        dois_ultimo_atendimentos = []
+
+
     notificacoes_nao_lidas = Notificacao.contar_nao_lidas_usuario(request.user)
     encaminhamentos_nao_lidos = Notificacao.contar_encaminhamentos_nao_lidos(request.user)
+
+    print('\n\n\n')
+    print(40*'=')
+    #print(f'Ultimos atendimentos registrados: {dois_ultimo_atendimentos[0].nome_vitima}')
+    print(40*'+')
+    print(f"Atendimentos Rede Catarina - Total: {atendimentos_rede_catarina} | Este mês: {atendimentos_rede_catarina_mes}")
+
+    print(40*'=')
 
     contexto = {
         'title': 'Polícia Militar',
         'ano_corrente': ANO_CORRENTE,
+        'notificacoes_nao_lidas': notificacoes_nao_lidas,
         'encaminhamentos_nao_lidos': encaminhamentos_nao_lidos,
-        'alert': notificacoes_nao_lidas,
         'description': 'Informações sobre o sistema da Polícia Militar',
         'user': request.user,
+        'atendimentos_rede_catarina': atendimentos_rede_catarina,
+        'atendimentos_rede_catarina_mes': atendimentos_rede_catarina_mes,
+        'dois_ultimo_atendimentos': dois_ultimo_atendimentos,
     }
     return render(request, "militar.html", contexto)
 
