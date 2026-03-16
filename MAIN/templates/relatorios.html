@@ -7,6 +7,7 @@
 {% block head %}
 <!-- HTMX -->
 <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<meta name="referrer" content="no-referrer-when-downgrade">
 
 <!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
@@ -607,7 +608,8 @@ function inicializarMapa() {
     //map.setMaxBounds([[-35.0, -75.0], [6.0, -28.0]]);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
-        attribution: ''
+        attribution: '&copy; <a href="https://github.com/OgliariNatan">OgliariNatan</a> DevOps',
+        headers: { 'User-Agent': 'PIEVDCS-Relatorios/1.0 (https://github.com/OgliariNatan)' }
     }).addTo(map);
 
     // Paleta de cores por tipo de violência
