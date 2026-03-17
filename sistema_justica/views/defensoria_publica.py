@@ -131,8 +131,8 @@ def cadastro_mpu(request):
         form = CadastroMedidaProtetiva(request.POST)
         if form.is_valid():
             mpu = form.save()
-            #urgencia = mpu.urgencia
-
+            urgencia = mpu.solicitada_mpu
+            
             # Notificar Poder Judiciário
             try:
                 
@@ -140,8 +140,8 @@ def cadastro_mpu(request):
                 enviar_notificacao_grupo(
                     request=request,
                     grupo_destinatario=grupo_judiciario,
-                    titulo="Nova Solicitação de Medida Protetiva",
-                    mensagem=f"Solicitada Medida Protetiva - Protocolo #{mpu.ID}",
+                    titulo=f"Nova Solicitação de Medida Protetiva {'de Urgência' if urgencia else ''}",
+                    mensagem=f"Solicitada Medida Protetiva {'de Urgência' if urgencia else ''} - Protocolo #{mpu.ID}",
                     tipo='MEDIDA_PROTETIVA',
                     prioridade='URGENTE',
                     objeto_relacionado_tipo='FormularioMedidaProtetiva',
