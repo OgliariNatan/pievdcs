@@ -26,8 +26,13 @@ from django.db.models.functions import TruncMonth, ExtractMonth, ExtractYear
 from .models import ConteudoHome
 from usuarios.models import CustomUser
 from .calculo_variaveis import *
+from collections import Counter
+from rapidfuzz import fuzz
 import random
 import time
+import re
+import unicodedata
+
 
 ANO_CORRENTE = date.today().year
 
@@ -55,6 +60,103 @@ else:
    
 
 """ Fim da configuraçao de decoradores para debug """
+
+_SPLIT_RE = re.compile(r"[;,/]|(?:\s+e\s+)|(?:\s+ou\s+)", flags=re.IGNORECASE)
+
+_STOPWORDS = {
+    "de", "da", "do", "das", "dos",
+    "por", "para", "com", "sem",
+    "a", "o", "as", "os", "um", "uma",
+    "na", "no", "nas", "nos",
+    "que", "em",
+}
+
+
+def _strip_accents(s: str) -> str:
+    return "".join(
+        ch for ch in unicodedata.normalize("NFD", s)
+        if unicodedata.category(ch) != "Mn"
+    )
+
+
+def _normalize_term(s: str) -> str:
+    s = (s or "").strip().lower()
+    s = _strip_accents(s)
+    s = re.sub(r"[^a-z0-9\s]", " ", s)  # tira pontuação
+    s = re.sub(r"\s+", " ", s).strip()
+    tokens = [t for t in s.split() if t not in _STOPWORDS]
+    return " ".join(tokens)
+
+
+def _extract_terms(text: str):
+    parts = [p.strip() for p in _SPLIT_RE.split(text or "") if p and p.strip()]
+    for p in parts:
+        n = _normalize_term(p)
+        if len(n) >= 3:
+            yield n
+
+
+def _canonicalize_fuzzy(term: str, canonicals: list, threshold: int = 86) -> str:
+    """
+    Retorna um termo canônico existente se for parecido o suficiente.
+    Se rapidfuzz não estiver instalado, retorna o próprio termo.
+    """
+    if not canonicals or fuzz is None:
+        return term
+
+    best = None
+    best_score = -1
+    for c in canonicals:
+        score = fuzz.token_sort_ratio(term, c)
+        if score > best_score:
+            best_score = score
+            best = c
+
+    if best is not None and best_score >= threshold:
+        return best
+    return term
+
+
+def busca_causa():
+    """
+    Retorna string com as 3 'causas' mais frequentes (para card informativo),
+    a partir de FormularioMedidaProtetiva.possivel_causa.
+
+    - Multi-causa: "ciúmes e álcool" conta 1 para cada termo extraído.
+    - Normaliza acento/pontuação.
+    - Fuzzy (se rapidfuzz estiver instalado) junta erros comuns.
+    """
+    textos = (
+        FormularioMedidaProtetiva.objects
+        .exclude(Q(possivel_causa__isnull=True) | Q(possivel_causa__exact=''))
+        .values_list('possivel_causa', flat=True)
+    )
+
+    counts = Counter()
+    canonicals = []
+    display = {}
+
+    for raw in textos.iterator():
+        for term in _extract_terms(raw):
+            canon = _canonicalize_fuzzy(term, canonicals, threshold=86)
+
+            # se for um canônico novo, registra
+            if canon == term and canon not in canonicals:
+                canonicals.append(canon)
+
+            counts[canon] += 1
+            # forma "bonita" para exibir
+            display.setdefault(canon, canon.capitalize())
+
+    top_terms = [display[t] for t, _ in counts.most_common(3)]
+
+    causa1 = top_terms[0] if len(top_terms) > 0 else '—'
+    causa2 = top_terms[1] if len(top_terms) > 1 else '—'
+    causa3 = top_terms[2] if len(top_terms) > 2 else '—'
+
+    
+    return [causa1, causa2, causa3]
+
 
 @checked_debug_decorador
 def index_tailwind(request):
@@ -106,6 +208,8 @@ def index_tailwind(request):
             print(f'Tipo de erro:{type(e).__name__}')
             print(f"Erro ao contar casos mediados: {e}")
         casos_mediados = 0
+
+    
 
     context = {
         "conteudos": conteudos,
@@ -600,6 +704,13 @@ def relatorios(request):
     municipios_mapa = calcular_municipios_mapa(qs_pm, qs_pc, qs_mp)
        
 
+    try:
+        busca_causa_resultado = busca_causa()
+    except Exception as e:
+        if var_debug == 'True':
+            print(f'Erro ao buscar causas frequentes: {e}')
+        busca_causa_resultado = "N/A"
+
 
     context = {
         "title": "Painel Informativo",
@@ -609,7 +720,7 @@ def relatorios(request):
         "periodo_selecionado": periodo_selecionado,
         "comarca_selecionada": comarca_selecionada,
         "comarcas": comarcas_pj,
-        
+        'busca_causa_resultado': busca_causa_resultado,
         # Estatísticas
         "medidas_protetivas_solicitadas_ocorrencias_porcentagem": medidas_protetivas_solicitadas_ocorrencias_porcentagem,
         "medidas_protetivas_solicitadas_ocorrencias": medidas_protetivas_solicitadas_ocorrencias,
