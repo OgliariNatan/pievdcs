@@ -15,6 +15,7 @@ from ..forms.cadastros import CadastroVitimaForm, CadastroAgressorForm, Cadastro
 from ..models.base import Vitima_dados, Agressor_dados, Filhos_dados, Municipio, Estado
 from ..models.defensoria_publica import FormularioMedidaProtetiva
 from ..models.poder_judiciario import ComarcasPoderJudiciario
+from MAIN.utils.email_utils import enviar_email_grupo
 from seguranca_publica.models.militar import AtendimentosRedeCatarina
 from seguranca_publica.models.penal import ModeloPenal
 from django.views.decorators.csrf import csrf_exempt
@@ -825,6 +826,17 @@ def toggle_medida_concedida(request, medida_id):
                 objeto_relacionado_id=medida_id,
                 importante=True,
             )
+            # Envia e-mail
+            # enviar_email_grupo(
+            #     grupo_nome='Polícia Militar',
+            #     assunto=f'[PIEVDCS] Medida Protetiva #{medida_id} Concedida — Rede Catarina',
+            #     mensagem=(
+            #         f'O Poder Judiciário concedeu a Medida Protetiva #{medida_id} '
+            #         f'para {nome_vitima}.\n\n'
+            #         f'Solicitamos acompanhamento via Rede Catarina.\n\n'
+            #         f'Este é um e-mail automático do sistema PIEVDCS.'
+            #     ),
+            # )
 
 
             grupo_creas = Group.objects.get(name='CREAS')
