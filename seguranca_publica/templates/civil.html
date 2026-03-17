@@ -191,27 +191,11 @@
                         </div>
                         <div class="text-left">
                             <h3 class="font-semibold">Atendimentos da Rede Catarina</h3>
-                            <p class="text-sm text-pink-100">Registro completo</p>
+                            <p class="text-sm text-pink-100">Registro em .pdf</p>
                         </div>
                     </div>
                 </button>
 
-                <button
-                    class="group p-6 bg-gradient-to-r from-sky-700 to-blue-300 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
-                    hx-get="{% url 'sistema_justica:listar_grupos_reflexivos' %}"
-                    hx-target="#modal-grupos-reflexivos-container"
-                    hx-swap="innerHTML">
-                    <div class="flex items-center gap-4">
-                        <div
-                            class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 transition">
-                            <i class="fas fa-people-group text-2xl"></i>
-                        </div>
-                        <div class="text-left">
-                            <h3 class="font-semibold">Atendimentos dos agressores</h3>
-                            <p class="text-sm text-pink-100">Grupos Reflexivos ou Individuais</p>
-                        </div>
-                    </div>
-                </button>
             </div>
 
 
@@ -236,7 +220,6 @@
                 <div id="modal-vitima"> </div>
                 <div id="modal-mpu"> </div>
                 <div id="modal-content1"> </div>
-                <div id="modal-grupos-reflexivos-container"></div> 
                 <div id="modal-rede-catarina"></div>
                 <div id="modal-medidas-protetivas-container"></div>
 
