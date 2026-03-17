@@ -870,7 +870,17 @@ class CustomLoginView(LoginView):
         if request.user.is_authenticated:
             return redirect('/home/')
         return super().dispatch(request, *args, **kwargs)
-    
+
+    def form_valid(self, form):
+        """Se 'manter conectado' marcado, sessão dura 30 dias; caso contrário, expira ao fechar."""
+        remember_me = self.request.POST.get('remember_me')
+        if remember_me:
+            self.request.session.set_expiry(60 * 60 * 24 * 30)  # 30 dias
+        else:
+            self.request.session.set_expiry(0)  # Expira ao fechar navegador
+        return super().form_valid(form)
+
+        
 @checked_debug_decorador
 @csrf_exempt
 def chat_ia_publico(request):

@@ -43,11 +43,28 @@
 
             <!-- Form section -->
             <div class="p-8">
-                <!-- Welcome message -->
+                <!-- Mensagem de boas-vindas -->
                 <div class="text-center mb-8">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-2">
-                        Bem-vindo de volta
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2" id="saudacao">
+                        Bem-vindo!
                     </h2>
+
+                    <!-- Badges de retorno — ocultos por padrão, exibidos via JS -->
+                    <div id="badges-retorno" class="hidden justify-center gap-2 mb-3 flex-wrap">
+                        <span class="inline-flex items-center gap-1 bg-primary/10 text-primary text-xs font-medium px-3 py-1 rounded-full">
+                            <i class="fas fa-star text-[10px]"></i>
+                            Usuário ativo
+                        </span>
+                        <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs font-medium px-3 py-1 rounded-full">
+                            <i class="fas fa-shield-halved text-[10px]"></i>
+                            Acesso verificado
+                        </span>
+                        <span class="inline-flex items-center gap-1 bg-purple-100 text-purple-700 text-xs font-medium px-3 py-1 rounded-full">
+                            <i class="fas fa-clock-rotate-left text-[10px]"></i>
+                            <span id="badge-visitas">Retorno</span>
+                        </span>
+                    </div>
+
                     <p class="text-gray-600 text-sm">
                         Faça login para acessar sua conta
                     </p>
@@ -95,10 +112,16 @@
                                 class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 placeholder-gray-400"
                                 placeholder="Digite sua senha" required>
                             <button type="button"
-                                class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                                class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200" aria-label="Mostrar senha"
                                 onclick="togglePassword(this)">
                                 <i class="fas fa-eye text-sm" id="toggleIcon"></i>
                             </button>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <label ...>Senha</label>
+                            <a href="{% url 'password_reset' %}" class="text-xs text-primary hover:underline">
+                                Esqueceu a senha?
+                            </a>
                         </div>
                         {% if form.password.errors %}
                         <div class="text-red-500 text-sm mt-1">
@@ -114,22 +137,15 @@
 
                     <!-- Remember me checkbox -->
                     <div class="flex items-center justify-between">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" name="remember_me"
-                                class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary/20 focus:ring-2">
+                        <label class="flex items-center gap-3 cursor-pointer select-none">
+                            <div class="relative">
+                                <input type="checkbox" name="remember_me" class="sr-only peer">
+                                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-primary rounded-full transition-colors duration-200"></div>
+                                <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 peer-checked:translate-x-5"></div>
+                            </div>
                             <span class="text-sm text-gray-600">Manter conectado</span>
                         </label>
                     </div>
-
-                    <!-- Submit button -->
-                    <button type="submit"
-                        class="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                        id="submitButton">
-                        <span class="flex items-center justify-center gap-2">
-                            <i class="fas fa-sign-in-alt"></i>
-                            <span>Entrar</span>
-                        </span>
-                    </button>
 
                     <!-- Form errors -->
                     {% if form.non_field_errors %}
@@ -142,16 +158,19 @@
                         {% endfor %}
                     </div>
                     {% endif %}
-                </form>
 
-                <!-- Forgot password link -->
-                <div class="mt-6 text-center">
-                    <a href="{% url 'password_reset' %}"
-                        class="text-primary hover:text-secondary font-medium text-sm transition-colors duration-200 inline-flex items-center gap-1">
-                        <i class="fas fa-key text-xs"></i>
-                        Esqueceu sua senha?
-                    </a>
-                </div>
+                    <!-- Submit button -->
+                    <button type="submit"
+                        class="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        id="submitButton">
+                        <span class="flex items-center justify-center gap-2">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Entrar</span>
+                        </span>
+                    </button>
+
+                    
+                </form>
             </div>
         </div>
 
@@ -377,5 +396,52 @@
         }
     `;
     document.head.appendChild(style);
+
+
+    // Saudação personalizada baseada em visitas anteriores
+    (function () {
+        const COOKIE_KEY = 'pievdcs_visitou';
+        const COOKIE_COUNT = 'pievdcs_visitas';
+
+        // Lê o contador de visitas
+        const getCookie = (key) => {
+            const c = document.cookie.split('; ').find(r => r.startsWith(key + '='));
+            return c ? c.split('=')[1] : null;
+        };
+
+        const setCookie = (key, value) => {
+            const expira = new Date();
+            expira.setFullYear(expira.getFullYear() + 1);
+            document.cookie = `${key}=${value}; expires=${expira.toUTCString()}; path=/; SameSite=Lax`;
+        };
+
+        const jaVisitou = getCookie(COOKIE_KEY);
+        const visitas = parseInt(getCookie(COOKIE_COUNT) || '0') + 1;
+
+        const saudacao = document.getElementById('saudacao');
+        const badges = document.getElementById('badges-retorno');
+        const badgeVisitas = document.getElementById('badge-visitas');
+
+        if (jaVisitou) {
+            saudacao.textContent = 'É bom ter você de volta!';
+            badges.classList.remove('hidden');
+            badges.classList.add('flex');
+
+            // Texto do badge de visitas
+            if (visitas >= 50) {
+                badgeVisitas.textContent = `${visitas}ª visita 🏆`;
+            } else if (visitas >= 10) {
+                badgeVisitas.textContent = `${visitas}ª visita ⭐`;
+            } else {
+                badgeVisitas.textContent = `${visitas}ª visita`;
+            }
+        } else {
+            setCookie(COOKIE_KEY, '1');
+        }
+
+        // Atualiza contador
+        setCookie(COOKIE_COUNT, visitas);
+    })();
+
 </script>
 {% endblock %}
