@@ -108,34 +108,37 @@
         <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-8 mb-6 border border-gray-100">
             <!-- Header da página -->
             <div class="mb-6">
-                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary mb-3 flex items-center gap-3">
-                    <div class="w-10 h-10 bg-secondary/10 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-home text-secondary text-lg"></i>
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#e4c46e] mb-3 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-[#e4c46e]/10 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-home text-[#e4c46e] text-lg"></i>
                     </div>
                     {{ title }}
                 </h1>
-                <div class="space-y-1 text-sm sm:text-base">
-                    <p class="text-gray-700">
-                        <span class="font-medium">Usuário:</span>
-                        <span class="text-primary font-semibold">{{ user.first_name }} {{ user.last_name }}</span>
-                    </p>
-                    <p class="text-gray-600">
-                        Bem-vindo à página da <span class="font-semibold text-primary">{{ title }}</span>
-                    </p>
-                </div>
+                
             </div>
 
-            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8">
+            <!-- Botões de ação - mesmos da defensoria -->
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mb-6">
                 <button
                     class="group bg-pink-500 hover:bg-pink-400 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
                     hx-get="{% url 'sistema_justica:cadastro_vitima_form' %}" hx-target="#modal-vitima"
-                    hx-swap="innerHTML">
+                    hx-swap="innerHTML" hx-indicator="#spinner">
                     <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
                         <i class="fas fa-female text-sm"></i>
                     </div>
                     <span class="font-medium">Cadastrar Vítima</span>
                 </button>
 
+                <button
+                    class="group bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
+                    hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-content1"
+                    hx-swap="innerHTML">
+                    <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-thin fa-circle-info"></i>
+                    </div>
+                    <span class="font-medium">Cadastrar Agressor</span>
+                </button>
+                
                 <button
                     class="group bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
                     hx-get="{% url 'sistema_justica:cadastro_mpu' %}" hx-target="#modal-mpu" hx-swap="innerHTML"
@@ -146,16 +149,71 @@
                     <span class="font-medium">Solicitar MPU</span>
                 </button>
 
+                
+
                 <button
-                    class="group bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
-                    hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-content"
-                    hx-swap="innerHTML">
+                    class="group bg-sky-600 hover:bg-sky-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
+                    hx-get="{% url 'sistema_justica:consultar_mp' %}" 
+                    hx-target="body"
+                    hx-swap="beforeend">
                     <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
-                        <i class="fas fa-thin fa-circle-info"></i>
+                        <i class="fas fa-gavel text-2xl"></i>
+                    </div>
+                    <div class="text-left">
+                    <h3 class="font-medium">Atualizar MPU</h3>
+                    <p class="text-sm text-gray-300">Atualizar formulário </p>
+                    </div>  
+                </button>
+
+                <button
+                    class="group bg-lime-600 hover:bg-lime-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
+                    hx-get="{% url 'sistema_justica:listar_medidas_protetivas' %}" hx-target="#modal-medidas-protetivas-container" hx-swap="innerHTML"
+                    hx-indicator="#spinner">
+                    <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-file-alt text-2xl"></i>
                     </div>
                     <span class="font-medium">Consultar MPU</span>
                 </button>
+
+                <button
+                    class="group p-6 bg-gradient-to-r from-[#bdb76b] to-[#767247] text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
+                    hx-get="{% url 'sistema_justica:listar_atendimentos_rede_catarina' %}"
+                    hx-target="#modal-rede-catarina"
+                    hx-swap="innerHTML">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 transition">
+                            <img
+                                src="{% static 'img/brasao_pmsc.svg' %}"
+                                alt="Polícia"
+                                class="w-10 h-10 object-contain"
+                            />
+                        </div>
+                        <div class="text-left">
+                            <h3 class="font-semibold">Atendimentos da Rede Catarina</h3>
+                            <p class="text-sm text-pink-100">Registro completo</p>
+                        </div>
+                    </div>
+                </button>
+
+                <button
+                    class="group p-6 bg-gradient-to-r from-sky-700 to-blue-300 text-white rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
+                    hx-get="{% url 'sistema_justica:listar_grupos_reflexivos' %}"
+                    hx-target="#modal-grupos-reflexivos-container"
+                    hx-swap="innerHTML">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 transition">
+                            <i class="fas fa-people-group text-2xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <h3 class="font-semibold">Atendimentos dos agressores</h3>
+                            <p class="text-sm text-pink-100">Grupos Reflexivos ou Individuais</p>
+                        </div>
+                    </div>
+                </button>
             </div>
+
 
             <!-- Conteúdo descritivo -->
             <div class="prose max-w-none text-gray-700 leading-relaxed">
@@ -174,7 +232,13 @@
                     </p>
                 </div>
 
+                <!-- Modais  -->
                 <div id="modal-vitima"> </div>
+                <div id="modal-mpu"> </div>
+                <div id="modal-content1"> </div>
+                <div id="modal-grupos-reflexivos-container"></div> 
+                <div id="modal-rede-catarina"></div>
+                <div id="modal-medidas-protetivas-container"></div>
 
                 <!-- Conteúdo lorem ipsum -->
                 <div class="bg-gray-50 rounded-xl p-6">
@@ -188,20 +252,15 @@
                         <p class="text-pink-500"><a href="/admin/">http://10.40.22.110:8000/admin/</a> &lt;&lt;-- possui
                             algumas funcionalidades para testes, podes usufruir à vontade. </p> <br>
 
-                        <p class="text-green-600">Iniciei o<a href="/admin/sistema_justica/" class="text-4xl">
-                                formulário para a
-                                solicitação da Medida
-                                Protetiva</a>, aos poucos irei inserindo mais campos. atualizado em: 09/07
-                            11h12min</p>
-                        <br>
-                        <p>{% lorem 5 p %}</p>
+                           
                     </div>
                 </div>
             </div>
         </div>
     </main>
 </div>
-<div id="modal-mpu"> </div>
+
+
 <!-- Overlay para mobile quando sidebar estiver expandido -->
 <div class="fixed inset-0 bg-black/50 z-5 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"
     id="sidebar-overlay"></div>
