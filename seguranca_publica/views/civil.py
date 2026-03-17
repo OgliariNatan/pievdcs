@@ -36,7 +36,7 @@ def civil(request):
 
 
     contexto = {
-        'title': 'Polícia civil',
+        'title': 'Polícia Civil',
         'encaminhamentos_nao_lidos': encaminhamentos_nao_lidos,
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
         'description': 'This page provides information about the civil system.',
