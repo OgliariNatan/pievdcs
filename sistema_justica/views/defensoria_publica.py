@@ -124,24 +124,26 @@ def marcar_notificacao_lida(request, notificacao_id):
 
 @checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['Defensoria Pública', 'Ministério Público',])
+@grupos_permitidos(['Defensoria Pública', 'Ministério Público','Polícia Civil'])
 def cadastro_mpu(request):
     """Cadastro de Medida Protetiva de Urgência."""
     if request.method == "POST":
         form = CadastroMedidaProtetiva(request.POST)
         if form.is_valid():
             mpu = form.save()
+            #urgencia = mpu.urgencia
 
             # Notificar Poder Judiciário
             try:
-                grupo_judiciario = CustomGroup.objects.get(name='PJ')
+                
+                grupo_judiciario = CustomGroup.objects.get(name='Poder Judiciário')
                 enviar_notificacao_grupo(
                     request=request,
                     grupo_destinatario=grupo_judiciario,
                     titulo="Nova Solicitação de Medida Protetiva",
-                    mensagem=f"Defensoria Pública solicitou MPU - Protocolo #{mpu.ID}",
+                    mensagem=f"Solicitada Medida Protetiva - Protocolo #{mpu.ID}",
                     tipo='MEDIDA_PROTETIVA',
-                    prioridade='ALTA',
+                    prioridade='URGENTE',
                     objeto_relacionado_tipo='FormularioMedidaProtetiva',
                     objeto_relacionado_id=mpu.ID,
                     importante=True
@@ -171,31 +173,7 @@ def consulta_mpu(request):
     }
     return render(request, "parcial/consulta_mpu.html", contexto)
 
-def notificar_solicitacao_mpu(request, vitima, solicitante=None):
-    """Envia notificação quando uma MPU é solicitada"""
-    
-    # Se não tiver solicitante, usa o usuário do request
-    if not solicitante:
-        solicitante = request.user if request else None
-    
-    # Buscar grupo do Poder Judiciário
-    try:
-        grupo_judiciario = CustomGroup.objects.get(name='PJ')
-        
-        # Enviar notificação para o grupo
-        enviar_notificacao_grupo(
-            request=request,
-            grupo_destinatario=grupo_judiciario,
-            titulo=f"Nova Solicitação de Medida Protetiva",
-            mensagem=f"Defensoria Pública solicitou MPU para {vitima.nome}",
-            tipo='MEDIDA_PROTETIVA',
-            prioridade='ALTA',
-            objeto_relacionado_tipo='Vitima_dados',
-            objeto_relacionado_id=vitima.id,
-            importante=True
-        )
-    except CustomGroup.DoesNotExist:
-        pass
+
 
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Defensoria Pública', 'Ministério Público'])
