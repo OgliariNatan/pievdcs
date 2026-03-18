@@ -34,7 +34,9 @@ import re
 import unicodedata
 
 
-ANO_CORRENTE = date.today().year
+
+def ANO_CORRENTE():
+    return date.today().year
 
 """ Configuraçao de decoradores para debug """
 import os
@@ -216,7 +218,7 @@ def index_tailwind(request):
         "title": "Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais",
         "description": "Página Inicial",
         'medidas_protetivas_solicitadas_ocorrencias': medidas_protetivas_solicitadas_ocorrencias,
-        'ano_corrente': ANO_CORRENTE,
+        'ano_corrente': ANO_CORRENTE(),
         'encaminhamentos': grupos_atendidos,  # Criar variaveis para encaminhamentos
         'casos_mediados': casos_mediados,  # Criar variavel para casos mediados
         'atendimentos': casos_mediados + grupos_atendidos,
@@ -260,7 +262,8 @@ def home(request):
     context = {
         "title": "Página Inicial pós Login",
         "welcome_message": "Bem-vindo à Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais!",
-        'ano_corrente': ANO_CORRENTE,
+        'ano_corrente': ANO_CORRENTE(),
+        'user': request.user,
         
     }
     return render(request, "home.html", context)
@@ -716,12 +719,13 @@ def relatorios(request):
     context = {
         "title": "Painel Informativo",
         "description": "Visualize o painel informativo estatístico gerados na plataforma.",
-        'ano_corrente': ANO_CORRENTE,
+        'ano_corrente': ANO_CORRENTE(),
         "periodo": ['Todos', 'Semanal', 'Mensal', 'Anual'],
         "periodo_selecionado": periodo_selecionado,
         "comarca_selecionada": comarca_selecionada,
         "comarcas": comarcas_pj,
         'busca_causa_resultado': busca_causa_resultado,
+        'user': request.user,
         # Estatísticas
         "medidas_protetivas_solicitadas_ocorrencias_porcentagem": medidas_protetivas_solicitadas_ocorrencias_porcentagem,
         "medidas_protetivas_solicitadas_ocorrencias": medidas_protetivas_solicitadas_ocorrencias,
@@ -749,10 +753,10 @@ def relatorios(request):
       
         
         # Cidades (estático por enquanto)
-        "cidades": {
-            "labels": ["Maravilha", "Tigrinhos", "Iraceminha"],
-            "data": [50, 30, 20]
-        },
+        #"cidades": {
+        #    "labels": ["Maravilha", "Tigrinhos", "Iraceminha"],
+        #    "data": [50, 30, 20]
+       # },
     }
     
     # Se HTMX, retorna apenas os gráficos
