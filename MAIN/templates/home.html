@@ -2,70 +2,6 @@
 {% load static %}
 {% block titulo %}{{ title }}{% endblock %}
 
-{% block nav %}
-<style>
-    /* Custom Tailwind config colors */
-    :root {
-        --primary: #8B5A9F;
-        --secondary: #B19CD9;
-        --accent: #E8D5F2;
-        --dark: #2D1B40;
-    }
-
-    .text-primary {
-        color: var(--primary);
-    }
-
-    .bg-primary {
-        background-color: var(--primary);
-    }
-
-    .text-secondary {
-        color: var(--secondary);
-    }
-
-    .bg-secondary {
-        background-color: var(--secondary);
-    }
-
-    .text-accent {
-        color: var(--accent);
-    }
-
-    .bg-accent {
-        background-color: var(--accent);
-    }
-
-    .text-dark {
-        color: var(--dark);
-    }
-
-    .bg-dark {
-        background-color: var(--dark);
-    }
-
-    .from-primary {
-        --tw-gradient-from: var(--primary);
-    }
-
-    .to-secondary {
-        --tw-gradient-to: var(--secondary);
-    }
-
-    .hover\:bg-accent:hover {
-        background-color: var(--accent);
-    }
-
-    .hover\:text-accent:hover {
-        color: var(--accent);
-    }
-
-    .hover\:text-primary:hover {
-        color: var(--primary);
-    }
-</style>
-{% endblock %}
-
 {% block main_content %}
 <div class="min-h-screen bg-gray-50">
 
@@ -101,16 +37,16 @@
             <!-- Main Content -->
             <main class="lg:col-span-3" id="root-content">
                 <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
-                    <div class="text-center">
-                        <div class="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-6">
-                            <i class="fas fa-building text-white text-2xl"></i>
+                    <div class="text-center mb-2">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-full mb-5">
+                            <i class="fas fa-shield-heart text-white text-2xl"></i>
                         </div>
-                        <h1 class="text-3xl font-bold text-gray-800 mb-4">
-                            Selecione a sua instituição
+                        <h1 class="text-3xl font-bold text-gray-800 mb-1">
+                            Olá, <span class="text-primary">{{ request.user.first_name|default:request.user.username }}</span>!
                         </h1>
-                        <p class="text-gray-600 mb-8 max-w-2xl mx-auto">
-                            Conforme o usuário estiver habilitado, serão exibidas as informações correspondentes à sua
-                            instituição.
+                        <p class="text-gray-400 text-xs mb-2">{% now "l, d \d\e F \d\e Y" %}</p>
+                        <p class="text-gray-500 text-sm mb-6 max-w-lg mx-auto">
+                            Selecione a área de atuação para começar.
                         </p>
                     </div>
 
@@ -128,14 +64,18 @@
                             <p class="text-purple-600 mb-4">Acesse funcionalidades do Poder Judiciário, Ministério
                                 Público e Defensoria.</p>
                             <div class="flex flex-wrap gap-2">
-                                <span class="bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full noindex hover:animate-bounce"><a
-                                        href="{% url 'sistema_justica:poder_judiciario' %}">Poder Judiciário</a></span>
-                                <span class="bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full noindex hover:animate-bounce"><a
-                                        href="{% url 'sistema_justica:ministerio_publico' %}">Ministério
-                                        Público</a></span>
-                                <span class="bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full noindex hover:animate-bounce"><a
-                                        href="{% url 'sistema_justica:defensoria_publica' %}">Defensoria
-                                        Pública</a></span>
+                                <a href="{% url 'sistema_justica:poder_judiciario' %}"
+                                    class="bg-purple-200 text-purple-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-purple-300 hover:scale-105 transition-all duration-150 hover:animate-bounce">
+                                    Poder Judiciário
+                                </a>
+                                <a href="{% url 'sistema_justica:ministerio_publico' %}"
+                                    class="bg-purple-200 text-purple-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-purple-300 hover:scale-105 transition-all duration-150 hover:animate-bounce">
+                                    Ministério Público
+                                </a>
+                                <a href="{% url 'sistema_justica:defensoria_publica' %}"
+                                    class="bg-purple-200 text-purple-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-purple-300 hover:scale-105 transition-all duration-150 hover:animate-bounce">
+                                    Defensoria Pública
+                                </a>
                             </div>
                         </div>
 
@@ -150,28 +90,22 @@
                             </div>
                             <p class="text-blue-600 mb-4">Ferramentas para as forças policiais.</p>
                             <div class="flex flex-wrap gap-2">
-                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full noindex hover:animate-bounce"><a
-                                        href="{% url 'seguranca_publica:militar' %}">Polícia
-                                        Militar</a>
+                                <a href="{% url 'seguranca_publica:militar' %}"
+                                    class="bg-blue-200 text-blue-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-blue-300 hover:scale-105 transition-all duration-150">
+                                    Polícia Militar
+                                </a>
+                                <a href="{% url 'seguranca_publica:civil' %}"
+                                    class="bg-blue-200 text-blue-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-blue-300 hover:scale-105 transition-all duration-150">
+                                    Polícia Civil
+                                </a>
+                                <span class="bg-gray-100 text-gray-400 text-xs font-medium px-3 py-1 rounded-full cursor-not-allowed"
+                                    title="Em breve">
+                                    Polícia Científica <i class="fas fa-lock text-[9px] ml-1"></i>
                                 </span>
-                                
-                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full noindex hover:animate-bounce"><a
-                                        href="{% url 'seguranca_publica:civil' %}">Polícia
-                                        Civil</a>
-                                </span>
-                                
-                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full noindex hover:animate-bounce">
-                                    <a
-                                        href="#">
-                                        <!--href="{% url 'seguranca_publica:cientifica' %}">-->
-                                        Polícia Científica
-                                    </a>
-                                </span>
-                                
-                                <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full noindex hover:animate-bounce"><a
-                                        href="{% url 'seguranca_publica:penal' %}">Polícia
-                                        Penal</a>
-                                </span>
+                                <a href="{% url 'seguranca_publica:penal' %}"
+                                    class="bg-blue-200 text-blue-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-blue-300 hover:scale-105 transition-all duration-150">
+                                    Polícia Penal
+                                </a>
                             </div>
                         </div>
 
@@ -187,16 +121,26 @@
                             <p class="text-red-600 mb-4">Acesso aos serviços de assistência social, saúde e proteção
                                 municipal.</p>
                             <div class="flex flex-wrap gap-2">
-                                <span class="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full noindex hover:animate-bounce"><a
-                                        href="{% url 'municipio:creas' %}">CREAS</a></span>
-                                <span class="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full noindex hover:animate-bounce"><a
-                                        href="{% url 'municipio:cras' %}">CRAS</a></span>
-                                <span class="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full noindex hover:animate-bounce"><a
-                                        href="{% url 'municipio:conselho_tutelar' %}">Conselho Tutelar</a></span>
-                                <span class="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full noindex hover:animate-bounce"><a
-                                        href="{% url 'municipio:caps' %}">CAPS</a></span>
-                                <span class="bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full noindex hover:animate-bounce"><a
-                                        href="{% url 'municipio:secretaria_saude' %}">Secretária da Saúde </a></span>
+                                <a href="{% url 'municipio:creas' %}"
+                                    class="bg-red-200 text-red-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-red-300 hover:scale-105 transition-all duration-150">
+                                    CREAS
+                                </a>
+                                <a href="{% url 'municipio:cras' %}"
+                                    class="bg-red-200 text-red-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-red-300 hover:scale-105 transition-all duration-150">
+                                    CRAS
+                                </a>
+                                <a href="{% url 'municipio:conselho_tutelar' %}"
+                                    class="bg-red-200 text-red-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-red-300 hover:scale-105 transition-all duration-150">
+                                    Conselho Tutelar
+                                </a>
+                                <a href="{% url 'municipio:caps' %}"
+                                    class="bg-red-200 text-red-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-red-300 hover:scale-105 transition-all duration-150">
+                                    CAPS
+                                </a>
+                                <a href="{% url 'municipio:secretaria_saude' %}"
+                                    class="bg-red-200 text-red-800 text-xs font-medium px-3 py-1 rounded-full hover:bg-red-300 hover:scale-105 transition-all duration-150">
+                                    Secretaria da Saúde
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -208,7 +152,7 @@
                         <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
                             <i class="fas fa-lightbulb text-yellow-600 text-xl"></i>
                         </div>
-                        <h2 class="text-2xl font-bold text-gray-400">Informações Importantes</h2>
+                        <h2 class="text-2xl font-bold text-gray-800">Informações Importantes</h2>
                     </div>
 
                     <div class="prose max-w-none text-gray-600">
@@ -226,17 +170,7 @@
                             </div>
                         </div>
 
-
                     </div>
-
-                    <!-- Action Buttons -->
-                    {% comment %} <div class="flex flex-col sm:flex-row gap-4 mt-8">
-                        <a href="{% url 'relatorios' %}"
-                            class="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 transform hover:scale-105 flex items-center justify-center">
-                            <i class="fas fa-chart-line mr-2"></i>
-                            Ver Estatísticas
-                        </a>
-                    </div> {% endcomment %}
                 </div>
             </main>
         </div>

@@ -9,23 +9,8 @@
     <link rel="icon" href="{% static 'img/logo1.png' %}"> <!--adiciona uma imagem na aba do navegador-->
     <title>{{ title }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#8B5A9F',
-                        secondary: '#B19CD9',
-                        accent: '#E8D5F2',
-                        dark: '#2D1B40'
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 
 <body class="bg-gray-50">
@@ -47,11 +32,19 @@
                     <a href="#home" class="text-white hover:text-accent transition-colors duration-200">Início</a>
                     <a href="#sections" class="text-white hover:text-accent transition-colors duration-200">Seções</a>
                     <a href="{% url 'relatorios' %}"
-                        class="text-white hover:text-accent transition-colors duration-200">Estatísticas</a>
-                    <a href="{% url 'login' %}"
-                        class="bg-white text-primary px-4 py-2 rounded-lg hover:bg-accent transition-colors duration-200">
-                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                        class="text-white hover:text-accent transition-colors duration-200">Estatísticas
                     </a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'home' %}"
+                            class="bg-white text-primary px-4 py-2 rounded-lg hover:bg-accent transition-colors duration-200">
+                            <i class="fas fa-home mr-2"></i>Home
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}"
+                            class="bg-white text-primary px-4 py-2 rounded-lg hover:bg-accent transition-colors duration-200">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Login
+                        </a>
+                    {% endif %}
                 </div>
                 <!-- Mobile menu button -->
                 <button class="md:hidden text-white" onclick="toggleMobileMenu()">
