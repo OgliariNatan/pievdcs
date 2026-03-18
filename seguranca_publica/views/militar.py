@@ -32,7 +32,10 @@ from reportlab.platypus import (
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_RIGHT
 
-ANO_CORRENTE = timezone.now().year
+
+def ANO_CORRENTE():
+    return datetime.now().year
+
 
 
 
@@ -80,17 +83,11 @@ def militar(request):
     notificacoes_nao_lidas = Notificacao.contar_nao_lidas_usuario(request.user)
     encaminhamentos_nao_lidos = Notificacao.contar_encaminhamentos_nao_lidos(request.user)
 
-    print('\n\n\n')
-    print(40*'=')
-    #print(f'Ultimos atendimentos registrados: {dois_ultimo_atendimentos[0].nome_vitima}')
-    print(40*'+')
-    print(f"Atendimentos Rede Catarina - Total: {atendimentos_rede_catarina} | Este mês: {atendimentos_rede_catarina_mes}")
 
-    print(40*'=')
-
+  
     contexto = {
         'title': 'Polícia Militar',
-        'ano_corrente': ANO_CORRENTE,
+        'ano_corrente': ANO_CORRENTE(),
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
         'encaminhamentos_nao_lidos': encaminhamentos_nao_lidos,
         'description': 'Informações sobre o sistema da Polícia Militar',
@@ -198,7 +195,7 @@ def consultas_informacao_vitima_agressor(request):
         total_geral = total_medidas_filtrado
         medidas_mes_geral = medidas_mes_filtrado
         vitimas_unicas_geral = vitimas_unicas_filtrado
-        agressores_unicos_geral = agressores_unicos_filtrado
+        
     else:
         total_geral = FormularioMedidaProtetiva.objects.count()
         medidas_mes_geral = FormularioMedidaProtetiva.objects.filter(
@@ -208,9 +205,7 @@ def consultas_informacao_vitima_agressor(request):
         vitimas_unicas_geral = FormularioMedidaProtetiva.objects.values(
             'vitima__cpf'
         ).distinct().count()
-        agressores_unicos_geral = FormularioMedidaProtetiva.objects.values(
-            'agressor__cpf'
-        ).distinct().count()
+        
     
     # Paginação: 50 registros por página
     paginator = Paginator(medidas_base, 50)
@@ -247,12 +242,13 @@ def consultas_informacao_vitima_agressor(request):
         'total_geral': total_geral,
         'medidas_mes_geral': medidas_mes_geral,
         'vitimas_unicas_geral': vitimas_unicas_geral,
-        'agressores_unicos_geral': agressores_unicos_geral,
+        
         # Manter valores dos filtros nos inputs
         'filtro_busca': busca,
         'filtro_status': status_filtro,
         'filtro_reincidencia': reincidencia_filtro,
         'filtro_ordenacao': ordenacao,
+        'ano_corrente': ANO_CORRENTE(),
     }
     
     return render(request, "parcial/consultas_informacao_vitima_agressor.html", context)
@@ -484,7 +480,7 @@ def _notificar_descumprimento(atendimento, request):
     vitima_nome = mp.vitima.nome if mp.vitima else "N/I"
     agressor_nome = mp.agressor.nome if mp.agressor else "N/I"
 
-    titulo = f"Descumprimento de Medida Protetiva - MP #{mp.ID}"
+    titulo = f"Descumprimento de Medida Protetiva - MPU #{mp.ID}"
     mensagem = (
         f"Descumprimento relatado durante atendimento da Rede Catarina.\n\n"
         f"Medida Protetiva: #{mp.ID}\n"

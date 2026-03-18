@@ -6,7 +6,7 @@ from mensageria.models import Notificacao, StatusNotificacao
 from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
 from usuarios.models import CustomUser
 from django.contrib.auth.models import Group as CustomGroup
-
+from datetime import datetime
 
 """ Configuraçao de decoradores para debug """
 import os
@@ -26,20 +26,28 @@ else:
 """ Fim da configuraçao de decoradores para debug """
 
 
+def ANO_CORRENETE():
+    return datetime.now().year
 
 @login_required(login_url=reverse_lazy('login'))
 @grupos_permitidos(['Polícia Civil'])
 @checked_debug_decorador
 def civil(request):
-    notificacoes_nao_lidas = Notificacao.contar_nao_lidas_usuario(request.user)
-    encaminhamentos_nao_lidos = Notificacao.contar_encaminhamentos_nao_lidos(request.user)
-
+    try:
+        notificacoes_nao_lidas = Notificacao.contar_nao_lidas_usuario(request.user)
+    except Notificacao.DoesNotExist:
+        notificacoes_nao_lidas = 0
+    try:    
+        encaminhamentos_nao_lidos = Notificacao.contar_encaminhamentos_nao_lidos(request.user)
+    except Notificacao.DoesNotExist:
+        encaminhamentos_nao_lidos = 0
 
     contexto = {
         'title': 'Polícia Civil',
         'encaminhamentos_nao_lidos': encaminhamentos_nao_lidos,
         'notificacoes_nao_lidas': notificacoes_nao_lidas,
-        'description': 'This page provides information about the civil system.',
+        'description': 'Pagina destinada a Polícia Civil.',
         'user' : request.user,
+        'ano_corrente': ANO_CORRENETE(),
     }
     return render(request, "civil.html", contexto)

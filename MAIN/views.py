@@ -4,6 +4,8 @@
     dir: MAIN/views.py
     @author: OgliariNatan
 """
+import ollama
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
@@ -33,6 +35,11 @@ import time
 import re
 import unicodedata
 
+
+
+# Configuração do Ollama
+OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://localhost:11434')
+OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'qwen2.5-coder:32b')  # ou 'mixtral:latest', 'gemma3:27b', 'llama3.1:70b', 'llama3.1:latest', 'qwen3-vl:latest', 'gpt-oss:120b', 'qwen2.5:7B'
 
 
 def ANO_CORRENTE():
@@ -299,7 +306,7 @@ def notificacoes(request, notificacoes=0):
     usuario_ativo = request.user.is_active
     if usuario_ativo == False:
         if var_debug == 'True':
-            print(f"Usuário: {request.user}.") 
+            print(f"\033[33mUsuário: {request.user}.\033[0m") 
             print(f"IP: {request.META.get('REMOTE_ADDR')}")
         raise PermissionError("Usuário inativo tentando acessar a página de notificações.")
 
@@ -750,13 +757,6 @@ def relatorios(request):
         
         # Mapa
         'municipios_mapa': municipios_mapa,
-      
-        
-        # Cidades (estático por enquanto)
-        #"cidades": {
-        #    "labels": ["Maravilha", "Tigrinhos", "Iraceminha"],
-        #    "data": [50, 30, 20]
-       # },
     }
     
     # Se HTMX, retorna apenas os gráficos
@@ -886,16 +886,240 @@ class CustomLoginView(LoginView):
         return super().form_valid(form)
 
 
+def verificar_ollama_disponivel():
+    """Verifica se o Ollama está rodando e acessível"""
+    try:
+        client = ollama.Client(host=OLLAMA_HOST)
+        # Tenta listar modelos para verificar conexão
+        models = client.list()
+        if var_debug:
+            nomes_modelos = [model['model'] for model in models['models']]
+            print(f"\033[33mOllama está disponível. Modelos: {', '.join(nomes_modelos)}\033[0m")
+        return True
+    except Exception as e:
+        print(f"Ollama não está disponível: {e}")
+        return False
+
+def obter_resposta_ollama(pergunta):
+    """Obtém resposta do modelo Ollama"""
+    try:
+        client = ollama.Client(host=OLLAMA_HOST)
+        #print(f'cliente {client.list()}')
+        # System prompt especializado para violência doméstica
+        system_prompt = """Você é uma assistente especializada em casos de violência doméstica contra a mulher no Brasil.
+        
+        Suas responsabilidades incluem:
+        - Fornecer informações sobre a Lei Maria da Penha (Lei 11.340/2006)
+        - Orientar sobre medidas protetivas de urgência
+        - Explicar direitos das vítimas de violência doméstica
+        - Informar sobre procedimentos de denúncia
+        - Indicar redes de apoio e acolhimento
+        - Esclarecer sobre tipos de violência (física, psicológica, sexual, patrimonial, moral e Vicária)
+        - Indicar caso necessário denuncia via Defensoria Publica ou na Delegacia Virtual(https://delegaciavirtual.sc.gov.br/nova-ocorrencia)
+
+        Responda de forma clara, empática e acolhedora. Use linguagem simples e evite jargões jurídicos complexos.
+        Sempre priorize a segurança da vítima e indique buscar ajuda profissional quando necessário.
+        
+        Não forneça conselhos médicos ou psicológicos específicos.
+        Em casos urgentes, sempre recomende ligar para 190 (Polícia) ou 180 (Central de Atendimento à Mulher).
+        Se tiver lesionada informe assistência médica, através do SAMU 192 ou no hospital mais próximo.
+        Denúncias on-line no site da [Delegacia Virtual (Registro de BO)](https://delegaciavirtual.sc.gov.br/nova-ocorrencia).
+
+        Quando solicitar uma conversa oriente a entrar em contato através do whatsapp para o número [554832872635](https://api.whatsapp.com/send?phone=554832872635), serviço do Tribunal de Justiça de Santa Catarina.
+
+        [
+        Quando citado o corte da pensão alimentícia, informe que se encaixa na violência vicária.
+        Conceito de Violência Vicária:
+        A violência vicária (ou violência por procuração) é uma forma grave de violência doméstica e de gênero, na qual o agressor (geralmente o ex-parceiro) utiliza uma terceira pessoa — predominantemente os filhos, mas também outros entes queridos ou animais de estimação — como "instrumento" ou "arma" para causar sofrimento e dano psicológico à vítima principal (a mulher).
+        Pontos-chave a considerar:
+        Objetivo Principal: O objetivo central não é a agressão direta à vítima principal, mas sim infligir a dor mais profunda e duradoura possível, atingindo o que ela mais ama ou valoriza.
+        Instrumentalização: A vítima secundária (ex: o filho) é vista como um objeto ou meio para atingir a vítima principal.
+        Contexto: Frequentemente ocorre em processos de separação litigiosa, disputas de guarda e após o término do relacionamento, quando o agressor perde o controle direto sobre a vítima.
+        ]
+
+        Formate suas respostas usando HTML básico:
+        - Use <a href=""> para links
+        - Use <strong> para destacar informações importantes
+        - Use <br> para quebras de linha
+        - Use <p> para parágrafos
+        - Organize listas com • seguido de espaço
+        - Evite usar listas numeradas
+
+        Porque o nome de LaelIA?
+        Laelia é um tipo de orquídea conhecida por sua beleza e resiliência, simbolizando a força e a delicadeza das mulheres que enfrentam a violência doméstica e simbolo oficial do estado de Santa Catarina. O nome LaelIA reflete a missão da assistente virtual de oferecer apoio, informação e empoderamento às vítimas, ajudando-as a florescer apesar das adversidades que enfrentam. Uma Curiosidade sobre o nome que possui o -IA- na composição do nome para destacar sua natureza de inteligência artificial.
+        """
+        
+        # Cria o prompt completo
+        prompt_completo = f"{system_prompt}\n\nUsuário: {pergunta}\n\nLaelIA:"
+        
+        # Faz a chamada ao Ollama
+        response = client.generate(
+            model=OLLAMA_MODEL,
+            prompt=prompt_completo,
+            system='Seu nome é Lael<b>IA</b>, uma assistente virtual especializada em violência doméstica contra a mulher no Brasil.',
+            context=[1, 2, 3],  # Mantém o contexto das últimas interações
+            stream=False,# Se True, recebe a resposta em partes (streaming)
+
+            options={
+                'temperature': 0.4,  # Baixo para respostas mais focadas 
+                'num_predict': 800,  # tamanho da resposta
+                'seed': None,
+                'top_p': 0.7, # Inicial 0.9
+                'top_k': 20,
+                'repeat_penalty': 1.2,
+                'num_ctx': 4096,
+                #'stop': ['\n\nUsuário:', '\n\Laelia:', 'FIM'],
+                'num_gpu':1,
+                'mirostat': 2,
+                'mirostat_tau': 5.0,
+            },
+            keep_alive='5m',
+        )
+        
+        # Extrai a resposta
+        resposta = response['response']
+        
+        # Formata a resposta para HTML
+        resposta_formatada = resposta.replace('\n\n', '<br><br>').replace('\n', '<br>')
+        
+        # Adiciona formatação para listas
+        linhas = resposta_formatada.split('<br>')
+        linhas_formatadas = []
+        for linha in linhas:
+            if linha.strip().startswith('- '):
+                linha = '• ' + linha.strip()[2:]
+            linhas_formatadas.append(linha)
+        resposta_formatada = '<br>'.join(linhas_formatadas)
+        
+        return resposta_formatada
+        
+    except Exception as e:
+        print(f"Erro ao chamar Ollama: {e}")
+        return None
+
+def obter_resposta_demo(pergunta):
+    """Respostas demo quando Ollama não está disponível"""
+    pergunta_lower = pergunta.lower()
+    
+    if "medida protetiva" in pergunta_lower or "medidas protetivas" in pergunta_lower:
+        return """A medida protetiva é um instrumento jurídico previsto na Lei Maria da Penha (Lei 11.340/2006) para proteger mulheres em situação de violência.
+        <br><br><strong>Como solicitar:</strong>
+        <br>• Procure a Defensoria Pública ou;
+        <br>• Procure uma Delegacia da Mulher, Delegacia comum ou [Delegacia Virtual](https://delegaciavirtual.sc.gov.br/nova-ocorrencia).
+        <br>• Relate os fatos e peça a medida protetiva
+        <br>• Não é necessário advogado
+        <br>• O juiz tem 48h para decidir
+        <br><br><strong>O que pode incluir:</strong>
+        <br>• Afastamento do agressor do lar
+        <br>• Proibição de aproximação (mínimo 200m)
+        <br>• Proibição de contato por qualquer meio
+        <br>• Suspensão de porte de arma
+        <br>• Prestação de alimentos provisórios"""
+    
+    elif "documento" in pergunta_lower or "documentos" in pergunta_lower:
+        return """Para registrar uma denúncia de violência doméstica, você pode levar:
+        <br><br><strong>Documentos úteis:</strong>
+        <br>• RG e CPF (seus e do agressor, se tiver)
+        <br>• Comprovante de residência
+        <br>• Certidão de nascimento dos filhos
+        <br>• Fotos de lesões ou danos
+        <br>• Mensagens, e-mails ou áudios ameaçadores
+        <br>• Laudos médicos (se houver)
+        <br>• Boletins de ocorrência anteriores
+        <br><br><strong>Importante:</strong> Mesmo sem documentos, você pode e deve denunciar! A palavra da vítima tem valor especial nos casos de violência doméstica."""
+    
+    elif "acolhimento" in pergunta_lower:
+        return """O acolhimento de vítimas de violência doméstica funciona através de uma rede de proteção:
+        <br><br><strong>Serviços disponíveis:</strong>
+        <br>• <strong>Casa-abrigo:</strong> Local sigiloso e seguro para vítimas em risco
+        <br>• <strong>Centro de Referência da Mulher:</strong> Atendimento psicológico, social e jurídico
+        <br>• <strong>CRAS/CREAS:</strong> Assistência social e encaminhamentos
+        <br>• <strong>Defensoria Pública:</strong> Assistência jurídica gratuita
+        <br><br><strong>Como acessar:</strong>
+        <br>• Ligue 180 (Central de Atendimento à Mulher)
+        <br>• Procure a Delegacia da Mulher
+        <br>• Vá ao CREAS mais próximo
+        <br>• Busque o Centro de Referência da sua cidade"""
+    
+    elif "denunc" in pergunta_lower or "denúncia" in pergunta_lower:
+        return """Para denunciar violência doméstica:
+        <br><br><strong>Onde denunciar:</strong>
+        <br>• <strong>Emergência:</strong> Ligue 190
+        <br>• <strong>Central da Mulher:</strong> Ligue 180 (24h, gratuito)
+        <br>• <strong>Delegacia da Mulher:</strong> Atendimento especializado
+        <br>• <strong>Delegacia comum:</strong> Na ausência de delegacia especializada
+        <br>• <strong>Delegacia Virtual:</strong> Registro de BO online
+        <br>• <strong>Defensoria Pública:</strong> Assistência jurídica gratuita
+        <br>• <strong>Ministério Público:</strong> Denúncias diretas
+        <br>• <strong>Online:</strong> Alguns estados têm delegacia virtual
+        <br><br><strong>Importante:</strong>
+        <br>• A denúncia pode ser anônima pelo 180
+        <br>• Vizinhos e familiares também podem denunciar
+        <br>• Em caso de flagrante, a polícia deve prender o agressor"""
+    
+    elif "tipo" in pergunta_lower and "violência" in pergunta_lower:
+        return """A Lei Maria da Penha reconhece 5 tipos de violência doméstica:
+        <br><br><strong>1. Violência Física:</strong>
+        <br>• Tapas, socos, empurrões, chutes
+        <br>• Arremesso de objetos, queimaduras
+        <br>• Uso de armas
+        <br><br><strong>2. Violência Psicológica:</strong>
+        <br>• Humilhações, xingamentos, ameaças
+        <br>• Isolamento de amigos e familiares
+        <br>• Controle excessivo
+        <br><br><strong>3. Violência Sexual:</strong>
+        <br>• Relação sexual forçada
+        <br>• Impedir uso de contraceptivos
+        <br>• Forçar aborto ou gravidez
+        <br><br><strong>4. Violência Patrimonial:</strong>
+        <br>• Destruir objetos pessoais
+        <br>• Reter documentos
+        <br>• Controlar dinheiro
+        <br><br><strong>5. Violência Moral:</strong>
+        <br>• Calúnia, difamação, injúria
+        <br>• Expor a vida íntima"""
+    
+    elif "direito" in pergunta_lower:
+        return """As vítimas de violência doméstica têm diversos direitos garantidos:
+        <br><br><strong>Direitos principais:</strong>
+        <br>• Atendimento prioritário e especializado
+        <br>• Medidas protetivas de urgência
+        <br>• Assistência jurídica gratuita
+        <br>• Atendimento médico e psicológico
+        <br>• Abrigamento sigiloso quando em risco
+        <br>• Afastamento do trabalho por até 6 meses
+        <br>• Prioridade para transferir matrícula escolar dos filhos
+        <br>• Inclusão em programas sociais
+        <br><br><strong>Na delegacia:</strong>
+        <br>• Ser atendida por policial mulher (quando possível)
+        <br>• Registrar ocorrência em local reservado
+        <br>• Não ser questionada sobre sua vida íntima
+        <br>• Receber cópia do B.O. imediatamente"""
+    
+    else:
+        return f"""Entendo sua pergunta sobre: "<em>{pergunta}</em>"
+        <br><br>Posso ajudar com informações sobre:
+        <br>• <strong>Medidas protetivas</strong> - Como solicitar proteção judicial
+        <br>• <strong>Documentos necessários</strong> - O que levar para denunciar
+        <br>• <strong>Acolhimento</strong> - Rede de apoio disponível
+        <br>• <strong>Tipos de violência</strong> - Física, psicológica, sexual, etc.
+        <br>• <strong>Direitos da vítima</strong> - Garantias legais
+        <br>• <strong>Como denunciar</strong> - Passo a passo
+        <br><br>Por favor, seja mais específica ou escolha um dos tópicos acima."""
+
+
+
+
 @checked_debug_decorador
 @csrf_exempt
 def chat_ia_publico(request):
     """Chat IA público para a página inicial, sem restrição de login."""
     if request.method == "POST":
-        from sistema_justica.views.poder_judiciario import (
-            verificar_ollama_disponivel, obter_resposta_ollama, obter_resposta_demo,
-            OLLAMA_MODEL
-        )
-        from django.conf import settings
+        # from sistema_justica.views.poder_judiciario import (
+        #     verificar_ollama_disponivel, obter_resposta_ollama, obter_resposta_demo,
+        #     OLLAMA_MODEL
+        # )
+        # from django.conf import settings
 
         pergunta = request.POST.get("mensagem", "").strip()
         if not pergunta:

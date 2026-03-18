@@ -36,7 +36,7 @@ comarcas_sc = {
     "Camboriú": ["Camboriú"],
     "Campo Belo do Sul": ["Campo Belo do Sul", "Cerro Negro", "Capão Alto"],
     "Campo Erê": ["Campo Erê", "Saltinho", "São Bernardino"],
-    "Campos Novos": ["Campos Novos", "Brunópolis", "Zortéa", "Vargem"],
+    "Campos Novos": ["Campos Novos", "Brunópolis", "Zortéa", "Vargem"], #Aqui
     "Canoinhas": ["Canoinhas", "Bela Vista do Toldo", "Major Vieira", "Três Barras"],
     "Capinzal": ["Capinzal", "Lacerdópolis", "Ouro", "Piratuba", "Lacerdópolis"],
     "Capivari de Baixo": ["Capivari de Baixo"],
@@ -65,7 +65,7 @@ comarcas_sc = {
     "Indaial": ["Indaial"],
     "Ipumirim": ["Ipumirim", "Arabutã", "Lindóia do Sul"],
     "Itá": ["Itá"],
-    "Itaiópolis": ["Itaiopolis"],
+    "Itaiópolis": ["Itaiópolis"],
     "Itajaí": ["Itajaí"],
     "Itapema": ["Itapema"],
     "Itapiranga": ["Itapiranga", "São João do Oeste", "Tunápolis"],
