@@ -220,6 +220,7 @@ def index_tailwind(request):
         'encaminhamentos': grupos_atendidos,  # Criar variaveis para encaminhamentos
         'casos_mediados': casos_mediados,  # Criar variavel para casos mediados
         'atendimentos': casos_mediados + grupos_atendidos,
+        'user': request.user,
     }
     return render(request, "index_tailwind.html", context)
 
@@ -880,7 +881,7 @@ class CustomLoginView(LoginView):
             self.request.session.set_expiry(0)  # Expira ao fechar navegador
         return super().form_valid(form)
 
-        
+
 @checked_debug_decorador
 @csrf_exempt
 def chat_ia_publico(request):
