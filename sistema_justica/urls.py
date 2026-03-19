@@ -2,7 +2,7 @@ from django.urls import path
 from .views.poder_judiciario import( 
     poder_judiciario, cadastro_vitima_form, cadastro_vitima_submit,
     cadastro_agressor_form, cadastro_agressor_submit,
-    cadastro_municipio_form, cadastro_municipio_submit, chat_ia,
+    cadastro_municipio_form, cadastro_municipio_submit,
     listar_medidas_protetivas, form_alterar_periodo_mp,
     alterar_periodo_mp, detalhe_medida_protetiva_jud, listar_grupos_reflexivos,
     listar_atendimentos_rede_catarina, toggle_medida_concedida
@@ -38,7 +38,7 @@ urlpatterns = [
     path('cadastro_agressor_submit/', cadastro_agressor_submit, name='cadastro_agressor_submit'), #Submissão do formulário de cadastro de agressor
     path('cadastro_municipio_form/', cadastro_municipio_form, name='cadastro_municipio_form'),
     path('cadastro_municipio_submit/', cadastro_municipio_submit, name='cadastro_municipio_submit'),
-    path('chat_ia/', chat_ia, name='chat_ia'),
+    
     path("encaminhamentos/", listar_encaminhamentos, name="encaminhamentos"), #Listar encaminhamentos da defensoria pública
 
 

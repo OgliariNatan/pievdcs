@@ -124,7 +124,7 @@ def marcar_notificacao_lida(request, notificacao_id):
 
 @checked_debug_decorador
 @login_required(login_url=reverse_lazy('login'))
-@grupos_permitidos(['Defensoria Pública', 'Ministério Público','Polícia Civil'])
+@grupos_permitidos(['Defensoria Pública', 'Ministério Público','Polícia Civil', 'Polícia Militar'])
 def cadastro_mpu(request):
     """Cadastro de Medida Protetiva de Urgência."""
     if request.method == "POST":

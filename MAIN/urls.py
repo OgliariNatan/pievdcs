@@ -14,7 +14,7 @@ from django.contrib import admin
 from django.urls import path, include
 from MAIN.views import( 
     home, 
-    relatorios, 
+    relatorios,
     encaminhamentos, notificacoes, pre_visualizacao_conteudo, 
     index_tailwind, CustomLoginView, api_tendencia_temporal,
     chat_ia_publico, inserir_noticia_form, inserir_noticia_submit,
