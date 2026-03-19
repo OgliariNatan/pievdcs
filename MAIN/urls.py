@@ -13,8 +13,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from MAIN.views import( 
-    home, 
-    relatorios,
+    home, relatorios, frase_motivacional,
     encaminhamentos, notificacoes, pre_visualizacao_conteudo, 
     index_tailwind, CustomLoginView, api_tendencia_temporal,
     chat_ia_publico, inserir_noticia_form, inserir_noticia_submit,
@@ -25,7 +24,7 @@ app_name = 'MAIN'
 
 urlpatterns = [
     path("home/", home, name="home"),  # Rota para a página inicial após login
-   
+    path("frase-motivacional/", frase_motivacional, name="frase_motivacional"),
     path("", index_tailwind, name="index"), #Página inicial one_page sem login com tailwind    
        
     #Login & reset senha & logout

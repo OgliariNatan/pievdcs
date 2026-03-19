@@ -1260,3 +1260,64 @@ def excluir_noticia(request, pk):
             'excluido': True,
         })
     return HttpResponse(status=405)
+
+
+def frase_motivacional(request):
+    """Proxy para a ZenQuotes API com tradução via MyMemory."""
+    KEYWORDS = {
+        'love': 'Amor',
+        'confidence': 'Confiança',
+        'courage': 'Coragem',
+        'dreams': 'Sonhos',
+        'freedom': 'Liberdade',
+        'future': 'Futuro',
+        'happiness': 'Felicidade',
+        'inspiration': 'Inspiração',
+        'life': 'Vida',
+        'success': 'Sucesso',
+        'time': 'Tempo',
+    }
+
+    FALLBACKS = [
+        {'q': 'O segredo de avançar é começar.', 'a': 'Mark Twain', 'keyword_pt': 'Sucesso'},
+        {'q': 'No meio de toda dificuldade existe uma oportunidade.', 'a': 'Albert Einstein', 'keyword_pt': 'Coragem'},
+        {'q': 'A vida é o que acontece enquanto você está ocupado fazendo outros planos.', 'a': 'John Lennon', 'keyword_pt': 'Vida'},
+        {'q': 'Espalhe amor por onde você for.', 'a': 'Madre Teresa', 'keyword_pt': 'Amor'},
+        {'q': 'O futuro pertence àqueles que acreditam na beleza dos seus sonhos.', 'a': 'Eleanor Roosevelt', 'keyword_pt': 'Sonhos'},
+    ]
+
+    keyword_en = random.choice(list(KEYWORDS.keys()))
+    keyword_pt = KEYWORDS[keyword_en]
+
+    def traduzir(texto):
+        """Traduz inglês → português via MyMemory (gratuita, sem chave)."""
+        try:
+            url = f"https://api.mymemory.translated.net/get?q={texto}&langpair=en|pt-BR"
+            resp = http_requests.get(url, timeout=4)
+            resp.raise_for_status()
+            data = resp.json()
+            traducao = data.get('responseData', {}).get('translatedText', '')
+            if traducao and data.get('responseStatus') == 200:
+                return traducao
+        except Exception:
+            pass
+        return texto  # Retorna original se falhar
+
+    try:
+        response = http_requests.get(
+            'https://zenquotes.io/api/random',
+            timeout=5,
+            headers={'User-Agent': 'PIEVDCS/1.0'},
+        )
+        response.raise_for_status()
+        data = response.json()
+        quote = data[0]
+        frase_traduzida = traduzir(quote['q'])
+        return JsonResponse({
+            'q': frase_traduzida,
+            'a': quote['a'],
+            'keyword_pt': keyword_pt,
+        })
+    except Exception:
+        fallback = random.choice(FALLBACKS)
+        return JsonResponse(fallback)
