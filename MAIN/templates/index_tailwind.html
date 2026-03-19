@@ -285,6 +285,62 @@
             {% endfor %}
         </div>
 
+        <!-- Mensagem Motivacional -->
+        <section class="my-12">
+            <div id="card-motivacional"
+                class="relative bg-white rounded-2xl shadow-lg border border-gray-100 p-8 overflow-hidden">
+
+                <!-- Faixa decorativa superior -->
+                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 rounded-t-2xl"></div>
+
+                <div class="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                    <!-- Ícone -->
+                    <div class="flex-shrink-0">
+                        <div class="w-20 h-20 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-2xl flex items-center justify-center shadow-sm border border-purple-200">
+                            <i class="fas fa-quote-left text-purple-500 text-3xl"></i>
+                        </div>
+                    </div>
+
+                    <!-- Conteúdo da frase -->
+                    <div class="flex-1 text-center md:text-left">
+                        <!-- Badge do tema -->
+                        <span id="mot-keyword"
+                            class="inline-block bg-purple-100 text-purple-700 text-xs font-semibold px-3 py-1 rounded-full mb-4 tracking-widest uppercase border border-purple-200">
+                            Carregando...
+                        </span>
+
+                        <!-- Frase -->
+                        <blockquote id="mot-quote"
+                            class="text-gray-800 text-xl md:text-2xl font-light italic leading-relaxed mb-3 transition-opacity duration-300">
+                            <span class="text-gray-400">Carregando frase inspiracional...</span>
+                        </blockquote>
+
+                        <!-- Autor -->
+                        <p id="mot-author" class="text-purple-600 text-sm font-semibold">
+                            — ...
+                        </p>
+
+                        <!-- Atribuição ZenQuotes -->
+                        <p class="text-gray-400 text-xs mt-2 flex items-center gap-1 justify-center md:justify-start">
+                            <i class="fas fa-globe"></i>
+                            via <a href="https://zenquotes.io/" target="_blank"
+                                class="underline hover:text-purple-500 transition-colors ml-1">ZenQuotes API</a>
+                        </p>
+                    </div>
+
+                    <!-- Botão -->
+                    <div class="flex-shrink-0">
+                        <button onclick="carregarFrase()"
+                            class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 shadow-md hover:shadow-lg">
+                            <i class="fas fa-sync-alt" id="mot-spinner"></i>
+                            Nova frase
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
         <!-- Statistics Section -->
         <section id="statistics" class="mt-20 bg-white rounded-2xl shadow-lg p-8">
             <div class="text-center mb-12">
@@ -829,7 +885,42 @@
             // tentativa extra caso já esteja no DOM
             ensureHozana();
         })();
+        
 
+        //Frase Motivacional - ZenQuotes API
+        async function carregarFrase() {
+            const spinner = document.getElementById('mot-spinner');
+            const quoteEl = document.getElementById('mot-quote');
+            const authorEl = document.getElementById('mot-author');
+            const keywordEl = document.getElementById('mot-keyword');
+
+            // Animação de carregamento
+            spinner.classList.add('fa-spin');
+            quoteEl.style.opacity = '0.4';
+
+            try {
+                const resp = await fetch("{% url 'frase_motivacional' %}");
+                const data = await resp.json();
+
+                quoteEl.innerHTML = `"${data.q}"`;
+                authorEl.textContent = `— ${data.a}`;
+                keywordEl.textContent = data.keyword_pt;
+                quoteEl.style.opacity = '1';
+            } catch (e) {
+                quoteEl.innerHTML = '"A coragem é a primeira das virtudes humanas."';
+                authorEl.textContent = '— Aristóteles';
+                keywordEl.textContent = 'Coragem';
+                quoteEl.style.opacity = '1';
+            } finally {
+                spinner.classList.remove('fa-spin');
+            }
+        }
+
+        // Carregar automaticamente ao abrir a página
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarFrase();
+            setInterval(carregarFrase, 20000); // ← muda a cada 10 segundos
+        });
 
     </script>
 </body>
