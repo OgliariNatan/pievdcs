@@ -282,7 +282,7 @@
                         </button>
                         <button
                             type="button"
-                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+                            class="bg-pm hover:bg-pm-dark text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
                             onclick="location.href='{% url 'seguranca_publica:consultas_PM' %}'">
                             <i class="fa fa-globe"></i>
                             Ver todos
@@ -290,6 +290,46 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Cadastros Gerais  -->
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mb-6">
+                <button
+                    class="group bg-pink-500 hover:bg-pink-400 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
+                    hx-get="{% url 'sistema_justica:cadastro_vitima_form' %}" hx-target="#modal-vitima"
+                    hx-swap="innerHTML" hx-indicator="#spinner">
+                    <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-female text-sm"></i>
+                    </div>
+                    <span class="font-medium">Cadastrar Vítima</span>
+                </button>
+
+                <button
+                    class="group bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
+                    hx-get="{% url 'sistema_justica:cadastro_agressor_form' %}" hx-target="#modal-content1"
+                    hx-swap="innerHTML">
+                    <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-thin fa-circle-info"></i>
+                    </div>
+                    <span class="font-medium">Cadastrar Agressor</span>
+                </button>
+
+                <button
+                    class="group bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl flex items-center gap-3"
+                    hx-get="{% url 'sistema_justica:cadastro_mpu' %}" hx-target="#modal-mpu" hx-swap="innerHTML"
+                    hx-indicator="#spinner">
+                    <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-thin fa-hands-holding-child"></i>
+                    </div>
+                    <span class="font-medium">Solicitar MPU</span>
+                </button>
+
+
+            </div>
+            <!-- Container para modais-->
+            <div id="modal-vitima"> </div>
+            <div id="modal-mpu"> </div>
+            <div id="modal-content1"> </div>
+ 
 
             <!-- Conteúdo informativo -->
             <div class="prose max-w-none text-gray-700 leading-relaxed">
@@ -330,7 +370,7 @@
                             <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center">
                                 <i class="fas fa-share-square text-white"></i>
                             </div>
-                            <h4 class="font-semibold text-amber-800">Acompanhamentos Rede Catarina <span class='font-normal text-xs text-gray-400'>Últimos dois</span></h4>
+                            <h4 class="font-semibold text-amber-800">Acompanhamentos Rede Catarina <span class='font-normal text-xs text-gray-400'>Últimas duas</span></h4>
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
                             {% for atendimento in dois_ultimo_atendimentos %}
@@ -374,7 +414,7 @@
                             <h4 class="font-semibold text-blue-800">Segurança</h4>
                         </div>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Dados protegidos com criptografia e acesso controlado por níveis.
+                            Dados protegidos com criptografia.
                         </p>
                     </div>
 
@@ -530,7 +570,7 @@
     
     function abrirModalResultados() {
         const modal = document.getElementById('modal-resultados');
-        const overlay = document.getElementById('modal-overlay');
+        const overlay = document.getElementById('modal-overlay'); 
         const content = document.getElementById('modal-content');
         
         modal.classList.remove('hidden');
