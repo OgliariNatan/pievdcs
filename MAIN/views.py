@@ -30,6 +30,7 @@ from usuarios.models import CustomUser
 from .calculo_variaveis import *
 from collections import Counter
 from rapidfuzz import fuzz
+import requests as http_requests
 import random
 import time
 import re
