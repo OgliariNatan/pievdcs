@@ -25,7 +25,8 @@ app_name = 'MAIN'
 urlpatterns = [
     path("home/", home, name="home"),  # Rota para a página inicial após login
     path("frase-motivacional/", frase_motivacional, name="frase_motivacional"),
-    path("", index_tailwind, name="index"), #Página inicial one_page sem login com tailwind    
+    path("", index_tailwind, name="index"), #Página inicial one_page sem login com tailwind   
+    
        
     #Login & reset senha & logout
     #path('login/', auth_views.LoginView.as_view(template_name='login.html', next_page='/home/'), name='login'),
@@ -56,7 +57,7 @@ urlpatterns = [
     path('municipio/', include('municipio.urls')), #Destinado ao municipio
     path('chaining/', include('smart_selects.urls')),# Para selecionar os municipios
     path('mensageria/', include('mensageria.urls')), #Para o sistema de mensagens
-
+    path('usuarios/', include('usuarios.urls')), #Para o sistema de usuários
 
 
 ] + static(

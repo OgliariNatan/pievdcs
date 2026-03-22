@@ -1,0 +1,159 @@
+<!-- dir: usuarios/templates/popup_editar_dados.html -->
+{% extends 'base_popup.html' %}
+
+{% block popup_titulo %}Atualizar dados cadastrais{% endblock %}
+{% block popup_subtitulo %}
+<p class="text-sm text-purple-100">Edite suas informações pessoais.</p>
+{% endblock %}
+
+{% block popup_conteudo %}
+{% if sucesso %}
+    <div class="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+        Dados atualizados com sucesso.
+    </div>
+{% endif %}
+
+<form
+    hx-post="{% url 'usuarios:config_conta_dados_submit' %}"
+    hx-target="#{{ popup_id }}"
+    hx-swap="outerHTML"
+    class="space-y-5"
+>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+        <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700" for="{{ form.first_name.id_for_label }}">
+                Primeiro nome
+            </label>
+            {{ form.first_name }}
+            {% if form.first_name.errors %}
+                <p class="mt-1 text-xs text-red-600">{{ form.first_name.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700" for="{{ form.last_name.id_for_label }}">
+                Sobrenome
+            </label>
+            {{ form.last_name }}
+            {% if form.last_name.errors %}
+                <p class="mt-1 text-xs text-red-600">{{ form.last_name.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div class="md:col-span-2">
+            <label class="mb-2 block text-sm font-medium text-gray-700" for="{{ form.email.id_for_label }}">
+                E-mail
+            </label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <p class="mt-1 text-xs text-red-600">{{ form.email.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700" for="{{ form.telefone.id_for_label }}">
+                Telefone
+            </label>
+            {{ form.telefone }}
+            {% if form.telefone.errors %}
+                <p class="mt-1 text-xs text-red-600">{{ form.telefone.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700" for="{{ form.cpf.id_for_label }}">
+                CPF
+            </label>
+            {{ form.cpf }}
+            {% if form.cpf.errors %}
+                <p class="mt-1 text-xs text-red-600">{{ form.cpf.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700" for="id_data_nascimento">
+                Data de nascimento
+            </label>
+            <input
+                type="date"
+                name="data_nascimento"
+                id="id_data_nascimento"
+                class="w-full px-4 py-3 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none"
+                value="{% if form.is_bound %}{{ form.data_nascimento.value|default:'' }}{% elif form.instance.data_nascimento %}{{ form.instance.data_nascimento|date:'Y-m-d' }}{% endif %}"
+            >
+            {% if form.data_nascimento.errors %}
+                <p class="mt-1 text-xs text-red-600">{{ form.data_nascimento.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label class="mb-2 block text-sm font-medium text-gray-700" for="{{ form.genero.id_for_label }}">
+                Gênero
+            </label>
+            {{ form.genero }}
+            {% if form.genero.errors %}
+                <p class="mt-1 text-xs text-red-600">{{ form.genero.errors.0 }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="flex justify-end gap-3 pt-2">
+        <button
+            type="button"
+            class="rounded-xl bg-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-300 transition"
+            onclick="document.getElementById('{{ popup_id }}').remove()"
+        >
+            Cancelar
+        </button>
+        <button
+            type="submit"
+            class="rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-purple-700 transition"
+        >
+            Salvar dados
+        </button>
+    </div>
+</form>
+
+<script>
+(function () {
+    const cpf = document.getElementById('{{ form.cpf.id_for_label }}');
+    const telefone = document.getElementById('{{ form.telefone.id_for_label }}');
+
+    if (cpf) {
+        cpf.addEventListener('input', function (e) {
+            let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+            v = v.replace(/(\d{3})(\d)/, '$1.$2');
+            v = v.replace(/(\d{3})(\d)/, '$1.$2');
+            v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            e.target.value = v;
+        });
+    }
+
+    if (telefone) {
+        telefone.addEventListener('input', function (e) {
+            let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+
+            if (v.length > 10) {
+                v = v.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+            } else if (v.length > 6) {
+                v = v.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+            } else if (v.length > 2) {
+                v = v.replace(/^(\d{2})(\d{0,5}).*/, '($1) $2');
+            } else if (v.length > 0) {
+                v = v.replace(/^(\d{0,2}).*/, '($1');
+            }
+
+            e.target.value = v;
+        });
+    }
+})();
+</script>
+{% endblock %}
