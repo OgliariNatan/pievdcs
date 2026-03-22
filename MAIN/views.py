@@ -5,12 +5,14 @@
     @author: OgliariNatan
 """
 import ollama
+from argostranslate import translate
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.templatetags.static import static
 from django.urls import reverse_lazy
 from collections import defaultdict
 from datetime import datetime, timedelta, date
@@ -40,7 +42,7 @@ import unicodedata
 
 # Configuração do Ollama
 OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://localhost:11434')
-OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'qwen2.5-coder:32b')  # ou 'mixtral:latest', 'gemma3:27b', 'llama3.1:70b', 'llama3.1:latest', 'qwen3-vl:latest', 'gpt-oss:120b', 'qwen2.5:7B'
+OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'qwen2.5:7B')  # ou 'mixtral:latest', 'gemma3:27b', 'llama3.1:70b', 'llama3.1:latest', 'qwen3-vl:latest', 'gpt-oss:120b', 'qwen2.5:7B', 'deepseek-r1:32b'
 
 
 def ANO_CORRENTE():
@@ -1116,11 +1118,7 @@ def obter_resposta_demo(pergunta):
 def chat_ia_publico(request):
     """Chat IA público para a página inicial, sem restrição de login."""
     if request.method == "POST":
-        # from sistema_justica.views.poder_judiciario import (
-        #     verificar_ollama_disponivel, obter_resposta_ollama, obter_resposta_demo,
-        #     OLLAMA_MODEL
-        # )
-        # from django.conf import settings
+       
 
         pergunta = request.POST.get("mensagem", "").strip()
         if not pergunta:
@@ -1144,7 +1142,7 @@ def chat_ia_publico(request):
                 fonte_resposta = f"<div class='text-xs text-green-600 mt-2'><i class='fas fa-robot mr-1'></i>Resposta gerada por IA local (Ollama - {OLLAMA_MODEL})</div>"
             else:
                 fonte_resposta = "<div class='text-xs text-orange-600 mt-2'><i class='fas fa-info-circle mr-1'></i>Resposta pré-definida (Ollama indisponível)</div>"
-
+        chat_bot_img_url = static('img/chat_bot.png')
         html_response = f"""
             <div class='flex justify-end mb-3'>
                 <div class='bg-purple-600 text-white rounded-xl p-3 max-w-[80%] shadow-md'>
@@ -1153,7 +1151,7 @@ def chat_ia_publico(request):
             </div>
             <div class='flex items-start gap-2 mb-3'>
                 <div class='w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center flex-shrink-0'>
-                    <i class='fas fa-robot text-sm'></i>
+                    <img src="{chat_bot_img_url}" alt="Assistente" class="w-7 h-7 object-contain">
                 </div>
                 <div class='bg-white rounded-xl p-4 max-w-[80%] shadow-md border border-gray-100'>
                     <p class='text-sm text-gray-700 leading-relaxed'>{resposta_formatada}</p>
@@ -1161,7 +1159,10 @@ def chat_ia_publico(request):
                     <div class='mt-3 pt-3 border-t border-gray-200'>
                         <p class='text-xs text-gray-500'>
                             <i class='fas fa-phone-alt mr-1'></i>
-                            Emergência: <strong>190</strong> | Central da Mulher: <strong>180</strong>
+                            Emergência: <strong>190</strong> | Central da Mulher: <strong>180</strong> <br>
+                            <a href="https://api.whatsapp.com/send?phone=554832872635" target="_blank" class="ml-4 text-purple-400 hover:underline">
+                                <i class="fab fa-whatsapp mr-1"></i>Atendimento de apoio via WhatsApp
+                            </a>
                         </p>
                     </div>
                 </div>
@@ -1292,17 +1293,29 @@ def frase_motivacional(request):
 
     def traduzir(texto):
         """Traduz inglês → português via MyMemory (gratuita, sem chave)."""
+        # try:
+        #     url = f"https://api.mymemory.translated.net/get?q={texto}&langpair=en|pt-BR"
+        #     resp = http_requests.get(url, timeout=4)
+        #     resp.raise_for_status()
+        #     data = resp.json()
+        #     traducao = data.get('responseData', {}).get('translatedText', '')
+        #     if traducao and data.get('responseStatus') == 200:
+        #         return traducao
+        # except Exception:
+        #     pass
+        # return texto  # Retorna original se falhar
         try:
-            url = f"https://api.mymemory.translated.net/get?q={texto}&langpair=en|pt-BR"
-            resp = http_requests.get(url, timeout=4)
-            resp.raise_for_status()
-            data = resp.json()
-            traducao = data.get('responseData', {}).get('translatedText', '')
-            if traducao and data.get('responseStatus') == 200:
-                return traducao
+            idiomas = translate.get_installed_languages()
+            idioma_en = next((i for i in idiomas if i.code == "en"), None)
+            idioma_pt = next((i for i in idiomas if i.code == "pt"), None)
+
+            if not idioma_en or not idioma_pt:
+                return texto
+
+            traducao = idioma_en.get_translation(idioma_pt)
+            return traducao.translate(texto)
         except Exception:
-            pass
-        return texto  # Retorna original se falhar
+            return texto
 
     try:
         response = http_requests.get(
