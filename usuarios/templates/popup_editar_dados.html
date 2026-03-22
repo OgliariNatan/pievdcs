@@ -79,10 +79,16 @@
         </div>
 
         <div>
-            <label class="mb-2 block text-sm font-medium text-gray-700" for="{{ form.data_nascimento.id_for_label }}">
+            <label class="mb-2 block text-sm font-medium text-gray-700" for="id_data_nascimento">
                 Data de nascimento
             </label>
-            {{ form.data_nascimento }}
+            <input
+                type="date"
+                name="data_nascimento"
+                id="id_data_nascimento"
+                class="w-full px-4 py-3 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none"
+                value="{% if form.is_bound %}{{ form.data_nascimento.value|default:'' }}{% elif form.instance.data_nascimento %}{{ form.instance.data_nascimento|date:'Y-m-d' }}{% endif %}"
+            >
             {% if form.data_nascimento.errors %}
                 <p class="mt-1 text-xs text-red-600">{{ form.data_nascimento.errors.0 }}</p>
             {% endif %}

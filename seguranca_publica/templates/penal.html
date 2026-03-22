@@ -90,7 +90,9 @@
                     <i class="fas fa-user text-sm"></i>
                 </div>
                 <span class="sidebar-label whitespace-nowrap font-medium text-sm">
-                    {{ user.first_name }}
+                    <a href="{% url 'usuarios:config_conta' %}" class="hover:underline">
+                         {{ user.first_name }}
+                    </a>
                 </span>
             </div>
         </div>

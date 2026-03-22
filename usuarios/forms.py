@@ -21,6 +21,17 @@ FILE_CSS = (
 
 class ContaDadosForm(forms.ModelForm):
     """Formulário para edição dos dados cadastrais do usuário."""
+    data_nascimento = forms.DateField(
+        required=False,
+        input_formats=['%Y-%m-%d'],
+        widget=forms.DateInput(
+            format='%Y-%m-%d',
+            attrs={
+                'class': INPUT_CSS,
+                'type': 'date',
+            },
+        ),
+    )
 
     class Meta:
         model = CustomUser
@@ -28,8 +39,8 @@ class ContaDadosForm(forms.ModelForm):
             'first_name',
             'last_name',
             'email',
-            'telefone',
             'data_nascimento',
+            'telefone',
             'genero',
             'cpf',
         ]
@@ -50,10 +61,6 @@ class ContaDadosForm(forms.ModelForm):
                 'class': INPUT_CSS,
                 'placeholder': '(00) 00000-0000',
                 'maxlength': '15',
-            }),
-            'data_nascimento': forms.DateInput(attrs={
-                'class': INPUT_CSS,
-                'type': 'date',
             }),
             'genero': forms.Select(attrs={
                 'class': INPUT_CSS,
