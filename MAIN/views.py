@@ -1335,3 +1335,4 @@ def frase_motivacional(request):
     except Exception:
         fallback = random.choice(FALLBACKS)
         return JsonResponse(fallback)
+

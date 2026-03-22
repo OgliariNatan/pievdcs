@@ -20,7 +20,7 @@ from django.core.validators import RegexValidator
 def validate_pdf_file(value):
     """Valida se o arquivo enviado é PDF"""
     ext = os.path.splitext(value.name)[1]
-    if ext.lower() != '*.pdf':
+    if ext.lower() != '.pdf':
         raise ValidationError('Apenas arquivos .pdf são permitidos.')
 
 

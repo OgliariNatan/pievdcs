@@ -1,0 +1,49 @@
+<!-- dir: usuarios/templates/base_popup.html -->
+<div
+    id="{{ popup_id }}"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+    onclick="if(event.target === this) this.remove()"
+>
+    <div
+        class="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl"
+        onclick="event.stopPropagation()"
+    >
+        <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-purple-600 to-fuchsia-500 rounded-t-2xl">
+            <div>
+                <h2 class="text-xl font-bold text-white">{% block popup_titulo %}{% endblock %}</h2>
+                {% block popup_subtitulo %}{% endblock %}
+            </div>
+
+            <button
+                type="button"
+                class="text-white text-2xl font-bold hover:text-purple-100 transition"
+                onclick="document.getElementById('{{ popup_id }}').remove()"
+                aria-label="Fechar popup"
+            >
+                &times;
+            </button>
+        </div>
+
+        <div class="p-6 bg-gray-50">
+            {% block popup_conteudo %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const popupId = "{{ popup_id }}";
+
+    function fecharPopupConta(evento) {
+        if (evento.key === 'Escape') {
+            const popup = document.getElementById(popupId);
+            if (popup) {
+                popup.remove();
+            }
+            document.removeEventListener('keydown', fecharPopupConta);
+        }
+    }
+
+    document.addEventListener('keydown', fecharPopupConta);
+})();
+</script>

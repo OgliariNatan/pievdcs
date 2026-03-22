@@ -1,0 +1,104 @@
+<!-- dir: usuarios/templates/popup_arquivos.html -->
+{% extends 'base_popup.html' %}
+
+{% block popup_titulo %}Foto e comprovante{% endblock %}
+{% block popup_subtitulo %}
+<p class="text-sm text-purple-100">Atualize sua foto de perfil e comprovante de vínculo.</p>
+{% endblock %}
+
+{% block popup_conteudo %}
+{% if sucesso %}
+    <div class="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+        Arquivos atualizados com sucesso.
+    </div>
+{% endif %}
+
+<form
+    hx-post="{% url 'usuarios:config_conta_arquivos_submit' %}"
+    hx-target="#{{ popup_id }}"
+    hx-swap="outerHTML"
+    hx-encoding="multipart/form-data"
+    class="space-y-6"
+>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+        <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {{ form.non_field_errors }}
+        </div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="rounded-2xl border border-gray-200 bg-white p-4">
+            <h3 class="mb-3 text-sm font-semibold text-gray-800">Foto atual</h3>
+
+            {% if request.user.foto %}
+                <img
+                    src="{{ request.user.foto.url }}"
+                    alt="Foto do perfil"
+                    class="h-32 w-32 rounded-full object-cover border border-gray-200"
+                >
+            {% else %}
+                <div class="flex h-32 w-32 items-center justify-center rounded-full bg-gray-100 text-4xl text-gray-400">
+                    <i class="fas fa-user"></i>
+                </div>
+            {% endif %}
+
+            <div class="mt-4">
+                <label class="mb-2 block text-sm font-medium text-gray-700" for="{{ form.foto.id_for_label }}">
+                    Nova foto
+                </label>
+                {{ form.foto }}
+                {% if form.foto.errors %}
+                    <p class="mt-1 text-xs text-red-600">{{ form.foto.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-4">
+            <h3 class="mb-3 text-sm font-semibold text-gray-800">Comprovante de vínculo</h3>
+
+            {% if request.user.comprovante_vinculo %}
+                <p class="mb-3 text-sm text-gray-600">
+                    Arquivo atual:
+                    <a
+                        href="{{ request.user.comprovante_vinculo.url }}"
+                        target="_blank"
+                        class="font-medium text-purple-600 hover:underline"
+                    >
+                        abrir comprovante
+                    </a>
+                </p>
+            {% else %}
+                <p class="mb-3 text-sm text-gray-500">Nenhum comprovante enviado.</p>
+            {% endif %}
+
+            <div>
+                <label class="mb-2 block text-sm font-medium text-gray-700" for="{{ form.comprovante_vinculo.id_for_label }}">
+                    Novo comprovante em PDF
+                </label>
+                {{ form.comprovante_vinculo }}
+                {% if form.comprovante_vinculo.errors %}
+                    <p class="mt-1 text-xs text-red-600">{{ form.comprovante_vinculo.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-end gap-3 pt-2">
+        <button
+            type="button"
+            class="rounded-xl bg-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-300 transition"
+            onclick="document.getElementById('{{ popup_id }}').remove()"
+        >
+            Cancelar
+        </button>
+        <button
+            type="submit"
+            class="rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-purple-700 transition"
+        >
+            Salvar arquivos
+        </button>
+    </div>
+</form>
+{% endblock %}
