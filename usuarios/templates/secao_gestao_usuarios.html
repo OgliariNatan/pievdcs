@@ -1,0 +1,69 @@
+{# dir: usuarios/templates/secao_gestao_usuarios.html #}
+<div class="mt-8">
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">
+                    <i class="fas fa-users-cog text-purple-600 mr-2"></i>Gestão de Usuários
+                </h2>
+                <p class="text-sm text-gray-500 mt-1">Gerencie os membros dos seus setores.</p>
+            </div>
+        </div>
+
+        {% if sucesso_criacao %}
+        <div class="mb-4 px-4 py-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm">
+            <i class="fas fa-check-circle mr-2"></i>Usuário criado e adicionado ao setor <strong>{{ sucesso_criacao }}</strong> com sucesso.
+        </div>
+        {% endif %}
+
+        {% for grupo in grupos %}
+        <div class="mb-6 border border-gray-200 rounded-xl overflow-hidden">
+
+            {# Cabeçalho do grupo #}
+            <div class="bg-gradient-to-r from-purple-600 to-fuchsia-500 px-4 py-3 flex items-center justify-between">
+                <h3 class="text-white font-semibold">{{ grupo.name }}</h3>
+                <span class="text-white/75 text-xs">
+                    {{ grupo.user_set.count }} membro(s)
+                </span>
+            </div>
+
+            {# Lista de membros — substituída via HTMX no adicionar/remover #}
+            {% include '_membros_grupo.html' with grupo=grupo %}
+
+            {# Barra inferior: buscar + criar #}
+            <div class="px-4 py-3 bg-gray-50 border-t border-gray-200">
+                <form
+                    hx-get="{% url 'usuarios:config_conta_gestao_buscar' %}"
+                    hx-trigger="input from:[name=q] changed delay:400ms, submit"
+                    hx-target="#resultado-busca-{{ grupo.pk }}"
+                    hx-include="[name=q], [name=grupo_id]">
+                    <input type="hidden" name="grupo_id" value="{{ grupo.pk }}">
+                    <div class="flex gap-2">
+                        <input
+                            type="text"
+                            name="q"
+                            placeholder="Buscar por nome, username ou CPF..."
+                            autocomplete="off"
+                            class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 outline-none bg-white"
+                        >
+                        <button
+                            type="button"
+                            class="px-3 py-2 text-sm bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition whitespace-nowrap"
+                            hx-get="{% url 'usuarios:config_conta_gestao_criar_popup' %}?grupo_id={{ grupo.pk }}"
+                            hx-target="#modal-gestao"
+                            hx-swap="innerHTML">
+                            <i class="fas fa-user-plus mr-1"></i>Criar usuário
+                        </button>
+                    </div>
+                </form>
+                <div id="resultado-busca-{{ grupo.pk }}" class="mt-2"></div>
+            </div>
+
+        </div>
+        {% empty %}
+        <p class="text-gray-400 text-sm italic">Nenhum setor disponível para gerenciar.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="modal-gestao"></div>

@@ -1,0 +1,118 @@
+{# dir: usuarios/templates/popup_criar_usuario.html #}
+{% extends 'base_popup.html' %}
+
+{% block popup_titulo %}Criar Novo Usuário{% endblock %}
+{% block popup_subtitulo %}Preencha os dados e selecione o setor{% endblock %}
+
+{% block popup_conteudo %}
+<form
+    hx-post="{% url 'usuarios:config_conta_gestao_criar_submit' %}"
+    hx-target="#secao-gestao-wrapper"
+    hx-swap="innerHTML"
+    hx-encoding="application/x-www-form-urlencoded">
+    {% csrf_token %}
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Primeiro nome</label>
+            {{ form.first_name }}
+            {% if form.first_name.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ form.first_name.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Sobrenome</label>
+            {{ form.last_name }}
+            {% if form.last_name.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ form.last_name.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Username</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ form.username.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">E-mail</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ form.email.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">CPF</label>
+            {{ form.cpf }}
+            {% if form.cpf.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ form.cpf.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Setor</label>
+            {{ form.grupo }}
+            {% if form.grupo.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ form.grupo.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Senha</label>
+            {{ form.password1 }}
+            {% if form.password1.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ form.password1.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Confirmar senha</label>
+            {{ form.password2 }}
+            {% if form.password2.errors %}
+            <p class="text-red-500 text-xs mt-1">{{ form.password2.errors.0 }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if form.non_field_errors %}
+    <div class="mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+        {% for erro in form.non_field_errors %}
+        <p>{{ erro }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
+        <button
+            type="button"
+            onclick="document.getElementById('modal-gestao').innerHTML=''"
+            class="px-4 py-2 text-sm rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-50 transition">
+            Cancelar
+        </button>
+        <button
+            type="submit"
+            class="px-5 py-2 text-sm rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-500 text-white font-medium hover:opacity-90 transition">
+            <i class="fas fa-user-plus mr-1"></i>Criar usuário
+        </button>
+    </div>
+</form>
+
+<script>
+    /* Máscara de CPF no popup de criação */
+    const cpfInput = document.querySelector('#popup-criar-usuario input[name="cpf"]');
+    if (cpfInput) {
+        cpfInput.addEventListener('input', function () {
+            let v = this.value.replace(/\D/g, '').slice(0, 11);
+            if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, '$1.$2.$3-$4');
+            else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{0,3})/, '$1.$2.$3');
+            else if (v.length > 3) v = v.replace(/(\d{3})(\d{0,3})/, '$1.$2');
+            this.value = v;
+        });
+    }
+</script>
+{% endblock %}

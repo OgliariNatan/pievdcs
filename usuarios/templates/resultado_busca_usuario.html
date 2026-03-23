@@ -1,0 +1,31 @@
+{# dir: usuarios/templates/resultado_busca_usuario.html #}
+{% if usuarios %}
+    {% for usuario in usuarios %}
+    <div class="flex items-center justify-between py-2 px-3 bg-white border border-gray-200 rounded-lg mb-1 shadow-sm">
+        <div>
+            <p class="font-medium text-sm text-gray-800">
+                {{ usuario.get_full_name|default:usuario.username }}
+            </p>
+            <p class="text-xs text-gray-400">
+                {{ usuario.username }}{% if usuario.cpf %} · {{ usuario.cpf }}{% endif %}
+            </p>
+        </div>
+        {% if usuario in grupo.user_set.all %}
+        <span class="text-xs text-green-600 font-medium">
+            <i class="fas fa-check-circle mr-1"></i>Já é membro
+        </span>
+        {% else %}
+        <button
+            class="px-3 py-1 text-xs bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition"
+            hx-post="{% url 'usuarios:config_conta_gestao_adicionar' %}"
+            hx-vals='{"grupo_id": "{{ grupo.pk }}", "usuario_id": "{{ usuario.pk }}"}'
+            hx-target="#membros-grupo-{{ grupo.pk }}"
+            hx-swap="outerHTML">
+            <i class="fas fa-user-check mr-1"></i>Adicionar
+        </button>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% elif q %}
+    <p class="text-sm text-gray-400 py-2 italic">Nenhum usuário encontrado para "{{ q }}".</p>
+{% endif %}

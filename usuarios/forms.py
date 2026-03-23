@@ -4,8 +4,8 @@ dir: usuarios/forms.py
 Formulários de configuração da conta do usuário.
 """
 from django import forms
-from django.contrib.auth.forms import PasswordChangeForm
-
+from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
+from django.contrib.auth.models import Group
 from .models import CustomUser
 
 INPUT_CSS = (
@@ -135,3 +135,39 @@ class ContaSenhaForm(PasswordChangeForm):
             'placeholder': 'Repita a nova senha',
         }),
     )
+
+class CriarUsuarioForm(UserCreationForm):
+    """Formulário para criar novo usuário e associá-lo a um setor."""
+
+    grupo = forms.ModelChoiceField(
+        queryset=Group.objects.none(),
+        label='Setor',
+        empty_label='Selecione o setor',
+        widget=forms.Select(attrs={'class': INPUT_CSS}),
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            'first_name', 'last_name', 'username',
+            'email', 'cpf', 'password1', 'password2',
+        ]
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': INPUT_CSS, 'placeholder': 'Primeiro nome'}),
+            'last_name':  forms.TextInput(attrs={'class': INPUT_CSS, 'placeholder': 'Sobrenome'}),
+            'username':   forms.TextInput(attrs={'class': INPUT_CSS, 'placeholder': 'Nome de usuário'}),
+            'email':      forms.EmailInput(attrs={'class': INPUT_CSS, 'placeholder': 'E-mail'}),
+            'cpf':        forms.TextInput(attrs={'class': INPUT_CSS, 'placeholder': '000.000.000-00', 'maxlength': '14'}),
+        }
+
+    def __init__(self, *args, grupos_disponiveis=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if grupos_disponiveis is not None:
+            self.fields['grupo'].queryset = grupos_disponiveis
+        self.fields['password1'].widget.attrs.update({'class': INPUT_CSS})
+        self.fields['password2'].widget.attrs.update({'class': INPUT_CSS})
+        self.fields['password1'].label = 'Senha'
+        self.fields['password2'].label = 'Confirmar senha'
+        self.fields['username'].help_text = None
+        self.fields['password1'].help_text = None
+        self.fields['password2'].help_text = None
