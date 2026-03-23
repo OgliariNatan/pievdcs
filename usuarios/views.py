@@ -7,7 +7,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
-
+from django.utils import timezone
 from .forms import ContaArquivosForm, ContaDadosForm, ContaSenhaForm
 
 
@@ -39,7 +39,9 @@ def config_conta_dados_submit(request):
     form = ContaDadosForm(request.POST, instance=request.user)
 
     if form.is_valid():
-        form.save()
+        usuario = form.save(commit=False)
+        usuario.ultima_atualizacao_conta = timezone.now()
+        usuario.save()
         return render(request, 'popup_editar_dados.html', {
             'form': ContaDadosForm(instance=request.user),
             'popup_id': 'popup-conta-dados',
@@ -71,7 +73,9 @@ def config_conta_senha_submit(request):
     form = ContaSenhaForm(user=request.user, data=request.POST)
 
     if form.is_valid():
-        usuario = form.save()
+        usuario = form.save(commit=False)
+        usuario.ultima_atualizacao_conta = timezone.now()
+        usuario.save()        
         update_session_auth_hash(request, usuario)
 
         return render(request, 'popup_alterar_senha.html', {
@@ -105,7 +109,9 @@ def config_conta_arquivos_submit(request):
     form = ContaArquivosForm(request.POST, request.FILES, instance=request.user)
 
     if form.is_valid():
-        form.save()
+        usuario = form.save(commit=False)
+        usuario.ultima_atualizacao_conta = timezone.now()
+        usuario.save()
         return render(request, 'popup_arquivos.html', {
             'form': ContaArquivosForm(instance=request.user),
             'popup_id': 'popup-conta-arquivos',

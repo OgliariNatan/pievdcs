@@ -24,8 +24,19 @@
             </div>
             <p><strong>Nome:</strong> {{ request.user.get_full_name|default:request.user.username }}</p>
             <p><strong>E-mail:</strong> {{ request.user.email|default:"Não informado" }}</p>
+            <p><strong>CPF:</strong> {{ request.user.cpf|default:"Não informado" }}</p>
             <p><strong>Telefone:</strong> {{ request.user.telefone|default:"Não informado" }}</p>
-            <button
+            <p><strong>Data de nascimento:</strong> {% if request.user.data_nascimento %}{{ request.user.data_nascimento|date:"d/m/Y" }}{% else %}Não informado{% endif %}</p>
+            <p><strong>Gênero:</strong> {{ request.user.get_genero_display|default:"Não informado" }}</p>
+            <p>
+                <strong>Última atualização:</strong>
+                {% if request.user.ultima_atualizacao_conta %}
+                    {{ request.user.ultima_atualizacao_conta|date:"d/m/Y H:i" }}
+                {% else %}
+                    Nunca atualizada
+                {% endif %}
+            </p>
+                        <button
                 class="mt-4 px-4 py-2 rounded-lg bg-purple-600 text-white"
                 hx-get="{% url 'usuarios:config_conta_dados_popup' %}"
                 hx-target="#modal-conta"

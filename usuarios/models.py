@@ -11,6 +11,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import RegexValidator
+from django.utils import timezone
 
 
 
@@ -108,6 +109,11 @@ class CustomUser(AbstractUser):
         verbose_name='Comprovante de Vínculo',
         upload_to='usuarios/comprovantes/%Y/%m/',
         validators=[validate_pdf_file],
+        null=True,
+        blank=True,
+    )
+    ultima_atualizacao_conta = models.DateTimeField(
+        verbose_name='Última atualização da conta',
         null=True,
         blank=True,
     )
