@@ -25,7 +25,15 @@
         <div class="px-5 py-3 bg-gray-50 border-b text-xs text-gray-600 flex flex-wrap gap-6">
             <span>
                 <i class="fas fa-clipboard-list text-blue-500 mr-1"></i>
-                <b>Total:</b> {{ atendimentos|length }}
+                <b>Total:</b> {{ total_atendimentos }}
+            </span>
+            <span>
+                <i class="fas fa-exclamation-triangle text-red-500 mr-1"></i>
+                <b>Quebras registradas:</b> {{ total_quebras }}
+            </span>
+            <span>
+                <i class="fas fa-scale-balanced text-amber-600 mr-1"></i>
+                <b>MPs com quebra:</b> {{ medidas_com_quebra }}
             </span>
         </div>
 
