@@ -13,7 +13,7 @@ from .views.penal import (
 )
 from .views.militar import (
     militar, consultas_informacao_vitima_agressor,
-    buscar_vitimas,
+    buscar_vitimas, atendimentos_rede_catarina_all, ver_atendimento_rede_catarina,
     detalhe_medida_protetiva, historico_mp_vitima, historico_mp_agressor,
     cadastrar_atendimento, listar_atendimentos,
     editar_atendimento, relatorio_atendimentos_pdf, excluir_anexo_atendimento,
@@ -42,6 +42,8 @@ urlpatterns = [
     path('militar/', militar, name='militar'),
     path('consultas_PM/', consultas_informacao_vitima_agressor, name='consultas_PM'),
     path('buscar_vitimas/', buscar_vitimas, name='buscar_vitimas'),
+    path('atendimentos_rede_catarina_all/', atendimentos_rede_catarina_all, name='atendimentos_rede_catarina_all'),
+    path('atendimento/<int:atendimento_id>/ver/', ver_atendimento_rede_catarina, name='ver_atendimento_rede_catarina',),
     path('detalhe_medida_protetiva/<int:medida_id>/', detalhe_medida_protetiva, name='detalhe_medida_protetiva'),
     path('historico_mp_vitima/<str:cpf_vitima>/', historico_mp_vitima, name='historico_mp_vitima'),
     path('historico_mp_agressor/<str:cpf_agressor>/', historico_mp_agressor, name='historico_mp_agressor'),

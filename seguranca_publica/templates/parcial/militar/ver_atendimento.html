@@ -1,0 +1,153 @@
+{% comment %} dir: seguranca_publica/templates/parcial/militar/ver_atendimento.html {% endcomment %}
+<div id="overlay-ver-atendimento"
+     class="fixed inset-0 bg-black bg-opacity-50 z-[1004]"
+     onclick="document.getElementById('overlay-ver-atendimento').remove(); document.getElementById('modal-ver-atendimento').remove();">
+</div>
+
+<div id="modal-ver-atendimento"
+     class="fixed inset-0 z-[1005] flex items-center justify-center p-4"
+     tabindex="0">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col max-h-[92vh]"
+         onclick="event.stopPropagation();">
+
+        <div class="flex justify-between items-center px-5 py-3 border-b bg-gradient-to-r from-[#bdb76b] to-[#767247] rounded-t-xl">
+            <h3 class="text-white font-semibold text-sm">
+                <i class="fas fa-eye mr-2"></i>
+                Atendimento #{{ atendimento.id }} — MP #{{ medida.ID }}
+            </h3>
+            <button
+                onclick="document.getElementById('overlay-ver-atendimento').remove(); document.getElementById('modal-ver-atendimento').remove();"
+                class="text-white hover:text-gray-200 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="px-5 py-3 bg-gray-50 border-b text-xs text-gray-600 flex flex-wrap gap-6">
+            <span><b>Vítima:</b> {{ medida.vitima.nome|default:"Não informado" }}</span>
+            <span><b>Agressor:</b> {{ medida.agressor.nome|default:"Não informado" }}</span>
+            <span><b>Responsável:</b> {{ atendimento.responsavel.get_full_name|default:atendimento.responsavel.username|default:"Não informado" }}</span>
+        </div>
+
+        <div class="overflow-y-auto flex-1 min-h-0 px-5 py-4 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Dados do atendimento</p>
+                    <p class="text-sm"><b>Data:</b> {{ atendimento.data_atendimento|date:"d/m/Y H:i" }}</p>
+                    <p class="text-sm"><b>Patrulha:</b> {{ atendimento.get_tipo_patrulha_display }}</p>
+                    <p class="text-sm"><b>Equipe:</b> {{ atendimento.equipe|default:"Sem equipe" }}</p>
+                    <p class="text-sm"><b>Contato com vítima:</b> {{ atendimento.houve_contato_vitima|yesno:"Sim,Não" }}</p>
+                    <p class="text-sm"><b>Agressor presente:</b> {{ atendimento.agressor_presente|yesno:"Sim,Não" }}</p>
+                    <p class="text-sm"><b>Situação da vítima:</b> {{ atendimento.get_situacao_vitima_display }}</p>
+                </div>
+
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-xs text-gray-500 uppercase font-semibold mb-2">Situação da medida</p>
+                    <p class="text-sm">
+                        <b>Descumprimento:</b>
+                        {% if atendimento.vitima_relatou_descumprimento %}
+                            <span class="text-red-700 font-semibold">Sim</span>
+                        {% else %}
+                            <span class="text-green-700 font-semibold">Não</span>
+                        {% endif %}
+                    </p>
+                    <p class="text-sm">
+                        <b>Notificação enviada:</b>
+                        {{ atendimento.notificacao_enviada|yesno:"Sim,Não" }}
+                    </p>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Descrição do atendimento</label>
+                <div class="bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-700 whitespace-pre-line">
+                    {{ atendimento.descricao_atendimento|default:"Não informado" }}
+                </div>
+            </div>
+
+            {% if atendimento.descricao_descumprimento %}
+            <div>
+                <label class="block text-sm font-medium text-red-700 mb-1">Descrição do descumprimento</label>
+                <div class="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-800 whitespace-pre-line">
+                    {{ atendimento.descricao_descumprimento }}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if atendimento.providencias_tomadas %}
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Providências tomadas</label>
+                <div class="bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-700 whitespace-pre-line">
+                    {{ atendimento.providencias_tomadas }}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if atendimento.anexos.all %}
+            <div class="border-t pt-4">
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">
+                    <i class="fas fa-paperclip mr-1"></i>Anexos ({{ atendimento.anexos.all|length }})
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {% for anexo in atendimento.anexos.all %}
+                    <div class="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                        <p class="text-xs font-semibold text-gray-700 mb-2">
+                            {% if anexo.tipo == 'imagem' %}
+                                <i class="fas fa-image mr-1 text-blue-600"></i>Imagem
+                            {% else %}
+                                <i class="fas fa-video mr-1 text-purple-600"></i>Vídeo
+                            {% endif %}
+                        </p>
+
+                        {% if anexo.tipo == 'imagem' and anexo.imagem %}
+                            <img src="{{ anexo.imagem.url }}"
+                                 alt="{{ anexo.descricao|default:'Imagem do atendimento' }}"
+                                 class="w-full h-40 object-cover rounded border">
+                        {% elif anexo.tipo == 'video' and anexo.video %}
+                            <video class="w-full h-40 object-cover rounded border bg-black" controls preload="metadata">
+                                <source src="{{ anexo.video.url }}">
+                            </video>
+                        {% endif %}
+
+                        {% if anexo.descricao %}
+                        <p class="text-xs text-gray-600 mt-2">{{ anexo.descricao }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="flex justify-end gap-2 px-5 py-3 border-t bg-gray-50 rounded-b-xl">
+            <a href="{% url 'seguranca_publica:relatorio_atendimentos_pdf' medida_id=medida.ID %}"
+               target="_blank"
+               class="px-4 py-2 text-sm bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                <i class="fas fa-file-pdf mr-1"></i>PDF
+            </a>
+            <button
+                onclick="document.getElementById('overlay-ver-atendimento').remove(); document.getElementById('modal-ver-atendimento').remove();"
+                class="px-4 py-2 text-sm text-gray-600 bg-gray-200 hover:bg-gray-300 rounded-lg transition">
+                Fechar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const modal = document.getElementById('modal-ver-atendimento');
+    const overlay = document.getElementById('overlay-ver-atendimento');
+
+    function fecharESC(e) {
+        if (e.key === 'Escape') {
+            if (overlay) overlay.remove();
+            if (modal) modal.remove();
+            document.removeEventListener('keydown', fecharESC);
+        }
+    }
+
+    document.addEventListener('keydown', fecharESC);
+    if (modal) modal.focus();
+})();
+</script>
