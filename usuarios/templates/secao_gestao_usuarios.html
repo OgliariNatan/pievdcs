@@ -34,9 +34,7 @@
             <div class="px-4 py-3 bg-gray-50 border-t border-gray-200">
                 <form
                     hx-get="{% url 'usuarios:config_conta_gestao_buscar' %}"
-                    hx-trigger="input from:[name=q] changed delay:400ms, submit"
-                    hx-target="#resultado-busca-{{ grupo.pk }}"
-                    hx-include="[name=q], [name=grupo_id]">
+                    hx-target="#resultado-busca-{{ grupo.pk }}">
                     <input type="hidden" name="grupo_id" value="{{ grupo.pk }}">
                     <div class="flex gap-2">
                         <input
@@ -46,6 +44,11 @@
                             autocomplete="off"
                             class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 outline-none bg-white"
                         >
+                        <button
+                            type="submit"
+                            class="px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition whitespace-nowrap">
+                            <i class="fas fa-search mr-1"></i>Buscar
+                        </button>
                         <button
                             type="button"
                             class="px-3 py-2 text-sm bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition whitespace-nowrap"

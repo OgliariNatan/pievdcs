@@ -181,8 +181,14 @@ def config_conta_gestao_buscar(request):
     if q:
         usuarios = (
             CustomUser.objects
-            .filter(Q(first_name__icontains=q) | Q(last_name__icontains=q) |
-                    Q(username__icontains=q) | Q(cpf__icontains=q))
+            .filter(
+                Q(first_name__icontains=q) |
+                Q(last_name__icontains=q) |
+                Q(username__icontains=q) |
+                Q(cpf__icontains=q)
+            )
+            .exclude(groups=grupo)   # não mostra quem já está no grupo
+            .distinct()
             .only('pk', 'first_name', 'last_name', 'username', 'cpf')
             [:15]
         )

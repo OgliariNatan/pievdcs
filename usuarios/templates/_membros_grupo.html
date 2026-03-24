@@ -10,16 +10,22 @@
                 {{ membro.username }}{% if membro.cpf %} · {{ membro.cpf }}{% endif %}
             </p>
         </div>
-        <button
-            class="px-3 py-1 text-xs bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
+        <form
+            class="inline"
             hx-post="{% url 'usuarios:config_conta_gestao_remover' %}"
-            hx-vals='{"grupo_id": "{{ grupo.pk }}", "usuario_id": "{{ membro.pk }}"}'
             hx-target="#membros-grupo-{{ grupo.pk }}"
             hx-swap="outerHTML"
-            hx-confirm="Remover {{ membro.get_full_name|default:membro.username }} de {{ grupo.name }}?"
-            {% if membro.pk == request.user.pk %}disabled title="Você não pode se remover"{% endif %}>
-            <i class="fas fa-user-minus mr-1"></i>Remover
-        </button>
+            hx-confirm="Remover {{ membro.get_full_name|default:membro.username }} de {{ grupo.name }}?">
+            {% csrf_token %}
+            <input type="hidden" name="grupo_id" value="{{ grupo.pk }}">
+            <input type="hidden" name="usuario_id" value="{{ membro.pk }}">
+            <button
+                type="submit"
+                class="px-3 py-1 text-xs bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
+                {% if membro.pk == request.user.pk %}disabled title="Você não pode se remover"{% endif %}>
+                <i class="fas fa-user-minus mr-1"></i>Remover
+            </button>
+        </form>
     </div>
     {% empty %}
     <p class="text-gray-400 px-4 py-3 text-sm italic">Nenhum membro neste setor.</p>
