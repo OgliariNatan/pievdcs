@@ -1,0 +1,33 @@
+{# dir: usuarios/templates/_membros_grupo.html #}
+<div id="membros-grupo-{{ grupo.pk }}" class="divide-y divide-gray-100">
+    {% for membro in grupo.user_set.all %}
+    <div class="flex items-center justify-between px-4 py-3">
+        <div>
+            <p class="font-medium text-gray-800 text-sm">
+                {{ membro.get_full_name|default:membro.username }}
+            </p>
+            <p class="text-xs text-gray-400">
+                {{ membro.username }}{% if membro.cpf %} · {{ membro.cpf }}{% endif %}
+            </p>
+        </div>
+        <form
+            class="inline"
+            hx-post="{% url 'usuarios:config_conta_gestao_remover' %}"
+            hx-target="#membros-grupo-{{ grupo.pk }}"
+            hx-swap="outerHTML"
+            hx-confirm="Remover {{ membro.get_full_name|default:membro.username }} de {{ grupo.name }}?">
+            {% csrf_token %}
+            <input type="hidden" name="grupo_id" value="{{ grupo.pk }}">
+            <input type="hidden" name="usuario_id" value="{{ membro.pk }}">
+            <button
+                type="submit"
+                class="px-3 py-1 text-xs bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
+                {% if membro.pk == request.user.pk %}disabled title="Você não pode se remover"{% endif %}>
+                <i class="fas fa-user-minus mr-1"></i>Remover
+            </button>
+        </form>
+    </div>
+    {% empty %}
+    <p class="text-gray-400 px-4 py-3 text-sm italic">Nenhum membro neste setor.</p>
+    {% endfor %}
+</div>

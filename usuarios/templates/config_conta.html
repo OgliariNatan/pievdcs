@@ -71,5 +71,17 @@
     </div>
 </div>
 
+{# Seção de gestão — visível apenas para membros da Administração ou superusuários #}
+{% if request.user.tem_acesso_administracao or request.user.is_superuser %}
+<div id="secao-gestao-wrapper"
+        hx-get="{% url 'usuarios:config_conta_gestao' %}"
+        hx-trigger="load"
+        hx-swap="innerHTML">
+    <div class="mt-8 flex items-center justify-center text-gray-400 text-sm py-6">
+        <i class="fas fa-spinner fa-spin mr-2"></i>Carregando gestão de usuários...
+    </div>
+</div>
+{% endif %}
+
 <div id="modal-conta"></div>
 {% endblock %}
