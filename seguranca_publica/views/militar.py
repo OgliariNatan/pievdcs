@@ -1203,3 +1203,46 @@ def relatorio_atendimentos_pdf(request, medida_id):
         f'inline; filename="oficio_rede_catarina_mp_{medida.ID}.pdf"'
     )
     return response
+
+
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Polícia Militar'])
+def atendimentos_rede_catarina_all(request):
+    """Lista todos os atendimentos da Rede Catarina em tabela."""
+    atendimentos = (
+        AtendimentosRedeCatarina.objects
+        .select_related(
+            'medida_protetiva',
+            'medida_protetiva__vitima',
+            'medida_protetiva__agressor',
+            'responsavel',
+        )
+        .prefetch_related('anexos')
+        .order_by('-data_atendimento')
+    )
+
+    return render(
+        request,
+        'parcial/militar/atendimentos_rede_catarina_all.html',
+        {'atendimentos': atendimentos},
+    )
+
+
+@login_required(login_url=reverse_lazy('login'))
+@grupos_permitidos(['Polícia Militar'])
+def ver_atendimento_rede_catarina(request, atendimento_id):
+    """Exibe popup somente de visualização do atendimento."""
+    atendimento = get_object_or_404(
+        AtendimentosRedeCatarina.objects.select_related(
+            'medida_protetiva',
+            'medida_protetiva__vitima',
+            'medida_protetiva__agressor',
+            'responsavel',
+        ).prefetch_related('anexos'),
+        pk=atendimento_id,
+    )
+
+    return render(request, 'parcial/militar/ver_atendimento.html', {
+        'atendimento': atendimento,
+        'medida': atendimento.medida_protetiva,
+    })
