@@ -16,12 +16,11 @@ from ..models.poder_judiciario import ComarcasPoderJudiciario
 from MAIN.utils.email_utils import enviar_email_grupo
 from seguranca_publica.models.militar import AtendimentosRedeCatarina
 from seguranca_publica.models.penal import ModeloPenal
-from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from mensageria.models import Notificacao, StatusNotificacao
 from mensageria.utils import enviar_notificacao_usuario, enviar_notificacao_grupo
 from datetime import date, datetime, timedelta
-from django.db.models import Q, F, Value, BooleanField, IntegerField, ExpressionWrapper
+from django.db.models import Q, F, Value, BooleanField, IntegerField, ExpressionWrapper, Count
 from django.db.models.functions import Cast
 from django.contrib.auth.models import Group
 from urllib.parse import urlencode
@@ -99,7 +98,8 @@ def poder_judiciario(request):
         data_solicitacao__date=hoje
     ).order_by('-data_solicitacao').values_list('data_solicitacao', flat=True).first()
 
-   
+    descumprimento_mpu = AtendimentosRedeCatarina.objects.filter(vitima_relatou_descumprimento=True
+        ).count()
 
     contexto = {
         'title': 'Poder Judiciário',
@@ -115,6 +115,7 @@ def poder_judiciario(request):
         'mp_alto_risco': mp_alto_risco,
         'atendimentos_hoje': atendimentos_hoje,
         'ultimo_atendimento': ultimo_atendimento,
+        'descumprimento_mpu': descumprimento_mpu,
     }
     return render(request, "judiciario_IA.html", contexto)
 

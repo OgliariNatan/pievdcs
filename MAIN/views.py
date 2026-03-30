@@ -41,7 +41,7 @@ import unicodedata
 
 
 # Configuração do Ollama
-OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://localhost:11434')
+OLLAMA_HOST = getattr(settings, 'OLLAMA_HOST', 'http://127.0.0.1:11434')
 OLLAMA_MODEL = getattr(settings, 'OLLAMA_MODEL', 'qwen2.5:7B')  # ou 'mixtral:latest', 'gemma3:27b', 'llama3.1:70b', 'llama3.1:latest', 'qwen3-vl:latest', 'gpt-oss:120b', 'qwen2.5:7B', 'deepseek-r1:32b'
 
 
@@ -897,10 +897,10 @@ def verificar_ollama_disponivel():
         models = client.list()
         if var_debug:
             nomes_modelos = [model['model'] for model in models['models']]
-            print(f"\033[33mOllama está disponível. Modelos: {', '.join(nomes_modelos)}\033[0m")
+            #print(f"\033[33mOllama está disponível. Modelos: {', '.join(nomes_modelos)}\033[0m")
         return True
     except Exception as e:
-        print(f"Ollama não está disponível: {e}")
+        #print(f"Ollama não está disponível: {e}")
         return False
 
 def obter_resposta_ollama(pergunta):
@@ -977,6 +977,7 @@ def obter_resposta_ollama(pergunta):
                 'mirostat_tau': 5.0,
             },
             keep_alive='5m',
+            #keep_alive='-1',
         )
         
         # Extrai a resposta

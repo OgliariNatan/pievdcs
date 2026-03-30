@@ -19,9 +19,6 @@
     <link rel="apple-touch-icon" href="{% static 'img/logo-enfrentamento-a-violencia-de-genero.png' %}">
     <link rel="shortcut icon" href="{% static 'img/logo-enfrentamento-a-violencia-de-genero.png' %}">
     <title>{% block titulo %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/cabecalho_rodape.css' %}">
-    <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
@@ -65,6 +62,7 @@
 
         .from-primary  { --tw-gradient-from: var(--primary); }
         .to-secondary  { --tw-gradient-to: var(--secondary); }
+        .border-pm-dark { border-color: var(--pm-dark); }
 
         .hover\:bg-accent:hover  { background-color: var(--accent); }
         .hover\:text-accent:hover{ color: var(--accent); }

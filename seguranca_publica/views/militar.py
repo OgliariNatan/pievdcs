@@ -1221,11 +1221,27 @@ def atendimentos_rede_catarina_all(request):
         .order_by('-data_atendimento')
     )
 
+    resumo = atendimentos.aggregate(
+        total_atendimentos=Count('id'),
+        total_quebras=Count('id', filter=Q(vitima_relatou_descumprimento=True)),
+        medidas_com_quebra=Count(
+            'medida_protetiva',
+            filter=Q(vitima_relatou_descumprimento=True),
+            distinct=True,
+        ),
+    )
+
     return render(
         request,
         'parcial/militar/atendimentos_rede_catarina_all.html',
-        {'atendimentos': atendimentos},
+        {
+            'atendimentos': atendimentos,
+            'total_atendimentos': resumo['total_atendimentos'],
+            'total_quebras': resumo['total_quebras'],
+            'medidas_com_quebra': resumo['medidas_com_quebra'],
+        },
     )
+
 
 
 @login_required(login_url=reverse_lazy('login'))
