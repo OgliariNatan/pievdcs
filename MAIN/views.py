@@ -408,7 +408,7 @@ def aplicar_filtros_queryset(request):
         print(f"Filtro aplicado: {periodo}. Contagem PM: {qs_pm.count()}, PC: {qs_pc.count()}, MP: {qs_mp.count()}")
     
     # Filtro de comarca (apenas MP tem comarca)
-    if comarca and comarca != 'Todas':
+    if comarca and comarca != 'Todos':
         qs_mp = qs_mp.filter(comarca_competente__nome=comarca)
         qs_pc = qs_pc.filter(Q(comarca_competente__nome=comarca) | Q(comarca_competente__isnull=True))
     
