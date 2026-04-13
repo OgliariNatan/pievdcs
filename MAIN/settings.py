@@ -16,8 +16,10 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')  # Configura o locale para português do Brasil
+try:
+    locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')  # Configura o locale para português do Brasil
+except locale.Error as e:
+    print(f"Erro ao configurar o locale: {e}")
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -26,7 +28,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', "False")  # Updated to use config
+DEBUG = os.getenv('DEBUG', "False") 
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
