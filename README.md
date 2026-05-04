@@ -1,5 +1,5 @@
 # pievdcs
-Plataforma Integrada de Enfrentamento à Violência Doméstica e Crimes Sexuais
+Plataforma Integrada de Informações ao Enfrentamento à Violência Doméstica e Crimes Sexuais
 
 [![wakatime](https://wakatime.com/badge/user/4ae96e12-8d84-4387-8ef7-419d5c72ebce/project/2afbe6c4-97cf-4b9b-9c73-243727c7c331.svg)](https://wakatime.com/badge/user/4ae96e12-8d84-4387-8ef7-419d5c72ebce/project/2afbe6c4-97cf-4b9b-9c73-243727c7c331)
 
@@ -31,8 +31,7 @@ ____________________
 * 06: Dashboard com indicadores e estatísticas para tomada de decisão.
 * 07: Sistema de notificações e alertas para ações pendentes ou emergenciais.
 * 08: Integração com sistemas existentes de instituições públicas.
-* 09: Módulo para capacitação de operadores e representantes.
-* 10: Suporte a múltiplos dispositivos, incluindo tablets e smartphones.
+* 09: Suporte a múltiplos dispositivos, incluindo tablets e smartphones.
 
 
 ### Pertinentes as informações do BANCO DE DADOS.
@@ -116,7 +115,6 @@ ____________________
 </tr>
 </table>
 
-<h5> Atualizar Licença </h5>
+<h5> Licença </h5>
 Licença Pública Geral Affero (AGPL) deve publicar o código fonte
-<br>
-GNU General Public License (GPL)
+

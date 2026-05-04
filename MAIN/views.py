@@ -11,7 +11,6 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
 from django.templatetags.static import static
 from django.urls import reverse_lazy
 from collections import defaultdict
@@ -1115,7 +1114,6 @@ def obter_resposta_demo(pergunta):
 
 
 @checked_debug_decorador
-@csrf_exempt
 def chat_ia_publico(request):
     """Chat IA público para a página inicial, sem restrição de login."""
     if request.method == "POST":

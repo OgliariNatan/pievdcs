@@ -6,8 +6,8 @@
 
 <h2> Todo o projeto deverá se instanciado na aba Projetos do <b>GitHUB</b> pievdcs</h2>
 <span>
-    Aonde deverá se aberto as 'Issues' e posterior as 'Branche',
-    O projeto não poderá ser desenvolvido em sua 'MAIN', mas em suas <i>branche</i>, facilitando a manutenção do código e permitindo a confecção do mesmo em equipes.
+    Aonde deverá se aberto as 'Issues' e posterior as 'Branch',
+    O projeto não poderá ser desenvolvido em sua 'MAIN', mas em suas <i>Branch</i>, facilitando a manutenção do código e permitindo a confecção do mesmo em equipes.
 
 </span>
 
@@ -24,6 +24,7 @@
     Polícia Militar.
     Polícia Civil.
     Polícia Penal.
+    Polícia Científica
 
 <p>&#x2610; Órgãos municipais.</p>
 
@@ -32,8 +33,13 @@
     CRAS.
     CAPS.
     SECRETARIA DE SAÚDE.
-    HOSPITAIS???
+    
 
 <p>&#x2610; Usuários.</p>
 
     Usuários.
+
+<p>&#x2610; Mensagerias.</p>
+
+    Notificações.
+    Encaminhamentos.
