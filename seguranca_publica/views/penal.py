@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
+from django.core.exceptions import PermissionDenied
 from .permission_group import grupos_permitidos
 from django.template.loader import render_to_string
 from django.db.models import Func, F, Value, CharField, Q
@@ -247,7 +248,7 @@ def mostra_todos_grupos_penal(request):
         Viualização CRÍTICA.
     """
     if not request.user.has_perm('seguranca_publica.view_modelopenal'):
-        raise ValueError("Usuário não tem permissão para visualizar os atendimentos penais.")
+        raise PermissionDenied("Usuário não tem permissão para visualizar os atendimentos penais.")
 
     grupos = ModeloPenal.objects.select_related(
         'usuario',
