@@ -24,7 +24,7 @@
 
         <div class="px-5 py-3 bg-gray-50 border-b text-xs text-gray-600 flex flex-wrap gap-6">
             <span><b>Vítima:</b> {{ medida.vitima.nome|default:"Não informado" }}</span>
-            <span><b>Agressor:</b> {{ medida.agressor.nome|default:"Não informado" }}</span>
+            <span><b>Autor(a) da violência:</b> {{ medida.agressor.nome|default:"Não informado" }}</span>
             <span><b>Responsável:</b> {{ atendimento.responsavel.get_full_name|default:atendimento.responsavel.username|default:"Não informado" }}</span>
         </div>
 
@@ -36,7 +36,7 @@
                     <p class="text-sm"><b>Patrulha:</b> {{ atendimento.get_tipo_patrulha_display }}</p>
                     <p class="text-sm"><b>Equipe:</b> {{ atendimento.equipe|default:"Sem equipe" }}</p>
                     <p class="text-sm"><b>Contato com vítima:</b> {{ atendimento.houve_contato_vitima|yesno:"Sim,Não" }}</p>
-                    <p class="text-sm"><b>Agressor presente:</b> {{ atendimento.agressor_presente|yesno:"Sim,Não" }}</p>
+                    <p class="text-sm"><b>Autor(a) da violência presente:</b> {{ atendimento.agressor_presente|yesno:"Sim,Não" }}</p>
                     <p class="text-sm"><b>Situação da vítima:</b> {{ atendimento.get_situacao_vitima_display }}</p>
                 </div>
 
