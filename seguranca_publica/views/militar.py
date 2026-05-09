@@ -485,10 +485,10 @@ def _notificar_descumprimento(atendimento, request):
         f"Descumprimento relatado durante atendimento da Rede Catarina.\n\n"
         f"Medida Protetiva: #{mp.ID}\n"
         f"Vítima: {vitima_nome}\n"
-        f"Agressor: {agressor_nome}\n"
+        f"Autor(a): {agressor_nome}\n"
         f"Data: {atendimento.data_atendimento.strftime('%d/%m/%Y %H:%M')}\n"
         f"Situação da vítima: {atendimento.get_situacao_vitima_display()}\n"
-        f"Agressor presente: {'Sim' if atendimento.agressor_presente else 'Não'}\n\n"
+        f"Autor(a) presente: {'Sim' if atendimento.agressor_presente else 'Não'}\n\n"
         f"Descrição: {atendimento.descricao_descumprimento or 'Não informada'}\n"
         f"Providências: {atendimento.providencias_tomadas or 'Não informadas'}"
     )
@@ -879,9 +879,9 @@ def relatorio_atendimentos_pdf(request, medida_id):
         ],
         # Linha 2: agressor + CPF na mesma linha
         [
-            Paragraph('Agressor:', estilo_rotulo_mp),
+            Paragraph('Autor(a) da violência:', estilo_rotulo_mp),
             Paragraph(agressor_nome, estilo_valor_mp),
-            Paragraph('CPF do Agressor:', estilo_rotulo_mp),
+            Paragraph('CPF do autor(a):', estilo_rotulo_mp),
             Paragraph(agressor_cpf, estilo_valor_mp),
         ],
         # Linha 3: datas na mesma linha
@@ -920,7 +920,7 @@ def relatorio_atendimentos_pdf(request, medida_id):
     elementos.append(Paragraph(
         f'Comunicamos, para os devidos fins, que a Medida Protetiva de '
         f'nº <b>{medida.ID}</b>, em favor da vítima <b>{vitima_nome}</b>, '
-        f'CPF <b>{vitima_cpf}</b>, em desfavor do agressor <b>{agressor_nome}</b>, '
+        f'CPF <b>{vitima_cpf}</b>, em desfavor do autor(a) da violência <b>{agressor_nome}</b>, '
         f'CPF <b>{agressor_cpf}</b>, possui <b>{qtd}</b> atendimento(s) '
         f'registrado(s) pela Rede Catarina de Proteção à Mulher.',
         estilo_corpo,
@@ -939,7 +939,7 @@ def relatorio_atendimentos_pdf(request, medida_id):
     elementos.append(Paragraph('HISTÓRICO DE ATENDIMENTOS', estilo_secao))
 
     if atendimentos.exists():
-        cabecalho = ['ID', 'Data', 'Equipe', 'Contato', 'Agressor', 'Situação', 'Descumpr.', 'Anexos']
+        cabecalho = ['ID', 'Data', 'Equipe', 'Contato', 'Autor(a)', 'Situação', 'Descumpr.', 'Anexos']
         dados_tabela = [cabecalho]
 
         for i, a in enumerate(atendimentos, 1):
@@ -1011,7 +1011,7 @@ def relatorio_atendimentos_pdf(request, medida_id):
                 ['Equipe/Viatura:', a.equipe or '—'],
                 ['Contato com a vítima:', 'Sim' if a.houve_contato_vitima else 'Não'],
                 ['Situação da vítima:', a.get_situacao_vitima_display()],
-                ['Agressor presente:', 'Sim' if a.agressor_presente else 'Não'],
+                ['Autor(a) presente:', 'Sim' if a.agressor_presente else 'Não'],
                 ['Responsável:', responsavel],
             ]
 
